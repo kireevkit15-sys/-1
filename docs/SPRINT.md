@@ -34,8 +34,8 @@
 | F1.6 | Настроить Serwist service worker | done | `apps/web/app/sw.ts` |
 | F1.7 | Создать UI-компоненты: Button, Card | done | `apps/web/components/ui/` |
 | F1.8 | Создать BottomNav компонент | done | `apps/web/components/layout/BottomNav.tsx` |
-| F1.9 | Проверить отображение на 375px | todo | — |
-| F1.10 | Убедиться, что все страницы рендерятся без ошибок | todo | — |
+| F1.9 | Проверить отображение на 375px | done | — |
+| F1.10 | Убедиться, что все страницы рендерятся без ошибок | done | — |
 
 ---
 
