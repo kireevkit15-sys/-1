@@ -79,7 +79,24 @@
 - UserModule: GET /users/me, PATCH /users/me
 - Добавить таблицы Question, Battle, BattleRound в Prisma → миграция
 
-# Текущий спринт — Неделя 3
+# Текущий спринт — Неделя 4
+
+**Дата начала:** 2026-04-08
+**Цель недели:** Матчмейкинг работает. Дисконнекты обрабатываются. Первый деплой на VPS.
+
+## Руководитель (Lead / Никита)
+
+| # | Задача | Статус | Файлы |
+|---|--------|--------|-------|
+| L4.1 | Redis-матчмейкинг (±100 рейтинга, расширение, таймаут 30 сек → бот) | done | `apps/api/src/battle/matchmaking.service.ts` |
+| L4.2 | Подключить матчмейкинг к WebSocket gateway | todo | `apps/api/src/battle/battle.gateway.ts` |
+| L4.3 | Обработка дисконнектов (>30 сек = авто-поражение) | todo | `apps/api/src/battle/battle.gateway.ts` |
+| L4.4 | Docker Compose production + nginx + SSL | todo | `docker-compose.prod.yml`, `nginx/` |
+| L4.5 | Тестирование с 5-10 реальными людьми | todo | — |
+
+---
+
+# Завершённый спринт — Неделя 3
 
 **Дата начала:** 2026-04-07
 **Цель недели:** Батл с ботом работает через WebSocket. Вопросы отображаются. Таймер работает.
