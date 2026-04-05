@@ -5,13 +5,17 @@ import {
   BattlePlayer,
   BattleRound,
   BattleResult,
+  BattleConfig,
   Difficulty,
   DefenseType,
 } from './types';
 import { calculateDamage, calculateDefenseResult, calculateXpGained, calculateRatingChange } from './scoring';
 import { MAX_HP, ROUNDS_PER_BATTLE, SPARRING_ROUNDS, ROUND_TIME_LIMIT, ELO_DEFAULT_RATING } from '../constants';
 
-let battleCounter = 0;
+const defaultConfig: Required<BattleConfig> = {
+  idGenerator: () => `battle_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+  damageRng: (min, max) => min + Math.floor(Math.random() * (max - min + 1)),
+};
 
 /**
  * Create a new battle between two players.
@@ -21,16 +25,17 @@ export function createBattle(
   player2: Pick<BattlePlayer, 'id' | 'name' | 'avatarUrl'>,
   mode: BattleMode,
   categories: string[],
+  config?: BattleConfig,
 ): BattleState {
   if (categories.length === 0) {
     throw new Error('At least one category is required');
   }
 
+  const cfg = { ...defaultConfig, ...config };
   const totalRounds = mode === BattleMode.SIEGE ? ROUNDS_PER_BATTLE : SPARRING_ROUNDS;
-  battleCounter++;
 
   return {
-    id: `battle_${battleCounter}_${Date.now()}`,
+    id: cfg.idGenerator(),
     phase: BattlePhase.CATEGORY_SELECT,
     mode,
     player1: {
@@ -55,6 +60,64 @@ export function createBattle(
     currentDefenderId: player2.id,
     timeLimit: ROUND_TIME_LIMIT,
     startedAt: Date.now(),
+  };
+}
+
+/**
+ * Handle round timeout — attacker auto-fails, no damage dealt.
+ */
+export function handleTimeout(state: BattleState): BattleState {
+  if (state.phase !== BattlePhase.ROUND_ATTACK && state.phase !== BattlePhase.ROUND_DEFENSE) {
+    throw new Error(`Cannot timeout in phase ${state.phase}`);
+  }
+
+  if (state.phase === BattlePhase.ROUND_ATTACK) {
+    // Attacker didn't answer in time — create empty round, no damage
+    const timeoutRound: BattleRound = {
+      roundNumber: state.currentRound,
+      attackerId: state.currentAttackerId!,
+      defenderId: state.currentDefenderId!,
+      difficulty: Difficulty.BRONZE,
+      attackerAnswer: -1,
+      attackerCorrect: false,
+      damageDealt: 0,
+      pointsAwarded: 0,
+    };
+
+    return {
+      ...state,
+      rounds: [...state.rounds, timeoutRound],
+      phase: BattlePhase.ROUND_RESULT,
+      timedOutRound: state.currentRound,
+    };
+  }
+
+  // Defense timeout — damage passes through (auto-accept)
+  return submitDefense(state, state.currentDefenderId!, DefenseType.ACCEPT, false);
+}
+
+/**
+ * Handle player disconnect — opponent wins by forfeit.
+ */
+export function handleDisconnect(state: BattleState, disconnectedPlayerId: string): BattleState {
+  if (state.phase === BattlePhase.FINAL_RESULT) {
+    return state;
+  }
+
+  const winnerId = disconnectedPlayerId === state.player1.id ? state.player2.id : state.player1.id;
+
+  return {
+    ...state,
+    phase: BattlePhase.FINAL_RESULT,
+    abandonedBy: disconnectedPlayerId,
+    endedAt: Date.now(),
+    // Set loser HP to 0 to clearly indicate forfeit
+    player1: disconnectedPlayerId === state.player1.id
+      ? { ...state.player1, hp: 0 }
+      : state.player1,
+    player2: disconnectedPlayerId === state.player2.id
+      ? { ...state.player2, hp: 0 }
+      : state.player2,
   };
 }
 

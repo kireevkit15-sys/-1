@@ -14,10 +14,12 @@ export const DAMAGE = {
 
 // === XP per difficulty ===
 export const XP = {
-  BRONZE: 10,
-  SILVER: 25,
-  GOLD: 50,
-  WIN_BONUS: 100,
+  BRONZE: 100,
+  SILVER: 200,
+  GOLD: 350,
+  WIN_BONUS: 150,
+  DEFENSE_SUCCESS: 150,
+  COUNTER_SUCCESS: 250,
 } as const;
 
 // === Daily limits ===

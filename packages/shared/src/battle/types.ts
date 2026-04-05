@@ -69,6 +69,13 @@ export interface BattleState {
   timeLimit: number;
   startedAt?: number;
   endedAt?: number;
+  abandonedBy?: string;
+  timedOutRound?: number;
+}
+
+export interface BattleConfig {
+  idGenerator?: () => string;
+  damageRng?: (min: number, max: number) => number;
 }
 
 export interface BattleResult {

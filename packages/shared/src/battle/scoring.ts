@@ -4,8 +4,13 @@ import { DAMAGE, XP, ELO_K_FACTOR } from '../constants';
 /**
  * Calculate damage dealt based on difficulty and whether the attacker answered correctly.
  * If the attacker answered incorrectly, no damage is dealt.
+ * rng param allows deterministic testing of gold damage.
  */
-export function calculateDamage(difficulty: Difficulty, isCorrect: boolean): number {
+export function calculateDamage(
+  difficulty: Difficulty,
+  isCorrect: boolean,
+  rng?: (min: number, max: number) => number,
+): number {
   if (!isCorrect) return 0;
 
   switch (difficulty) {
@@ -13,9 +18,10 @@ export function calculateDamage(difficulty: Difficulty, isCorrect: boolean): num
       return DAMAGE.BRONZE;
     case Difficulty.SILVER:
       return DAMAGE.SILVER;
-    case Difficulty.GOLD:
-      // Random between GOLD_MIN and GOLD_MAX inclusive
-      return DAMAGE.GOLD_MIN + Math.floor(Math.random() * (DAMAGE.GOLD_MAX - DAMAGE.GOLD_MIN + 1));
+    case Difficulty.GOLD: {
+      const roll = rng ?? ((min: number, max: number) => min + Math.floor(Math.random() * (max - min + 1)));
+      return roll(DAMAGE.GOLD_MIN, DAMAGE.GOLD_MAX);
+    }
     default:
       return 0;
   }

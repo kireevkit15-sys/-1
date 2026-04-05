@@ -81,6 +81,47 @@
 
 ---
 
+# Текущий спринт — Неделя 2
+
+**Дата начала:** 2026-04-06
+**Цель недели:** Auth работает (Telegram + email), стейт-машина батла покрыта тестами, 20+ unit-тестов.
+
+---
+
+## Руководитель (Lead / Никита)
+
+| # | Задача | Статус | Файлы |
+|---|--------|--------|-------|
+| L2.1 | Проверить и доработать стейт-машину батла | done | `packages/shared/src/battle/state-machine.ts` |
+| L2.2 | Проверить и доработать скоринг | done | `packages/shared/src/battle/scoring.ts` |
+| L2.3 | Проверить и доработать типы батла | done | `packages/shared/src/battle/types.ts` |
+| L2.4 | Добавить edge-case тесты (таймаут, дисконнект) до 30+ тестов | todo | `packages/shared/__tests__/battle/state-machine.test.ts` |
+| L2.5 | Code review всех PR недели | todo | — |
+
+## Бонди (Frontend + Дизайн)
+
+| # | Задача | Статус | Файлы |
+|---|--------|--------|-------|
+| F2.1 | Создать страницу логина (Telegram + email) | todo | `apps/web/app/(auth)/login/page.tsx` |
+| F2.2 | Создать layout авторизации | todo | `apps/web/app/(auth)/layout.tsx` |
+| F2.3 | Подключить NextAuth.js v5 | todo | `apps/web/app/api/auth/[...nextauth]/route.ts` |
+| F2.4 | Создать хук useAuth | todo | `apps/web/hooks/useAuth.ts` |
+| F2.5 | Защитить маршруты middleware | todo | `apps/web/middleware.ts` |
+
+## Яшкин (Backend)
+
+| # | Задача | Статус | Файлы |
+|---|--------|--------|-------|
+| B2.1 | Создать AuthModule | todo | `apps/api/src/auth/auth.module.ts` |
+| B2.2 | Написать auth.controller (telegram, register, login, refresh) | todo | `apps/api/src/auth/auth.controller.ts` |
+| B2.3 | Написать auth.service (валидация, JWT) | todo | `apps/api/src/auth/auth.service.ts` |
+| B2.4 | Создать JWT strategy | todo | `apps/api/src/auth/strategies/jwt.strategy.ts` |
+| B2.5 | Создать Telegram strategy | todo | `apps/api/src/auth/strategies/telegram.strategy.ts` |
+| B2.6 | Создать UserModule (GET /users/me, PATCH /users/me) | todo | `apps/api/src/user/` |
+| B2.7 | Добавить таблицы Question, Battle, BattleRound в Prisma → миграция | todo | `prisma/schema.prisma` |
+
+---
+
 ## Как пользоваться
 
 При входе в проект скажи кто ты:

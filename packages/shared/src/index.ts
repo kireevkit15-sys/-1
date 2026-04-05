@@ -11,6 +11,7 @@ export type {
   BattleRound,
   BattleState,
   BattleResult,
+  BattleConfig,
 } from './battle/types';
 
 export {
@@ -22,6 +23,8 @@ export {
   nextPhase,
   isGameOver,
   getResult,
+  handleTimeout,
+  handleDisconnect,
 } from './battle/state-machine';
 
 export {
