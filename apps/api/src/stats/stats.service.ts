@@ -13,8 +13,7 @@ export class StatsService {
           select: {
             id: true,
             name: true,
-            rating: true,
-            level: true,
+            avatarUrl: true,
           },
         },
       },
@@ -30,19 +29,21 @@ export class StatsService {
   async getLeaderboard(limit: number, offset: number) {
     const safeLimit = Math.min(limit, 100);
 
-    const users = await this.prisma.user.findMany({
+    const users = await this.prisma.userStats.findMany({
       select: {
-        id: true,
-        name: true,
-        avatar: true,
+        userId: true,
         rating: true,
-        level: true,
-        stats: {
+        streakDays: true,
+        logicXp: true,
+        eruditionXp: true,
+        strategyXp: true,
+        rhetoricXp: true,
+        intuitionXp: true,
+        user: {
           select: {
-            totalBattles: true,
-            wins: true,
-            winStreak: true,
-            bestWinStreak: true,
+            id: true,
+            name: true,
+            avatarUrl: true,
           },
         },
       },
@@ -52,9 +53,9 @@ export class StatsService {
     });
 
     return {
-      leaderboard: users.map((user, index) => ({
+      leaderboard: users.map((entry, index: number) => ({
         rank: offset + index + 1,
-        ...user,
+        ...entry,
       })),
     };
   }

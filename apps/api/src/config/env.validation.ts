@@ -3,7 +3,7 @@ import { IsString, IsNumber, IsOptional, validateSync } from 'class-validator';
 
 export class EnvironmentVariables {
   @IsString()
-  DATABASE_URL: string;
+  DATABASE_URL!: string;
 
   @IsString()
   @IsOptional()
@@ -18,7 +18,7 @@ export class EnvironmentVariables {
   REDIS_PORT?: number;
 
   @IsString()
-  JWT_SECRET: string;
+  JWT_SECRET!: string;
 
   @IsString()
   @IsOptional()

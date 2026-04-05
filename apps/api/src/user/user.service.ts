@@ -18,7 +18,7 @@ export class UserService {
       throw new NotFoundException('User not found');
     }
 
-    const { password, ...result } = user;
+    const { passwordHash, ...result } = user;
     return result;
   }
 
@@ -27,11 +27,11 @@ export class UserService {
       where: { id: userId },
       data: {
         ...(dto.name !== undefined && { name: dto.name }),
-        ...(dto.avatar !== undefined && { avatar: dto.avatar }),
+        ...(dto.avatar !== undefined && { avatarUrl: dto.avatar }),
       },
     });
 
-    const { password, ...result } = user;
+    const { passwordHash, ...result } = user;
     return result;
   }
 
@@ -41,18 +41,17 @@ export class UserService {
       select: {
         id: true,
         name: true,
-        avatar: true,
-        rating: true,
-        level: true,
+        avatarUrl: true,
         createdAt: true,
         stats: {
           select: {
-            totalBattles: true,
-            wins: true,
-            losses: true,
-            draws: true,
-            winStreak: true,
-            bestWinStreak: true,
+            rating: true,
+            streakDays: true,
+            logicXp: true,
+            eruditionXp: true,
+            strategyXp: true,
+            rhetoricXp: true,
+            intuitionXp: true,
           },
         },
       },

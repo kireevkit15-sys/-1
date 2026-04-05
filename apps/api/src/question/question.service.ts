@@ -46,10 +46,13 @@ export class QuestionService {
       data: questions.map((q) => ({
         text: q.text,
         options: q.options,
-        correctAnswer: q.correctAnswer,
+        correctIndex: q.correctIndex,
         category: q.category,
+        branch: q.branch,
         difficulty: q.difficulty,
-        explanation: q.explanation || null,
+        statPrimary: q.statPrimary,
+        statSecondary: q.statSecondary || null,
+        explanation: q.explanation || '',
       })),
     });
 
@@ -70,11 +73,12 @@ export class QuestionService {
       data: {
         ...(dto.text !== undefined && { text: dto.text }),
         ...(dto.options !== undefined && { options: dto.options }),
-        ...(dto.correctAnswer !== undefined && {
-          correctAnswer: dto.correctAnswer,
-        }),
+        ...(dto.correctIndex !== undefined && { correctIndex: dto.correctIndex }),
         ...(dto.category !== undefined && { category: dto.category }),
+        ...(dto.branch !== undefined && { branch: dto.branch }),
         ...(dto.difficulty !== undefined && { difficulty: dto.difficulty }),
+        ...(dto.statPrimary !== undefined && { statPrimary: dto.statPrimary }),
+        ...(dto.statSecondary !== undefined && { statSecondary: dto.statSecondary }),
         ...(dto.explanation !== undefined && { explanation: dto.explanation }),
       },
     });

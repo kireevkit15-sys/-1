@@ -29,11 +29,11 @@ export class BattleController {
     const userId: string = req.user.sub;
 
     if (dto.mode === 'bot') {
-      return this.battleService.createBotBattle(userId, dto.category);
+      return this.battleService.createBotBattle(userId);
     }
 
     if (dto.mode === 'pvp') {
-      return this.battleService.createPvpBattle(userId, dto.category);
+      return this.battleService.createPvpBattle(userId);
     }
 
     throw new HttpException(
@@ -57,7 +57,7 @@ export class BattleController {
     const pageNum = Math.max(parseInt(page || '1', 10) || 1, 1);
     const limitNum = Math.min(Math.max(parseInt(limit || '10', 10) || 10, 1), 100);
 
-    return this.battleService.getUserBattleHistory(userId, pageNum, limitNum);
+    return this.battleService.getUserHistory(userId, pageNum, limitNum);
   }
 
   /**

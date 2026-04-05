@@ -17,8 +17,8 @@ import { StatsModule } from './stats/stats.module';
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: [
-        join(__dirname, '..', '..', '..', '.env.local'),
-        join(__dirname, '..', '..', '..', '.env'),
+        join(process.cwd(), '..', '..', '.env.local'),
+        join(process.cwd(), '..', '..', '.env'),
       ],
       validate,
     }),

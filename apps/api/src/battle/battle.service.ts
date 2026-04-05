@@ -1,4 +1,5 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { BotService } from './bot.service';
 import {
@@ -57,7 +58,7 @@ export class BattleService {
         mode: 'SIEGE',
         status: 'ACTIVE',
         category: null,
-        state: state as unknown as Record<string, unknown>,
+        state: state as unknown as Prisma.InputJsonValue,
         startedAt: new Date(),
       },
     });
@@ -415,7 +416,7 @@ export class BattleService {
     await this.prisma.battle.update({
       where: { id: battleId },
       data: {
-        state: state as unknown as Record<string, unknown>,
+        state: state as unknown as Prisma.InputJsonValue,
         category: state.selectedCategory ?? undefined,
       },
     });
@@ -502,6 +503,6 @@ export class BattleService {
       select: { category: true },
       distinct: ['category'],
     });
-    return result.map((q) => q.category);
+    return result.map((q: { category: string }) => q.category);
   }
 }

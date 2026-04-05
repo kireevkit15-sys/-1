@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { Difficulty } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
@@ -12,7 +13,7 @@ export class LearnService {
       distinct: ['category'],
     });
 
-    return categories.map((c) => ({
+    return categories.map((c: { category: string }) => ({
       id: c.category,
       name: c.category,
     }));
@@ -23,7 +24,7 @@ export class LearnService {
     const questions = await this.prisma.question.findMany({
       where: {
         category: topicId,
-        difficulty: difficulty.toUpperCase(),
+        difficulty: difficulty.toUpperCase() as Difficulty,
       },
       take: 10,
       orderBy: { createdAt: 'asc' },
@@ -33,7 +34,7 @@ export class LearnService {
       userId,
       topic: topicId,
       difficulty,
-      questions: questions.map((q) => ({
+      questions: questions.map((q: { id: string; text: string; options: unknown; difficulty: string }) => ({
         id: q.id,
         text: q.text,
         options: q.options,

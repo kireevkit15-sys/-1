@@ -221,7 +221,7 @@ export class BattleGateway
 
     try {
       // Persist the battle shell in the database
-      const dbBattle = await this.battleService.createBattle(userId, 'bot');
+      const dbBattle = await this.battleService.createBotBattle(userId);
 
       // Fetch user info for the state machine
       const fullBattle = await this.battleService.getBattle(dbBattle.id);
@@ -450,10 +450,7 @@ export class BattleGateway
 
       if (match) {
         // Create a PvP battle
-        const dbBattle = await this.battleService.createBattle(
-          userId,
-          'matchmaking',
-        );
+        const dbBattle = await this.battleService.createPvpBattle(userId);
 
         // Fetch player data
         const fullBattle = await this.battleService.getBattle(dbBattle.id);
@@ -535,7 +532,7 @@ export class BattleGateway
         this.matchmakingUsers.delete(userId);
 
         // Create PvP battle (same logic as above)
-        const dbBattle = await this.battleService.createBattle(userId, 'matchmaking');
+        const dbBattle = await this.battleService.createPvpBattle(userId);
         const state = createBattle(
           { id: userId, name: 'Player 1' },
           { id: match.opponentId, name: 'Player 2' },
@@ -590,7 +587,7 @@ export class BattleGateway
   }
 
   private scheduleBotCategorySelect(battleId: string) {
-    const delay = this.botService.getSimulatedDelay();
+    const delay = this.botService.getThinkingDelay();
     const timer = setTimeout(() => {
       const state = this.battles.get(battleId);
       if (!state || state.phase !== BattlePhase.CATEGORY_SELECT) return;
@@ -614,7 +611,7 @@ export class BattleGateway
   }
 
   private scheduleBotAttack(battleId: string) {
-    const delay = this.botService.getSimulatedDelay();
+    const delay = this.botService.getThinkingDelay();
     const timer = setTimeout(() => {
       let state = this.battles.get(battleId);
       if (!state || state.phase !== BattlePhase.ROUND_ATTACK) return;
@@ -623,14 +620,14 @@ export class BattleGateway
       try {
         this.clearRoundTimer(battleId);
 
-        const difficulty = this.botService.generateBotDifficulty() as Difficulty;
+        const difficulty = this.botService.chooseDifficulty();
         state = chooseDifficulty(state, BOT_PLAYER.id, difficulty);
 
         // Bot "answers" — use bot accuracy logic
-        const botAnswer = this.botService.generateBotAnswer('correct', ['correct', 'wrong1', 'wrong2', 'wrong3']);
-        const answerIndex = botAnswer.correct ? 0 : 1;
+        const botAnswer = this.botService.chooseAnswer(0, 4);
+        const answerIndex = botAnswer.answerIndex;
 
-        state = submitAnswer(state, BOT_PLAYER.id, answerIndex, botAnswer.correct);
+        state = submitAnswer(state, BOT_PLAYER.id, answerIndex, botAnswer.isCorrect);
         this.battles.set(battleId, state);
 
         this.server.to(`battle:${battleId}`).emit('battle:round_update', state);
@@ -650,17 +647,14 @@ export class BattleGateway
   }
 
   private scheduleBotDefense(battleId: string) {
-    const delay = this.botService.getSimulatedDelay();
+    const delay = this.botService.getThinkingDelay();
     const timer = setTimeout(() => {
       let state = this.battles.get(battleId);
       if (!state || state.phase !== BattlePhase.ROUND_DEFENSE) return;
       if (state.currentDefenderId !== BOT_PLAYER.id) return;
 
       try {
-        const defenseTypeStr = this.botService.generateBotDefense();
-        const defenseType: DefenseType = defenseTypeStr
-          ? (defenseTypeStr.toUpperCase() as DefenseType)
-          : DefenseType.ACCEPT;
+        const defenseType: DefenseType = this.botService.chooseDefense();
 
         const success = this.resolveDefenseSuccess(defenseType);
         state = submitDefense(state, BOT_PLAYER.id, defenseType, success);

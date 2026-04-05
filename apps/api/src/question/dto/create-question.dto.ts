@@ -1,10 +1,12 @@
 import {
   IsString,
+  IsInt,
   IsArray,
   IsEnum,
   IsOptional,
   ArrayMinSize,
 } from 'class-validator';
+import { Branch, Difficulty } from '@prisma/client';
 
 export class CreateQuestionDto {
   @IsString()
@@ -15,14 +17,24 @@ export class CreateQuestionDto {
   @ArrayMinSize(2)
   options!: string[];
 
-  @IsString()
-  correctAnswer!: string;
+  @IsInt()
+  correctIndex!: number;
 
   @IsString()
   category!: string;
 
-  @IsEnum(['EASY', 'MEDIUM', 'HARD'])
-  difficulty!: 'EASY' | 'MEDIUM' | 'HARD';
+  @IsEnum(Branch)
+  branch!: Branch;
+
+  @IsEnum(Difficulty)
+  difficulty!: Difficulty;
+
+  @IsString()
+  statPrimary!: string;
+
+  @IsOptional()
+  @IsString()
+  statSecondary?: string;
 
   @IsOptional()
   @IsString()
@@ -45,16 +57,28 @@ export class UpdateQuestionDto {
   options?: string[];
 
   @IsOptional()
-  @IsString()
-  correctAnswer?: string;
+  @IsInt()
+  correctIndex?: number;
 
   @IsOptional()
   @IsString()
   category?: string;
 
   @IsOptional()
-  @IsEnum(['EASY', 'MEDIUM', 'HARD'])
-  difficulty?: 'EASY' | 'MEDIUM' | 'HARD';
+  @IsEnum(Branch)
+  branch?: Branch;
+
+  @IsOptional()
+  @IsEnum(Difficulty)
+  difficulty?: Difficulty;
+
+  @IsOptional()
+  @IsString()
+  statPrimary?: string;
+
+  @IsOptional()
+  @IsString()
+  statSecondary?: string;
 
   @IsOptional()
   @IsString()

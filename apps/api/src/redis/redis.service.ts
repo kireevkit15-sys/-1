@@ -14,10 +14,10 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
 
   constructor(private readonly configService: ConfigService) {
     this.client = new Redis({
-      host: this.configService.get<string>('REDIS_HOST', 'localhost'),
-      port: this.configService.get<number>('REDIS_PORT', 6379),
-      password: this.configService.get<string>('REDIS_PASSWORD', undefined),
-      db: this.configService.get<number>('REDIS_DB', 0),
+      host: this.configService.get<string>('REDIS_HOST') ?? 'localhost',
+      port: this.configService.get<number>('REDIS_PORT') ?? 6379,
+      password: this.configService.get<string>('REDIS_PASSWORD') || undefined,
+      db: this.configService.get<number>('REDIS_DB') ?? 0,
       retryStrategy: (times: number) => Math.min(times * 50, 2000),
     });
   }

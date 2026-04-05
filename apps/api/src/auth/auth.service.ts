@@ -34,7 +34,7 @@ export class AuthService {
   ): Promise<{ accessToken: string }> {
     this.validateTelegramHash(dto);
 
-    const telegramId = String(dto.id);
+    const telegramId = BigInt(dto.id);
     let user = await this.prisma.user.findUnique({
       where: { telegramId },
     });
@@ -47,9 +47,9 @@ export class AuthService {
 
       user = await this.prisma.user.create({
         data: {
-          telegramId,
+          telegramId: BigInt(telegramId),
           name: displayName,
-          avatar: dto.photo_url || null,
+          avatarUrl: dto.photo_url || null,
         },
       });
     }
@@ -74,7 +74,7 @@ export class AuthService {
     const user = await this.prisma.user.create({
       data: {
         email: dto.email,
-        password: hashedPassword,
+        passwordHash: hashedPassword,
         name: dto.name,
       },
     });
@@ -87,11 +87,11 @@ export class AuthService {
       where: { email: dto.email },
     });
 
-    if (!user || !user.password) {
+    if (!user || !user.passwordHash) {
       throw new UnauthorizedException('Invalid email or password');
     }
 
-    const isPasswordValid = await bcrypt.compare(dto.password, user.password);
+    const isPasswordValid = await bcrypt.compare(dto.password, user.passwordHash);
     if (!isPasswordValid) {
       throw new UnauthorizedException('Invalid email or password');
     }
