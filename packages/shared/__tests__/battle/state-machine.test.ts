@@ -7,6 +7,8 @@ import {
   nextPhase,
   isGameOver,
   getResult,
+  handleTimeout,
+  handleDisconnect,
 } from '../../src/battle/state-machine';
 import {
   BattlePhase,
@@ -384,5 +386,160 @@ describe('illegal transitions', () => {
   it('should throw when advancing from non-advanceable phase', () => {
     const state = { ...makeBattle(), phase: BattlePhase.ROUND_ATTACK };
     expect(() => nextPhase(state)).toThrow('Cannot advance from phase');
+  });
+});
+
+describe('handleTimeout', () => {
+  it('should auto-fail attack on timeout', () => {
+    let state = makeBattle();
+    state = selectCategory(state, 'Logic');
+    // Attacker doesn't answer in time
+    state = handleTimeout(state);
+
+    expect(state.phase).toBe(BattlePhase.ROUND_RESULT);
+    expect(state.timedOutRound).toBe(1);
+    expect(state.rounds).toHaveLength(1);
+    expect(state.rounds[0]!.attackerCorrect).toBe(false);
+    expect(state.rounds[0]!.damageDealt).toBe(0);
+  });
+
+  it('should auto-accept defense on timeout', () => {
+    let state = makeBattle();
+    state = selectCategory(state, 'Logic');
+    state = chooseDifficulty(state, 'p1', Difficulty.SILVER);
+    state = submitAnswer(state, 'p1', 0, true);
+    expect(state.phase).toBe(BattlePhase.ROUND_DEFENSE);
+
+    // Defender doesn't respond in time
+    state = handleTimeout(state);
+    expect(state.phase).toBe(BattlePhase.ROUND_RESULT);
+    expect(state.player2.hp).toBe(MAX_HP - 20); // damage passes through
+  });
+
+  it('should throw if timeout called in wrong phase', () => {
+    const state = makeBattle(); // CATEGORY_SELECT
+    expect(() => handleTimeout(state)).toThrow('Cannot timeout in phase');
+  });
+});
+
+describe('handleDisconnect', () => {
+  it('should forfeit battle when player1 disconnects', () => {
+    let state = makeBattle();
+    state = handleDisconnect(state, 'p1');
+
+    expect(state.phase).toBe(BattlePhase.FINAL_RESULT);
+    expect(state.abandonedBy).toBe('p1');
+    expect(state.player1.hp).toBe(0);
+    expect(state.player2.hp).toBe(MAX_HP);
+    expect(state.endedAt).toBeDefined();
+  });
+
+  it('should forfeit battle when player2 disconnects', () => {
+    let state = makeBattle();
+    state = handleDisconnect(state, 'p2');
+
+    expect(state.phase).toBe(BattlePhase.FINAL_RESULT);
+    expect(state.abandonedBy).toBe('p2');
+    expect(state.player2.hp).toBe(0);
+    expect(state.player1.hp).toBe(MAX_HP);
+  });
+
+  it('should be a no-op if battle is already over', () => {
+    let state = { ...makeBattle(), phase: BattlePhase.FINAL_RESULT as BattlePhase };
+    const result = handleDisconnect(state, 'p1');
+
+    expect(result.phase).toBe(BattlePhase.FINAL_RESULT);
+    expect(result.abandonedBy).toBeUndefined(); // unchanged
+  });
+
+  it('should work mid-round (during attack phase)', () => {
+    let state = makeBattle();
+    state = selectCategory(state, 'Logic');
+    state = chooseDifficulty(state, 'p1', Difficulty.GOLD);
+    // p2 disconnects during p1's attack
+    state = handleDisconnect(state, 'p2');
+
+    expect(state.phase).toBe(BattlePhase.FINAL_RESULT);
+    expect(state.abandonedBy).toBe('p2');
+  });
+});
+
+describe('BattleConfig', () => {
+  it('should use custom idGenerator', () => {
+    const state = createBattle(player1, player2, BattleMode.SIEGE, categories, {
+      idGenerator: () => 'custom-id-123',
+    });
+    expect(state.id).toBe('custom-id-123');
+  });
+});
+
+describe('scoring edge cases', () => {
+  it('should handle silver damage correctly (20 per hit)', () => {
+    let state = makeBattle();
+    state = selectCategory(state, 'Logic');
+    state = chooseDifficulty(state, 'p1', Difficulty.SILVER);
+    state = submitAnswer(state, 'p1', 0, true);
+    expect(state.rounds[0]!.damageDealt).toBe(20);
+  });
+
+  it('should handle gold damage correctly (30-35)', () => {
+    let state = makeBattle();
+    state = selectCategory(state, 'Logic');
+    state = chooseDifficulty(state, 'p1', Difficulty.GOLD);
+    state = submitAnswer(state, 'p1', 0, true);
+    const damage = state.rounds[0]!.damageDealt;
+    expect(damage).toBeGreaterThanOrEqual(30);
+    expect(damage).toBeLessThanOrEqual(35);
+  });
+});
+
+describe('full battle simulation', () => {
+  function playRound(
+    state: BattleState,
+    correct: boolean,
+    defense: DefenseType = DefenseType.ACCEPT,
+  ): BattleState {
+    if (state.phase === BattlePhase.SWAP_ROLES) state = nextPhase(state);
+    state = selectCategory(state, 'Logic');
+    state = chooseDifficulty(state, state.currentAttackerId!, Difficulty.BRONZE);
+    state = submitAnswer(state, state.currentAttackerId!, 0, correct);
+    if (correct) {
+      state = submitDefense(state, state.currentDefenderId!, defense, true);
+    }
+    return state;
+  }
+
+  it('should complete a full 5-round siege battle', () => {
+    let state = makeBattle();
+
+    for (let i = 0; i < 5; i++) {
+      state = playRound(state, true);
+      if (i < 4) {
+        state = nextPhase(state);
+      }
+    }
+
+    expect(isGameOver(state)).toBe(true);
+    state = nextPhase(state); // -> FINAL_RESULT
+    expect(state.phase).toBe(BattlePhase.FINAL_RESULT);
+
+    const result = getResult(state);
+    expect(result.winnerId).not.toBeNull();
+    expect(result.player1Score + result.player2Score).toBeGreaterThan(0);
+  });
+
+  it('should end early when HP hits 0', () => {
+    let state = makeBattle();
+    // Force low HP
+    state = { ...state, player2: { ...state.player2, hp: 5 } };
+
+    state = selectCategory(state, 'Logic');
+    state = chooseDifficulty(state, 'p1', Difficulty.BRONZE);
+    state = submitAnswer(state, 'p1', 0, true);
+    // 10 damage to player2 who has 5 HP
+    state = submitDefense(state, 'p2', DefenseType.ACCEPT, true);
+
+    expect(state.player2.hp).toBe(0);
+    expect(isGameOver(state)).toBe(true);
   });
 });

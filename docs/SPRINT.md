@@ -95,7 +95,7 @@
 | L2.1 | Проверить и доработать стейт-машину батла | done | `packages/shared/src/battle/state-machine.ts` |
 | L2.2 | Проверить и доработать скоринг | done | `packages/shared/src/battle/scoring.ts` |
 | L2.3 | Проверить и доработать типы батла | done | `packages/shared/src/battle/types.ts` |
-| L2.4 | Добавить edge-case тесты (таймаут, дисконнект) до 30+ тестов | todo | `packages/shared/__tests__/battle/state-machine.test.ts` |
+| L2.4 | Добавить edge-case тесты (таймаут, дисконнект) до 30+ тестов | done | `packages/shared/__tests__/battle/state-machine.test.ts` |
 | L2.5 | Code review всех PR недели | todo | — |
 
 ## Бонди (Frontend + Дизайн)
