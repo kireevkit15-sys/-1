@@ -41,6 +41,38 @@
 
 ---
 
+### 2026-04-05 — Сессия 2: Закрытие недели 1
+
+**Время:** ~1 час
+**Статус:** Завершена
+
+**Что сделано:**
+- Настроен GitHub Actions CI: lint, typecheck, test на каждый push/PR
+- Переведён проект на pnpm workspace (pnpm-workspace.yaml)
+- Проверен pnpm install — все зависимости установлены
+- Проверены тесты — 29/29 pass, shared package собирается
+- Написан README с инструкцией по быстрому старту
+- Добавлена система WORKLOG + обязательный git pull/push
+- Все 10 задач Lead на неделю 1 закрыты
+
+**Файлы созданы/изменены:**
+- `.github/workflows/ci.yml` — CI pipeline
+- `pnpm-workspace.yaml` — pnpm workspaces
+- `package.json` — переключен на pnpm
+- `README.md` — инструкция по запуску
+- `docs/WORKLOG.md` — журнал работы
+- `CLAUDE.md` — правила синхронизации и логирования
+
+**Задачи из SPRINT.md закрыты:** L1.5, L1.7, L1.8, L1.9, L1.10
+
+**Коммиты:**
+- `440f1b1` — chore: add mandatory git pull on session start
+- `e358659` — feat(ci): add GitHub Actions CI pipeline
+- `ed4c0f6` — chore(infra): switch to pnpm workspace
+- `15ac8a3` — docs: add README with quick start guide
+
+---
+
 ## Бонди (Frontend + Дизайн)
 
 > Пока нет записей. Первая запись появится после первой рабочей сессии Бонди.
@@ -59,6 +91,6 @@
 
 | Дата | Кто | Что сделал | Задачи закрыты |
 |------|-----|-----------|----------------|
-| 04-05 | Никита | Scaffold проекта, 88 файлов, push на GitHub | L1.1-L1.4, L1.6-L1.8 |
+| 04-05 | Никита | Scaffold + CI + pnpm + README | L1.1-L1.10 (все 10) |
 | — | Бонди | — | — |
 | — | Яшкин | — | — |
