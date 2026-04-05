@@ -58,7 +58,7 @@ export default function LearnPage() {
           </div>
 
           {branch.modules.map((mod, idx) => {
-            const isLocked = mod.progress === 0 && idx > 0 && branch.modules[idx - 1].progress < 100;
+            const isLocked = mod.progress === 0 && idx > 0 && (branch.modules[idx - 1]?.progress ?? 0) < 100;
 
             return (
               <Card
