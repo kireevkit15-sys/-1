@@ -17,7 +17,7 @@
 | L1.6 | Инициализировать packages/shared | done | `packages/shared/` |
 | L1.7 | Инициализировать git репозиторий | done | `.git/` |
 | L1.8 | Подключить проект к GitHub | done | remote origin |
-| L1.9 | Проверить pnpm install и pnpm dev | todo | — |
+| L1.9 | Проверить pnpm install и pnpm dev | done | `pnpm-workspace.yaml` |
 | L1.10 | Написать README с инструкцией по запуску | todo | `README.md` |
 
 ---
