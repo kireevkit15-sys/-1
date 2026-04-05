@@ -13,10 +13,10 @@
 | L1.2 | Настроить tsconfig.base.json с strict mode | done | `tsconfig.base.json` |
 | L1.3 | Настроить ESLint + Prettier | done | `.eslintrc.js`, `.prettierrc` |
 | L1.4 | Создать docker-compose.yml | done | `docker-compose.yml` |
-| L1.5 | Настроить GitHub Actions CI | todo | `.github/workflows/ci.yml` |
+| L1.5 | Настроить GitHub Actions CI | done | `.github/workflows/ci.yml` |
 | L1.6 | Инициализировать packages/shared | done | `packages/shared/` |
-| L1.7 | Инициализировать git репозиторий | todo | `.git/` |
-| L1.8 | Подключить проект к GitHub | todo | remote origin |
+| L1.7 | Инициализировать git репозиторий | done | `.git/` |
+| L1.8 | Подключить проект к GitHub | done | remote origin |
 | L1.9 | Проверить pnpm install и pnpm dev | todo | — |
 | L1.10 | Написать README с инструкцией по запуску | todo | `README.md` |
 
