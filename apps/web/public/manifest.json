@@ -1,0 +1,36 @@
+{
+  "name": "РАЗУМ",
+  "short_name": "РАЗУМ",
+  "description": "Прокачай разум. Интеллектуальные батлы и обучение.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#0a0a0a",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Разминка",
+      "short_name": "Разминка",
+      "url": "/",
+      "description": "Ежедневная разминка"
+    },
+    {
+      "name": "Батл",
+      "short_name": "Батл",
+      "url": "/battle/new",
+      "description": "Найти батл"
+    }
+  ]
+}

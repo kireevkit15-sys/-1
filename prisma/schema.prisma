@@ -1,0 +1,209 @@
+// ─────────────────────────────────────────────
+//  РАЗУМ — Prisma Schema (PostgreSQL)
+// ─────────────────────────────────────────────
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ── Enums ────────────────────────────────────
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum Branch {
+  STRATEGY
+  LOGIC
+}
+
+enum Difficulty {
+  BRONZE
+  SILVER
+  GOLD
+}
+
+enum BattleStatus {
+  WAITING
+  ACTIVE
+  COMPLETED
+  ABANDONED
+}
+
+enum BattleMode {
+  SIEGE
+  SPARRING
+}
+
+enum DefenseType {
+  ACCEPT
+  DISPUTE
+  COUNTER
+}
+
+// ── User ─────────────────────────────────────
+
+model User {
+  id           String   @id @default(uuid()) @db.Uuid
+  telegramId   BigInt?  @unique
+  email        String?  @unique
+  passwordHash String?
+  name         String
+  avatarUrl    String?
+  role         Role     @default(USER)
+  createdAt    DateTime @default(now())
+
+  stats          UserStats?
+  battlesAsP1    Battle[]             @relation("player1")
+  battlesAsP2    Battle[]             @relation("player2")
+  wonBattles     Battle[]             @relation("winner")
+  battleRounds   BattleRound[]
+  moduleProgress UserModuleProgress[]
+  aiDialogues    AiDialogue[]
+
+  @@map("users")
+}
+
+// ── UserStats ────────────────────────────────
+
+model UserStats {
+  userId       String   @id @db.Uuid
+  logicXp      Int      @default(0)
+  eruditionXp  Int      @default(0)
+  strategyXp   Int      @default(0)
+  rhetoricXp   Int      @default(0)
+  intuitionXp  Int      @default(0)
+  rating       Int      @default(1000)
+  streakDays   Int      @default(0)
+  streakDate   DateTime? @db.Date
+  updatedAt    DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("user_stats")
+}
+
+// ── Question ─────────────────────────────────
+
+model Question {
+  id             String     @id @default(uuid()) @db.Uuid
+  category       String
+  branch         Branch
+  difficulty     Difficulty
+  text           String
+  options        Json       // JSON array of 4 strings
+  correctIndex   Int        @db.SmallInt
+  explanation    String
+  statPrimary    String
+  statSecondary  String?
+  isActive       Boolean    @default(true)
+  createdAt      DateTime   @default(now())
+
+  battleRounds BattleRound[]
+
+  @@index([branch])
+  @@index([difficulty])
+  @@index([category])
+  @@index([isActive])
+  @@map("questions")
+}
+
+// ── Battle ───────────────────────────────────
+
+model Battle {
+  id           String       @id @default(uuid()) @db.Uuid
+  player1Id    String       @db.Uuid
+  player2Id    String?      @db.Uuid
+  status       BattleStatus @default(WAITING)
+  mode         BattleMode   @default(SIEGE)
+  category     String?
+  state        Json         @default("{}")
+  winnerId     String?      @db.Uuid
+  player1Score Int          @default(0)
+  player2Score Int          @default(0)
+  startedAt    DateTime?
+  endedAt      DateTime?
+  createdAt    DateTime     @default(now())
+
+  player1 User  @relation("player1", fields: [player1Id], references: [id])
+  player2 User? @relation("player2", fields: [player2Id], references: [id])
+  winner  User? @relation("winner", fields: [winnerId], references: [id])
+
+  rounds BattleRound[]
+
+  @@map("battles")
+}
+
+// ── BattleRound ──────────────────────────────
+
+model BattleRound {
+  id           String      @id @default(uuid()) @db.Uuid
+  battleId     String      @db.Uuid
+  roundNumber  Int         @db.SmallInt
+  attackerId   String      @db.Uuid
+  questionId   String      @db.Uuid
+  difficulty   Difficulty
+  answerIndex  Int?        @db.SmallInt
+  isCorrect    Boolean?
+  defenseType  DefenseType?
+  timeTakenMs  Int?
+  points       Int         @default(0)
+
+  battle   Battle   @relation(fields: [battleId], references: [id], onDelete: Cascade)
+  attacker User     @relation(fields: [attackerId], references: [id])
+  question Question @relation(fields: [questionId], references: [id])
+
+  @@map("battle_rounds")
+}
+
+// ── Module ───────────────────────────────────
+
+model Module {
+  id          String   @id @default(uuid()) @db.Uuid
+  branch      Branch
+  orderIndex  Int
+  title       String
+  description String
+  questionIds String[] @db.Uuid
+
+  progress UserModuleProgress[]
+
+  @@unique([branch, orderIndex])
+  @@map("modules")
+}
+
+// ── UserModuleProgress ───────────────────────
+
+model UserModuleProgress {
+  userId             String    @db.Uuid
+  moduleId           String    @db.Uuid
+  completedQuestions String[]  @default([]) @db.Uuid
+  completedAt        DateTime?
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  module Module @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+
+  @@id([userId, moduleId])
+  @@map("user_module_progress")
+}
+
+// ── AiDialogue ───────────────────────────────
+
+model AiDialogue {
+  id         String   @id @default(uuid()) @db.Uuid
+  userId     String   @db.Uuid
+  topic      String
+  messages   Json     @default("[]")
+  tokenCount Int      @default(0)
+  createdAt  DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("ai_dialogues")
+}
