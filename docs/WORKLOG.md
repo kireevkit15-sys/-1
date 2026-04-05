@@ -98,7 +98,48 @@
 
 ## Яшкин (Backend)
 
-> Пока нет записей. Первая запись появится после первой рабочей сессии Яшкина.
+### 2026-04-06 — Сессия 1: Первая миграция, ConfigModule, exception filter, запуск NestJS
+
+**Время:** ~2 часа
+**Статус:** Завершена
+
+**Что сделано:**
+- Установлен Docker Desktop, Node.js 24, pnpm
+- Запущены PostgreSQL 16 + Redis 7 через Docker Compose
+- Создан `.env` с корректным DATABASE_URL (совпадает с docker-compose.yml)
+- Выполнена первая миграция Prisma — 8 таблиц, 6 enum'ов в PostgreSQL
+- Установлен prisma@5 + @prisma/client@5 (совместимость со схемой)
+- Настроен ConfigModule: envFilePath на корень проекта + валидация (DATABASE_URL, JWT_SECRET обязательны)
+- Создан глобальный AllExceptionsFilter с единым JSON-форматом ошибок
+- Исправлены все TS-ошибки компиляции (16 шт.): несовпадение полей Prisma-схемы с кодом, типизация
+- NestJS успешно стартует на http://localhost:3001 — 0 ошибок
+
+**Файлы созданы/изменены:**
+- `prisma/migrations/20260405223926_init/migration.sql` — первая миграция
+- `apps/api/src/config/env.validation.ts` — валидация env
+- `apps/api/src/common/filters/http-exception.filter.ts` — exception filter
+- `apps/api/src/app.module.ts` — подключение валидации и envFilePath
+- `apps/api/src/main.ts` — подключение exception filter
+- `apps/api/tsconfig.json` — rootDir для shared package
+- `apps/api/nest-cli.json` — entryFile для нового rootDir
+- `apps/api/src/auth/auth.service.ts` — password→passwordHash, telegramId BigInt
+- `apps/api/src/battle/battle.service.ts` — Prisma.InputJsonValue cast
+- `apps/api/src/battle/battle.controller.ts` — исправлены сигнатуры методов
+- `apps/api/src/battle/battle.gateway.ts` — исправлены вызовы BotService
+- `apps/api/src/question/question.service.ts` — correctIndex, branch, statPrimary
+- `apps/api/src/question/dto/create-question.dto.ts` — BRONZE/SILVER/GOLD enum
+- `apps/api/src/learn/learn.service.ts` — Difficulty cast
+- `apps/api/src/stats/stats.service.ts` — запросы через UserStats
+- `apps/api/src/user/user.service.ts` — passwordHash, avatarUrl
+- `apps/api/src/redis/redis.service.ts` — исправлена типизация ConfigService
+- `package.json` — prisma + @prisma/client@5.22.0
+
+**Задачи из SPRINT.md закрыты:** B1.3, B1.6, B1.9, B1.10
+
+**Коммиты:**
+- `c7a8bd4` — feat(db): run first Prisma migration — create all tables
+- `9ffddd8` — feat(config): add env validation and fix envFilePath to project root
+- `ae6e7b9` — feat(api): add exception filter, fix env config, fix all TS errors — NestJS starts clean
 
 ---
 
@@ -110,4 +151,4 @@
 |------|-----|-----------|----------------|
 | 04-05 | Никита | Scaffold + CI + pnpm + README | L1.1-L1.10 (все 10) |
 | 04-05 | Бонди | Проверка фронтенда на 375px, все страницы ок | F1.9, F1.10 |
-| — | Яшкин | — | — |
+| 04-06 | Яшкин | Миграция, ConfigModule, exception filter, NestJS запуск | B1.3, B1.6, B1.9, B1.10 |

@@ -45,14 +45,14 @@
 |---|--------|--------|-------|
 | B1.1 | Инициализировать NestJS 10 | done | `apps/api/` |
 | B1.2 | Создать Prisma схему (User, UserStats) | done | `prisma/schema.prisma` |
-| B1.3 | Выполнить первую миграцию | todo | `prisma/migrations/` |
+| B1.3 | Выполнить первую миграцию | done | `prisma/migrations/` |
 | B1.4 | Создать PrismaModule + PrismaService | done | `apps/api/src/prisma/` |
 | B1.5 | Создать RedisModule + RedisService | done | `apps/api/src/redis/` |
-| B1.6 | Настроить ConfigModule с .env | todo | `apps/api/src/app.module.ts` |
+| B1.6 | Настроить ConfigModule с .env | done | `apps/api/src/app.module.ts`, `apps/api/src/config/env.validation.ts` |
 | B1.7 | Создать JwtAuthGuard | done | `apps/api/src/auth/guards/` |
 | B1.8 | Создать AdminGuard | done | `apps/api/src/common/guards/` |
-| B1.9 | Создать глобальный exception filter | todo | `apps/api/src/common/filters/` |
-| B1.10 | Проверить, что NestJS стартует без ошибок | todo | — |
+| B1.9 | Создать глобальный exception filter | done | `apps/api/src/common/filters/http-exception.filter.ts` |
+| B1.10 | Проверить, что NestJS стартует без ошибок | done | — |
 
 ---
 
