@@ -85,6 +85,16 @@ export class BattleGateway
   /** userId -> battleId (tracks which battle a user is currently in) */
   private userBattles = new Map<string, string>();
 
+  /** userId -> disconnect timer (30 sec reconnect window) */
+  private disconnectTimers = new Map<string, ReturnType<typeof setTimeout>>();
+
+  /** userId -> matchmaking timeout timer (30 sec → offer bot) */
+  private matchmakingTimers = new Map<string, ReturnType<typeof setTimeout>>();
+
+  private readonly DISCONNECT_TIMEOUT_MS = 30_000;
+  private readonly MATCHMAKING_TIMEOUT_MS = 30_000;
+  private readonly MATCHMAKING_POLL_MS = 5_000;
+
   constructor(
     private readonly jwtService: JwtService,
     private readonly battleService: BattleService,
@@ -112,6 +122,9 @@ export class BattleGateway
       client.data.userId = payload.sub;
       this.userSockets.set(payload.sub, client.id);
       this.logger.log(`Client connected: ${payload.sub}`);
+
+      // Check if this is a reconnection during an active battle
+      await this.handleReconnect(payload.sub, client);
     } catch {
       this.logger.warn('Connection rejected: invalid token');
       client.disconnect();
@@ -128,22 +141,69 @@ export class BattleGateway
     // Remove from matchmaking
     if (this.matchmakingUsers.has(userId)) {
       this.matchmakingUsers.delete(userId);
+      this.clearMatchmakingTimer(userId);
       await this.matchmakingService.removeFromQueue(userId);
     }
 
-    // Handle active battle disconnect
+    // Handle active battle disconnect — 30 sec reconnect window
     const battleId = this.userBattles.get(userId);
     if (battleId) {
       const state = this.battles.get(battleId);
-      if (state && state.phase !== BattlePhase.FINAL_RESULT) {
+      if (state && state.phase !== BattlePhase.FINAL_RESULT && !this.isBotBattle(state)) {
+        // Notify opponent that player disconnected
+        this.server.to(`battle:${battleId}`).emit('battle:opponent_disconnected', {
+          userId,
+          timeoutSeconds: this.DISCONNECT_TIMEOUT_MS / 1000,
+        });
+
+        // Start 30-sec timer — if player doesn't reconnect, forfeit
+        const timer = setTimeout(async () => {
+          this.disconnectTimers.delete(userId);
+          const currentState = this.battles.get(battleId);
+          if (currentState && currentState.phase !== BattlePhase.FINAL_RESULT) {
+            // Player didn't reconnect — forfeit
+            const updated = handleDisconnect(currentState, userId);
+            this.battles.set(battleId, updated);
+            this.clearTimers(battleId);
+
+            const result = getResult(updated);
+            this.server.to(`battle:${battleId}`).emit('battle:complete', result);
+            await this.persistBattleResult(battleId, updated, result);
+            this.cleanupBattle(battleId);
+            this.logger.log(`Player ${userId} forfeited battle ${battleId} (disconnect timeout)`);
+          }
+        }, this.DISCONNECT_TIMEOUT_MS);
+
+        this.disconnectTimers.set(userId, timer);
+      } else if (state && this.isBotBattle(state)) {
+        // Bot battles: forfeit immediately on disconnect
         const updated = handleDisconnect(state, userId);
         this.battles.set(battleId, updated);
         this.clearTimers(battleId);
-
-        const result = getResult(updated);
-        this.server.to(`battle:${battleId}`).emit('battle:complete', result);
-        await this.persistBattleResult(battleId, updated, result);
         this.cleanupBattle(battleId);
+      }
+    }
+  }
+
+  /**
+   * Handle reconnection — cancel disconnect timer if player comes back.
+   */
+  async handleReconnect(userId: string, client: AuthenticatedSocket) {
+    const timer = this.disconnectTimers.get(userId);
+    if (timer) {
+      clearTimeout(timer);
+      this.disconnectTimers.delete(userId);
+      this.logger.log(`Player ${userId} reconnected, disconnect timer cancelled`);
+
+      // Rejoin battle room
+      const battleId = this.userBattles.get(userId);
+      if (battleId) {
+        await client.join(`battle:${battleId}`);
+        const state = this.battles.get(battleId);
+        if (state) {
+          client.emit('battle:state', state);
+          this.server.to(`battle:${battleId}`).emit('battle:opponent_reconnected', { userId });
+        }
       }
     }
   }
@@ -428,12 +488,96 @@ export class BattleGateway
           });
         }
       } else {
+        // No immediate match — add to queue and start polling + timeout
         await this.matchmakingService.addToQueue(userId, rating);
         this.matchmakingUsers.add(userId);
         client.emit('battle:queued', { message: 'Searching for opponent...' });
+
+        // Start matchmaking timeout — after 30 sec offer bot
+        this.startMatchmakingTimer(userId, rating, client);
       }
     } catch (error: any) {
       client.emit('battle:error', { message: error.message ?? 'Matchmaking failed' });
+    }
+  }
+
+  @SubscribeMessage('battle:cancel_matchmake')
+  async handleCancelMatchmaking(@ConnectedSocket() client: AuthenticatedSocket) {
+    const userId = client.data.userId;
+    if (!userId) return;
+
+    this.matchmakingUsers.delete(userId);
+    this.clearMatchmakingTimer(userId);
+    await this.matchmakingService.removeFromQueue(userId);
+    client.emit('battle:matchmaking_cancelled');
+  }
+
+  private startMatchmakingTimer(userId: string, rating: number, client: AuthenticatedSocket) {
+    this.clearMatchmakingTimer(userId);
+
+    // Poll every 5 seconds with expanding range
+    let elapsed = 0;
+    const interval = setInterval(async () => {
+      elapsed += this.MATCHMAKING_POLL_MS;
+
+      // Check if still in queue
+      if (!this.matchmakingUsers.has(userId)) {
+        clearInterval(interval);
+        this.matchmakingTimers.delete(userId);
+        return;
+      }
+
+      // Try to find a match with expanding range
+      const match = await this.matchmakingService.findMatch(userId, rating);
+      if (match) {
+        clearInterval(interval);
+        this.matchmakingTimers.delete(userId);
+        this.matchmakingUsers.delete(userId);
+
+        // Create PvP battle (same logic as above)
+        const dbBattle = await this.battleService.createBattle(userId, 'matchmaking');
+        const state = createBattle(
+          { id: userId, name: 'Player 1' },
+          { id: match.opponentId, name: 'Player 2' },
+          BattleMode.SIEGE,
+          DEFAULT_CATEGORIES,
+          { idGenerator: () => dbBattle.id },
+        );
+
+        this.battles.set(dbBattle.id, state);
+        this.userBattles.set(userId, dbBattle.id);
+        this.userBattles.set(match.opponentId, dbBattle.id);
+
+        client.emit('battle:matched', { battleId: dbBattle.id, opponent: { id: match.opponentId } });
+        const opponentSocketId = this.userSockets.get(match.opponentId);
+        if (opponentSocketId) {
+          this.server.to(opponentSocketId).emit('battle:matched', { battleId: dbBattle.id, opponent: { id: userId } });
+        }
+        return;
+      }
+
+      // Timeout — offer bot match
+      if (elapsed >= this.MATCHMAKING_TIMEOUT_MS) {
+        clearInterval(interval);
+        this.matchmakingTimers.delete(userId);
+        this.matchmakingUsers.delete(userId);
+        await this.matchmakingService.removeFromQueue(userId);
+
+        client.emit('battle:matchmaking_timeout', {
+          message: 'No opponent found. Play against bot?',
+          timeoutMs: this.MATCHMAKING_TIMEOUT_MS,
+        });
+      }
+    }, this.MATCHMAKING_POLL_MS);
+
+    this.matchmakingTimers.set(userId, interval as any);
+  }
+
+  private clearMatchmakingTimer(userId: string) {
+    const timer = this.matchmakingTimers.get(userId);
+    if (timer) {
+      clearInterval(timer as any);
+      this.matchmakingTimers.delete(userId);
     }
   }
 

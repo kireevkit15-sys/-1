@@ -89,8 +89,8 @@
 | # | Задача | Статус | Файлы |
 |---|--------|--------|-------|
 | L4.1 | Redis-матчмейкинг (±100 рейтинга, расширение, таймаут 30 сек → бот) | done | `apps/api/src/battle/matchmaking.service.ts` |
-| L4.2 | Подключить матчмейкинг к WebSocket gateway | todo | `apps/api/src/battle/battle.gateway.ts` |
-| L4.3 | Обработка дисконнектов (>30 сек = авто-поражение) | todo | `apps/api/src/battle/battle.gateway.ts` |
+| L4.2 | Подключить матчмейкинг к WebSocket gateway | done | `apps/api/src/battle/battle.gateway.ts` |
+| L4.3 | Обработка дисконнектов (>30 сек = авто-поражение) | done | `apps/api/src/battle/battle.gateway.ts` |
 | L4.4 | Docker Compose production + nginx + SSL | todo | `docker-compose.prod.yml`, `nginx/` |
 | L4.5 | Тестирование с 5-10 реальными людьми | todo | — |
 
