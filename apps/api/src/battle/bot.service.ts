@@ -1,70 +1,67 @@
 import { Injectable } from '@nestjs/common';
+import { Difficulty, DefenseType } from '@razum/shared';
 
-const DEFENSE_TYPES = ['shield', 'dodge', 'counter'] as const;
 const BOT_ACCURACY = 0.6;
-const MIN_DELAY_MS = 1000;
-const MAX_DELAY_MS = 3000;
-
-interface BotAnswer {
-  answer: string;
-  correct: boolean;
-}
 
 @Injectable()
 export class BotService {
   /**
-   * Generate a bot answer for a question.
-   * Bot answers correctly with BOT_ACCURACY probability.
+   * Choose a difficulty for the bot's attack turn.
+   * Weighted random: 70% BRONZE, 20% SILVER, 10% GOLD.
    */
-  generateBotAnswer(correctAnswer: string, options: string[]): BotAnswer {
+  chooseDifficulty(): Difficulty {
+    const roll = Math.random();
+    if (roll < 0.7) return Difficulty.BRONZE;
+    if (roll < 0.9) return Difficulty.SILVER;
+    return Difficulty.GOLD;
+  }
+
+  /**
+   * Choose an answer for the bot.
+   * Returns the correct answer 60% of the time, otherwise a random wrong answer.
+   */
+  chooseAnswer(
+    correctIndex: number,
+    optionsCount: number,
+  ): { answerIndex: number; isCorrect: boolean } {
     const isCorrect = Math.random() < BOT_ACCURACY;
 
     if (isCorrect) {
-      return { answer: correctAnswer, correct: true };
+      return { answerIndex: correctIndex, isCorrect: true };
     }
 
-    // Pick a random wrong answer
-    const wrongOptions = options.filter((opt) => opt !== correctAnswer);
-    const randomWrong =
-      wrongOptions[Math.floor(Math.random() * wrongOptions.length)] ||
-      correctAnswer;
+    // Pick a random wrong index
+    let wrongIndex: number;
+    do {
+      wrongIndex = Math.floor(Math.random() * optionsCount);
+    } while (wrongIndex === correctIndex && optionsCount > 1);
 
-    return { answer: randomWrong, correct: false };
+    return { answerIndex: wrongIndex, isCorrect: false };
   }
 
   /**
-   * Generate a random defense type for the bot.
-   * Returns null 40% of the time (no defense).
+   * Choose a defense type for the bot.
+   * 50% ACCEPT, 30% DISPUTE, 20% COUNTER.
    */
-  generateBotDefense(): string | null {
-    if (Math.random() < 0.4) {
-      return null;
-    }
-    return DEFENSE_TYPES[Math.floor(Math.random() * DEFENSE_TYPES.length)]!;
+  chooseDefense(): DefenseType {
+    const roll = Math.random();
+    if (roll < 0.5) return DefenseType.ACCEPT;
+    if (roll < 0.8) return DefenseType.DISPUTE;
+    return DefenseType.COUNTER;
   }
 
   /**
-   * Generate a random bot difficulty level.
+   * Get a random thinking delay in milliseconds (2000-5000ms).
    */
-  generateBotDifficulty(): string {
-    const difficulties = ['easy', 'medium', 'hard'];
-    return difficulties[Math.floor(Math.random() * difficulties.length)]!;
+  getThinkingDelay(): number {
+    return 2000 + Math.floor(Math.random() * 3000);
   }
 
   /**
-   * Get a random delay in milliseconds to simulate bot "thinking".
-   */
-  getSimulatedDelay(): number {
-    return (
-      MIN_DELAY_MS + Math.floor(Math.random() * (MAX_DELAY_MS - MIN_DELAY_MS))
-    );
-  }
-
-  /**
-   * Wait for the simulated delay. Use in async contexts.
+   * Wait for a simulated thinking delay.
    */
   async simulateThinking(): Promise<void> {
-    const delay = this.getSimulatedDelay();
+    const delay = this.getThinkingDelay();
     return new Promise((resolve) => setTimeout(resolve, delay));
   }
 }

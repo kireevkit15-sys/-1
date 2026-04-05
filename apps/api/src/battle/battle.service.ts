@@ -1,97 +1,141 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { BotService } from './bot.service';
-
-interface RoundResult {
-  roundNumber: number;
-  questionId: string;
-  playerAnswer: string;
-  opponentAnswer: string;
-  playerCorrect: boolean;
-  opponentCorrect: boolean;
-  playerDefense: string | null;
-  opponentDefense: string | null;
-  playerDamage: number;
-  opponentDamage: number;
-}
+import {
+  createBattle,
+  selectCategory,
+  chooseDifficulty,
+  submitAnswer,
+  submitDefense,
+  nextPhase,
+  isGameOver,
+  getResult,
+  handleTimeout,
+  handleDisconnect,
+  calculateRatingChange,
+  BattleMode,
+  BattlePhase,
+  ELO_DEFAULT_RATING,
+} from '@razum/shared';
+import type { BattleState, BattleResult } from '@razum/shared';
 
 @Injectable()
 export class BattleService {
-  private readonly BASE_DAMAGE = 25;
-  private readonly K_FACTOR = 32;
-
   constructor(
     private readonly prisma: PrismaService,
     private readonly botService: BotService,
   ) {}
 
-  async createBattle(
-    userId: string,
-    mode: 'bot' | 'matchmaking',
-    category?: string,
-  ) {
+  // ── Create ────────────────────────────────────
+
+  /**
+   * Create a battle against a bot. Immediately active.
+   */
+  async createBotBattle(userId: string) {
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
+      include: { stats: true },
     });
-
     if (!user) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
 
-    if (mode === 'bot') {
-      const battle = await this.prisma.battle.create({
-        data: {
-          player1Id: userId,
-          player2Id: null,
-          mode: 'BOT',
-          status: 'IN_PROGRESS',
-          category: category || null,
-          player1Hp: 100,
-          player2Hp: 100,
-          currentRound: 1,
-        },
-      });
+    const categories = await this.getAvailableCategories();
 
-      return battle;
-    }
+    const state = createBattle(
+      { id: user.id, name: user.name, avatarUrl: user.avatarUrl ?? undefined },
+      { id: 'bot', name: 'РАЗУМ-бот' },
+      BattleMode.SIEGE,
+      categories,
+    );
 
-    // For matchmaking, return a pending battle; actual matching happens via WebSocket
     const battle = await this.prisma.battle.create({
       data: {
+        id: state.id,
         player1Id: userId,
-        mode: 'PVP',
-        status: 'WAITING',
-        category: category || null,
-        player1Hp: 100,
-        player2Hp: 100,
-        currentRound: 1,
+        player2Id: null,
+        mode: 'SIEGE',
+        status: 'ACTIVE',
+        category: null,
+        state: state as unknown as Record<string, unknown>,
+        startedAt: new Date(),
       },
     });
 
     return battle;
   }
 
+  /**
+   * Create a PvP battle waiting for an opponent.
+   */
+  async createPvpBattle(userId: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+
+    const battle = await this.prisma.battle.create({
+      data: {
+        player1Id: userId,
+        mode: 'SIEGE',
+        status: 'WAITING',
+        state: {},
+      },
+    });
+
+    return battle;
+  }
+
+  // ── Read ──────────────────────────────────────
+
+  /**
+   * Get a battle by ID with its rounds.
+   */
   async getBattle(battleId: string) {
-    return this.prisma.battle.findUnique({
+    const battle = await this.prisma.battle.findUnique({
       where: { id: battleId },
       include: {
         player1: {
-          select: { id: true, name: true, avatar: true, rating: true },
+          select: { id: true, name: true, avatarUrl: true },
         },
         player2: {
-          select: { id: true, name: true, avatar: true, rating: true },
+          select: { id: true, name: true, avatarUrl: true },
         },
         rounds: {
-          include: {
-            question: true,
-          },
           orderBy: { roundNumber: 'asc' },
         },
       },
     });
+
+    if (!battle) {
+      throw new HttpException('Battle not found', HttpStatus.NOT_FOUND);
+    }
+
+    return battle;
   }
 
-  async getUserBattleHistory(userId: string, page: number, limit: number) {
+  /**
+   * Get the in-memory BattleState from the DB JSON column.
+   */
+  async getBattleState(battleId: string): Promise<BattleState> {
+    const battle = await this.prisma.battle.findUnique({
+      where: { id: battleId },
+      select: { state: true, status: true },
+    });
+
+    if (!battle) {
+      throw new HttpException('Battle not found', HttpStatus.NOT_FOUND);
+    }
+
+    return battle.state as unknown as BattleState;
+  }
+
+  /**
+   * Get paginated battle history for a user.
+   */
+  async getUserHistory(userId: string, page: number, limit: number) {
     const skip = (page - 1) * limit;
 
     const [battles, total] = await Promise.all([
@@ -101,14 +145,10 @@ export class BattleService {
           status: 'COMPLETED',
         },
         include: {
-          player1: {
-            select: { id: true, name: true, avatar: true },
-          },
-          player2: {
-            select: { id: true, name: true, avatar: true },
-          },
+          player1: { select: { id: true, name: true, avatarUrl: true } },
+          player2: { select: { id: true, name: true, avatarUrl: true } },
         },
-        orderBy: { completedAt: 'desc' },
+        orderBy: { endedAt: 'desc' },
         skip,
         take: limit,
       }),
@@ -128,253 +168,340 @@ export class BattleService {
     };
   }
 
-  async processRound(
+  // ── Game flow ─────────────────────────────────
+
+  /**
+   * Select a category for the current round.
+   */
+  async processCategory(battleId: string, userId: string, category: string) {
+    const state = await this.getBattleState(battleId);
+    this.assertActive(battleId, state);
+
+    try {
+      const newState = selectCategory(state, category);
+      await this.saveState(battleId, newState);
+      return newState;
+    } catch (err) {
+      throw new HttpException(
+        (err as Error).message,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  /**
+   * Process an attack: choose difficulty, look up question, submit answer, persist round.
+   */
+  async processAttack(
     battleId: string,
     userId: string,
-    answerId: string,
-    defenseType: string | null,
-  ): Promise<RoundResult> {
-    const battle = await this.prisma.battle.findUnique({
-      where: { id: battleId },
-      include: {
-        rounds: { orderBy: { roundNumber: 'desc' }, take: 1 },
-      },
+    difficulty: string,
+    answerIndex: number,
+    questionId: string,
+  ) {
+    let state = await this.getBattleState(battleId);
+    this.assertActive(battleId, state);
+
+    // Look up the question to check correctness
+    const question = await this.prisma.question.findUnique({
+      where: { id: questionId },
     });
-
-    if (!battle) {
-      throw new HttpException('Battle not found', HttpStatus.NOT_FOUND);
-    }
-
-    if (battle.status !== 'IN_PROGRESS') {
-      throw new HttpException('Battle is not in progress', HttpStatus.BAD_REQUEST);
-    }
-
-    const isPlayer1 = battle.player1Id === userId;
-    const currentRound = battle.currentRound;
-
-    // Get current question for this round
-    const question = await this.prisma.question.findFirst({
-      where: { category: battle.category || undefined },
-      skip: currentRound - 1,
-    });
-
     if (!question) {
-      throw new HttpException('No question available', HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException('Question not found', HttpStatus.NOT_FOUND);
     }
 
-    const playerCorrect = answerId === question.correctAnswer;
+    const isCorrect = answerIndex === question.correctIndex;
 
-    // Bot or opponent answer
-    let opponentAnswer: string;
-    let opponentCorrect: boolean;
-    let opponentDefense: string | null = null;
+    try {
+      // Step 1: choose difficulty (creates round entry in state)
+      state = chooseDifficulty(state, userId, difficulty as any);
 
-    if (battle.mode === 'BOT') {
-      const botResult = this.botService.generateBotAnswer(
-        question.correctAnswer,
-        question.options as string[],
+      // Step 2: submit answer (applies damage, transitions phase)
+      state = submitAnswer(state, userId, answerIndex, isCorrect);
+    } catch (err) {
+      throw new HttpException(
+        (err as Error).message,
+        HttpStatus.BAD_REQUEST,
       );
-      opponentAnswer = botResult.answer;
-      opponentCorrect = botResult.correct;
-      opponentDefense = this.botService.generateBotDefense();
-    } else {
-      // PVP: opponent answer should be submitted separately via WebSocket
-      opponentAnswer = '';
-      opponentCorrect = false;
     }
 
-    // Calculate damage
-    const playerDamage = playerCorrect ? this.BASE_DAMAGE : 0;
-    const opponentDamage = opponentCorrect ? this.BASE_DAMAGE : 0;
+    // Persist round to the BattleRound table
+    const currentRound = state.rounds[state.rounds.length - 1];
+    if (currentRound) {
+      await this.prisma.battleRound.create({
+        data: {
+          battleId,
+          roundNumber: currentRound.roundNumber,
+          attackerId: userId,
+          questionId,
+          difficulty: difficulty as any,
+          answerIndex,
+          isCorrect,
+          points: currentRound.pointsAwarded,
+        },
+      });
+    }
 
-    // Apply defense reduction
-    const effectivePlayerDamage = opponentDefense
-      ? Math.floor(playerDamage * 0.5)
-      : playerDamage;
-    const effectiveOpponentDamage = defenseType
-      ? Math.floor(opponentDamage * 0.5)
-      : opponentDamage;
+    await this.saveState(battleId, state);
+    return state;
+  }
 
-    // Update HP
-    const newPlayer1Hp = isPlayer1
-      ? Math.max(0, battle.player1Hp - effectiveOpponentDamage)
-      : Math.max(0, battle.player1Hp - effectivePlayerDamage);
-    const newPlayer2Hp = isPlayer1
-      ? Math.max(0, battle.player2Hp - effectivePlayerDamage)
-      : Math.max(0, battle.player2Hp - effectiveOpponentDamage);
+  /**
+   * Process a defense action.
+   */
+  async processDefense(
+    battleId: string,
+    userId: string,
+    defenseType: string,
+    success: boolean,
+  ) {
+    const state = await this.getBattleState(battleId);
+    this.assertActive(battleId, state);
 
-    // Save round
-    await this.prisma.battleRound.create({
-      data: {
-        battleId,
-        roundNumber: currentRound,
-        questionId: question.id,
-        player1Answer: isPlayer1 ? answerId : opponentAnswer,
-        player2Answer: isPlayer1 ? opponentAnswer : answerId,
-        player1Correct: isPlayer1 ? playerCorrect : opponentCorrect,
-        player2Correct: isPlayer1 ? opponentCorrect : playerCorrect,
-        player1Defense: isPlayer1 ? defenseType : opponentDefense,
-        player2Defense: isPlayer1 ? opponentDefense : defenseType,
-      },
-    });
+    try {
+      const newState = submitDefense(state, userId, defenseType as any, success);
 
-    // Check if battle is over
-    const isOver = newPlayer1Hp <= 0 || newPlayer2Hp <= 0 || currentRound >= 10;
+      // Update the BattleRound record with defense info
+      const currentRound = newState.rounds[newState.rounds.length - 1];
+      if (currentRound) {
+        await this.prisma.battleRound.updateMany({
+          where: {
+            battleId,
+            roundNumber: currentRound.roundNumber,
+          },
+          data: {
+            defenseType: defenseType as any,
+            points: currentRound.pointsAwarded,
+          },
+        });
+      }
 
+      await this.saveState(battleId, newState);
+      return newState;
+    } catch (err) {
+      throw new HttpException(
+        (err as Error).message,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  /**
+   * Advance to the next phase / round. If the game is over, complete it.
+   */
+  async advanceRound(battleId: string) {
+    const state = await this.getBattleState(battleId);
+    this.assertActive(battleId, state);
+
+    try {
+      const newState = nextPhase(state);
+      await this.saveState(battleId, newState);
+
+      if (isGameOver(newState) || newState.phase === BattlePhase.FINAL_RESULT) {
+        await this.completeBattle(battleId);
+      }
+
+      return newState;
+    } catch (err) {
+      throw new HttpException(
+        (err as Error).message,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  /**
+   * Complete the battle: compute result, update DB status, update user stats & rating.
+   */
+  async completeBattle(battleId: string) {
+    const state = await this.getBattleState(battleId);
+    let result: BattleResult;
+
+    try {
+      result = getResult(state);
+    } catch (err) {
+      throw new HttpException(
+        (err as Error).message,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    // Update the battle record
     await this.prisma.battle.update({
       where: { id: battleId },
       data: {
-        player1Hp: newPlayer1Hp,
-        player2Hp: newPlayer2Hp,
-        currentRound: isOver ? currentRound : currentRound + 1,
-        status: isOver ? 'COMPLETED' : 'IN_PROGRESS',
-        completedAt: isOver ? new Date() : null,
-        winnerId: isOver ? this.determineWinner(battle.player1Id, battle.player2Id, newPlayer1Hp, newPlayer2Hp) : null,
+        status: 'COMPLETED',
+        winnerId: result.winnerId,
+        player1Score: result.player1Score,
+        player2Score: result.player2Score,
+        endedAt: new Date(),
       },
     });
 
-    if (isOver) {
-      await this.updateStats(
-        battle.player1Id,
-        battle.player2Id,
-        newPlayer1Hp,
-        newPlayer2Hp,
+    // Update player 1 stats (XP + rating)
+    const p1Xp = result.xpGained[state.player1.id] ?? 0;
+    const p1Won = result.winnerId === state.player1.id;
+    await this.updateUserStats(
+      state.player1.id,
+      p1Xp,
+      state.selectedCategory,
+      p1Won,
+      state.player2.id !== 'bot' ? state.player2.id : null,
+    );
+
+    // Update player 2 stats only if not a bot
+    if (state.player2.id !== 'bot') {
+      const p2Xp = result.xpGained[state.player2.id] ?? 0;
+      const p2Won = result.winnerId === state.player2.id;
+      await this.updateUserStats(
+        state.player2.id,
+        p2Xp,
+        state.selectedCategory,
+        p2Won,
+        state.player1.id,
       );
     }
 
-    return {
-      roundNumber: currentRound,
-      questionId: question.id,
-      playerAnswer: answerId,
-      opponentAnswer,
-      playerCorrect,
-      opponentCorrect,
-      playerDefense: defenseType,
-      opponentDefense,
-      playerDamage: effectivePlayerDamage,
-      opponentDamage: effectiveOpponentDamage,
-    };
+    return result;
   }
 
-  private determineWinner(
-    player1Id: string,
-    player2Id: string | null,
-    player1Hp: number,
-    player2Hp: number,
-  ): string | null {
-    if (player1Hp > player2Hp) return player1Id;
-    if (player2Hp > player1Hp) return player2Id;
-    return null; // draw
-  }
+  /**
+   * Handle a round timeout.
+   */
+  async handlePlayerTimeout(battleId: string) {
+    const state = await this.getBattleState(battleId);
+    this.assertActive(battleId, state);
 
-  private async updateStats(
-    player1Id: string,
-    player2Id: string | null,
-    player1Hp: number,
-    player2Hp: number,
-  ) {
-    const winner = this.determineWinner(player1Id, player2Id, player1Hp, player2Hp);
-
-    // Update player 1 stats
-    await this.updatePlayerStats(player1Id, winner === player1Id, winner === null);
-
-    // Update player 2 stats (if not a bot)
-    if (player2Id) {
-      await this.updatePlayerStats(player2Id, winner === player2Id, winner === null);
-      await this.updateRatings(player1Id, player2Id, winner);
+    try {
+      const newState = handleTimeout(state);
+      await this.saveState(battleId, newState);
+      return newState;
+    } catch (err) {
+      throw new HttpException(
+        (err as Error).message,
+        HttpStatus.BAD_REQUEST,
+      );
     }
   }
 
-  private async updatePlayerStats(
+  /**
+   * Handle player disconnect — opponent wins by forfeit.
+   */
+  async handlePlayerDisconnect(battleId: string, userId: string) {
+    const state = await this.getBattleState(battleId);
+    if (state.phase === BattlePhase.FINAL_RESULT) {
+      return state;
+    }
+
+    const newState = handleDisconnect(state, userId);
+    await this.saveState(battleId, newState);
+
+    // Update battle status to ABANDONED and complete
+    await this.prisma.battle.update({
+      where: { id: battleId },
+      data: { status: 'ABANDONED' },
+    });
+
+    await this.completeBattle(battleId);
+    return newState;
+  }
+
+  // ── Private helpers ───────────────────────────
+
+  /**
+   * Save the BattleState JSON back to the DB.
+   */
+  private async saveState(battleId: string, state: BattleState) {
+    await this.prisma.battle.update({
+      where: { id: battleId },
+      data: {
+        state: state as unknown as Record<string, unknown>,
+        category: state.selectedCategory ?? undefined,
+      },
+    });
+  }
+
+  /**
+   * Assert the battle is in an active status.
+   */
+  private assertActive(battleId: string, state: BattleState) {
+    if (state.phase === BattlePhase.FINAL_RESULT) {
+      throw new HttpException(
+        'Battle is already finished',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  /**
+   * Update a user's stats after battle completion (XP + ELO rating).
+   */
+  private async updateUserStats(
     userId: string,
+    xpGained: number,
+    category: string | undefined,
     won: boolean,
-    draw: boolean,
+    opponentId: string | null,
   ) {
+    // Determine which XP stat to increment based on category
+    const xpField = this.categoryToXpField(category);
+
+    // Calculate rating change if PvP
+    let ratingDelta = 0;
+    if (opponentId) {
+      const [playerStats, opponentStats] = await Promise.all([
+        this.prisma.userStats.findUnique({ where: { userId } }),
+        this.prisma.userStats.findUnique({ where: { userId: opponentId } }),
+      ]);
+
+      const playerRating = playerStats?.rating ?? ELO_DEFAULT_RATING;
+      const opponentRating = opponentStats?.rating ?? ELO_DEFAULT_RATING;
+      ratingDelta = calculateRatingChange(playerRating, opponentRating, won);
+    }
+
     await this.prisma.userStats.upsert({
       where: { userId },
       create: {
         userId,
-        totalBattles: 1,
-        wins: won ? 1 : 0,
-        losses: !won && !draw ? 1 : 0,
-        draws: draw ? 1 : 0,
-        winStreak: won ? 1 : 0,
-        bestWinStreak: won ? 1 : 0,
+        [xpField]: xpGained,
+        rating: ELO_DEFAULT_RATING + ratingDelta,
       },
       update: {
-        totalBattles: { increment: 1 },
-        wins: won ? { increment: 1 } : undefined,
-        losses: !won && !draw ? { increment: 1 } : undefined,
-        draws: draw ? { increment: 1 } : undefined,
-        winStreak: won ? { increment: 1 } : 0,
-        bestWinStreak: won
-          ? {
-              increment: 0, // Will be handled below
-            }
-          : undefined,
+        [xpField]: { increment: xpGained },
+        rating: { increment: ratingDelta },
       },
     });
+  }
 
-    // Update best win streak
-    if (won) {
-      const stats = await this.prisma.userStats.findUnique({
-        where: { userId },
-      });
-      if (stats && stats.winStreak > stats.bestWinStreak) {
-        await this.prisma.userStats.update({
-          where: { userId },
-          data: { bestWinStreak: stats.winStreak },
-        });
-      }
+  /**
+   * Map a category string to the corresponding XP field on UserStats.
+   */
+  private categoryToXpField(
+    category: string | undefined,
+  ): 'logicXp' | 'eruditionXp' | 'strategyXp' | 'rhetoricXp' | 'intuitionXp' {
+    switch (category?.toLowerCase()) {
+      case 'logic':
+        return 'logicXp';
+      case 'strategy':
+        return 'strategyXp';
+      case 'rhetoric':
+        return 'rhetoricXp';
+      case 'intuition':
+        return 'intuitionXp';
+      default:
+        return 'eruditionXp';
     }
   }
 
-  private async updateRatings(
-    player1Id: string,
-    player2Id: string,
-    winnerId: string | null,
-  ) {
-    const [p1, p2] = await Promise.all([
-      this.prisma.user.findUnique({ where: { id: player1Id } }),
-      this.prisma.user.findUnique({ where: { id: player2Id } }),
-    ]);
-
-    if (!p1 || !p2) return;
-
-    const expectedP1 =
-      1 / (1 + Math.pow(10, (p2.rating - p1.rating) / 400));
-    const expectedP2 = 1 - expectedP1;
-
-    let scoreP1: number;
-    let scoreP2: number;
-
-    if (winnerId === player1Id) {
-      scoreP1 = 1;
-      scoreP2 = 0;
-    } else if (winnerId === player2Id) {
-      scoreP1 = 0;
-      scoreP2 = 1;
-    } else {
-      scoreP1 = 0.5;
-      scoreP2 = 0.5;
-    }
-
-    const newRatingP1 = Math.round(
-      p1.rating + this.K_FACTOR * (scoreP1 - expectedP1),
-    );
-    const newRatingP2 = Math.round(
-      p2.rating + this.K_FACTOR * (scoreP2 - expectedP2),
-    );
-
-    await Promise.all([
-      this.prisma.user.update({
-        where: { id: player1Id },
-        data: { rating: Math.max(0, newRatingP1) },
-      }),
-      this.prisma.user.update({
-        where: { id: player2Id },
-        data: { rating: Math.max(0, newRatingP2) },
-      }),
-    ]);
+  /**
+   * Get distinct categories from the questions table.
+   */
+  private async getAvailableCategories(): Promise<string[]> {
+    const result = await this.prisma.question.findMany({
+      where: { isActive: true },
+      select: { category: true },
+      distinct: ['category'],
+    });
+    return result.map((q) => q.category);
   }
 }

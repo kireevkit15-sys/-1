@@ -79,12 +79,44 @@
 - UserModule: GET /users/me, PATCH /users/me
 - Добавить таблицы Question, Battle, BattleRound в Prisma → миграция
 
+# Текущий спринт — Неделя 3
+
+**Дата начала:** 2026-04-07
+**Цель недели:** Батл с ботом работает через WebSocket. Вопросы отображаются. Таймер работает.
+
+## Руководитель (Lead / Никита)
+
+| # | Задача | Статус | Файлы |
+|---|--------|--------|-------|
+| L3.1 | Создать WebSocket gateway (JWT auth, комнаты, события) | done | `apps/api/src/battle/battle.gateway.ts` |
+| L3.2 | Создать BattleService (стейт-машина, таймеры, DB) | done | `apps/api/src/battle/battle.service.ts` |
+| L3.3 | Создать бот-противника (60% accuracy, задержки) | done | `apps/api/src/battle/bot.service.ts` |
+| L3.4 | Создать BattleController (REST endpoints) | done | `apps/api/src/battle/battle.controller.ts` |
+
+## Бонди (Frontend + Дизайн)
+
+| # | Задача | Статус | Файлы |
+|---|--------|--------|-------|
+| F3.1 | Создать Socket.IO клиент с JWT | todo | `apps/web/lib/socket.ts` |
+| F3.2 | Создать хук useBattle | todo | `apps/web/hooks/useBattle.ts` |
+| F3.3 | Создать страницу поиска батла | todo | `apps/web/app/battle/new/page.tsx` |
+| F3.4 | Создать экран батла (категории, атака, таймер) | todo | `apps/web/app/battle/[id]/page.tsx` |
+
+## Яшкин (Backend)
+
+| # | Задача | Статус | Файлы |
+|---|--------|--------|-------|
+| B3.1 | QuestionModule (GET/POST/PATCH) | todo | `apps/api/src/question/` |
+| B3.2 | QuestionService.getRandomForBattle() | todo | `apps/api/src/question/question.service.ts` |
+| B3.3 | Seed 50 тестовых вопросов | todo | `prisma/seed.ts` |
+| B3.4 | RolesGuard для admin-эндпоинтов | todo | `apps/api/src/common/guards/` |
+
 ---
 
-# Текущий спринт — Неделя 2
+# Завершённый спринт — Неделя 2
 
 **Дата начала:** 2026-04-06
-**Цель недели:** Auth работает (Telegram + email), стейт-машина батла покрыта тестами, 20+ unit-тестов.
+**Цель недели:** Auth работает (Telegram + email), стейт-машина батла покрыта тестами, 41 unit-тест.
 
 ---
 

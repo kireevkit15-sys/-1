@@ -5,16 +5,13 @@ import { BattleGateway } from './battle.gateway';
 import { MatchmakingService } from './matchmaking.service';
 import { BotService } from './bot.service';
 import { AuthModule } from '../auth/auth.module';
+import { PrismaModule } from '../prisma/prisma.module';
+import { RedisModule } from '../redis/redis.module';
 
 @Module({
-  imports: [AuthModule],
+  imports: [AuthModule, PrismaModule, RedisModule],
   controllers: [BattleController],
-  providers: [
-    BattleService,
-    BattleGateway,
-    MatchmakingService,
-    BotService,
-  ],
+  providers: [BattleService, BattleGateway, MatchmakingService, BotService],
   exports: [BattleService],
 })
 export class BattleModule {}

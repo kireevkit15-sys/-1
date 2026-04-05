@@ -12,48 +12,75 @@ import {
 } from '@nestjs/common';
 import { BattleService } from './battle.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { IsEnum, IsOptional, IsString } from 'class-validator';
-
-export class CreateBattleDto {
-  @IsEnum(['bot', 'matchmaking'])
-  mode!: 'bot' | 'matchmaking';
-
-  @IsOptional()
-  @IsString()
-  category?: string;
-}
+import { CreateBattleDto } from './dto/create-battle.dto';
 
 @Controller('battles')
 @UseGuards(JwtAuthGuard)
 export class BattleController {
   constructor(private readonly battleService: BattleService) {}
 
+  /**
+   * POST /battles — Create a new battle.
+   * mode='bot'  -> bot battle
+   * mode='pvp'  -> PvP matchmaking battle
+   */
   @Post()
   async createBattle(@Request() req: any, @Body() dto: CreateBattleDto) {
-    return this.battleService.createBattle(req.user.sub, dto.mode, dto.category);
-  }
+    const userId: string = req.user.sub;
 
-  @Get(':id')
-  async getBattle(@Param('id') id: string, @Request() req: any) {
-    const battle = await this.battleService.getBattle(id);
-    if (!battle) {
-      throw new HttpException('Battle not found', HttpStatus.NOT_FOUND);
+    if (dto.mode === 'bot') {
+      return this.battleService.createBotBattle(userId, dto.category);
     }
-    return battle;
+
+    if (dto.mode === 'pvp') {
+      return this.battleService.createPvpBattle(userId, dto.category);
+    }
+
+    throw new HttpException(
+      `Unknown battle mode: ${dto.mode as string}`,
+      HttpStatus.BAD_REQUEST,
+    );
   }
 
+  /**
+   * GET /battles/history — Paginated list of the user's completed battles.
+   * Must be registered BEFORE the `:id` route so NestJS does not treat
+   * "history" as a battle id.
+   */
   @Get('history')
   async getHistory(
     @Request() req: any,
     @Query('page') page?: string,
     @Query('limit') limit?: string,
   ) {
-    const pageNum = parseInt(page || '1', 10);
-    const limitNum = Math.min(parseInt(limit || '20', 10), 100);
-    return this.battleService.getUserBattleHistory(
-      req.user.sub,
-      pageNum,
-      limitNum,
-    );
+    const userId: string = req.user.sub;
+    const pageNum = Math.max(parseInt(page || '1', 10) || 1, 1);
+    const limitNum = Math.min(Math.max(parseInt(limit || '10', 10) || 10, 1), 100);
+
+    return this.battleService.getUserBattleHistory(userId, pageNum, limitNum);
+  }
+
+  /**
+   * GET /battles/:id — Get battle state (supports reconnection).
+   * Only participants (player1 / player2) may access the battle.
+   */
+  @Get(':id')
+  async getBattle(@Param('id') id: string, @Request() req: any) {
+    const userId: string = req.user.sub;
+
+    const battle = await this.battleService.getBattle(id);
+
+    if (!battle) {
+      throw new HttpException('Battle not found', HttpStatus.NOT_FOUND);
+    }
+
+    if (battle.player1Id !== userId && battle.player2Id !== userId) {
+      throw new HttpException(
+        'You are not a participant of this battle',
+        HttpStatus.FORBIDDEN,
+      );
+    }
+
+    return battle;
   }
 }
