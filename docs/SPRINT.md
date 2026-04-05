@@ -79,12 +79,9 @@
 - UserModule: GET /users/me, PATCH /users/me
 - Добавить таблицы Question, Battle, BattleRound в Prisma → миграция
 
-# Текущий спринт — Неделя 4
+# Текущие задачи Никиты (Lead)
 
-**Дата начала:** 2026-04-08
-**Цель недели:** Матчмейкинг работает. Дисконнекты обрабатываются. Первый деплой на VPS.
-
-## Руководитель (Lead / Никита)
+## Неделя 4 (основные)
 
 | # | Задача | Статус | Файлы |
 |---|--------|--------|-------|
@@ -93,6 +90,60 @@
 | L4.3 | Обработка дисконнектов (>30 сек = авто-поражение) | done | `apps/api/src/battle/battle.gateway.ts` |
 | L4.4 | Docker Compose production + nginx + SSL | done | `docker-compose.prod.yml`, `nginx/` |
 | L4.5 | Тестирование с 5-10 реальными людьми | todo | — |
+
+## Досрочные задачи (из недель 5-8)
+
+| # | Задача | Статус | Файлы |
+|---|--------|--------|-------|
+| L5.1 | E2E тест батла (полный цикл) | todo | `apps/api/test/battle.e2e-spec.ts` |
+| L6.1 | AI сократический промпт | todo | `apps/api/src/ai/prompts/socratic-tutor.ts` |
+| L6.2 | AI service — реальная интеграция Claude API | todo | `apps/api/src/ai/ai.service.ts` |
+| L7.1 | WarmupService (5 вопросов + стрик) | todo | `apps/api/src/stats/warmup.service.ts` |
+
+## Новые задачи — Инфраструктура и безопасность
+
+| # | Задача | Статус | Файлы |
+|---|--------|--------|-------|
+| N1 | Swagger/OpenAPI документация для всего API | todo | `apps/api/src/main.ts`, все controllers |
+| N2 | Health-check эндпоинты (/health, /ready) | todo | `apps/api/src/health/` |
+| N3 | Rate limiting (глобальный + per-endpoint) | todo | `apps/api/src/common/` |
+| N4 | Security headers (CSP, HSTS, X-Frame-Options) | todo | `apps/api/src/main.ts`, `nginx/nginx.conf` |
+| N5 | API versioning (/v1/) | todo | `apps/api/src/` |
+
+## Новые задачи — Пользовательский опыт
+
+| # | Задача | Статус | Файлы |
+|---|--------|--------|-------|
+| N6 | Онбординг-флоу для нового пользователя | todo | `apps/web/app/(main)/onboarding/` |
+| N7 | Система достижений (achievements) | todo | `prisma/schema.prisma`, `apps/api/src/achievements/` |
+| N8 | Страницы ошибок (404, 500, offline) | todo | `apps/web/app/not-found.tsx`, `apps/web/app/error.tsx` |
+| N9 | Telegram-бот для уведомлений и инвайтов | todo | `apps/bot/` |
+| N10 | Система реферальных кодов | todo | `apps/api/src/referral/` |
+
+## Новые задачи — Аналитика и мониторинг
+
+| # | Задача | Статус | Файлы |
+|---|--------|--------|-------|
+| N11 | Event tracking (батлы, ответы, сессии) | todo | `apps/api/src/analytics/` |
+| N12 | Дашборд PO — статистика в реальном времени | todo | `apps/web/app/admin/dashboard/` |
+| N13 | Структурированные логи (Winston/Pino) | todo | `apps/api/src/common/logger/` |
+
+## Новые задачи — Контент и игровые механики
+
+| # | Задача | Статус | Файлы |
+|---|--------|--------|-------|
+| N14 | Система ежедневных челленджей | todo | `apps/api/src/challenge/` |
+| N15 | «Факт дня» на главном экране | todo | `apps/api/src/facts/`, `apps/web/components/` |
+| N16 | Звуковые эффекты для батлов (Web Audio API) | todo | `apps/web/lib/sounds.ts` |
+
+## Новые задачи — DevOps
+
+| # | Задача | Статус | Файлы |
+|---|--------|--------|-------|
+| N17 | Скрипт автоматического бэкапа БД | todo | `scripts/backup.sh` |
+| N18 | Seed-скрипт для demo-режима (для инвесторов) | todo | `prisma/seed-demo.ts` |
+| NX.1 | Dockerfile для apps/api | todo | `apps/api/Dockerfile` |
+| NX.2 | Dockerfile для apps/web | todo | `apps/web/Dockerfile` |
 
 ---
 
