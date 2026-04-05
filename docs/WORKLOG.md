@@ -1,0 +1,64 @@
+# РАЗУМ — Журнал работы команды
+
+> Этот файл обновляется автоматически после каждой рабочей сессии.
+> Спроси «Что сделал Бонди?» или «Покажи работу за неделю» — Claude найдёт нужное.
+
+---
+
+## Никита (Lead)
+
+### 2026-04-05 — Сессия 1: Инициализация проекта
+
+**Время:** ~3 часа
+**Статус:** Завершена
+
+**Что сделано:**
+- Создан полный scaffold монорепо (Turborepo): 88 файлов
+- Настроен стек: Next.js 14 + NestJS + PostgreSQL + Redis + Socket.IO
+- Написана стейт-машина батла (`packages/shared/src/battle/state-machine.ts`) — 29 тестов
+- Создана система скоринга + ELO рейтинг (`packages/shared/src/battle/scoring.ts`)
+- Создана Prisma-схема: 8 таблиц, 6 enum'ов, seed с 20 вопросами на русском
+- Настроен Docker Compose (PostgreSQL 16 + Redis 7)
+- Создана полная документация: ARCHITECTURE.md, ROADMAP.md, TASKS.md, SPRINT.md
+- Создана система управления задачами через CLAUDE.md
+- Git init + push на GitHub (github.com/kireevkit15-sys/-1)
+
+**Файлы созданы/изменены:**
+- `package.json`, `turbo.json`, `tsconfig.base.json`, `.eslintrc.js`, `.prettierrc`
+- `docker-compose.yml`, `.env.example`, `.gitignore`
+- `CLAUDE.md`
+- `apps/web/` — 19 файлов (Next.js PWA scaffold)
+- `apps/api/` — 38 файлов (NestJS backend scaffold)
+- `packages/shared/` — 12 файлов (батл-логика + тесты)
+- `prisma/` — schema.prisma, seed.ts
+- `docs/` — ARCHITECTURE.md, ROADMAP.md, TASKS.md, SPRINT.md
+
+**Задачи из SPRINT.md закрыты:** L1.1, L1.2, L1.3, L1.4, L1.6, L1.7, L1.8
+
+**Коммиты:**
+- `19de206` — feat: initial project scaffold — РАЗУМ MVP
+- `2e42d38` — chore: update team names — Бонди (Frontend+Design), Яшкин (Backend)
+
+---
+
+## Бонди (Frontend + Дизайн)
+
+> Пока нет записей. Первая запись появится после первой рабочей сессии Бонди.
+
+---
+
+## Яшкин (Backend)
+
+> Пока нет записей. Первая запись появится после первой рабочей сессии Яшкина.
+
+---
+
+## Сводка по неделям
+
+### Неделя 1 (2026-04-05 — 2026-04-11)
+
+| Дата | Кто | Что сделал | Задачи закрыты |
+|------|-----|-----------|----------------|
+| 04-05 | Никита | Scaffold проекта, 88 файлов, push на GitHub | L1.1-L1.4, L1.6-L1.8 |
+| — | Бонди | — | — |
+| — | Яшкин | — | — |
