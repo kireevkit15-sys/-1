@@ -89,7 +89,7 @@
 | B4.2 | Расширить GET /users/me — статы, уровень, история батлов | done | `apps/api/src/user/` |
 | B4.3 | GET /users/:id/profile — публичный профиль | done | `apps/api/src/user/` |
 | B4.4 | Скрипт генерации вопросов через Claude API | done | `scripts/generate-questions.ts` |
-| B4.5 | Сгенерировать и проверить 200 вопросов (Стратегия + Логика) | in_progress | `scripts/output/` |
+| B4.5 | Сгенерировать и проверить 200 вопросов (Стратегия + Логика) | done | `scripts/output/` |
 | B4.6 | Обновить prisma/seed.ts для загрузки 200 вопросов | done | `prisma/seed.ts` |
 
 ---
