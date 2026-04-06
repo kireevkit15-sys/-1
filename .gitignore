@@ -9,6 +9,9 @@ build/
 out/
 *.tsbuildinfo
 
+# Generated questions (keep in output, commit manually)
+scripts/output/*.json
+
 # Next.js
 .next/
 .vercel

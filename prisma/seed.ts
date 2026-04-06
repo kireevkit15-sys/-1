@@ -1,5 +1,7 @@
 import { PrismaClient, Branch, Difficulty, Role } from "@prisma/client";
 import { randomUUID } from "crypto";
+import { readdirSync, readFileSync } from "fs";
+import { join } from "path";
 
 const prisma = new PrismaClient();
 
@@ -914,6 +916,45 @@ const questions: QuestionSeed[] = [
   },
 ];
 
+// ── Load additional questions from JSON files ────────────────
+
+function loadQuestionsFromFiles(): QuestionSeed[] {
+  const outputDir = join(__dirname, "..", "scripts", "output");
+  let files: string[];
+  try {
+    files = readdirSync(outputDir).filter((f: string) => f.endsWith(".json"));
+  } catch {
+    console.log("  No scripts/output directory found, skipping JSON questions");
+    return [];
+  }
+
+  const loaded: QuestionSeed[] = [];
+  for (const file of files) {
+    try {
+      const content = readFileSync(join(outputDir, file), "utf-8");
+      const parsed = JSON.parse(content) as Array<Omit<QuestionSeed, "id">>;
+      for (const q of parsed) {
+        loaded.push({
+          id: randomUUID(),
+          category: q.category,
+          branch: q.branch as Branch,
+          difficulty: q.difficulty as Difficulty,
+          text: q.text,
+          options: q.options,
+          correctIndex: q.correctIndex,
+          explanation: q.explanation,
+          statPrimary: q.statPrimary,
+          statSecondary: q.statSecondary,
+        });
+      }
+      console.log(`  Loaded ${parsed.length} questions from ${file}`);
+    } catch (e) {
+      console.warn(`  Failed to load ${file}: ${e}`);
+    }
+  }
+  return loaded;
+}
+
 // ── Modules ──────────────────────────────────────────────────
 
 const modules = [
@@ -1007,6 +1048,28 @@ async function main() {
     });
   }
   console.log(`✓ Questions: ${questions.length} seeded`);
+
+  // 2b. Additional questions from JSON files
+  const additionalQuestions = loadQuestionsFromFiles();
+  for (const q of additionalQuestions) {
+    await prisma.question.upsert({
+      where: { id: q.id },
+      update: {},
+      create: {
+        id: q.id,
+        category: q.category,
+        branch: q.branch,
+        difficulty: q.difficulty,
+        text: q.text,
+        options: q.options,
+        correctIndex: q.correctIndex,
+        explanation: q.explanation,
+        statPrimary: q.statPrimary,
+        statSecondary: q.statSecondary ?? null,
+      },
+    });
+  }
+  console.log(`✓ Additional questions: ${additionalQuestions.length} seeded from JSON files`);
 
   // 3. Modules
   for (const m of modules) {

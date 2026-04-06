@@ -79,6 +79,21 @@
 - UserModule: GET /users/me, PATCH /users/me
 - Добавить таблицы Question, Battle, BattleRound в Prisma → миграция
 
+# Текущие задачи Яшкина (Backend)
+
+## Неделя 4
+
+| # | Задача | Статус | Файлы |
+|---|--------|--------|-------|
+| B4.1 | StatsModule — начисление XP, формула уровня | done | `apps/api/src/stats/stats.module.ts` |
+| B4.2 | Расширить GET /users/me — статы, уровень, история батлов | done | `apps/api/src/user/` |
+| B4.3 | GET /users/:id/profile — публичный профиль | done | `apps/api/src/user/` |
+| B4.4 | Скрипт генерации вопросов через Claude API | done | `scripts/generate-questions.ts` |
+| B4.5 | Сгенерировать и проверить 200 вопросов (Стратегия + Логика) | in_progress | `scripts/output/` |
+| B4.6 | Обновить prisma/seed.ts для загрузки 200 вопросов | done | `prisma/seed.ts` |
+
+---
+
 # Текущие задачи Никиты (Lead)
 
 ## Неделя 4 (основные)
@@ -174,10 +189,10 @@
 
 | # | Задача | Статус | Файлы |
 |---|--------|--------|-------|
-| B3.1 | QuestionModule (GET/POST/PATCH) | todo | `apps/api/src/question/` |
-| B3.2 | QuestionService.getRandomForBattle() | todo | `apps/api/src/question/question.service.ts` |
-| B3.3 | Seed 50 тестовых вопросов | todo | `prisma/seed.ts` |
-| B3.4 | RolesGuard для admin-эндпоинтов | todo | `apps/api/src/common/guards/` |
+| B3.1 | QuestionModule (GET/POST/PATCH) | done | `apps/api/src/question/` |
+| B3.2 | QuestionService.getRandomForBattle() | done | `apps/api/src/question/question.service.ts` |
+| B3.3 | Seed 50 тестовых вопросов | done | `prisma/seed.ts` |
+| B3.4 | RolesGuard для admin-эндпоинтов | done | `apps/api/src/common/guards/` |
 
 ---
 
