@@ -125,8 +125,8 @@
 | # | Задача | Статус | Файлы |
 |---|--------|--------|-------|
 | L5.1 | E2E тест батла (полный цикл) | todo | `apps/api/test/battle.e2e-spec.ts` |
-| L6.1 | AI сократический промпт | todo | → перенесено в LC5 |
-| L6.2 | AI service — реальная интеграция Claude API | todo | → перенесено в LC4 |
+| L6.1 | AI сократический промпт | done | → выполнено в LC5 |
+| L6.2 | AI service — реальная интеграция Claude API | done | → выполнено в LC4 |
 | L7.1 | WarmupService (5 вопросов + стрик) | todo | `apps/api/src/stats/warmup.service.ts` |
 
 ## Ядро контента — Таксономия и AI-генерация (Lead)
@@ -134,13 +134,13 @@
 | # | Задача | Статус | Файлы |
 |---|--------|--------|-------|
 | LC1 | Создать полную таксономию знаний (Стратегия + Логика, все подветки, темы, подтемы) | done | `content/taxonomy.json`, `content/categories/` |
-| LC2 | Архитектура RAG-пайплайна (структура content/, форматы, flow) | todo | `content/`, `docs/ARCHITECTURE.md` |
-| LC3 | Промпт для батч-генерации вопросов по таксономии (антидубли, уровни, примеры) | todo | `apps/api/src/ai/prompts/question-generator.ts` |
-| LC4 | AI service — реальная интеграция Claude API (L6.2) | todo | `apps/api/src/ai/ai.service.ts` |
-| LC5 | AI сократический промпт для обучения (L6.1) | todo | `apps/api/src/ai/prompts/socratic-tutor.ts` |
-| LC6 | Обработать транскрипты Маркаряна → structured JSON (первый блогерский источник) | todo | `content/sources/bloggers/markaryan/` |
+| LC2 | Архитектура RAG-пайплайна (структура content/, форматы, flow) | done | `content/README.md`, `content/sources/` |
+| LC3 | Промпт для батч-генерации вопросов по таксономии (антидубли, уровни, примеры) | done | `apps/api/src/ai/prompts/question-generator.ts` |
+| LC4 | AI service — реальная интеграция Claude API (L6.2) | done | `apps/api/src/ai/ai.service.ts` |
+| LC5 | AI сократический промпт для обучения (L6.1) | done | `apps/api/src/ai/prompts/socratic-tutor.ts` |
+| LC6 | Обработать транскрипты Маркаряна → structured JSON (первый блогерский источник) | done | `content/sources/bloggers/markaryan/concepts.json` |
 | LC7 | Ревью и валидация первого батча 2000 вопросов | todo | — |
-| LC8 | Система контроля качества вопросов (автопроверки, правила валидации) | todo | `packages/shared/src/content/validation.ts` |
+| LC8 | Система контроля качества вопросов (автопроверки, правила валидации) | done | `packages/shared/src/content/validation.ts` |
 
 ## Новые задачи — Инфраструктура и безопасность
 
