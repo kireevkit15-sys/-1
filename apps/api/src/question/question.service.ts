@@ -59,6 +59,76 @@ export class QuestionService {
     return { count: created.count };
   }
 
+  async findOne(id: string) {
+    const question = await this.prisma.question.findUnique({
+      where: { id },
+    });
+
+    if (!question) {
+      throw new NotFoundException('Question not found');
+    }
+
+    return question;
+  }
+
+  async create(dto: CreateQuestionDto) {
+    return this.prisma.question.create({
+      data: {
+        text: dto.text,
+        options: dto.options,
+        correctIndex: dto.correctIndex,
+        category: dto.category,
+        branch: dto.branch,
+        difficulty: dto.difficulty,
+        statPrimary: dto.statPrimary,
+        statSecondary: dto.statSecondary || null,
+        explanation: dto.explanation || '',
+      },
+    });
+  }
+
+  async softDelete(id: string) {
+    await this.findOne(id);
+
+    return this.prisma.question.update({
+      where: { id },
+      data: { isActive: false },
+    });
+  }
+
+  async getRandomForBattle(params: {
+    branch?: string;
+    difficulty?: string;
+    category?: string;
+    excludeIds?: string[];
+    count?: number;
+  }) {
+    const count = params.count || 5;
+
+    const where: any = { isActive: true };
+    if (params.branch) where.branch = params.branch;
+    if (params.difficulty) where.difficulty = params.difficulty;
+    if (params.category) where.category = params.category;
+    if (params.excludeIds?.length) {
+      where.id = { notIn: params.excludeIds };
+    }
+
+    const questions = await this.prisma.question.findMany({ where });
+
+    return this.shuffleArray(questions).slice(0, count);
+  }
+
+  private shuffleArray<T>(array: T[]): T[] {
+    const arr = [...array];
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      const temp = arr[i] as T;
+      arr[i] = arr[j] as T;
+      arr[j] = temp;
+    }
+    return arr;
+  }
+
   async update(id: string, dto: UpdateQuestionDto) {
     const existing = await this.prisma.question.findUnique({
       where: { id },
