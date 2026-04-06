@@ -133,7 +133,7 @@
 
 | # | Задача | Статус | Файлы |
 |---|--------|--------|-------|
-| LC1 | Создать полную таксономию знаний (Стратегия + Логика, все подветки, темы, подтемы) | todo | `content/taxonomy.json` |
+| LC1 | Создать полную таксономию знаний (Стратегия + Логика, все подветки, темы, подтемы) | done | `content/taxonomy.json`, `content/categories/` |
 | LC2 | Архитектура RAG-пайплайна (структура content/, форматы, flow) | todo | `content/`, `docs/ARCHITECTURE.md` |
 | LC3 | Промпт для батч-генерации вопросов по таксономии (антидубли, уровни, примеры) | todo | `apps/api/src/ai/prompts/question-generator.ts` |
 | LC4 | AI service — реальная интеграция Claude API (L6.2) | todo | `apps/api/src/ai/ai.service.ts` |
