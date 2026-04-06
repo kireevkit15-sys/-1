@@ -94,6 +94,43 @@
 **Коммиты:**
 - `507119d` — chore(sprint): mark F1.9 and F1.10 as done
 
+### 2026-04-06 — Сессия 2: Dark Academia дизайн-система + Liquid Glass
+
+**Время:** ~4 часа
+**Статус:** Завершена
+
+**Что сделано:**
+- Утверждена палитра Dark Academia (медный #CF9D7B, тёплые тёмные фоны #0C1519)
+- Создан Figma-плагин для генерации макетов (figma-plugin/code.js + manifest.json)
+- Перенесён дизайн на все 12 файлов фронтенда — полная замена цветовой палитры
+- Убраны ВСЕ эмодзи со всех страниц — заменены на SVG-иконки (пазл, компьютер, лупа, шапочка, замок)
+- Реализован Liquid Glass эффект для BottomNav (овальная капсула + отдельный орб профиля)
+- Исправлен критический баг: динамические Tailwind-классы не компилировались (battle, learn)
+- Добавлена глубина карточкам (тени + inset highlight)
+- Исправлен layout: max-w-lg→max-w-md для 375px экранов
+- Удалён middleware (блокировал без .env)
+- Safe area padding на всех страницах для iPhone с чёлкой
+
+**Файлы созданы/изменены:**
+- `apps/web/tailwind.config.ts` — новая палитра Dark Academia
+- `apps/web/app/globals.css` — Liquid Glass CSS, ::selection, бордеры
+- `apps/web/components/ui/Button.tsx` — медные варианты
+- `apps/web/components/ui/Card.tsx` — глубина + тёплые бордеры
+- `apps/web/components/layout/BottomNav.tsx` — Liquid Glass навигация
+- `apps/web/app/(main)/page.tsx` — полная переработка главной
+- `apps/web/app/(main)/battle/new/page.tsx` — SVG-иконки, лупа, медные кнопки
+- `apps/web/app/(main)/battle/[id]/page.tsx` — статические классы, без эмодзи
+- `apps/web/app/(main)/learn/page.tsx` — colorMap, SVG-замки
+- `apps/web/app/(main)/profile/page.tsx` — инициалы, фикс Эрудиции
+- `apps/web/app/(auth)/login/page.tsx` — тёплые токены, focus ring
+- `figma-plugin/` — плагин для макетов
+
+**Задачи из SPRINT.md закрыты:** F1.2 (переработка)
+
+**Коммиты:**
+- `785883d` — feat(web): apply Dark Academia design system
+- `706f160` — fix(web): Liquid Glass nav, fix dynamic classes, card depth
+
 ---
 
 ## Яшкин (Backend)
