@@ -16,6 +16,12 @@ out/
 # NestJS
 /apps/api/dist/
 
+# Shared package build artifacts
+packages/shared/src/**/*.js
+packages/shared/src/**/*.js.map
+packages/shared/src/**/*.d.ts
+packages/shared/src/**/*.d.ts.map
+
 # Testing
 coverage/
 *.lcov

@@ -11,8 +11,10 @@ import { QuestionModule } from './question/question.module';
 import { LearnModule } from './learn/learn.module';
 import { AiModule } from './ai/ai.module';
 import { StatsModule } from './stats/stats.module';
+import { AppController } from './app.controller';
 
 @Module({
+  controllers: [AppController],
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,

@@ -12,26 +12,35 @@ import { PrismaService } from '../prisma/prisma.service';
 import { TelegramLoginDto } from './dto/telegram-login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
+import { JwtPayload } from './strategies/jwt.strategy';
 
-interface JwtPayload {
-  sub: string;
-  email?: string;
-  role: string;
+export interface TokenPair {
+  accessToken: string;
+  refreshToken: string;
 }
 
 @Injectable()
 export class AuthService {
   private readonly BCRYPT_ROUNDS = 12;
+  private readonly refreshSecret: string;
+  private readonly refreshExpiresIn: string;
 
   constructor(
     private readonly prisma: PrismaService,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
-  ) {}
+  ) {
+    this.refreshSecret = this.configService.get<string>(
+      'JWT_REFRESH_SECRET',
+      'razum-refresh-secret',
+    );
+    this.refreshExpiresIn = this.configService.get<string>(
+      'JWT_REFRESH_EXPIRES_IN',
+      '30d',
+    );
+  }
 
-  async telegramLogin(
-    dto: TelegramLoginDto,
-  ): Promise<{ accessToken: string }> {
+  async telegramLogin(dto: TelegramLoginDto): Promise<TokenPair> {
     this.validateTelegramHash(dto);
 
     const telegramId = BigInt(dto.id);
@@ -47,17 +56,18 @@ export class AuthService {
 
       user = await this.prisma.user.create({
         data: {
-          telegramId: BigInt(telegramId),
+          telegramId,
           name: displayName,
           avatarUrl: dto.photo_url || null,
+          stats: { create: {} },
         },
       });
     }
 
-    return this.generateToken(user);
+    return this.generateTokenPair(user);
   }
 
-  async register(dto: RegisterDto): Promise<{ accessToken: string }> {
+  async register(dto: RegisterDto): Promise<TokenPair> {
     const existing = await this.prisma.user.findUnique({
       where: { email: dto.email },
     });
@@ -76,13 +86,14 @@ export class AuthService {
         email: dto.email,
         passwordHash: hashedPassword,
         name: dto.name,
+        stats: { create: {} },
       },
     });
 
-    return this.generateToken(user);
+    return this.generateTokenPair(user);
   }
 
-  async login(dto: LoginDto): Promise<{ accessToken: string }> {
+  async login(dto: LoginDto): Promise<TokenPair> {
     const user = await this.prisma.user.findUnique({
       where: { email: dto.email },
     });
@@ -91,27 +102,54 @@ export class AuthService {
       throw new UnauthorizedException('Invalid email or password');
     }
 
-    const isPasswordValid = await bcrypt.compare(dto.password, user.passwordHash);
+    const isPasswordValid = await bcrypt.compare(
+      dto.password,
+      user.passwordHash,
+    );
     if (!isPasswordValid) {
       throw new UnauthorizedException('Invalid email or password');
     }
 
-    return this.generateToken(user);
+    return this.generateTokenPair(user);
   }
 
-  private generateToken(user: {
+  async refresh(payload: JwtPayload): Promise<TokenPair> {
+    const user = await this.prisma.user.findUnique({
+      where: { id: payload.sub },
+    });
+
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+
+    return this.generateTokenPair(user);
+  }
+
+  private generateTokenPair(user: {
     id: string;
     email?: string | null;
     role: string;
-  }): { accessToken: string } {
-    const payload: JwtPayload = {
+  }): TokenPair {
+    const basePayload = {
       sub: user.id,
       email: user.email || undefined,
       role: user.role,
     };
 
-    const accessToken = this.jwtService.sign(payload);
-    return { accessToken };
+    const accessToken = this.jwtService.sign({
+      ...basePayload,
+      type: 'access',
+    });
+
+    const refreshToken = this.jwtService.sign(
+      { ...basePayload, type: 'refresh' },
+      {
+        secret: this.refreshSecret,
+        expiresIn: this.refreshExpiresIn,
+      },
+    );
+
+    return { accessToken, refreshToken };
   }
 
   private validateTelegramHash(dto: TelegramLoginDto): void {
@@ -126,7 +164,7 @@ export class AuthService {
     const { hash, ...data } = dto;
     const checkString = Object.keys(data)
       .sort()
-      .map((key) => `${key}=${(data as Record<string, any>)[key]}`)
+      .map((key) => `${key}=${(data as Record<string, unknown>)[key]}`)
       .join('\n');
 
     const secretKey = crypto
@@ -143,7 +181,6 @@ export class AuthService {
       throw new UnauthorizedException('Invalid Telegram login hash');
     }
 
-    // Check auth_date is not too old (allow 1 day)
     const authAge = Math.floor(Date.now() / 1000) - dto.auth_date;
     if (authAge > 86400) {
       throw new UnauthorizedException('Telegram auth data expired');
