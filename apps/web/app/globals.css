@@ -24,4 +24,53 @@
   .glass {
     @apply bg-surface/80 backdrop-blur-md border border-accent/10;
   }
+
+  /* Liquid Glass — iOS 26 style */
+  .liquid-glass {
+    background: rgba(22, 33, 39, 0.25);
+    backdrop-filter: blur(40px) saturate(2.2) brightness(1.1);
+    -webkit-backdrop-filter: blur(40px) saturate(2.2) brightness(1.1);
+    border: 1px solid rgba(207, 157, 123, 0.08);
+    box-shadow:
+      0 12px 40px rgba(0, 0, 0, 0.25),
+      0 4px 12px rgba(0, 0, 0, 0.15),
+      inset 0 1px 0 rgba(255, 255, 255, 0.06),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .liquid-glass-active {
+    background: rgba(207, 157, 123, 0.12);
+    box-shadow:
+      0 0 20px rgba(207, 157, 123, 0.2),
+      0 0 60px rgba(207, 157, 123, 0.06),
+      inset 0 1px 0 rgba(207, 157, 123, 0.18),
+      inset 0 -1px 0 rgba(207, 157, 123, 0.05);
+    border-color: rgba(207, 157, 123, 0.18);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .liquid-glass-capsule {
+    background: rgba(22, 33, 39, 0.2);
+    backdrop-filter: blur(50px) saturate(2.5) brightness(1.15);
+    -webkit-backdrop-filter: blur(50px) saturate(2.5) brightness(1.15);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow:
+      0 16px 48px rgba(0, 0, 0, 0.3),
+      0 4px 16px rgba(0, 0, 0, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08),
+      inset 0 -0.5px 0 rgba(0, 0, 0, 0.15);
+  }
+
+  .liquid-glass-orb {
+    background: rgba(22, 33, 39, 0.2);
+    backdrop-filter: blur(50px) saturate(2.5) brightness(1.15);
+    -webkit-backdrop-filter: blur(50px) saturate(2.5) brightness(1.15);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    box-shadow:
+      0 12px 36px rgba(0, 0, 0, 0.3),
+      0 4px 12px rgba(0, 0, 0, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1),
+      inset 0 -0.5px 0 rgba(0, 0, 0, 0.15);
+  }
 }

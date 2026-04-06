@@ -24,7 +24,7 @@ export default function NewBattlePage() {
         <div className="relative">
           <div className="w-24 h-24 rounded-full bg-accent/20 animate-ping absolute inset-0" />
           <div className="w-24 h-24 rounded-full bg-accent/30 flex items-center justify-center relative">
-            <svg className="w-10 h-10 text-accent-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" /></svg>
+            <svg className="w-10 h-10 text-accent-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" /></svg>
           </div>
         </div>
         <div className="text-center space-y-2">
@@ -110,7 +110,7 @@ export default function NewBattlePage() {
               </p>
             </div>
           </div>
-          <Button fullWidth onClick={() => startSearch("player")} className="bg-accent hover:bg-accent/80 text-background">
+          <Button fullWidth onClick={() => startSearch("player")}>
             Найти соперника
           </Button>
         </div>

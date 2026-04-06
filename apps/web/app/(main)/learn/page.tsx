@@ -2,6 +2,11 @@
 
 import Card from "@/components/ui/Card";
 
+const colorMap: Record<string, { bg: string; text: string; progress: string }> = {
+  "accent-red": { bg: "bg-accent-red/20", text: "text-accent-red", progress: "bg-accent-red" },
+  "accent-gold": { bg: "bg-accent-gold/20", text: "text-accent-gold", progress: "bg-accent-gold" },
+};
+
 const branches = [
   {
     id: "strategy",
@@ -17,7 +22,7 @@ const branches = [
   {
     id: "logic",
     title: "Логика и аргументация",
-    color: "accent-green",
+    color: "accent-gold",
     modules: [
       { title: "Формальная логика", progress: 100, lessons: 6 },
       { title: "Логические ошибки", progress: 80, lessons: 10 },
@@ -27,11 +32,11 @@ const branches = [
   },
 ];
 
-function ProgressBar({ progress, color }: { progress: number; color: string }) {
+function ProgressBar({ progress, colorClass }: { progress: number; colorClass: string }) {
   return (
     <div className="h-1.5 bg-surface-light rounded-full overflow-hidden">
       <div
-        className={`h-full bg-${color} rounded-full transition-all`}
+        className={`h-full ${colorClass} rounded-full transition-all`}
         style={{ width: `${progress}%` }}
       />
     </div>
@@ -53,7 +58,7 @@ export default function LearnPage() {
       {branches.map((branch) => (
         <div key={branch.id} className="space-y-3">
           <div className="flex items-center gap-2 px-1">
-            <div className={`w-2 h-2 rounded-full bg-${branch.color}`} />
+            <div className={`w-2 h-2 rounded-full ${colorMap[branch.color].progress}`} />
             <h2 className="font-semibold text-sm">{branch.title}</h2>
           </div>
 
@@ -71,7 +76,7 @@ export default function LearnPage() {
                     <div
                       className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold ${
                         mod.progress === 100
-                          ? `bg-${branch.color}/20 text-${branch.color}`
+                          ? `${colorMap[branch.color].bg} ${colorMap[branch.color].text}`
                           : mod.progress > 0
                           ? "bg-surface-light text-white/60"
                           : "bg-surface-light text-text-muted"
@@ -89,13 +94,13 @@ export default function LearnPage() {
                     </div>
                   </div>
                   {mod.progress > 0 && (
-                    <span className={`text-xs font-semibold ${mod.progress === 100 ? `text-${branch.color}` : "text-text-muted"}`}>
+                    <span className={`text-xs font-semibold ${mod.progress === 100 ? colorMap[branch.color].text : "text-text-muted"}`}>
                       {mod.progress}%
                     </span>
                   )}
                 </div>
                 {mod.progress > 0 && mod.progress < 100 && (
-                  <ProgressBar progress={mod.progress} color={branch.color} />
+                  <ProgressBar progress={mod.progress} colorClass={colorMap[branch.color].progress} />
                 )}
               </Card>
             );

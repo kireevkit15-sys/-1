@@ -100,7 +100,7 @@ function LoginForm() {
               onChange={(e) => setUsername(e.target.value)}
               placeholder="Имя пользователя"
               required
-              className="w-full rounded-xl bg-surface-light border border-accent/15 px-4 py-3 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-accent/50 transition-colors"
+              className="w-full rounded-xl bg-surface-light border border-accent/25 px-4 py-3 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-accent/60 focus:ring-1 focus:ring-accent/20 transition-colors"
             />
           )}
           <input
@@ -109,7 +109,7 @@ function LoginForm() {
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Email"
             required
-            className="w-full rounded-xl bg-surface-light border border-accent/15 px-4 py-3 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-accent/50 transition-colors"
+            className="w-full rounded-xl bg-surface-light border border-accent/25 px-4 py-3 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-accent/60 focus:ring-1 focus:ring-accent/20 transition-colors"
           />
           <input
             type="password"
@@ -118,7 +118,7 @@ function LoginForm() {
             placeholder="Пароль"
             required
             minLength={6}
-            className="w-full rounded-xl bg-surface-light border border-accent/15 px-4 py-3 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-accent/50 transition-colors"
+            className="w-full rounded-xl bg-surface-light border border-accent/25 px-4 py-3 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-accent/60 focus:ring-1 focus:ring-accent/20 transition-colors"
           />
 
           {error && (

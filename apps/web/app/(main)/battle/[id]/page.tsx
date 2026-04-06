@@ -7,11 +7,11 @@ import Card from "@/components/ui/Card";
 type BattlePhase = "category" | "attack" | "defense" | "result";
 
 const categories = [
-  { id: "strategy", label: "Стратегия", icon: "S", color: "bg-accent-red/20 text-accent-red border-accent-red/30" },
-  { id: "philosophy", label: "Философия", icon: "F", color: "bg-accent/20 text-accent border-accent/30" },
-  { id: "logic", label: "Логика", icon: "L", color: "bg-accent-green/20 text-accent-green border-accent-green/30" },
-  { id: "rhetoric", label: "Риторика", icon: "R", color: "bg-accent-gold/20 text-accent-gold border-accent-gold/30" },
-  { id: "erudition", label: "Эрудиция", icon: "E", color: "bg-accent-purple/20 text-accent-purple border-accent-purple/30" },
+  { id: "strategy", label: "Стратегия", icon: "S", bg: "bg-accent-red/20", text: "text-accent-red", border: "border-accent-red/30" },
+  { id: "philosophy", label: "Философия", icon: "F", bg: "bg-accent/20", text: "text-accent", border: "border-accent/30" },
+  { id: "logic", label: "Логика", icon: "L", bg: "bg-accent-gold/20", text: "text-accent-gold", border: "border-accent-gold/30" },
+  { id: "rhetoric", label: "Риторика", icon: "R", bg: "bg-accent-warm/20", text: "text-accent-warm", border: "border-accent-warm/30" },
+  { id: "erudition", label: "Эрудиция", icon: "E", bg: "bg-accent-muted/20", text: "text-accent-muted", border: "border-accent-muted/30" },
 ];
 
 const mockQuestion = {
@@ -55,7 +55,7 @@ export default function BattlePage() {
                 setSelectedCategory(cat.id);
                 setPhase("attack");
               }}
-              className={`w-full flex items-center gap-4 p-4 rounded-2xl border transition-all active:scale-[0.98] ${cat.color}`}
+              className={`w-full flex items-center gap-4 p-4 rounded-2xl border transition-all active:scale-[0.98] ${cat.bg} ${cat.text} ${cat.border}`}
             >
               <span className="text-lg font-serif font-bold">{cat.icon}</span>
               <span className="font-semibold">{cat.label}</span>
@@ -182,7 +182,7 @@ export default function BattlePage() {
         <Card padding="sm">
           <div className="flex items-center justify-between">
             <span className="text-sm text-text-secondary">Оценка AI-судьи</span>
-            <span className="text-sm font-semibold text-accent-green">+1 балл</span>
+            <span className="text-sm font-semibold text-accent-gold">+1 балл</span>
           </div>
         </Card>
       </div>
