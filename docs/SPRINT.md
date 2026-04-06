@@ -146,10 +146,10 @@
 
 | # | Задача | Статус | Файлы |
 |---|--------|--------|-------|
-| N1 | Swagger/OpenAPI документация для всего API | todo | `apps/api/src/main.ts`, все controllers |
+| N1 | Swagger/OpenAPI документация для всего API | done | все controllers |
 | N2 | Health-check эндпоинты (/health, /ready) | done | `apps/api/src/health/` |
 | N3 | Rate limiting (глобальный + per-endpoint) | done | `apps/api/src/common/decorators/throttle.decorator.ts` |
-| N4 | Security headers (CSP, HSTS, X-Frame-Options) | todo | `apps/api/src/main.ts`, `nginx/nginx.conf` |
+| N4 | Security headers (CSP, HSTS, X-Frame-Options) | done | `apps/api/src/main.ts`, `nginx/nginx.conf` |
 | N5 | API versioning (/v1/) | todo | `apps/api/src/` |
 
 ## Новые задачи — Пользовательский опыт
@@ -168,7 +168,7 @@
 |---|--------|--------|-------|
 | N11 | Event tracking (батлы, ответы, сессии) | todo | `apps/api/src/analytics/` |
 | N12 | Дашборд PO — статистика в реальном времени | todo | `apps/web/app/admin/dashboard/` |
-| N13 | Структурированные логи (Winston/Pino) | todo | `apps/api/src/common/logger/` |
+| N13 | Структурированные логи (Pino) | done | `nestjs-pino` в `app.module.ts` |
 
 ## Новые задачи — Контент и игровые механики
 
@@ -182,10 +182,10 @@
 
 | # | Задача | Статус | Файлы |
 |---|--------|--------|-------|
-| N17 | Скрипт автоматического бэкапа БД | todo | `scripts/backup.sh` |
-| N18 | Seed-скрипт для demo-режима (для инвесторов) | todo | `prisma/seed-demo.ts` |
-| NX.1 | Dockerfile для apps/api | todo | `apps/api/Dockerfile` |
-| NX.2 | Dockerfile для apps/web | todo | `apps/web/Dockerfile` |
+| N17 | Скрипт автоматического бэкапа БД | done | `scripts/backup.sh` |
+| N18 | Seed-скрипт для demo-режима (для инвесторов) | done | `prisma/seed-demo.ts` |
+| NX.1 | Dockerfile для apps/api | done | `apps/api/Dockerfile` |
+| NX.2 | Dockerfile для apps/web | done | `apps/web/Dockerfile` |
 
 ---
 
