@@ -1,5 +1,6 @@
 import { Controller, Post, Body, UseGuards, Request } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
+import { Throttle } from '@nestjs/throttler';
 import { AuthService } from './auth.service';
 import { TelegramLoginDto } from './dto/telegram-login.dto';
 import { RegisterDto } from './dto/register.dto';
@@ -9,6 +10,7 @@ import { TokenPair } from './auth.service';
 import { JwtPayload } from './strategies/jwt.strategy';
 
 @ApiTags('Auth')
+@Throttle({ short: { ttl: 1000, limit: 2 }, medium: { ttl: 60000, limit: 5 }, long: { ttl: 3600000, limit: 60 } })
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
