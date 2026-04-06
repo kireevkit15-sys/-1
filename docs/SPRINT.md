@@ -96,7 +96,7 @@
 
 | # | Задача | Статус | Файлы | Блокер |
 |---|--------|--------|-------|--------|
-| BC1 | pgvector миграция + таблица `knowledge_chunks` | todo | `prisma/schema.prisma`, миграция | — |
+| BC1 | pgvector миграция + таблица `knowledge_chunks` | done | `prisma/schema.prisma`, миграция | — |
 | BC2 | `scripts/process-content.ts` — парсинг PDF/txt, очистка от мусора | todo | `scripts/process-content.ts` | — |
 | BC3 | `scripts/extract-concepts.ts` — извлечение концептов через Haiku | todo | `scripts/extract-concepts.ts` | BC2, LC4 |
 | BC4 | `scripts/embed-content.ts` — генерация эмбеддингов, запись в pgvector | todo | `scripts/embed-content.ts` | BC1, BC3 |
