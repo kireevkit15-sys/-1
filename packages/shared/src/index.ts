@@ -48,6 +48,15 @@ export {
 export { Branch } from './questions/types';
 export type { QuestionData } from './questions/types';
 
+// Content validation
+export type { ValidationResult } from './content/validation';
+export {
+  validateQuestion,
+  validateBatch,
+  checkDuplicateSimple,
+  checkDifficultyConsistency,
+} from './content/validation';
+
 // Constants
 export {
   MAX_HP,
