@@ -124,10 +124,10 @@
 
 | # | Задача | Статус | Файлы |
 |---|--------|--------|-------|
-| L5.1 | E2E тест батла (полный цикл) | todo | `apps/api/test/battle.e2e-spec.ts` |
+| L5.1 | E2E тест батла (полный цикл) | done | `apps/api/test/battle.e2e-spec.ts` |
 | L6.1 | AI сократический промпт | done | → выполнено в LC5 |
 | L6.2 | AI service — реальная интеграция Claude API | done | → выполнено в LC4 |
-| L7.1 | WarmupService (5 вопросов + стрик) | todo | `apps/api/src/stats/warmup.service.ts` |
+| L7.1 | WarmupService (5 вопросов + стрик) | done | `apps/api/src/warmup/` |
 
 ## Ядро контента — Таксономия и AI-генерация (Lead)
 
@@ -147,8 +147,8 @@
 | # | Задача | Статус | Файлы |
 |---|--------|--------|-------|
 | N1 | Swagger/OpenAPI документация для всего API | todo | `apps/api/src/main.ts`, все controllers |
-| N2 | Health-check эндпоинты (/health, /ready) | todo | `apps/api/src/health/` |
-| N3 | Rate limiting (глобальный + per-endpoint) | todo | `apps/api/src/common/` |
+| N2 | Health-check эндпоинты (/health, /ready) | done | `apps/api/src/health/` |
+| N3 | Rate limiting (глобальный + per-endpoint) | done | `apps/api/src/common/decorators/throttle.decorator.ts` |
 | N4 | Security headers (CSP, HSTS, X-Frame-Options) | todo | `apps/api/src/main.ts`, `nginx/nginx.conf` |
 | N5 | API versioning (/v1/) | todo | `apps/api/src/` |
 
