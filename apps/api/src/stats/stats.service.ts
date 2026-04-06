@@ -118,6 +118,62 @@ export class StatsService {
     };
   }
 
+  /**
+   * Increment a single XP stat for a user.
+   */
+  async addXp(
+    userId: string,
+    stat: 'logicXp' | 'eruditionXp' | 'strategyXp' | 'rhetoricXp' | 'intuitionXp',
+    amount: number,
+  ) {
+    const updated = await this.prisma.userStats.update({
+      where: { userId },
+      data: {
+        [stat]: { increment: amount },
+      },
+    });
+
+    return this.enrichStats(updated);
+  }
+
+  /**
+   * Award XP after a battle based on performance and branch.
+   *
+   * - 10 XP per correct answer → primary stat (branch-based)
+   * - 5 XP per correct answer → eruditionXp (secondary)
+   * - 25 XP bonus for winning → primary stat
+   */
+  async addBattleXp(
+    userId: string,
+    results: {
+      correct: number;
+      total: number;
+      won: boolean;
+      branch: 'STRATEGY' | 'LOGIC';
+    },
+  ) {
+    const XP_PER_CORRECT = 10;
+    const XP_WIN_BONUS = 25;
+    const XP_SECONDARY_PER_CORRECT = 5;
+
+    const primaryStat: 'strategyXp' | 'logicXp' =
+      results.branch === 'STRATEGY' ? 'strategyXp' : 'logicXp';
+
+    const primaryXp =
+      results.correct * XP_PER_CORRECT + (results.won ? XP_WIN_BONUS : 0);
+    const secondaryXp = results.correct * XP_SECONDARY_PER_CORRECT;
+
+    const updated = await this.prisma.userStats.update({
+      where: { userId },
+      data: {
+        [primaryStat]: { increment: primaryXp },
+        eruditionXp: { increment: secondaryXp },
+      },
+    });
+
+    return this.enrichStats(updated);
+  }
+
   async getLeaderboard(limit: number, offset: number) {
     const safeLimit = Math.min(limit, 100);
 

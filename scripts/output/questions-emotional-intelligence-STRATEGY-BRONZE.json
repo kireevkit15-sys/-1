@@ -1,0 +1,322 @@
+[
+  {
+    "category": "Эмоциональный интеллект",
+    "branch": "STRATEGY",
+    "difficulty": "BRONZE",
+    "text": "Коллега резко раскритиковал вашу идею. Вы злитесь. Какой первый шаг?",
+    "options": [
+      "Пауза и глубокий вдох",
+      "Ответить критикой",
+      "Уйти с совещания",
+      "Пожаловаться руководителю"
+    ],
+    "correctIndex": 0,
+    "explanation": "Пауза — базовый навык саморегуляции.",
+    "statPrimary": "strategyXp",
+    "statSecondary": "logicXp"
+  },
+  {
+    "category": "Эмоциональный интеллект",
+    "branch": "STRATEGY",
+    "difficulty": "BRONZE",
+    "text": "Что такое эмпатия?",
+    "options": [
+      "Умение давать советы",
+      "Способность понимать чувства другого",
+      "Желание соглашаться",
+      "Способность скрывать эмоции"
+    ],
+    "correctIndex": 1,
+    "explanation": "Эмпатия — способность распознавать эмоции другого.",
+    "statPrimary": "strategyXp",
+    "statSecondary": "logicXp"
+  },
+  {
+    "category": "Эмоциональный интеллект",
+    "branch": "STRATEGY",
+    "difficulty": "BRONZE",
+    "text": "Друг подавлен из-за проблем на работе. Какая реакция лучше?",
+    "options": [
+      "Предложить план",
+      "Рассказать о своей проблеме",
+      "Выслушать, признать чувства, спросить чем помочь",
+      "Сказать что всё наладится"
+    ],
+    "correctIndex": 2,
+    "explanation": "Активное слушание — основа поддержки.",
+    "statPrimary": "strategyXp",
+    "statSecondary": "logicXp"
+  },
+  {
+    "category": "Эмоциональный интеллект",
+    "branch": "STRATEGY",
+    "difficulty": "BRONZE",
+    "text": "Какой компонент НЕ относится к EQ?",
+    "options": [
+      "Самосознание",
+      "Высокий IQ",
+      "Саморегуляция",
+      "Социальные навыки"
+    ],
+    "correctIndex": 1,
+    "explanation": "IQ не входит в структуру EQ.",
+    "statPrimary": "strategyXp",
+    "statSecondary": "logicXp"
+  },
+  {
+    "category": "Эмоциональный интеллект",
+    "branch": "STRATEGY",
+    "difficulty": "BRONZE",
+    "text": "Отказ на собеседовании мечты. Какая реакция зрелая?",
+    "options": [
+      "Я неудачник",
+      "Мне всё равно",
+      "Обидно, но проанализирую ошибки",
+      "Это несправедливо"
+    ],
+    "correctIndex": 2,
+    "explanation": "Признание эмоции + конструктивный анализ.",
+    "statPrimary": "strategyXp",
+    "statSecondary": "logicXp"
+  },
+  {
+    "category": "Эмоциональный интеллект",
+    "branch": "STRATEGY",
+    "difficulty": "BRONZE",
+    "text": "Девушка: Ты меня не слушаешь. Что она имеет в виду?",
+    "options": [
+      "Хочет поссориться",
+      "Чувствует себя неважной, хочет внимания",
+      "Манипулирует",
+      "Проблемы со слухом"
+    ],
+    "correctIndex": 1,
+    "explanation": "За обвинениями стоит потребность во внимании.",
+    "statPrimary": "strategyXp",
+    "statSecondary": "logicXp"
+  },
+  {
+    "category": "Эмоциональный интеллект",
+    "branch": "STRATEGY",
+    "difficulty": "BRONZE",
+    "text": "Что такое саморегуляция?",
+    "options": [
+      "Подавление эмоций",
+      "Управление эмоциями и выбор реакции",
+      "Никогда не злиться",
+      "Контроль чужих эмоций"
+    ],
+    "correctIndex": 1,
+    "explanation": "Не подавление, а осознанный выбор реакции.",
+    "statPrimary": "strategyXp",
+    "statSecondary": "logicXp"
+  },
+  {
+    "category": "Эмоциональный интеллект",
+    "branch": "STRATEGY",
+    "difficulty": "BRONZE",
+    "text": "После тяжёлого дня срываетесь на близких. Что делать?",
+    "options": [
+      "Терпеть",
+      "Предупредить и попросить время",
+      "Выпить алкоголь",
+      "Лечь спать молча"
+    ],
+    "correctIndex": 1,
+    "explanation": "Осознание + информирование близких.",
+    "statPrimary": "strategyXp",
+    "statSecondary": "logicXp"
+  },
+  {
+    "category": "Эмоциональный интеллект",
+    "branch": "STRATEGY",
+    "difficulty": "BRONZE",
+    "text": "Незнакомец делает замечание по технике в зале. Реакция?",
+    "options": [
+      "Проигнорировать",
+      "Сказать не лезть",
+      "Выслушать и оценить полезность",
+      "Сразу изменить технику"
+    ],
+    "correctIndex": 2,
+    "explanation": "Открытость к фидбеку — признак зрелого EQ.",
+    "statPrimary": "strategyXp",
+    "statSecondary": "logicXp"
+  },
+  {
+    "category": "Эмоциональный интеллект",
+    "branch": "STRATEGY",
+    "difficulty": "BRONZE",
+    "text": "Какой навык — фундамент EQ?",
+    "options": [
+      "Мотивация других",
+      "Публичные выступления",
+      "Самосознание",
+      "Разрешение конфликтов"
+    ],
+    "correctIndex": 2,
+    "explanation": "Без самосознания невозможно управлять эмоциями.",
+    "statPrimary": "strategyXp",
+    "statSecondary": "logicXp"
+  },
+  {
+    "category": "Эмоциональный интеллект",
+    "branch": "STRATEGY",
+    "difficulty": "BRONZE",
+    "text": "Брат бросил вуз. Родители просят повлиять. Что делать?",
+    "options": [
+      "Лекция об образовании",
+      "Поговорить наедине и выслушать",
+      "Надавить с родителями",
+      "Это не ваше дело"
+    ],
+    "correctIndex": 1,
+    "explanation": "Сначала понять причины через эмпатичный разговор.",
+    "statPrimary": "strategyXp",
+    "statSecondary": "logicXp"
+  },
+  {
+    "category": "Эмоциональный интеллект",
+    "branch": "STRATEGY",
+    "difficulty": "BRONZE",
+    "text": "Завидуете успеху друга. Что делать?",
+    "options": [
+      "Подавить зависть",
+      "Признать — она указывает на ваши желания",
+      "Перестать общаться",
+      "Обесценить его успех"
+    ],
+    "correctIndex": 1,
+    "explanation": "Зависть — сигнал неудовлетворённых амбиций.",
+    "statPrimary": "strategyXp",
+    "statSecondary": "logicXp"
+  },
+  {
+    "category": "Эмоциональный интеллект",
+    "branch": "STRATEGY",
+    "difficulty": "BRONZE",
+    "text": "В споре поняли что жена права. Реакция?",
+    "options": [
+      "Настаивать на своём",
+      "Перевести тему",
+      "Признать ошибку спокойно",
+      "Согласиться, но напомнить её ошибки"
+    ],
+    "correctIndex": 2,
+    "explanation": "Признание ошибок — признак силы.",
+    "statPrimary": "strategyXp",
+    "statSecondary": "logicXp"
+  },
+  {
+    "category": "Эмоциональный интеллект",
+    "branch": "STRATEGY",
+    "difficulty": "BRONZE",
+    "text": "Что такое эмоциональный триггер?",
+    "options": [
+      "Стимул, вызывающий автоматическую сильную реакцию",
+      "Техника управления чужими эмоциями",
+      "Термин для нервного срыва",
+      "Способ мотивации"
+    ],
+    "correctIndex": 0,
+    "explanation": "Триггер — стимул, связанный с прошлым опытом.",
+    "statPrimary": "strategyXp",
+    "statSecondary": "logicXp"
+  },
+  {
+    "category": "Эмоциональный интеллект",
+    "branch": "STRATEGY",
+    "difficulty": "BRONZE",
+    "text": "Друг опаздывает постоянно. Как выразить недовольство?",
+    "options": [
+      "Тоже опаздывать",
+      "Не приглашать",
+      "Я-сообщение: когда ты опаздываешь, я чувствую...",
+      "Пожаловаться друзьям"
+    ],
+    "correctIndex": 2,
+    "explanation": "Я-сообщение — коммуникация без обвинений.",
+    "statPrimary": "strategyXp",
+    "statSecondary": "logicXp"
+  },
+  {
+    "category": "Эмоциональный интеллект",
+    "branch": "STRATEGY",
+    "difficulty": "BRONZE",
+    "text": "Коллега подавлен, но молчит. Что проявит эмпатию?",
+    "options": [
+      "Не обращать внимания",
+      "Рассказать другим",
+      "Подойти и предложить поговорить",
+      "Написать руководителю"
+    ],
+    "correctIndex": 2,
+    "explanation": "Деликатное предложение поддержки без давления.",
+    "statPrimary": "strategyXp",
+    "statSecondary": "logicXp"
+  },
+  {
+    "category": "Эмоциональный интеллект",
+    "branch": "STRATEGY",
+    "difficulty": "BRONZE",
+    "text": "Пример эмоционального заражения?",
+    "options": [
+      "Чтение книги",
+      "Паника одного вызывает панику толпы",
+      "Запись к психологу",
+      "Анализ настроения"
+    ],
+    "correctIndex": 1,
+    "explanation": "Эмоции передаются от человека к группе.",
+    "statPrimary": "strategyXp",
+    "statSecondary": "logicXp"
+  },
+  {
+    "category": "Эмоциональный интеллект",
+    "branch": "STRATEGY",
+    "difficulty": "BRONZE",
+    "text": "Нервничаете перед разговором о повышении. Что делать?",
+    "options": [
+      "Убедить что не важно",
+      "Признать тревогу, подготовить аргументы",
+      "Успокоительное",
+      "Отложить"
+    ],
+    "correctIndex": 1,
+    "explanation": "Признание + подготовка = эффективная саморегуляция.",
+    "statPrimary": "strategyXp",
+    "statSecondary": "logicXp"
+  },
+  {
+    "category": "Эмоциональный интеллект",
+    "branch": "STRATEGY",
+    "difficulty": "BRONZE",
+    "text": "Отец критикует профессию. Зрелая реакция?",
+    "options": [
+      "Разозлиться",
+      "Согласиться и сменить",
+      "Объяснить выбор, понимая его заботу",
+      "Обвинить в неудачах"
+    ],
+    "correctIndex": 2,
+    "explanation": "Зрелость — выдерживать неодобрение, понимая мотивы.",
+    "statPrimary": "strategyXp",
+    "statSecondary": "logicXp"
+  },
+  {
+    "category": "Эмоциональный интеллект",
+    "branch": "STRATEGY",
+    "difficulty": "BRONZE",
+    "text": "Что такое активное слушание?",
+    "options": [
+      "Музыка при работе",
+      "Полное внимание с перефразированием",
+      "Многозадачность",
+      "Перебивать вопросами"
+    ],
+    "correctIndex": 1,
+    "explanation": "Полная сосредоточенность с демонстрацией понимания.",
+    "statPrimary": "strategyXp",
+    "statSecondary": "logicXp"
+  }
+]
