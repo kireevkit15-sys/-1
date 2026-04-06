@@ -212,13 +212,13 @@
 
 | # | Задача | Статус | Файлы |
 |---|--------|--------|-------|
-| B2.1 | Создать AuthModule | todo | `apps/api/src/auth/auth.module.ts` |
-| B2.2 | Написать auth.controller (telegram, register, login, refresh) | todo | `apps/api/src/auth/auth.controller.ts` |
-| B2.3 | Написать auth.service (валидация, JWT) | todo | `apps/api/src/auth/auth.service.ts` |
-| B2.4 | Создать JWT strategy | todo | `apps/api/src/auth/strategies/jwt.strategy.ts` |
-| B2.5 | Создать Telegram strategy | todo | `apps/api/src/auth/strategies/telegram.strategy.ts` |
-| B2.6 | Создать UserModule (GET /users/me, PATCH /users/me) | todo | `apps/api/src/user/` |
-| B2.7 | Добавить таблицы Question, Battle, BattleRound в Prisma → миграция | todo | `prisma/schema.prisma` |
+| B2.1 | Создать AuthModule | done | `apps/api/src/auth/auth.module.ts` |
+| B2.2 | Написать auth.controller (telegram, register, login, refresh) | done | `apps/api/src/auth/auth.controller.ts` |
+| B2.3 | Написать auth.service (валидация, JWT) | done | `apps/api/src/auth/auth.service.ts` |
+| B2.4 | Создать JWT strategy | done | `apps/api/src/auth/strategies/jwt.strategy.ts` |
+| B2.5 | Создать Telegram strategy | done | `apps/api/src/auth/strategies/telegram.strategy.ts` |
+| B2.6 | Создать UserModule (GET /users/me, PATCH /users/me) | done | `apps/api/src/user/` |
+| B2.7 | Добавить таблицы Question, Battle, BattleRound в Prisma → миграция | done | `prisma/schema.prisma` |
 
 ---
 

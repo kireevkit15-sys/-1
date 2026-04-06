@@ -143,6 +143,43 @@
 
 ---
 
+### 2026-04-06 — Сессия 2: Auth module, JWT, Swagger
+
+**Время:** ~1.5 часа
+**Статус:** Завершена
+
+**Что сделано:**
+- Переработан AuthModule: добавлены PassportModule, PrismaModule
+- Созданы JwtStrategy и JwtRefreshStrategy (passport-jwt)
+- Добавлена поддержка refresh tokens (отдельный секрет, 30 дней TTL)
+- Добавлен POST /auth/refresh эндпоинт с JwtRefreshGuard
+- Авто-создание UserStats при регистрации и Telegram-логине
+- Подключён Swagger UI на /docs с ApiTags и ApiOperation
+- Добавлен корневой GET / с информацией об API
+- Обновлён .gitignore (исключены build-артефакты shared)
+- Все эндпоинты проверены: register, login, refresh, /users/me
+
+**Файлы созданы/изменены:**
+- `apps/api/src/auth/strategies/jwt.strategy.ts` — JWT Passport strategy
+- `apps/api/src/auth/strategies/jwt-refresh.strategy.ts` — Refresh strategy
+- `apps/api/src/auth/strategies/telegram.strategy.ts` — Telegram auth docs
+- `apps/api/src/auth/guards/jwt-auth.guard.ts` — переделан на Passport
+- `apps/api/src/auth/guards/jwt-refresh.guard.ts` — guard для refresh
+- `apps/api/src/auth/auth.module.ts` — PassportModule, PrismaModule, стратегии
+- `apps/api/src/auth/auth.service.ts` — refresh tokens, auto UserStats
+- `apps/api/src/auth/auth.controller.ts` — refresh endpoint, Swagger декораторы
+- `apps/api/src/user/user.controller.ts` — Swagger декораторы
+- `apps/api/src/app.controller.ts` — корневой GET /
+- `apps/api/src/main.ts` — Swagger setup
+- `.gitignore` — исключение shared build artifacts
+
+**Задачи из SPRINT.md закрыты:** B2.1, B2.2, B2.3, B2.4, B2.5, B2.6, B2.7
+
+**Коммиты:**
+- `2baf0de` — feat(auth): complete Auth module — Passport JWT, refresh tokens, Swagger docs
+
+---
+
 ## Сводка по неделям
 
 ### Неделя 1 (2026-04-05 — 2026-04-11)
@@ -152,3 +189,4 @@
 | 04-05 | Никита | Scaffold + CI + pnpm + README | L1.1-L1.10 (все 10) |
 | 04-05 | Бонди | Проверка фронтенда на 375px, все страницы ок | F1.9, F1.10 |
 | 04-06 | Яшкин | Миграция, ConfigModule, exception filter, NestJS запуск | B1.3, B1.6, B1.9, B1.10 |
+| 04-06 | Яшкин | Auth module, JWT strategies, refresh tokens, Swagger | B2.1-B2.7 (все 7) |
