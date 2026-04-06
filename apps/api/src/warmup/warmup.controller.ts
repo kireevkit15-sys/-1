@@ -13,6 +13,7 @@ import {
   ApiOkResponse,
   ApiConflictResponse,
   ApiBadRequestResponse,
+  ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { WarmupService } from './warmup.service';
@@ -31,6 +32,7 @@ export class WarmupController {
   @ApiOkResponse({
     description: 'Вопросы разминки или результат, если уже выполнена сегодня',
   })
+  @ApiUnauthorizedResponse({ description: 'Не авторизован' })
   @Get('today')
   async getToday(@Request() req: any) {
     return this.warmupService.getToday(req.user.sub);
@@ -44,6 +46,7 @@ export class WarmupController {
   @ApiBadRequestResponse({
     description: 'Нет активной сессии разминки или некорректные вопросы',
   })
+  @ApiUnauthorizedResponse({ description: 'Не авторизован' })
   @Post('submit')
   async submit(@Request() req: any, @Body() dto: SubmitWarmupDto) {
     return this.warmupService.submit(req.user.sub, dto.answers);

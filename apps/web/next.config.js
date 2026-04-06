@@ -6,6 +6,7 @@ const withSerwist = require("@serwist/next").default({
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: "standalone",
   transpilePackages: ["@razum/shared"],
   experimental: {
     serverActions: true,

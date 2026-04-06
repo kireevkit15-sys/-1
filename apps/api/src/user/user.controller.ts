@@ -15,6 +15,8 @@ import {
   ApiOperation,
   ApiBearerAuth,
   ApiQuery,
+  ApiResponse,
+  ApiParam,
 } from '@nestjs/swagger';
 import { UserService } from './user.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -37,6 +39,8 @@ export class UserController {
     description: 'Количество последних батлов (по умолчанию 10)',
   })
   @ApiBearerAuth()
+  @ApiResponse({ status: 200, description: 'Профиль текущего пользователя' })
+  @ApiResponse({ status: 401, description: 'Не авторизован' })
   @UseGuards(JwtAuthGuard)
   @Get('me')
   async getMe(
@@ -49,6 +53,8 @@ export class UserController {
 
   @ApiOperation({ summary: 'Обновить профиль' })
   @ApiBearerAuth()
+  @ApiResponse({ status: 200, description: 'Профиль обновлён' })
+  @ApiResponse({ status: 401, description: 'Не авторизован' })
   @UseGuards(JwtAuthGuard)
   @Patch('me')
   async updateMe(@Request() req: any, @Body() dto: UpdateUserDto) {
@@ -60,6 +66,9 @@ export class UserController {
     description:
       'Возвращает публичный профиль с обогащёнными статами и статистикой батлов',
   })
+  @ApiParam({ name: 'id', description: 'UUID пользователя' })
+  @ApiResponse({ status: 200, description: 'Публичный профиль пользователя' })
+  @ApiResponse({ status: 404, description: 'Пользователь не найден' })
   @Get(':id/profile')
   async getProfile(@Param('id') id: string) {
     return this.userService.getProfile(id);

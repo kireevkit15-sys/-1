@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+import { LoggerModule } from 'nestjs-pino';
 import { join } from 'path';
 import { validate } from './config/env.validation';
 import { PrismaModule } from './prisma/prisma.module';
@@ -45,6 +46,30 @@ import { AppController } from './app.controller';
         limit: 1000,
       },
     ]),
+    LoggerModule.forRoot({
+      pinoHttp: {
+        transport:
+          process.env.NODE_ENV !== 'production'
+            ? {
+                target: 'pino-pretty',
+                options: { colorize: true, singleLine: true },
+              }
+            : undefined,
+        level: process.env.LOG_LEVEL || 'info',
+        autoLogging: {
+          ignore: (req) =>
+            ['/health', '/ready'].includes((req as { url?: string }).url ?? ''),
+        },
+        serializers: {
+          req: (req) => ({
+            method: req.method,
+            url: req.url,
+            id: req.id,
+          }),
+          res: (res) => ({ statusCode: res.statusCode }),
+        },
+      },
+    }),
     PrismaModule,
     RedisModule,
     AuthModule,

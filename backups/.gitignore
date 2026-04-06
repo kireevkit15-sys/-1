@@ -1,0 +1,8 @@
+# Ignore all backup files
+*
+
+# But keep this .gitignore
+!.gitignore
+
+# And keep the logs directory marker
+!logs/

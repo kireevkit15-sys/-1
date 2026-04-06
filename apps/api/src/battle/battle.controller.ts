@@ -10,10 +10,20 @@ import {
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiBearerAuth,
+  ApiResponse,
+  ApiParam,
+  ApiQuery,
+} from '@nestjs/swagger';
 import { BattleService } from './battle.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CreateBattleDto } from './dto/create-battle.dto';
 
+@ApiTags('Battles')
+@ApiBearerAuth()
 @Controller('battles')
 @UseGuards(JwtAuthGuard)
 export class BattleController {
@@ -24,6 +34,10 @@ export class BattleController {
    * mode='bot'  -> bot battle
    * mode='pvp'  -> PvP matchmaking battle
    */
+  @ApiOperation({ summary: 'Создать новый батл (bot или pvp)' })
+  @ApiResponse({ status: 201, description: 'Батл создан' })
+  @ApiResponse({ status: 400, description: 'Неизвестный режим батла' })
+  @ApiResponse({ status: 401, description: 'Не авторизован' })
   @Post()
   async createBattle(@Request() req: any, @Body() dto: CreateBattleDto) {
     const userId: string = req.user.sub;
@@ -47,6 +61,11 @@ export class BattleController {
    * Must be registered BEFORE the `:id` route so NestJS does not treat
    * "history" as a battle id.
    */
+  @ApiOperation({ summary: 'История батлов текущего пользователя' })
+  @ApiQuery({ name: 'page', required: false, type: Number, description: 'Номер страницы (по умолчанию 1)' })
+  @ApiQuery({ name: 'limit', required: false, type: Number, description: 'Количество на странице (по умолчанию 10, макс 100)' })
+  @ApiResponse({ status: 200, description: 'Список батлов с пагинацией' })
+  @ApiResponse({ status: 401, description: 'Не авторизован' })
   @Get('history')
   async getHistory(
     @Request() req: any,
@@ -64,6 +83,12 @@ export class BattleController {
    * GET /battles/:id — Get battle state (supports reconnection).
    * Only participants (player1 / player2) may access the battle.
    */
+  @ApiOperation({ summary: 'Получить состояние батла по ID' })
+  @ApiParam({ name: 'id', description: 'UUID батла' })
+  @ApiResponse({ status: 200, description: 'Состояние батла' })
+  @ApiResponse({ status: 401, description: 'Не авторизован' })
+  @ApiResponse({ status: 403, description: 'Вы не участник этого батла' })
+  @ApiResponse({ status: 404, description: 'Батл не найден' })
   @Get(':id')
   async getBattle(@Param('id') id: string, @Request() req: any) {
     const userId: string = req.user.sub;
