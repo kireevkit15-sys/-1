@@ -92,6 +92,20 @@
 | B4.5 | Сгенерировать и проверить 200 вопросов (Стратегия + Логика) | done | `scripts/output/` |
 | B4.6 | Обновить prisma/seed.ts для загрузки 200 вопросов | done | `prisma/seed.ts` |
 
+## Ядро контента — RAG-пайплайн и генерация (Backend)
+
+| # | Задача | Статус | Файлы | Блокер |
+|---|--------|--------|-------|--------|
+| BC1 | pgvector миграция + таблица `knowledge_chunks` | todo | `prisma/schema.prisma`, миграция | — |
+| BC2 | `scripts/process-content.ts` — парсинг PDF/txt, очистка от мусора | todo | `scripts/process-content.ts` | — |
+| BC3 | `scripts/extract-concepts.ts` — извлечение концептов через Haiku | todo | `scripts/extract-concepts.ts` | BC2, LC4 |
+| BC4 | `scripts/embed-content.ts` — генерация эмбеддингов, запись в pgvector | todo | `scripts/embed-content.ts` | BC1, BC3 |
+| BC5 | KnowledgeService — поиск по векторной базе (similarity search) | todo | `apps/api/src/knowledge/` | BC4 |
+| BC6 | Обновить `generate-questions.ts` — батч-генерация по таксономии с антидубль-проверкой | todo | `scripts/generate-questions.ts` | LC1, LC3 |
+| BC7 | Адаптивная генерация — QuestionService.getForBattle() с fallback на AI | todo | `apps/api/src/question/question.service.ts` | BC5, LC4 |
+| BC8 | Система обратной связи — лайк/дизлайк/репорт на вопросы + авто-ревью | todo | `apps/api/src/question/` | — |
+| BC9 | Автоматическая адаптация сложности по статистике ответов | todo | `apps/api/src/question/`, `apps/api/src/stats/` | BC8 |
+
 ---
 
 # Текущие задачи Никиты (Lead)
@@ -111,9 +125,22 @@
 | # | Задача | Статус | Файлы |
 |---|--------|--------|-------|
 | L5.1 | E2E тест батла (полный цикл) | todo | `apps/api/test/battle.e2e-spec.ts` |
-| L6.1 | AI сократический промпт | todo | `apps/api/src/ai/prompts/socratic-tutor.ts` |
-| L6.2 | AI service — реальная интеграция Claude API | todo | `apps/api/src/ai/ai.service.ts` |
+| L6.1 | AI сократический промпт | todo | → перенесено в LC5 |
+| L6.2 | AI service — реальная интеграция Claude API | todo | → перенесено в LC4 |
 | L7.1 | WarmupService (5 вопросов + стрик) | todo | `apps/api/src/stats/warmup.service.ts` |
+
+## Ядро контента — Таксономия и AI-генерация (Lead)
+
+| # | Задача | Статус | Файлы |
+|---|--------|--------|-------|
+| LC1 | Создать полную таксономию знаний (Стратегия + Логика, все подветки, темы, подтемы) | todo | `content/taxonomy.json` |
+| LC2 | Архитектура RAG-пайплайна (структура content/, форматы, flow) | todo | `content/`, `docs/ARCHITECTURE.md` |
+| LC3 | Промпт для батч-генерации вопросов по таксономии (антидубли, уровни, примеры) | todo | `apps/api/src/ai/prompts/question-generator.ts` |
+| LC4 | AI service — реальная интеграция Claude API (L6.2) | todo | `apps/api/src/ai/ai.service.ts` |
+| LC5 | AI сократический промпт для обучения (L6.1) | todo | `apps/api/src/ai/prompts/socratic-tutor.ts` |
+| LC6 | Обработать транскрипты Маркаряна → structured JSON (первый блогерский источник) | todo | `content/sources/bloggers/markaryan/` |
+| LC7 | Ревью и валидация первого батча 2000 вопросов | todo | — |
+| LC8 | Система контроля качества вопросов (автопроверки, правила валидации) | todo | `packages/shared/src/content/validation.ts` |
 
 ## Новые задачи — Инфраструктура и безопасность
 
