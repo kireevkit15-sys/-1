@@ -8,16 +8,20 @@
   }
 
   body {
-    @apply bg-background text-white antialiased;
+    @apply bg-background text-text-primary antialiased;
   }
 
   * {
-    @apply border-white/10;
+    @apply border-border;
+  }
+
+  ::selection {
+    background-color: rgba(207, 157, 123, 0.25);
   }
 }
 
 @layer components {
   .glass {
-    @apply bg-surface/80 backdrop-blur-md border border-white/5;
+    @apply bg-surface/80 backdrop-blur-md border border-accent/10;
   }
 }

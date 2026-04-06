@@ -18,7 +18,7 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
       <div
         ref={ref}
         className={`
-          rounded-2xl bg-surface border border-white/5
+          rounded-2xl bg-surface border border-accent/10
           ${paddingStyles[padding]}
           ${className}
         `}

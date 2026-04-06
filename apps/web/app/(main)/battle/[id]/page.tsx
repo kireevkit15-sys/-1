@@ -7,11 +7,11 @@ import Card from "@/components/ui/Card";
 type BattlePhase = "category" | "attack" | "defense" | "result";
 
 const categories = [
-  { id: "strategy", label: "Стратегия", emoji: "♟️", color: "bg-accent-red/20 text-accent-red border-accent-red/30" },
-  { id: "philosophy", label: "Философия", emoji: "🏛️", color: "bg-accent-blue/20 text-accent-blue border-accent-blue/30" },
-  { id: "logic", label: "Логика", emoji: "🔗", color: "bg-accent-green/20 text-accent-green border-accent-green/30" },
-  { id: "rhetoric", label: "Риторика", emoji: "🎤", color: "bg-accent-gold/20 text-accent-gold border-accent-gold/30" },
-  { id: "erudition", label: "Эрудиция", emoji: "📚", color: "bg-accent-purple/20 text-accent-purple border-accent-purple/30" },
+  { id: "strategy", label: "Стратегия", icon: "S", color: "bg-accent-red/20 text-accent-red border-accent-red/30" },
+  { id: "philosophy", label: "Философия", icon: "F", color: "bg-accent/20 text-accent border-accent/30" },
+  { id: "logic", label: "Логика", icon: "L", color: "bg-accent-green/20 text-accent-green border-accent-green/30" },
+  { id: "rhetoric", label: "Риторика", icon: "R", color: "bg-accent-gold/20 text-accent-gold border-accent-gold/30" },
+  { id: "erudition", label: "Эрудиция", icon: "E", color: "bg-accent-purple/20 text-accent-purple border-accent-purple/30" },
 ];
 
 const mockQuestion = {
@@ -29,13 +29,13 @@ export default function BattlePage() {
   // Category select phase
   if (phase === "category") {
     return (
-      <div className="px-4 pt-8 pb-6 space-y-6">
+      <div className="px-4 pt-8 pb-24 space-y-6">
         {/* Round indicator */}
         <div className="flex items-center justify-between">
-          <span className="text-sm text-white/40">Раунд {round}/5</span>
+          <span className="text-sm text-text-muted">Раунд {round}/5</span>
           <div className="flex items-center gap-3 text-sm font-mono">
-            <span className="text-accent-blue">{score.player}</span>
-            <span className="text-white/20">:</span>
+            <span className="text-accent">{score.player}</span>
+            <span className="text-text-muted">:</span>
             <span className="text-accent-red">{score.opponent}</span>
           </div>
         </div>
@@ -43,7 +43,7 @@ export default function BattlePage() {
         {/* Phase title */}
         <div className="text-center space-y-2">
           <h2 className="text-xl font-bold">Выбери категорию</h2>
-          <p className="text-white/40 text-sm">Атакуй соперника вопросом из выбранной области</p>
+          <p className="text-text-muted text-sm">Атакуй соперника вопросом из выбранной области</p>
         </div>
 
         {/* Categories */}
@@ -57,7 +57,7 @@ export default function BattlePage() {
               }}
               className={`w-full flex items-center gap-4 p-4 rounded-2xl border transition-all active:scale-[0.98] ${cat.color}`}
             >
-              <span className="text-2xl">{cat.emoji}</span>
+              <span className="text-lg font-serif font-bold">{cat.icon}</span>
               <span className="font-semibold">{cat.label}</span>
             </button>
           ))}
@@ -69,26 +69,26 @@ export default function BattlePage() {
   // Attack phase
   if (phase === "attack") {
     return (
-      <div className="px-4 pt-8 pb-6 space-y-6">
+      <div className="px-4 pt-8 pb-24 space-y-6">
         <div className="flex items-center justify-between">
-          <span className="text-sm text-white/40">Раунд {round}/5 — Атака</span>
+          <span className="text-sm text-text-muted">Раунд {round}/5 — Атака</span>
           <div className="flex items-center gap-3 text-sm font-mono">
-            <span className="text-accent-blue">{score.player}</span>
-            <span className="text-white/20">:</span>
+            <span className="text-accent">{score.player}</span>
+            <span className="text-text-muted">:</span>
             <span className="text-accent-red">{score.opponent}</span>
           </div>
         </div>
 
         <Card padding="lg" className="space-y-4">
           <div className="flex items-center gap-2">
-            <span className="text-lg">
-              {categories.find((c) => c.id === selectedCategory)?.emoji}
+            <span className="text-lg font-serif font-bold">
+              {categories.find((c) => c.id === selectedCategory)?.icon}
             </span>
-            <h3 className="font-semibold text-sm text-white/60">
+            <h3 className="font-semibold text-sm text-text-secondary">
               {categories.find((c) => c.id === selectedCategory)?.label}
             </h3>
           </div>
-          <p className="text-white/80 leading-relaxed">
+          <p className="text-text-primary leading-relaxed">
             Соперник получает ваш вопрос. Ожидайте ответа...
           </p>
           <div className="pt-2">
@@ -104,22 +104,22 @@ export default function BattlePage() {
   // Defense phase
   if (phase === "defense") {
     return (
-      <div className="px-4 pt-8 pb-6 space-y-6">
+      <div className="px-4 pt-8 pb-24 space-y-6">
         <div className="flex items-center justify-between">
-          <span className="text-sm text-white/40">Раунд {round}/5 — Защита</span>
+          <span className="text-sm text-text-muted">Раунд {round}/5 — Защита</span>
           <div className="flex items-center gap-3 text-sm font-mono">
-            <span className="text-accent-blue">{score.player}</span>
-            <span className="text-white/20">:</span>
+            <span className="text-accent">{score.player}</span>
+            <span className="text-text-muted">:</span>
             <span className="text-accent-red">{score.opponent}</span>
           </div>
         </div>
 
         <Card padding="lg" className="space-y-4">
           <div className="flex items-center gap-2">
-            <span className="text-lg">🔗</span>
-            <h3 className="font-semibold text-sm text-white/60">Логика</h3>
+            <span className="text-lg font-serif font-bold">L</span>
+            <h3 className="font-semibold text-sm text-text-secondary">Логика</h3>
           </div>
-          <p className="text-white/90 leading-relaxed">{mockQuestion.text}</p>
+          <p className="text-text-primary leading-relaxed">{mockQuestion.text}</p>
         </Card>
 
         <div className="space-y-3">
@@ -128,7 +128,7 @@ export default function BattlePage() {
             onChange={(e) => setAnswer(e.target.value)}
             placeholder="Напишите ваш ответ..."
             rows={4}
-            className="w-full rounded-2xl bg-surface border border-white/10 px-4 py-3 text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-accent-blue/50 transition-colors resize-none"
+            className="w-full rounded-2xl bg-surface border border-accent/15 px-4 py-3 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-accent/50 transition-colors resize-none"
           />
           <Button
             fullWidth
@@ -144,7 +144,7 @@ export default function BattlePage() {
 
         {/* Timer */}
         <div className="text-center">
-          <span className="text-sm text-white/30">Осталось: 60 сек</span>
+          <span className="text-sm text-text-muted">Осталось: 60 сек</span>
         </div>
       </div>
     );
@@ -152,10 +152,14 @@ export default function BattlePage() {
 
   // Result phase
   return (
-    <div className="px-4 pt-8 pb-6 space-y-6">
+    <div className="px-4 pt-8 pb-24 space-y-6">
       <div className="text-center space-y-4 pt-8">
-        <div className="text-6xl">
-          {score.player > score.opponent ? "🏆" : score.player === score.opponent ? "🤝" : "😤"}
+        <div>
+          {score.player > score.opponent
+            ? <span className="text-6xl text-accent-gold font-serif">W</span>
+            : score.player === score.opponent
+            ? <span className="text-5xl text-text-secondary font-serif">&mdash;</span>
+            : <span className="text-5xl text-accent-red font-serif">L</span>}
         </div>
         <h2 className="text-2xl font-bold">
           {round < 5 ? "Раунд завершен" : "Батл окончен!"}
@@ -164,20 +168,20 @@ export default function BattlePage() {
         {/* Score */}
         <div className="flex items-center justify-center gap-6 py-4">
           <div className="text-center">
-            <p className="text-3xl font-bold text-accent-blue">{score.player}</p>
-            <p className="text-xs text-white/40 mt-1">Вы</p>
+            <p className="text-3xl font-bold text-accent">{score.player}</p>
+            <p className="text-xs text-text-muted mt-1">Вы</p>
           </div>
-          <span className="text-white/20 text-2xl">:</span>
+          <span className="text-text-muted text-2xl">:</span>
           <div className="text-center">
             <p className="text-3xl font-bold text-accent-red">{score.opponent}</p>
-            <p className="text-xs text-white/40 mt-1">Соперник</p>
+            <p className="text-xs text-text-muted mt-1">Соперник</p>
           </div>
         </div>
 
         {/* Round result detail */}
         <Card padding="sm">
           <div className="flex items-center justify-between">
-            <span className="text-sm text-white/50">Оценка AI-судьи</span>
+            <span className="text-sm text-text-secondary">Оценка AI-судьи</span>
             <span className="text-sm font-semibold text-accent-green">+1 балл</span>
           </div>
         </Card>

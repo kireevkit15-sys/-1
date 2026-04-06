@@ -40,11 +40,11 @@ function ProgressBar({ progress, color }: { progress: number; color: string }) {
 
 export default function LearnPage() {
   return (
-    <div className="px-4 pt-12 pb-6 space-y-8">
+    <div className="px-4 pt-12 pb-24 space-y-8">
       {/* Header */}
       <div>
         <h1 className="text-2xl font-bold">Обучение</h1>
-        <p className="text-white/40 text-sm mt-1">
+        <p className="text-text-muted text-sm mt-1">
           Прокачивай навыки мышления по модулям
         </p>
       </div>
@@ -64,7 +64,7 @@ export default function LearnPage() {
               <Card
                 key={mod.title}
                 padding="sm"
-                className={`space-y-3 ${isLocked ? "opacity-40" : "cursor-pointer active:scale-[0.99] transition-transform"}`}
+                className={`space-y-3 ${isLocked ? "opacity-60" : "cursor-pointer active:scale-[0.99] transition-transform"}`}
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
@@ -74,18 +74,22 @@ export default function LearnPage() {
                           ? `bg-${branch.color}/20 text-${branch.color}`
                           : mod.progress > 0
                           ? "bg-surface-light text-white/60"
-                          : "bg-surface-light text-white/20"
+                          : "bg-surface-light text-text-muted"
                       }`}
                     >
-                      {mod.progress === 100 ? "✓" : isLocked ? "🔒" : idx + 1}
+                      {mod.progress === 100 ? (
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+                      ) : isLocked ? (
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" /></svg>
+                      ) : idx + 1}
                     </div>
                     <div>
                       <p className="text-sm font-medium">{mod.title}</p>
-                      <p className="text-xs text-white/30">{mod.lessons} уроков</p>
+                      <p className="text-xs text-text-muted">{mod.lessons} уроков</p>
                     </div>
                   </div>
                   {mod.progress > 0 && (
-                    <span className={`text-xs font-semibold ${mod.progress === 100 ? `text-${branch.color}` : "text-white/40"}`}>
+                    <span className={`text-xs font-semibold ${mod.progress === 100 ? `text-${branch.color}` : "text-text-muted"}`}>
                       {mod.progress}%
                     </span>
                   )}

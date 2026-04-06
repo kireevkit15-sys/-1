@@ -22,20 +22,20 @@ const mockProfile = {
 };
 
 const statConfig = [
-  { key: "strategy", label: "Стратегия", color: "text-accent-red", bg: "bg-accent-red" },
-  { key: "philosophy", label: "Философия", color: "text-accent-blue", bg: "bg-accent-blue" },
-  { key: "logic", label: "Логика", color: "text-accent-green", bg: "bg-accent-green" },
+  { key: "strategy", label: "Стратегия", color: "text-accent", bg: "bg-accent" },
+  { key: "philosophy", label: "Философия", color: "text-accent-gold", bg: "bg-accent-gold" },
+  { key: "logic", label: "Логика", color: "text-accent", bg: "bg-accent" },
   { key: "rhetoric", label: "Риторика", color: "text-accent-gold", bg: "bg-accent-gold" },
-  { key: "erudition", label: "Эрудиция", color: "text-accent-purple", bg: "bg-accent-purple" },
+  { key: "erudition", label: "Эрудиция", color: "text-accent-warm", bg: "bg-accent-warm" },
 ] as const;
 
 export default function ProfilePage() {
   return (
-    <div className="px-4 pt-12 pb-6 space-y-6">
+    <div className="px-4 pt-12 pb-24 space-y-6">
       {/* Header */}
       <div className="flex items-center gap-4">
-        <div className="w-16 h-16 rounded-full bg-surface-light flex items-center justify-center text-2xl border border-white/10">
-          🧠
+        <div className="w-16 h-16 rounded-full bg-accent/20 flex items-center justify-center text-accent text-2xl font-bold">
+          И
         </div>
         <div>
           <h1 className="text-xl font-bold">{mockProfile.name}</h1>
@@ -47,14 +47,14 @@ export default function ProfilePage() {
 
       {/* Radar Chart Placeholder - Stats Bars */}
       <Card padding="lg" className="space-y-4">
-        <h2 className="font-semibold text-sm text-white/60 uppercase tracking-wider">
+        <h2 className="font-semibold text-sm text-text-secondary uppercase tracking-wider">
           Навыки мышления
         </h2>
         {statConfig.map(({ key, label, color, bg }) => (
           <div key={key} className="space-y-1.5">
             <div className="flex items-center justify-between">
               <span className={`text-sm font-medium ${color}`}>{label}</span>
-              <span className="text-sm text-white/50">
+              <span className="text-sm text-text-secondary">
                 {mockProfile.stats[key]}
               </span>
             </div>
@@ -70,7 +70,7 @@ export default function ProfilePage() {
 
       {/* Battle History */}
       <div className="space-y-3">
-        <h2 className="font-semibold text-sm text-white/60 uppercase tracking-wider px-1">
+        <h2 className="font-semibold text-sm text-text-secondary uppercase tracking-wider px-1">
           История батлов
         </h2>
         {mockProfile.battles.map((battle) => (
@@ -80,7 +80,7 @@ export default function ProfilePage() {
                 <div
                   className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold ${
                     battle.result === "win"
-                      ? "bg-accent-green/20 text-accent-green"
+                      ? "bg-accent-gold/20 text-accent-gold"
                       : "bg-accent-red/20 text-accent-red"
                   }`}
                 >
@@ -88,10 +88,10 @@ export default function ProfilePage() {
                 </div>
                 <div>
                   <p className="text-sm font-medium">{battle.opponent}</p>
-                  <p className="text-xs text-white/30">{battle.date}</p>
+                  <p className="text-xs text-text-muted">{battle.date}</p>
                 </div>
               </div>
-              <span className="text-sm font-mono text-white/60">{battle.score}</span>
+              <span className="text-sm font-mono text-text-secondary">{battle.score}</span>
             </div>
           </Card>
         ))}
