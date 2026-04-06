@@ -1,0 +1,117 @@
+{
+  "branch": "STRATEGY",
+  "category": "health-performance",
+  "categoryRu": "Здоровье и продуктивность",
+  "subcategories": [
+    {
+      "id": "sleep-science",
+      "nameRu": "Наука сна",
+      "topics": [
+        { "id": "circadian-rhythm", "nameRu": "Циркадные ритмы", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "sleep-stages", "nameRu": "Стадии сна (REM, NREM)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "sleep-hygiene", "nameRu": "Гигиена сна", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "sleep-deprivation-effects", "nameRu": "Последствия недосыпания", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "melatonin-light-exposure", "nameRu": "Мелатонин и воздействие света", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "napping-strategies", "nameRu": "Стратегии дневного сна", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "sleep-and-memory", "nameRu": "Сон и консолидация памяти", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "chronotypes", "nameRu": "Хронотипы (совы, жаворонки)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "sleep-tracking", "nameRu": "Трекинг и анализ сна", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "caffeine-sleep-interaction", "nameRu": "Кофеин и влияние на сон", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "nutrition-science",
+      "nameRu": "Наука о питании",
+      "topics": [
+        { "id": "macronutrients", "nameRu": "Макронутриенты (белки, жиры, углеводы)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "micronutrients-vitamins", "nameRu": "Микронутриенты и витамины", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "gut-brain-axis", "nameRu": "Ось кишечник-мозг", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "intermittent-fasting", "nameRu": "Интервальное голодание", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "glycemic-index", "nameRu": "Гликемический индекс", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "hydration-science", "nameRu": "Наука гидратации", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "nutrition-and-cognition", "nameRu": "Питание и когнитивные функции", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "metabolic-health", "nameRu": "Метаболическое здоровье", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "anti-inflammatory-diet", "nameRu": "Противовоспалительная диета", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "supplements-evidence", "nameRu": "Добавки: доказательная база", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "physical-training",
+      "nameRu": "Физическая подготовка",
+      "topics": [
+        { "id": "strength-training-basics", "nameRu": "Основы силовых тренировок", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "cardiovascular-fitness", "nameRu": "Кардиоваскулярная подготовка", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "hiit-training", "nameRu": "HIIT-тренировки", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "recovery-science", "nameRu": "Наука восстановления", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "exercise-and-brain", "nameRu": "Физическая активность и мозг", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "mobility-flexibility", "nameRu": "Мобильность и гибкость", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "progressive-overload", "nameRu": "Принцип прогрессивной перегрузки", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "testosterone-exercise", "nameRu": "Тестостерон и тренировки", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "zone2-training", "nameRu": "Тренировки в зоне 2", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "body-composition", "nameRu": "Состав тела и рекомпозиция", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "stress-management",
+      "nameRu": "Управление стрессом",
+      "topics": [
+        { "id": "acute-vs-chronic-stress", "nameRu": "Острый vs хронический стресс", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "cortisol-management", "nameRu": "Управление кортизолом", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "hormesis", "nameRu": "Гормезис (полезный стресс)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "vagal-tone", "nameRu": "Вагальный тонус и релаксация", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "cold-heat-exposure", "nameRu": "Холодовое и тепловое воздействие", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "meditation-science", "nameRu": "Научные данные о медитации", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "allostatic-load", "nameRu": "Аллостатическая нагрузка", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "nature-exposure", "nameRu": "Воздействие природы на стресс", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "stress-inoculation", "nameRu": "Стресс-инокуляция", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "time-energy-management",
+      "nameRu": "Управление временем и энергией",
+      "topics": [
+        { "id": "ultradian-rhythms", "nameRu": "Ультрадианные ритмы", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "deep-work", "nameRu": "Глубокая работа (Ньюпорт)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "energy-management", "nameRu": "Управление энергией (Лоэр)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "pomodoro-technique", "nameRu": "Техника помодоро", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "eisenhower-matrix", "nameRu": "Матрица Эйзенхауэра", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "time-blocking", "nameRu": "Блокирование времени", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "context-switching-cost", "nameRu": "Цена переключения контекста", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "peak-performance-windows", "nameRu": "Окна пиковой производительности", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "attention-residue", "nameRu": "Остаточное внимание", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "digital-minimalism", "nameRu": "Цифровой минимализм", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "neurochemistry-motivation",
+      "nameRu": "Нейрохимия мотивации",
+      "topics": [
+        { "id": "dopamine-system", "nameRu": "Дофаминовая система", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "serotonin-wellbeing", "nameRu": "Серотонин и благополучие", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "norepinephrine-focus", "nameRu": "Норадреналин и фокус", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "endorphins-reward", "nameRu": "Эндорфины и вознаграждение", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "acetylcholine-learning", "nameRu": "Ацетилхолин и обучение", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "gaba-relaxation", "nameRu": "ГАМК и расслабление", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "testosterone-behavior", "nameRu": "Тестостерон и поведение", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "dopamine-detox", "nameRu": "Дофаминовый детокс", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "reward-prediction-error", "nameRu": "Ошибка предсказания вознаграждения", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "neurochemical-stacking", "nameRu": "Стратегии нейрохимического стека", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "bdnf-neurogenesis", "nameRu": "BDNF и нейрогенез", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "cognitive-performance",
+      "nameRu": "Когнитивная производительность",
+      "topics": [
+        { "id": "working-memory-training", "nameRu": "Тренировка рабочей памяти", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "attention-training", "nameRu": "Тренировка внимания", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "spaced-repetition", "nameRu": "Интервальное повторение", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "deliberate-practice", "nameRu": "Осознанная практика (Эрикссон)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "cognitive-load-theory", "nameRu": "Теория когнитивной нагрузки", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "flow-triggers", "nameRu": "Триггеры потока", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "mental-models", "nameRu": "Ментальные модели", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "nootropics-evidence", "nameRu": "Ноотропы: доказательная база", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    }
+  ]
+}

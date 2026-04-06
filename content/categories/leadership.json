@@ -1,0 +1,122 @@
+{
+  "branch": "STRATEGY",
+  "category": "leadership",
+  "categoryRu": "Лидерство",
+  "subcategories": [
+    {
+      "id": "leadership-styles",
+      "nameRu": "Стили лидерства",
+      "topics": [
+        { "id": "transformational-leadership", "nameRu": "Трансформационное лидерство", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "servant-leadership", "nameRu": "Служащее лидерство", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "situational-leadership", "nameRu": "Ситуационное лидерство (Херси-Бланшар)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "authentic-leadership", "nameRu": "Аутентичное лидерство", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "autocratic-vs-democratic", "nameRu": "Авторитарный vs демократический стиль", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "laissez-faire-leadership", "nameRu": "Попустительское лидерство", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "charismatic-leadership", "nameRu": "Харизматическое лидерство", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "level-5-leadership", "nameRu": "Лидерство пятого уровня (Коллинз)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "adaptive-leadership", "nameRu": "Адаптивное лидерство", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "primal-leadership", "nameRu": "Первичное лидерство (Гоулман)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "influence-persuasion",
+      "nameRu": "Влияние и убеждение",
+      "topics": [
+        { "id": "cialdini-six-principles", "nameRu": "Шесть принципов Чалдини", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "ethos-pathos-logos", "nameRu": "Этос, патос, логос", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "storytelling-leadership", "nameRu": "Сторителлинг в лидерстве", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "vision-communication", "nameRu": "Коммуникация видения", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "leading-by-example", "nameRu": "Лидерство примером", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "political-skill", "nameRu": "Политический навык", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "organizational-influence", "nameRu": "Влияние в организации", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "resistance-to-change", "nameRu": "Сопротивление изменениям", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "trust-building", "nameRu": "Формирование доверия", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "motivation-frameworks", "nameRu": "Фреймворки мотивации команды", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "persuasion-vs-manipulation", "nameRu": "Убеждение vs манипуляция", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "team-dynamics",
+      "nameRu": "Динамика команды",
+      "topics": [
+        { "id": "tuckman-model", "nameRu": "Модель Такмана (forming-storming)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "psychological-safety", "nameRu": "Психологическая безопасность (Эдмондсон)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "team-roles-belbin", "nameRu": "Командные роли Белбина", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "groupthink", "nameRu": "Групповое мышление", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "high-performing-teams", "nameRu": "Высокоэффективные команды", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "delegation-skills", "nameRu": "Навыки делегирования", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "remote-team-leadership", "nameRu": "Лидерство удалённой команды", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "diversity-inclusion", "nameRu": "Разнообразие и инклюзивность", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "team-culture-building", "nameRu": "Формирование командной культуры", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "accountability-structures", "nameRu": "Структуры ответственности", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "social-loafing", "nameRu": "Социальная леность", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "conflict-management",
+      "nameRu": "Управление конфликтами",
+      "topics": [
+        { "id": "thomas-kilmann-model", "nameRu": "Модель Томаса-Килманна", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "constructive-conflict", "nameRu": "Конструктивный конфликт", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "mediation-skills", "nameRu": "Навыки медиации", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "difficult-conversations-leader", "nameRu": "Трудные разговоры для лидера", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "organizational-conflict", "nameRu": "Организационный конфликт", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "radical-candor", "nameRu": "Радикальная откровенность (Скотт)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "interest-based-resolution", "nameRu": "Разрешение на основе интересов", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "toxic-dynamics", "nameRu": "Токсичная динамика в командах", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "conflict-escalation-stages", "nameRu": "Стадии эскалации конфликта", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "restorative-practices", "nameRu": "Восстановительные практики", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "mentorship-coaching",
+      "nameRu": "Наставничество и коучинг",
+      "topics": [
+        { "id": "grow-model", "nameRu": "Модель GROW", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "socratic-coaching", "nameRu": "Сократический коучинг", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "mentorship-vs-coaching", "nameRu": "Наставничество vs коучинг", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "feedback-frameworks", "nameRu": "Фреймворки обратной связи", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "developmental-conversations", "nameRu": "Развивающие беседы", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "succession-planning", "nameRu": "Планирование преемственности", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "talent-development", "nameRu": "Развитие талантов", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "sponsorship-advocacy", "nameRu": "Спонсорство и поддержка", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "knowledge-transfer", "nameRu": "Передача знаний", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "empowerment-strategies", "nameRu": "Стратегии расширения полномочий", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "strategic-thinking",
+      "nameRu": "Стратегическое мышление",
+      "topics": [
+        { "id": "first-principles-thinking", "nameRu": "Мышление первых принципов", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "systems-thinking", "nameRu": "Системное мышление", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "swot-analysis", "nameRu": "SWOT-анализ", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "porters-five-forces", "nameRu": "Пять сил Портера", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "blue-ocean-strategy", "nameRu": "Стратегия голубого океана", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "scenario-planning-leadership", "nameRu": "Сценарное планирование", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "second-order-effects", "nameRu": "Эффекты второго порядка", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "strategic-alignment", "nameRu": "Стратегическое выравнивание", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "okr-framework", "nameRu": "OKR: цели и ключевые результаты", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "innovation-dilemma", "nameRu": "Дилемма инноватора (Кристенсен)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "long-term-thinking", "nameRu": "Долгосрочное мышление", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "power-authority",
+      "nameRu": "Власть и авторитет",
+      "topics": [
+        { "id": "french-raven-power-bases", "nameRu": "Базы власти (Френч и Рэйвен)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "formal-vs-informal-authority", "nameRu": "Формальный vs неформальный авторитет", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "power-dynamics", "nameRu": "Динамика власти", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "machiavelli-vs-ethics", "nameRu": "Макиавелли vs этичное лидерство", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "organizational-politics", "nameRu": "Организационная политика", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "power-corruption", "nameRu": "Власть и коррупция", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "status-hierarchy", "nameRu": "Статус и иерархия", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "coalition-building", "nameRu": "Построение коалиций", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "moral-authority", "nameRu": "Моральный авторитет", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "empowering-vs-commanding", "nameRu": "Наделение полномочиями vs командование", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    }
+  ]
+}

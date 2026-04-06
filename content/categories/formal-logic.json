@@ -1,0 +1,118 @@
+{
+  "branch": "LOGIC",
+  "category": "formal-logic",
+  "categoryRu": "Формальная логика",
+  "subcategories": [
+    {
+      "id": "propositional-logic",
+      "nameRu": "Пропозициональная логика",
+      "topics": [
+        { "id": "logical-connectives", "nameRu": "Логические связки", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "truth-tables", "nameRu": "Таблицы истинности", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "tautologies-contradictions", "nameRu": "Тавтологии и противоречия", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "logical-equivalence", "nameRu": "Логическая эквивалентность", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "modus-ponens", "nameRu": "Modus ponens", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "modus-tollens", "nameRu": "Modus tollens", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "de-morgan-laws", "nameRu": "Законы де Моргана", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "conditional-biconditional", "nameRu": "Условные и биусловные высказывания", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "normal-forms", "nameRu": "Нормальные формы (КНФ, ДНФ)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "propositional-validity", "nameRu": "Проверка общезначимости", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "predicate-logic",
+      "nameRu": "Логика предикатов",
+      "topics": [
+        { "id": "universal-quantifier", "nameRu": "Квантор всеобщности", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "existential-quantifier", "nameRu": "Квантор существования", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "predicates-relations", "nameRu": "Предикаты и отношения", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "quantifier-negation", "nameRu": "Отрицание кванторов", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "free-bound-variables", "nameRu": "Свободные и связанные переменные", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "interpretation-models", "nameRu": "Интерпретации и модели", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "first-order-logic", "nameRu": "Логика первого порядка", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "second-order-logic", "nameRu": "Логика второго порядка", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "formalization-practice", "nameRu": "Практика формализации высказываний", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "syllogistics",
+      "nameRu": "Силлогистика",
+      "topics": [
+        { "id": "categorical-syllogism", "nameRu": "Категорический силлогизм", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "figures-moods", "nameRu": "Фигуры и модусы силлогизма", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "venn-diagrams-syllogisms", "nameRu": "Диаграммы Венна для силлогизмов", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "distribution-of-terms", "nameRu": "Распределённость терминов", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "syllogistic-rules", "nameRu": "Правила силлогизма", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "enthymeme", "nameRu": "Энтимема (сокращённый силлогизм)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "sorites", "nameRu": "Сорит (цепочка силлогизмов)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "hypothetical-syllogism", "nameRu": "Гипотетический силлогизм", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "disjunctive-syllogism", "nameRu": "Дизъюнктивный силлогизм", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "aristotelian-logic", "nameRu": "Аристотелевская логика", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "deduction-and-induction",
+      "nameRu": "Дедукция и индукция",
+      "topics": [
+        { "id": "deductive-reasoning", "nameRu": "Дедуктивное рассуждение", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "inductive-reasoning", "nameRu": "Индуктивное рассуждение", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "abductive-reasoning", "nameRu": "Абдуктивное рассуждение (Пирс)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "inductive-strength", "nameRu": "Сила индуктивного аргумента", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "deductive-validity", "nameRu": "Дедуктивная валидность", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "analogy-reasoning", "nameRu": "Рассуждение по аналогии", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "humes-problem", "nameRu": "Проблема индукции Юма", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "inference-to-best-explanation", "nameRu": "Вывод к лучшему объяснению", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "generalization-errors", "nameRu": "Ошибки обобщения", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "enumerative-induction", "nameRu": "Перечислительная индукция", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "logical-fallacies",
+      "nameRu": "Логические ошибки",
+      "topics": [
+        { "id": "ad-hominem", "nameRu": "Ad hominem (атака на личность)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "straw-man", "nameRu": "Подмена тезиса (соломенное чучело)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "appeal-to-authority", "nameRu": "Апелляция к авторитету", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "false-dilemma", "nameRu": "Ложная дилемма", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "slippery-slope", "nameRu": "Скользкий склон", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "circular-reasoning", "nameRu": "Круговое рассуждение", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "red-herring", "nameRu": "Красная сельдь (отвлечение)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "tu-quoque", "nameRu": "Tu quoque (а сам-то)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "post-hoc", "nameRu": "Post hoc ergo propter hoc", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "equivocation", "nameRu": "Эквивокация (подмена значения)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "hasty-generalization", "nameRu": "Поспешное обобщение", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "appeal-to-emotion", "nameRu": "Апелляция к эмоциям", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "paradoxes",
+      "nameRu": "Парадоксы",
+      "topics": [
+        { "id": "liar-paradox", "nameRu": "Парадокс лжеца", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "russells-paradox", "nameRu": "Парадокс Рассела", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "zenos-paradoxes", "nameRu": "Парадоксы Зенона", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "ship-of-theseus", "nameRu": "Корабль Тесея", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "sorites-paradox", "nameRu": "Парадокс кучи (сорит)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "newcombs-problem", "nameRu": "Задача Ньюкомба", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "trolley-problem", "nameRu": "Проблема вагонетки", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "simpsons-paradox", "nameRu": "Парадокс Симпсона", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "ravens-paradox", "nameRu": "Парадокс воронов (Гемпель)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "birthday-paradox", "nameRu": "Парадокс дней рождения", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "proof-theory",
+      "nameRu": "Теория доказательств",
+      "topics": [
+        { "id": "direct-proof", "nameRu": "Прямое доказательство", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "proof-by-contradiction", "nameRu": "Доказательство от противного", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "proof-by-induction", "nameRu": "Доказательство по индукции", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "proof-by-contrapositive", "nameRu": "Доказательство контрапозицией", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "constructive-proof", "nameRu": "Конструктивное доказательство", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "completeness-consistency", "nameRu": "Полнота и непротиворечивость", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "godels-theorems", "nameRu": "Теоремы Гёделя о неполноте", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "natural-deduction", "nameRu": "Натуральная дедукция", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    }
+  ]
+}

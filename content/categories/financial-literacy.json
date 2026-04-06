@@ -1,0 +1,104 @@
+{
+  "branch": "STRATEGY",
+  "category": "financial-literacy",
+  "categoryRu": "Финансовая грамотность",
+  "subcategories": [
+    {
+      "id": "personal-finance",
+      "nameRu": "Личные финансы",
+      "topics": [
+        { "id": "budgeting-systems", "nameRu": "Системы бюджетирования", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "emergency-fund", "nameRu": "Финансовая подушка безопасности", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "debt-management", "nameRu": "Управление долгами", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "compound-interest", "nameRu": "Сложный процент", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "tax-optimization", "nameRu": "Налоговая оптимизация", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "insurance-principles", "nameRu": "Принципы страхования", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "retirement-planning", "nameRu": "Пенсионное планирование", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "income-diversification", "nameRu": "Диверсификация доходов", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "financial-goals-setting", "nameRu": "Постановка финансовых целей", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "net-worth-tracking", "nameRu": "Отслеживание чистого капитала", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "investments",
+      "nameRu": "Инвестиции",
+      "topics": [
+        { "id": "asset-classes", "nameRu": "Классы активов", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "stock-market-fundamentals", "nameRu": "Основы фондового рынка", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "bond-market", "nameRu": "Рынок облигаций", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "index-investing", "nameRu": "Индексное инвестирование", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "portfolio-theory", "nameRu": "Портфельная теория Марковица", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "risk-return-tradeoff", "nameRu": "Соотношение риска и доходности", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "real-estate-investing", "nameRu": "Инвестиции в недвижимость", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "crypto-fundamentals", "nameRu": "Основы криптовалют", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "value-investing", "nameRu": "Стоимостное инвестирование", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "dollar-cost-averaging", "nameRu": "Стратегия усреднения стоимости", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "efficient-market-hypothesis", "nameRu": "Гипотеза эффективного рынка", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "alternative-investments", "nameRu": "Альтернативные инвестиции", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "entrepreneurship",
+      "nameRu": "Предпринимательство",
+      "topics": [
+        { "id": "business-model-canvas", "nameRu": "Бизнес-модель Canvas", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "lean-startup", "nameRu": "Бережливый стартап", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "unit-economics", "nameRu": "Юнит-экономика", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "cash-flow-management", "nameRu": "Управление денежным потоком", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "fundraising-basics", "nameRu": "Основы привлечения инвестиций", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "product-market-fit", "nameRu": "Product-Market Fit", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "competitive-advantage", "nameRu": "Конкурентное преимущество", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "scaling-strategies", "nameRu": "Стратегии масштабирования", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "financial-statements", "nameRu": "Финансовая отчётность", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "valuation-methods", "nameRu": "Методы оценки бизнеса", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "behavioral-economics",
+      "nameRu": "Поведенческая экономика в финансах",
+      "topics": [
+        { "id": "loss-aversion-finance", "nameRu": "Неприятие потерь в финансах", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "herding-behavior", "nameRu": "Стадное поведение на рынках", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "overtrading-bias", "nameRu": "Склонность к чрезмерной торговле", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "disposition-effect", "nameRu": "Эффект диспозиции", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "money-illusion", "nameRu": "Денежная иллюзия", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "recency-bias-investing", "nameRu": "Предвзятость новизны в инвестициях", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "fear-greed-cycle", "nameRu": "Цикл страха и жадности", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "anchoring-in-pricing", "nameRu": "Якорение в ценообразовании", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "sunk-cost-investing", "nameRu": "Невозвратные затраты в инвестициях", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "confirmation-bias-finance", "nameRu": "Предвзятость подтверждения в финансах", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "macroeconomics",
+      "nameRu": "Макроэкономика",
+      "topics": [
+        { "id": "gdp-economic-growth", "nameRu": "ВВП и экономический рост", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "inflation-deflation", "nameRu": "Инфляция и дефляция", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "central-bank-policy", "nameRu": "Политика центральных банков", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "business-cycles", "nameRu": "Экономические циклы", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "currency-exchange", "nameRu": "Валютные курсы", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "fiscal-policy", "nameRu": "Фискальная политика", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "monetary-policy", "nameRu": "Монетарная политика", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "supply-demand-macro", "nameRu": "Спрос и предложение на макроуровне", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "global-trade", "nameRu": "Глобальная торговля", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "debt-economics", "nameRu": "Экономика долга (Далио)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "economic-indicators", "nameRu": "Экономические индикаторы", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "financial-thinking",
+      "nameRu": "Финансовое мышление",
+      "topics": [
+        { "id": "opportunity-cost", "nameRu": "Альтернативные издержки", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "time-value-of-money", "nameRu": "Временная стоимость денег", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "leverage-concept", "nameRu": "Концепция рычага (левериджа)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "asymmetric-bets", "nameRu": "Асимметричные ставки", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "margin-of-safety", "nameRu": "Запас прочности (Грэм)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "first-principles-finance", "nameRu": "Мышление первых принципов в финансах", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "lindy-effect", "nameRu": "Эффект Линди", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "optionality-thinking", "nameRu": "Мышление опциональностью", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    }
+  ]
+}

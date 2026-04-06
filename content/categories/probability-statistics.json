@@ -1,0 +1,106 @@
+{
+  "branch": "LOGIC",
+  "category": "probability-statistics",
+  "categoryRu": "Вероятность и статистика",
+  "subcategories": [
+    {
+      "id": "probability-basics",
+      "nameRu": "Основы вероятности",
+      "topics": [
+        { "id": "sample-space-events", "nameRu": "Пространство событий", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "conditional-probability", "nameRu": "Условная вероятность", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "independence-dependence", "nameRu": "Независимость и зависимость событий", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "law-of-large-numbers", "nameRu": "Закон больших чисел", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "gamblers-fallacy", "nameRu": "Ошибка игрока", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "expected-value-calculation", "nameRu": "Расчёт ожидаемого значения", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "probability-distributions", "nameRu": "Распределения вероятностей", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "normal-distribution", "nameRu": "Нормальное распределение", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "combinatorics-basics", "nameRu": "Основы комбинаторики", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "monty-hall-problem", "nameRu": "Задача Монти Холла", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "bayesian-thinking",
+      "nameRu": "Байесовское мышление",
+      "topics": [
+        { "id": "bayes-theorem", "nameRu": "Теорема Байеса", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "prior-posterior", "nameRu": "Априорные и апостериорные вероятности", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "base-rate-neglect", "nameRu": "Пренебрежение базовой частотой", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "likelihood-ratio", "nameRu": "Отношение правдоподобия", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "bayesian-updating", "nameRu": "Байесовское обновление", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "medical-testing-bayes", "nameRu": "Медицинские тесты и теорема Байеса", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "bayesian-vs-frequentist", "nameRu": "Байесовский vs частотный подход", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "credence-calibration", "nameRu": "Калибровка уверенности", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "prediction-markets", "nameRu": "Рынки предсказаний", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "bayesian-decision-theory", "nameRu": "Байесовская теория решений", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "statistical-traps",
+      "nameRu": "Статистические ловушки",
+      "topics": [
+        { "id": "simpsons-paradox-stats", "nameRu": "Парадокс Симпсона", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "p-hacking", "nameRu": "P-хакинг", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "survivorship-bias-stats", "nameRu": "Ошибка выжившего в статистике", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "cherry-picking-data", "nameRu": "Вишнёвый отбор данных", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "regression-to-mean", "nameRu": "Регрессия к среднему", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "misleading-graphs", "nameRu": "Вводящие в заблуждение графики", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "sample-size-fallacy", "nameRu": "Ошибка размера выборки", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "ecological-fallacy", "nameRu": "Экологическая ошибка", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "texas-sharpshooter", "nameRu": "Ошибка техасского стрелка", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "confounding-variables", "nameRu": "Смешивающие переменные", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "base-rate-fallacy", "nameRu": "Ошибка базовой частоты", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "publication-bias", "nameRu": "Предвзятость публикации", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "decision-under-uncertainty",
+      "nameRu": "Решения в условиях неопределённости",
+      "topics": [
+        { "id": "expected-utility", "nameRu": "Ожидаемая полезность", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "kelly-criterion", "nameRu": "Критерий Келли", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "minimax-strategy", "nameRu": "Стратегия минимакса", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "risk-vs-uncertainty", "nameRu": "Риск vs неопределённость", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "ambiguity-aversion", "nameRu": "Неприятие неопределённости", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "value-of-information", "nameRu": "Ценность информации", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "robust-decision-making", "nameRu": "Робастное принятие решений", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "option-value", "nameRu": "Стоимость опциона", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "tail-risk-management", "nameRu": "Управление хвостовыми рисками", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "satisficing-uncertainty", "nameRu": "Удовлетворение в неопределённости", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "explore-exploit-tradeoff", "nameRu": "Компромисс исследования и эксплуатации", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "game-theory-strategy",
+      "nameRu": "Теория игр и стратегия",
+      "topics": [
+        { "id": "dominant-strategies", "nameRu": "Доминирующие стратегии", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "mixed-strategies", "nameRu": "Смешанные стратегии", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "tit-for-tat", "nameRu": "Око за око (Аксельрод)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "tragedy-of-commons", "nameRu": "Трагедия общин", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "coordination-games", "nameRu": "Координационные игры", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "schelling-focal-points", "nameRu": "Фокальные точки Шеллинга", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "backward-induction", "nameRu": "Обратная индукция", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "commitment-devices", "nameRu": "Устройства обязательств", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "information-asymmetry", "nameRu": "Информационная асимметрия", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "voting-theory", "nameRu": "Теория голосования", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "mechanism-design-applications", "nameRu": "Дизайн механизмов: приложения", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "statistical-inference",
+      "nameRu": "Статистический вывод",
+      "topics": [
+        { "id": "hypothesis-testing-stats", "nameRu": "Проверка гипотез", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "confidence-intervals", "nameRu": "Доверительные интервалы", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "type-1-type-2-errors", "nameRu": "Ошибки первого и второго рода", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "effect-size", "nameRu": "Размер эффекта", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "statistical-significance", "nameRu": "Статистическая значимость", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "power-analysis", "nameRu": "Анализ мощности", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "central-limit-theorem", "nameRu": "Центральная предельная теорема", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "sampling-methods", "nameRu": "Методы выборки", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "correlation-regression", "nameRu": "Корреляция и регрессия", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "version": "1.0.0",
+  "createdAt": "2026-04-07",
+  "branches": [
+    {
+      "id": "STRATEGY",
+      "nameRu": "Стратегия",
+      "categories": [
+        "decision-making",
+        "emotional-intelligence",
+        "financial-literacy",
+        "leadership",
+        "health-performance",
+        "negotiation-relationships"
+      ]
+    },
+    {
+      "id": "LOGIC",
+      "nameRu": "Логика",
+      "categories": [
+        "formal-logic",
+        "critical-thinking",
+        "rhetoric",
+        "probability-statistics"
+      ]
+    }
+  ],
+  "summary": {
+    "totalCategories": 10,
+    "totalSubcategories": 67,
+    "totalTopics": 660,
+    "estimatedQuestions": {
+      "BRONZE": 3300,
+      "SILVER": 3200,
+      "GOLD": 2100,
+      "total": 8600
+    }
+  },
+  "note": "Full category JSONs are in content/categories/ directory"
+}

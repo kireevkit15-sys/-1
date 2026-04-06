@@ -1,0 +1,115 @@
+{
+  "branch": "STRATEGY",
+  "category": "emotional-intelligence",
+  "categoryRu": "Эмоциональный интеллект",
+  "subcategories": [
+    {
+      "id": "self-awareness",
+      "nameRu": "Самосознание",
+      "topics": [
+        { "id": "emotional-vocabulary", "nameRu": "Эмоциональный словарь", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "body-signals-awareness", "nameRu": "Осознание сигналов тела", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "trigger-identification", "nameRu": "Идентификация триггеров", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "values-alignment", "nameRu": "Соответствие ценностям", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "self-reflection-practices", "nameRu": "Практики саморефлексии", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "strengths-weaknesses-mapping", "nameRu": "Карта сильных и слабых сторон", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "johari-window", "nameRu": "Окно Джохари", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "mindfulness-basics", "nameRu": "Основы осознанности", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "emotional-patterns", "nameRu": "Эмоциональные паттерны", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "inner-critic-management", "nameRu": "Управление внутренним критиком", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "self-regulation",
+      "nameRu": "Саморегуляция",
+      "topics": [
+        { "id": "impulse-control", "nameRu": "Контроль импульсов", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "emotional-reappraisal", "nameRu": "Когнитивная переоценка эмоций", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "anger-management", "nameRu": "Управление гневом", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "delayed-gratification", "nameRu": "Отложенное вознаграждение", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "stress-response-management", "nameRu": "Управление стрессовой реакцией", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "emotional-hijacking", "nameRu": "Эмоциональный захват (амигдала)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "breathing-techniques", "nameRu": "Дыхательные техники регуляции", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "window-of-tolerance", "nameRu": "Окно толерантности", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "habit-loop-emotions", "nameRu": "Петля привычки в эмоциях", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "emotional-suppression-risks", "nameRu": "Риски подавления эмоций", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "adaptive-coping-strategies", "nameRu": "Адаптивные копинг-стратегии", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "motivation",
+      "nameRu": "Мотивация",
+      "topics": [
+        { "id": "intrinsic-vs-extrinsic", "nameRu": "Внутренняя и внешняя мотивация", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "self-determination-theory", "nameRu": "Теория самодетерминации", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "flow-state", "nameRu": "Состояние потока", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "goal-setting-theory", "nameRu": "Теория постановки целей", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "learned-helplessness", "nameRu": "Выученная беспомощность", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "growth-mindset", "nameRu": "Мышление роста (Двек)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "motivation-and-dopamine", "nameRu": "Мотивация и дофамин", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "purpose-driven-motivation", "nameRu": "Мотивация через смысл", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "procrastination-psychology", "nameRu": "Психология прокрастинации", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "empathy",
+      "nameRu": "Эмпатия",
+      "topics": [
+        { "id": "cognitive-empathy", "nameRu": "Когнитивная эмпатия", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "affective-empathy", "nameRu": "Аффективная эмпатия", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "compassionate-empathy", "nameRu": "Сострадательная эмпатия", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "mirror-neurons", "nameRu": "Зеркальные нейроны", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "perspective-taking", "nameRu": "Принятие перспективы другого", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "empathy-fatigue", "nameRu": "Усталость от эмпатии", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "active-listening", "nameRu": "Активное слушание", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "nonverbal-cues-reading", "nameRu": "Считывание невербальных сигналов", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "empathy-boundaries", "nameRu": "Границы эмпатии", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "dark-empathy", "nameRu": "Тёмная эмпатия", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "social-skills",
+      "nameRu": "Социальные навыки",
+      "topics": [
+        { "id": "rapport-building", "nameRu": "Установление раппорта", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "assertive-communication", "nameRu": "Ассертивная коммуникация", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "conflict-de-escalation", "nameRu": "Деэскалация конфликтов", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "giving-receiving-feedback", "nameRu": "Обратная связь: давать и получать", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "influence-without-authority", "nameRu": "Влияние без полномочий", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "emotional-contagion", "nameRu": "Эмоциональное заражение", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "difficult-conversations", "nameRu": "Трудные разговоры", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "team-emotional-climate", "nameRu": "Эмоциональный климат команды", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "nonviolent-communication", "nameRu": "Ненасильственное общение (Розенберг)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "charisma-components", "nameRu": "Составляющие харизмы", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "social-intelligence", "nameRu": "Социальный интеллект", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "emotional-resilience",
+      "nameRu": "Эмоциональная устойчивость",
+      "topics": [
+        { "id": "psychological-resilience", "nameRu": "Психологическая резилиентность", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "post-traumatic-growth", "nameRu": "Посттравматический рост", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "stoic-emotional-practices", "nameRu": "Стоические практики управления эмоциями", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "emotional-agility", "nameRu": "Эмоциональная гибкость (Дэвид)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "shame-vulnerability", "nameRu": "Стыд и уязвимость (Браун)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "burnout-prevention", "nameRu": "Профилактика выгорания", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "grief-processing", "nameRu": "Проживание горя и утрат", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "self-compassion", "nameRu": "Самосострадание (Нефф)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "emotional-intelligence-neuroscience",
+      "nameRu": "Нейронаука эмоций",
+      "topics": [
+        { "id": "limbic-system-emotions", "nameRu": "Лимбическая система и эмоции", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "amygdala-function", "nameRu": "Функция амигдалы", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "prefrontal-cortex-regulation", "nameRu": "Префронтальная кора и регуляция", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "neuroplasticity-emotions", "nameRu": "Нейропластичность и эмоции", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "oxytocin-trust", "nameRu": "Окситоцин и доверие", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "polyvagal-theory", "nameRu": "Поливагальная теория (Поржес)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "somatic-markers", "nameRu": "Соматические маркеры (Дамасио)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    }
+  ]
+}

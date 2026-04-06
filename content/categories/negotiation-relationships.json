@@ -1,0 +1,116 @@
+{
+  "branch": "STRATEGY",
+  "category": "negotiation-relationships",
+  "categoryRu": "Переговоры и отношения",
+  "subcategories": [
+    {
+      "id": "negotiation-fundamentals",
+      "nameRu": "Основы переговоров",
+      "topics": [
+        { "id": "batna-watna", "nameRu": "BATNA и WATNA", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "zopa-concept", "nameRu": "Зона возможного соглашения (ZOPA)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "harvard-method", "nameRu": "Гарвардский метод переговоров", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "distributive-vs-integrative", "nameRu": "Дистрибутивные vs интегративные переговоры", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "first-offer-strategy", "nameRu": "Стратегия первого предложения", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "concession-patterns", "nameRu": "Паттерны уступок", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "negotiation-preparation", "nameRu": "Подготовка к переговорам", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "never-split-difference", "nameRu": "Никогда не идите на компромисс (Восс)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "tactical-empathy", "nameRu": "Тактическая эмпатия", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "labeling-mirroring", "nameRu": "Ярлыки и зеркалирование", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "business-communications",
+      "nameRu": "Деловые коммуникации",
+      "topics": [
+        { "id": "executive-presence", "nameRu": "Руководящее присутствие", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "presentation-skills", "nameRu": "Навыки презентации", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "email-communication", "nameRu": "Эффективная email-коммуникация", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "meeting-facilitation", "nameRu": "Фасилитация встреч", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "stakeholder-management", "nameRu": "Управление стейкхолдерами", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "cross-cultural-communication", "nameRu": "Межкультурная коммуникация", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "elevator-pitch", "nameRu": "Элеватор-питч", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "written-persuasion", "nameRu": "Убеждение в письменной форме", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "data-driven-argumentation", "nameRu": "Аргументация на основе данных", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "crisis-communication", "nameRu": "Кризисная коммуникация", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "interpersonal-relationships",
+      "nameRu": "Межличностные отношения",
+      "topics": [
+        { "id": "attachment-theory", "nameRu": "Теория привязанности (Боулби)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "love-languages", "nameRu": "Языки любви (Чепмен)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "gottman-principles", "nameRu": "Принципы Готтмана", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "four-horsemen", "nameRu": "Четыре всадника апокалипсиса (Готтман)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "emotional-bids", "nameRu": "Эмоциональные ставки в отношениях", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "trust-repair", "nameRu": "Восстановление доверия", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "vulnerability-connection", "nameRu": "Уязвимость и связь", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "codependency-recognition", "nameRu": "Распознавание созависимости", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "healthy-communication-patterns", "nameRu": "Здоровые паттерны общения", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "relationship-investment-model", "nameRu": "Инвестиционная модель отношений", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "masculine-feminine-dynamics", "nameRu": "Мужская и женская динамика", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "boundaries-assertiveness",
+      "nameRu": "Границы и ассертивность",
+      "topics": [
+        { "id": "boundary-types", "nameRu": "Типы личных границ", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "assertiveness-training", "nameRu": "Тренировка ассертивности", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "saying-no-skills", "nameRu": "Навыки отказа", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "passive-aggressive-assertive", "nameRu": "Пассивный, агрессивный, ассертивный стили", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "people-pleasing-patterns", "nameRu": "Паттерны угодничества", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "boundary-enforcement", "nameRu": "Поддержание границ", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "toxic-relationship-recognition", "nameRu": "Распознавание токсичных отношений", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "narcissism-defense", "nameRu": "Защита от нарциссического поведения", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "i-statements", "nameRu": "Я-высказывания", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "emotional-boundaries", "nameRu": "Эмоциональные границы", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "networking",
+      "nameRu": "Нетворкинг",
+      "topics": [
+        { "id": "weak-ties-theory", "nameRu": "Теория слабых связей (Грановеттер)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "network-effects", "nameRu": "Сетевые эффекты", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "dunbar-number", "nameRu": "Число Данбара", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "social-capital", "nameRu": "Социальный капитал", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "give-and-take", "nameRu": "Давать и брать (Грант)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "strategic-networking", "nameRu": "Стратегический нетворкинг", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "personal-branding", "nameRu": "Личный бренд", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "relationship-maintenance", "nameRu": "Поддержание отношений", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "connector-mavens-salesmen", "nameRu": "Коннекторы, эрудиты, продавцы (Гладуэлл)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "online-networking", "nameRu": "Онлайн-нетворкинг", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "mentorship-seeking", "nameRu": "Поиск менторов", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "influence-persuasion",
+      "nameRu": "Влияние и убеждение",
+      "topics": [
+        { "id": "reciprocity-principle", "nameRu": "Принцип взаимности", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "social-proof", "nameRu": "Социальное доказательство", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "authority-influence", "nameRu": "Влияние авторитета", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "liking-similarity", "nameRu": "Привлекательность и сходство", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "pre-suasion", "nameRu": "Пре-убеждение (Чалдини)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "foot-in-the-door", "nameRu": "Нога в двери", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "door-in-the-face", "nameRu": "Дверь в лицо", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "dark-persuasion-defense", "nameRu": "Защита от тёмного убеждения", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "conflict-resolution",
+      "nameRu": "Разрешение конфликтов",
+      "topics": [
+        { "id": "interest-vs-positions", "nameRu": "Интересы vs позиции", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "de-escalation-techniques", "nameRu": "Техники деэскалации", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "win-win-strategies", "nameRu": "Стратегии win-win", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "mediation-basics", "nameRu": "Основы медиации", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "emotional-flooding", "nameRu": "Эмоциональное затопление", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "repair-attempts", "nameRu": "Попытки восстановления", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "forgiveness-psychology", "nameRu": "Психология прощения", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    }
+  ]
+}

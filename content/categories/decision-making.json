@@ -1,0 +1,126 @@
+{
+  "branch": "STRATEGY",
+  "category": "decision-making",
+  "categoryRu": "Принятие решений",
+  "subcategories": [
+    {
+      "id": "cognitive-biases",
+      "nameRu": "Когнитивные искажения",
+      "topics": [
+        { "id": "anchoring-effect", "nameRu": "Эффект якоря", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "confirmation-bias", "nameRu": "Предвзятость подтверждения", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "availability-heuristic", "nameRu": "Эвристика доступности", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "dunning-kruger-effect", "nameRu": "Эффект Даннинга-Крюгера", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "sunk-cost-fallacy", "nameRu": "Ошибка невозвратных затрат", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "framing-effect", "nameRu": "Эффект фрейминга", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "hindsight-bias", "nameRu": "Ошибка ретроспекции", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "overconfidence-bias", "nameRu": "Чрезмерная самоуверенность", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "status-quo-bias", "nameRu": "Предвзятость статус-кво", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "bandwagon-effect", "nameRu": "Эффект присоединения к большинству", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "halo-effect", "nameRu": "Эффект ореола", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "survivorship-bias", "nameRu": "Ошибка выжившего", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "rational-models",
+      "nameRu": "Рациональные модели решений",
+      "topics": [
+        { "id": "expected-utility-theory", "nameRu": "Теория ожидаемой полезности", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "prospect-theory", "nameRu": "Теория перспектив Канемана", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "multi-criteria-analysis", "nameRu": "Многокритериальный анализ", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "decision-trees", "nameRu": "Деревья решений", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "cost-benefit-analysis", "nameRu": "Анализ затрат и выгод", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "pareto-optimality", "nameRu": "Оптимальность по Парето", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "satisficing-vs-maximizing", "nameRu": "Удовлетворение vs максимизация", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "bounded-rationality", "nameRu": "Ограниченная рациональность", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "bayesian-decision-making", "nameRu": "Байесовский подход к решениям", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "minimax-regret", "nameRu": "Минимакс сожаления", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "game-theory",
+      "nameRu": "Теория игр",
+      "topics": [
+        { "id": "prisoners-dilemma", "nameRu": "Дилемма заключённого", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "nash-equilibrium", "nameRu": "Равновесие Нэша", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "zero-sum-games", "nameRu": "Игры с нулевой суммой", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "cooperative-games", "nameRu": "Кооперативные игры", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "repeated-games", "nameRu": "Повторяющиеся игры", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "mechanism-design", "nameRu": "Дизайн механизмов", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "auction-theory", "nameRu": "Теория аукционов", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "signaling-games", "nameRu": "Сигнальные игры", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "evolutionary-game-theory", "nameRu": "Эволюционная теория игр", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "chicken-game", "nameRu": "Игра в труса", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "stag-hunt", "nameRu": "Охота на оленя", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "behavioral-economics",
+      "nameRu": "Поведенческая экономика",
+      "topics": [
+        { "id": "loss-aversion", "nameRu": "Неприятие потерь", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "nudge-theory", "nameRu": "Теория подталкивания", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "mental-accounting", "nameRu": "Ментальный учёт", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "endowment-effect", "nameRu": "Эффект владения", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "hyperbolic-discounting", "nameRu": "Гиперболическое дисконтирование", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "default-effect", "nameRu": "Эффект умолчания", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "choice-overload", "nameRu": "Перегрузка выбором", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "social-preferences", "nameRu": "Социальные предпочтения", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "fairness-reciprocity", "nameRu": "Справедливость и взаимность", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "time-inconsistency", "nameRu": "Временная несогласованность", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "reference-dependence", "nameRu": "Зависимость от точки отсчёта", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "risk-uncertainty",
+      "nameRu": "Риск и неопределённость",
+      "topics": [
+        { "id": "knightian-uncertainty", "nameRu": "Найтовская неопределённость", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "black-swan-theory", "nameRu": "Теория чёрного лебедя", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "antifragility", "nameRu": "Антихрупкость по Талебу", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "risk-assessment-methods", "nameRu": "Методы оценки рисков", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "expected-value", "nameRu": "Ожидаемая ценность", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "fat-tails-distributions", "nameRu": "Толстые хвосты распределений", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "skin-in-the-game", "nameRu": "Шкура на кону", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "precautionary-principle", "nameRu": "Принцип предосторожности", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "risk-tolerance-profiles", "nameRu": "Профили толерантности к риску", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "scenario-planning", "nameRu": "Сценарное планирование", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "ergodicity-economics", "nameRu": "Эргодичность в экономике", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "decision-process",
+      "nameRu": "Процесс принятия решений",
+      "topics": [
+        { "id": "system1-system2", "nameRu": "Система 1 и Система 2 Канемана", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "ooda-loop", "nameRu": "Цикл OODA Бойда", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "recognition-primed-decision", "nameRu": "Решения на основе распознавания", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "pre-mortem-analysis", "nameRu": "Анализ пре-мортем", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "decision-fatigue", "nameRu": "Усталость от решений", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "group-decision-making", "nameRu": "Групповое принятие решений", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "decision-journaling", "nameRu": "Дневник решений", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "reversible-irreversible-decisions", "nameRu": "Обратимые и необратимые решения", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "second-order-thinking", "nameRu": "Мышление второго порядка", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "inversion-thinking", "nameRu": "Инверсионное мышление", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "checklists-in-decisions", "nameRu": "Чек-листы в принятии решений", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "decision-under-stress", "nameRu": "Решения в стрессовых условиях", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "negotiation-influence",
+      "nameRu": "Переговоры и влияние",
+      "topics": [
+        { "id": "batna-concept", "nameRu": "Концепция BATNA", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "anchoring-in-negotiation", "nameRu": "Якорение в переговорах", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "principled-negotiation", "nameRu": "Принципиальные переговоры", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "cialdini-principles", "nameRu": "Принципы влияния Чалдини", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "commitment-consistency", "nameRu": "Обязательство и последовательность", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "social-proof-decisions", "nameRu": "Социальное доказательство в решениях", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "scarcity-principle", "nameRu": "Принцип дефицита", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "framing-in-persuasion", "nameRu": "Фрейминг в убеждении", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "reciprocity-in-influence", "nameRu": "Взаимность во влиянии", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "strategic-communication", "nameRu": "Стратегическая коммуникация", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    }
+  ]
+}

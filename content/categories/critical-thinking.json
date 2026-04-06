@@ -1,0 +1,121 @@
+{
+  "branch": "LOGIC",
+  "category": "critical-thinking",
+  "categoryRu": "Критическое мышление",
+  "subcategories": [
+    {
+      "id": "argument-analysis",
+      "nameRu": "Анализ аргументов",
+      "topics": [
+        { "id": "argument-structure", "nameRu": "Структура аргумента", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "premises-conclusion", "nameRu": "Посылки и заключение", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "validity-vs-soundness", "nameRu": "Валидность vs обоснованность", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "hidden-assumptions", "nameRu": "Скрытые предпосылки", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "counterargument-construction", "nameRu": "Построение контраргументов", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "argument-mapping", "nameRu": "Картирование аргументов", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "strength-of-evidence", "nameRu": "Сила доказательств", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "burden-of-proof", "nameRu": "Бремя доказательства", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "necessary-sufficient-conditions", "nameRu": "Необходимые и достаточные условия", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "toulmin-model", "nameRu": "Модель Тулмина", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "logical-fallacies",
+      "nameRu": "Логические ошибки в мышлении",
+      "topics": [
+        { "id": "formal-fallacies", "nameRu": "Формальные ошибки", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "informal-fallacies", "nameRu": "Неформальные ошибки", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "ad-hominem-variants", "nameRu": "Разновидности ad hominem", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "appeal-to-nature", "nameRu": "Апелляция к природе", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "false-cause", "nameRu": "Ложная причинность", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "appeal-to-ignorance", "nameRu": "Апелляция к незнанию", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "no-true-scotsman", "nameRu": "Ни один настоящий шотландец", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "genetic-fallacy", "nameRu": "Генетическая ошибка", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "composition-division", "nameRu": "Ошибки состава и разделения", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "appeal-to-tradition", "nameRu": "Апелляция к традиции", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "loaded-question", "nameRu": "Нагруженный вопрос", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "fallacy-recognition-practice", "nameRu": "Практика распознавания ошибок", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "source-evaluation",
+      "nameRu": "Оценка источников",
+      "topics": [
+        { "id": "source-credibility", "nameRu": "Надёжность источника", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "peer-review-process", "nameRu": "Процесс рецензирования", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "primary-secondary-sources", "nameRu": "Первичные и вторичные источники", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "bias-detection-sources", "nameRu": "Обнаружение предвзятости в источниках", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "fact-checking-methods", "nameRu": "Методы проверки фактов", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "lateral-reading", "nameRu": "Латеральное чтение", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "conflict-of-interest", "nameRu": "Конфликт интересов", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "statistical-claims-evaluation", "nameRu": "Оценка статистических утверждений", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "expert-opinion-limits", "nameRu": "Ограничения экспертного мнения", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "media-literacy",
+      "nameRu": "Медиаграмотность",
+      "topics": [
+        { "id": "news-framing", "nameRu": "Фрейминг в новостях", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "clickbait-recognition", "nameRu": "Распознавание кликбейта", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "filter-bubbles", "nameRu": "Пузыри фильтров", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "echo-chambers", "nameRu": "Эхо-камеры", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "deepfakes-misinformation", "nameRu": "Дипфейки и дезинформация", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "social-media-algorithms", "nameRu": "Алгоритмы социальных сетей", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "information-overload", "nameRu": "Информационная перегрузка", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "media-ownership-bias", "nameRu": "Влияние владельцев СМИ", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "visual-manipulation", "nameRu": "Визуальная манипуляция", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "astroturfing", "nameRu": "Астротурфинг (поддельный активизм)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "scientific-method",
+      "nameRu": "Научный метод",
+      "topics": [
+        { "id": "hypothesis-testing", "nameRu": "Тестирование гипотез", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "falsifiability-popper", "nameRu": "Фальсифицируемость (Поппер)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "controlled-experiments", "nameRu": "Контролируемые эксперименты", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "reproducibility-crisis", "nameRu": "Кризис воспроизводимости", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "correlation-vs-causation", "nameRu": "Корреляция vs причинность", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "placebo-effect", "nameRu": "Эффект плацебо", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "occams-razor", "nameRu": "Бритва Оккама", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "paradigm-shifts-kuhn", "nameRu": "Смена парадигм (Кун)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "peer-review-limitations", "nameRu": "Ограничения рецензирования", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "meta-analysis", "nameRu": "Метаанализ", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "manipulation-propaganda",
+      "nameRu": "Манипуляция и пропаганда",
+      "topics": [
+        { "id": "propaganda-techniques", "nameRu": "Техники пропаганды", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "gaslighting", "nameRu": "Газлайтинг", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "overton-window", "nameRu": "Окно Овертона", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "manufactured-consent", "nameRu": "Производство согласия (Хомский)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "cult-indoctrination", "nameRu": "Индоктринация в культах", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "whataboutism", "nameRu": "Whataboutism", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "fear-uncertainty-doubt", "nameRu": "Страх, неопределённость, сомнение (FUD)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "thought-terminating-cliche", "nameRu": "Мыслительные клише-заглушки", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "information-warfare", "nameRu": "Информационная война", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "inoculation-theory", "nameRu": "Теория прививки (против манипуляций)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "doublespeak", "nameRu": "Двоемыслие и двоеречие (Оруэлл)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "cognitive-biases",
+      "nameRu": "Когнитивные искажения в мышлении",
+      "topics": [
+        { "id": "anchoring-bias-thinking", "nameRu": "Якорение в мышлении", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "availability-cascade", "nameRu": "Каскад доступности", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "blind-spot-bias", "nameRu": "Слепое пятно предвзятости", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "clustering-illusion", "nameRu": "Иллюзия кластеризации", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "conjunction-fallacy", "nameRu": "Ошибка конъюнкции", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "curse-of-knowledge", "nameRu": "Проклятие знания", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "fundamental-attribution-error", "nameRu": "Фундаментальная ошибка атрибуции", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "narrative-fallacy", "nameRu": "Нарративная ошибка (Талеб)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "selection-bias", "nameRu": "Ошибка отбора", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "debiasing-techniques", "nameRu": "Техники преодоления искажений", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    }
+  ]
+}

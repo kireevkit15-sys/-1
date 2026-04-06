@@ -1,0 +1,105 @@
+{
+  "branch": "LOGIC",
+  "category": "rhetoric",
+  "categoryRu": "Риторика",
+  "subcategories": [
+    {
+      "id": "persuasion-techniques",
+      "nameRu": "Техники убеждения",
+      "topics": [
+        { "id": "ethos-credibility", "nameRu": "Этос: убеждение через авторитет", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "pathos-emotional-appeal", "nameRu": "Патос: эмоциональное воздействие", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "logos-logical-appeal", "nameRu": "Логос: логическое убеждение", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "kairos-timing", "nameRu": "Кайрос: сила момента", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "rhetorical-questions", "nameRu": "Риторические вопросы", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "anaphora-repetition", "nameRu": "Анафора и повторение", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "metaphor-analogy-persuasion", "nameRu": "Метафора и аналогия в убеждении", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "rule-of-three", "nameRu": "Правило трёх", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "narrative-persuasion", "nameRu": "Нарративное убеждение", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "contrast-technique", "nameRu": "Техника контраста", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "reframing", "nameRu": "Рефрейминг", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "hedging-boosting", "nameRu": "Хеджирование и усиление", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "fallacies-sophisms",
+      "nameRu": "Уловки и софизмы",
+      "topics": [
+        { "id": "sophism-history", "nameRu": "История софистики", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "appeal-to-pity", "nameRu": "Апелляция к жалости", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "appeal-to-fear", "nameRu": "Апелляция к страху", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "appeal-to-flattery", "nameRu": "Апелляция к лести", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "poisoning-the-well", "nameRu": "Отравление колодца", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "moving-goalposts", "nameRu": "Сдвиг ворот", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "gish-gallop", "nameRu": "Галоп Гиша", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "false-equivalence", "nameRu": "Ложная эквивалентность", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "sealioning", "nameRu": "Сиалайнинг (навязчивые вопросы)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "tone-policing", "nameRu": "Полицейский тона", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "detecting-sophisms", "nameRu": "Обнаружение софизмов в реальном времени", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "argument-structure",
+      "nameRu": "Структура аргументации",
+      "topics": [
+        { "id": "claim-evidence-warrant", "nameRu": "Тезис, доказательство, обоснование", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "aristotelian-enthymeme", "nameRu": "Аристотелевская энтимема", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "chain-arguments", "nameRu": "Цепочки аргументов", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "convergent-arguments", "nameRu": "Конвергентные аргументы", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "linked-arguments", "nameRu": "Связанные аргументы", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "rebuttals-qualifiers", "nameRu": "Опровержения и квалификаторы", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "thesis-antithesis-synthesis", "nameRu": "Тезис, антитезис, синтез", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "rogerian-argument", "nameRu": "Роджерианская аргументация", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "stasis-theory", "nameRu": "Теория стасиса", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "anticipating-objections", "nameRu": "Предвосхищение возражений", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "debate-negotiation",
+      "nameRu": "Дебаты и переговорная риторика",
+      "topics": [
+        { "id": "debate-formats", "nameRu": "Форматы дебатов", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "cross-examination", "nameRu": "Перекрёстный допрос", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "constructive-rebuttal", "nameRu": "Конструктивное опровержение", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "burden-of-proof-debate", "nameRu": "Бремя доказательства в дебатах", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "steelmanning", "nameRu": "Стилменнинг (усиление аргумента оппонента)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "socratic-method", "nameRu": "Сократический метод", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "devils-advocate", "nameRu": "Адвокат дьявола", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "dialectical-method", "nameRu": "Диалектический метод", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "negotiation-rhetoric", "nameRu": "Риторика переговоров", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "concession-strategy-rhetoric", "nameRu": "Стратегия уступок в риторике", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "public-speaking",
+      "nameRu": "Публичные выступления",
+      "topics": [
+        { "id": "speech-structure", "nameRu": "Структура речи", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "opening-hooks", "nameRu": "Вступительные зацепки", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "vocal-delivery", "nameRu": "Голосовая подача", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "body-language-speaking", "nameRu": "Язык тела в выступлениях", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "audience-analysis", "nameRu": "Анализ аудитории", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "impromptu-speaking", "nameRu": "Импровизированная речь", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "handling-questions", "nameRu": "Работа с вопросами аудитории", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "speech-anxiety-management", "nameRu": "Управление страхом выступлений", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "visual-aids-slides", "nameRu": "Визуальные пособия и слайды", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "closing-techniques", "nameRu": "Техники завершения речи", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "great-speeches-analysis", "nameRu": "Анализ великих речей", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "critical-thinking-argumentation",
+      "nameRu": "Критическое мышление в аргументации",
+      "topics": [
+        { "id": "intellectual-humility", "nameRu": "Интеллектуальное смирение", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "charity-principle", "nameRu": "Принцип благожелательности", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "epistemic-responsibility", "nameRu": "Эпистемическая ответственность", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "bayesian-updating-beliefs", "nameRu": "Байесовское обновление убеждений", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "motivated-reasoning", "nameRu": "Мотивированное рассуждение", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "epistemic-bubbles", "nameRu": "Эпистемические пузыри", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "disagreement-management", "nameRu": "Управление разногласиями", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "constructive-skepticism", "nameRu": "Конструктивный скептицизм", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    }
+  ]
+}
