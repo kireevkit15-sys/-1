@@ -64,7 +64,7 @@ export default function HomePage() {
           <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-accent/30 to-transparent" />
           <div className="relative space-y-3">
             <h2 className="font-semibold text-[17px] text-text-primary">
-              Интеллект-батл
+              Интеллект-баттл
             </h2>
             <p className="text-text-secondary text-sm">
               Сразись с соперником в 5 раундах
@@ -84,7 +84,7 @@ export default function HomePage() {
             <p className="text-[26px] font-bold text-accent">
               {mockStats.battles}
             </p>
-            <p className="text-text-secondary text-xs mt-1">Батлов</p>
+            <p className="text-text-secondary text-xs mt-1">Баттлов</p>
           </Card>
           <Card padding="sm">
             <p className="text-[26px] font-bold text-accent-gold">

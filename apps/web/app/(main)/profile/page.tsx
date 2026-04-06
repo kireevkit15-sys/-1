@@ -71,7 +71,7 @@ export default function ProfilePage() {
       {/* Battle History */}
       <div className="space-y-3">
         <h2 className="font-semibold text-sm text-text-secondary uppercase tracking-wider px-1">
-          История батлов
+          История баттлов
         </h2>
         {mockProfile.battles.map((battle) => (
           <Card key={battle.id} padding="sm">

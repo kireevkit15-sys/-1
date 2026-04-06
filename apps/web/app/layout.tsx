@@ -8,7 +8,7 @@ const inter = Inter({ subsets: ["latin", "cyrillic"] });
 export const metadata: Metadata = {
   title: "РАЗУМ — Прокачай разум",
   description:
-    "Интеллектуальная платформа для батлов и обучения. Прокачай критическое мышление, логику, риторику и эрудицию.",
+    "Интеллектуальная платформа для баттлов и обучения. Прокачай критическое мышление, логику, риторику и эрудицию.",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,

@@ -1,7 +1,7 @@
 {
   "name": "РАЗУМ",
   "short_name": "РАЗУМ",
-  "description": "Прокачай разум. Интеллектуальные батлы и обучение.",
+  "description": "Прокачай разум. Интеллектуальные баттлы и обучение.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0a0a0a",
@@ -27,10 +27,10 @@
       "description": "Ежедневная разминка"
     },
     {
-      "name": "Батл",
-      "short_name": "Батл",
+      "name": "Баттл",
+      "short_name": "Баттл",
       "url": "/battle/new",
-      "description": "Найти батл"
+      "description": "Найти баттл"
     }
   ]
 }

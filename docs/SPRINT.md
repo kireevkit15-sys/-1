@@ -181,9 +181,9 @@
 | # | Задача | Статус | Файлы |
 |---|--------|--------|-------|
 | F3.1 | Создать Socket.IO клиент с JWT | done | `apps/web/lib/socket.ts` |
-| F3.2 | Создать хук useBattle | todo | `apps/web/hooks/useBattle.ts` |
-| F3.3 | Создать страницу поиска батла | todo | `apps/web/app/battle/new/page.tsx` |
-| F3.4 | Создать экран батла (категории, атака, таймер) | todo | `apps/web/app/battle/[id]/page.tsx` |
+| F3.2 | Создать хук useBattle | done | `apps/web/hooks/useBattle.ts` |
+| F3.3 | Создать страницу поиска батла | done | `apps/web/app/(main)/battle/new/page.tsx` |
+| F3.4 | Создать экран батла (категории, атака, таймер) | done | `apps/web/app/(main)/battle/[id]/page.tsx` |
 
 ## Яшкин (Backend)
 
@@ -221,7 +221,7 @@
 | F2.2 | Создать layout авторизации | done | `apps/web/app/(auth)/layout.tsx` |
 | F2.3 | Подключить NextAuth.js v5 | done | `apps/web/app/api/auth/[...nextauth]/route.ts` |
 | F2.4 | Создать хук useAuth | done | `apps/web/hooks/useAuth.ts` |
-| F2.5 | Защитить маршруты middleware | todo | `apps/web/middleware.ts` |
+| F2.5 | Защитить маршруты middleware | blocked | `apps/web/middleware.ts` — блокирует без Telegram auth |
 
 ## Яшкин (Backend)
 

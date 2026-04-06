@@ -131,6 +131,47 @@
 - `785883d` — feat(web): apply Dark Academia design system
 - `706f160` — fix(web): Liquid Glass nav, fix dynamic classes, card depth
 
+### 2026-04-06 — Сессия 3: Неделя 3 — Socket.IO, баттл UI, DifficultyPicker
+
+**Время:** ~4 часа
+**Статус:** Завершена
+
+**Что сделано:**
+- Создан Socket.IO клиент (`apps/web/lib/socket.ts`) — подключение к /battle namespace с JWT, автореконнект
+- Создан хук useBattle (`apps/web/hooks/useBattle.ts`) — reducer, подписка на все WS-события, экшены
+- Переписана страница поиска баттла с реальным хуком useBattle (createBotBattle, searchOpponent, cancelSearch)
+- Переписан экран баттла — все фазы: CATEGORY_SELECT, ROUND_ATTACK, ROUND_DEFENSE, ROUND_RESULT, FINAL_RESULT
+- Создана демо-страница `/battle/demo` — полный интерактивный баттл без бэкенда
+- Создан компонент DifficultyPicker — карусель с бесконечным свайпом, liquid-glass карточки
+- Добавлены HP-бары (градиентные полоски здоровья) в ScoreBar
+- Круговой таймер (TimerCircle) — 60 сек, краснеет при <10 сек
+- Исправлено: "батл" → "баттл" во всех 8 файлах
+- Исправлен критический баг: сокет убивался при навигации между страницами
+- Исправлено: [id]/page.tsx теперь читает URL-параметры и запрашивает battle:join
+- Добавлен цвет accent-bronze, accent-silver в tailwind.config.ts
+- Добавлены CSS-классы tier-bronze/silver/gold в globals.css
+- Категории получили разные цвета (красный/золотой/медный)
+
+**Файлы созданы:**
+- `apps/web/lib/socket.ts` — Socket.IO клиент
+- `apps/web/hooks/useBattle.ts` — хук баттла
+- `apps/web/app/(main)/battle/demo/page.tsx` — демо-режим
+- `apps/web/components/battle/DifficultyPicker.tsx` — карусель выбора сложности
+- `apps/web/public/images/` — шахматные фигуры (knight, rook, queen)
+
+**Файлы изменены:**
+- `apps/web/app/(main)/battle/new/page.tsx` — реальный useBattle
+- `apps/web/app/(main)/battle/[id]/page.tsx` — useParams + все фазы
+- `apps/web/app/(main)/page.tsx` — "баттл"
+- `apps/web/app/layout.tsx` — "баттл"
+- `apps/web/components/layout/BottomNav.tsx` — "Баттл"
+- `apps/web/app/(main)/profile/page.tsx` — "баттлов"
+- `apps/web/public/manifest.json` — "баттл"
+- `apps/web/app/globals.css` — tier-классы
+- `apps/web/tailwind.config.ts` — accent-bronze, accent-silver
+
+**Задачи из SPRINT.md закрыты:** F3.1, F3.2, F3.3, F3.4
+
 ---
 
 ## Яшкин (Backend)

@@ -16,6 +16,8 @@ const config: Config = {
         "accent-warm": "#724B39",
         "accent-gold": "#B98D34",
         "accent-red": "#89352A",
+        "accent-bronze": "#B4783C",
+        "accent-silver": "#C0C0D2",
         "accent-muted": "#56453A",
         "text-primary": "#E8DDD3",
         "text-secondary": "#87756A",
