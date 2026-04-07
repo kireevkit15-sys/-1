@@ -152,10 +152,22 @@ export class QuestionController {
     return this.questionService.getAnswerStatsOverview();
   }
 
+  @ApiOperation({ summary: 'Статистика вопросов по категориям (админ)' })
+  @ApiBearerAuth()
+  @ApiResponse({ status: 200, description: 'Количество вопросов по ветке, сложности, категории' })
+  @ApiResponse({ status: 403, description: 'Нет прав администратора' })
+  @UseGuards(JwtAuthGuard, AdminGuard)
+  @Get('stats')
+  async getStats() {
+    return this.questionService.getStatsByCategory();
+  }
+
   @ApiOperation({ summary: 'Список вопросов (админ)' })
   @ApiBearerAuth()
   @ApiQuery({ name: 'category', required: false, description: 'Фильтр по категории' })
   @ApiQuery({ name: 'difficulty', required: false, description: 'Фильтр по сложности' })
+  @ApiQuery({ name: 'branch', required: false, enum: ['STRATEGY', 'LOGIC'], description: 'Фильтр по ветке' })
+  @ApiQuery({ name: 'status', required: false, enum: ['active', 'inactive'], description: 'Фильтр по статусу' })
   @ApiQuery({ name: 'page', required: false, type: Number, description: 'Номер страницы' })
   @ApiQuery({ name: 'limit', required: false, type: Number, description: 'Количество на странице' })
   @ApiResponse({ status: 200, description: 'Список вопросов с пагинацией' })
@@ -166,12 +178,16 @@ export class QuestionController {
   async findAll(
     @Query('category') category?: string,
     @Query('difficulty') difficulty?: string,
+    @Query('branch') branch?: string,
+    @Query('status') status?: string,
     @Query('page') page?: string,
     @Query('limit') limit?: string,
   ) {
     return this.questionService.findAll({
       category,
       difficulty,
+      branch,
+      isActive: status === 'active' ? true : status === 'inactive' ? false : undefined,
       page: page ? parseInt(page, 10) : undefined,
       limit: limit ? parseInt(limit, 10) : undefined,
     });

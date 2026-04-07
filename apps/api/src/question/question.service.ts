@@ -20,6 +20,8 @@ export class QuestionService {
   async findAll(filters: {
     category?: string;
     difficulty?: string;
+    branch?: string;
+    isActive?: boolean;
     page?: number;
     limit?: number;
   }) {
@@ -30,6 +32,8 @@ export class QuestionService {
     const where: any = {};
     if (filters.category) where.category = filters.category;
     if (filters.difficulty) where.difficulty = filters.difficulty;
+    if (filters.branch) where.branch = filters.branch;
+    if (filters.isActive !== undefined) where.isActive = filters.isActive;
 
     const [questions, total] = await Promise.all([
       this.prisma.question.findMany({
@@ -46,6 +50,45 @@ export class QuestionService {
       total,
       page,
       totalPages: Math.ceil(total / limit),
+    };
+  }
+
+  async getStatsByCategory() {
+    const [total, byBranch, byDifficulty, byCategory] = await Promise.all([
+      this.prisma.question.count({ where: { isActive: true } }),
+      this.prisma.question.groupBy({
+        by: ['branch'],
+        where: { isActive: true },
+        _count: { id: true },
+      }),
+      this.prisma.question.groupBy({
+        by: ['difficulty'],
+        where: { isActive: true },
+        _count: { id: true },
+      }),
+      this.prisma.question.groupBy({
+        by: ['category'],
+        where: { isActive: true },
+        _count: { id: true },
+        orderBy: { _count: { id: 'desc' } },
+        take: 30,
+      }),
+    ]);
+
+    return {
+      total,
+      byBranch: byBranch.map((b: { branch: string; _count: { id: number } }) => ({
+        branch: b.branch,
+        count: b._count.id,
+      })),
+      byDifficulty: byDifficulty.map((d: { difficulty: string; _count: { id: number } }) => ({
+        difficulty: d.difficulty,
+        count: d._count.id,
+      })),
+      byCategory: byCategory.map((c: { category: string; _count: { id: number } }) => ({
+        category: c.category,
+        count: c._count.id,
+      })),
     };
   }
 
