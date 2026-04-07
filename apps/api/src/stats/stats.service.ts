@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { determineThinkerClass, ThinkerClass } from '@razum/shared';
 
 @Injectable()
 export class StatsService {
@@ -172,6 +173,57 @@ export class StatsService {
     });
 
     return this.enrichStats(updated);
+  }
+
+  /**
+   * Full profile summary: level, rating, streak, thinker class, XP breakdown.
+   */
+  async getSummary(userId: string) {
+    const stats = await this.prisma.userStats.findUnique({
+      where: { userId },
+      include: {
+        user: {
+          select: { id: true, name: true, avatarUrl: true },
+        },
+      },
+    });
+
+    if (!stats) {
+      throw new NotFoundException('Stats not found for this user');
+    }
+
+    const totalXp = this.calculateTotalXp(stats);
+    const level = this.calculateLevel(totalXp);
+    const progress = this.calculateXpToNextLevel(totalXp);
+
+    const thinkerClass: ThinkerClass = determineThinkerClass({
+      logic: stats.logicXp,
+      erudition: stats.eruditionXp,
+      strategy: stats.strategyXp,
+      rhetoric: stats.rhetoricXp,
+      intuition: stats.intuitionXp,
+    });
+
+    const battleStats = await this.getBattleStats(userId);
+
+    return {
+      user: stats.user,
+      level,
+      totalXp,
+      xpProgress: progress,
+      rating: stats.rating,
+      streakDays: stats.streakDays,
+      streakDate: stats.streakDate,
+      thinkerClass,
+      stats: {
+        logicXp: stats.logicXp,
+        eruditionXp: stats.eruditionXp,
+        strategyXp: stats.strategyXp,
+        rhetoricXp: stats.rhetoricXp,
+        intuitionXp: stats.intuitionXp,
+      },
+      battles: battleStats,
+    };
   }
 
   async getLeaderboard(limit: number, offset: number) {

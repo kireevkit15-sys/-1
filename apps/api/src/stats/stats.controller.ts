@@ -24,6 +24,13 @@ export class StatsController {
     return this.statsService.getUserStats(req.user.sub);
   }
 
+  @ApiOperation({ summary: 'Полная сводка профиля (уровень, рейтинг, стрик, класс мыслителя)' })
+  @ApiResponse({ status: 200, description: 'Сводка профиля с классом мыслителя и статистикой батлов' })
+  @Get('me/summary')
+  async getMySummary(@Request() req: any) {
+    return this.statsService.getSummary(req.user.sub);
+  }
+
   @ApiOperation({ summary: 'Моя статистика батлов (wins/losses/winRate)' })
   @ApiResponse({ status: 200, description: 'Статистика батлов: победы, поражения, winRate' })
   @ApiResponse({ status: 401, description: 'Не авторизован' })

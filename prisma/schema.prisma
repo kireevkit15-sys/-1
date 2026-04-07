@@ -90,6 +90,7 @@ model User {
   analyticsEvents   AnalyticsEvent[]
   dailyChallenges   DailyChallenge[]
   warmupResults     WarmupResult[]
+  pushSubscriptions PushSubscription[]
 
   @@map("users")
 }
@@ -391,6 +392,22 @@ model DailyFact {
   @@index([isActive])
   @@index([usedAt])
   @@map("daily_facts")
+}
+
+// ── PushSubscription ─────────────────────────
+
+model PushSubscription {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @db.Uuid
+  endpoint  String   @unique
+  p256dh    String
+  auth      String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("push_subscriptions")
 }
 
 // ── WarmupResult ──────────────────────────────

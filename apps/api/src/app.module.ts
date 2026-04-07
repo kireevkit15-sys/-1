@@ -23,6 +23,7 @@ import { ReferralModule } from './referral/referral.module';
 import { AnalyticsModule } from './analytics/analytics.module';
 import { ChallengeModule } from './challenge/challenge.module';
 import { FactsModule } from './facts/facts.module';
+import { NotificationModule } from './notification/notification.module';
 import { AppController } from './app.controller';
 
 @Module({
@@ -95,6 +96,7 @@ import { AppController } from './app.controller';
     AnalyticsModule,
     ChallengeModule,
     FactsModule,
+    NotificationModule,
   ],
   providers: [
     {
