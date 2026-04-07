@@ -69,46 +69,53 @@ export class AchievementsService {
       },
     });
 
+    if (achievements.length === 0) return { newlyUnlocked: [] };
+
+    // Batch-load all existing user achievements in one query instead of N queries
+    const existingRecords = await this.prisma.userAchievement.findMany({
+      where: {
+        userId,
+        achievementId: { in: achievements.map((a) => a.id) },
+      },
+    });
+
+    const existingMap = new Map(
+      existingRecords.map((r) => [r.achievementId, r]),
+    );
+
     const newlyUnlocked: string[] = [];
+    const upsertOps: ReturnType<typeof this.prisma.userAchievement.upsert>[] = [];
+    let totalXpReward = 0;
 
     for (const achievement of achievements) {
       const condition = achievement.condition as unknown as AchievementCondition;
-
-      const existing = await this.prisma.userAchievement.findUnique({
-        where: {
-          userId_achievementId: { userId, achievementId: achievement.id },
-        },
-      });
+      const existing = existingMap.get(achievement.id);
 
       if (existing?.unlockedAt) continue;
 
       const unlocked = currentValue >= condition.threshold;
 
-      await this.prisma.userAchievement.upsert({
-        where: {
-          userId_achievementId: { userId, achievementId: achievement.id },
-        },
-        create: {
-          userId,
-          achievementId: achievement.id,
-          progress: Math.min(currentValue, condition.threshold),
-          unlockedAt: unlocked ? new Date() : null,
-        },
-        update: {
-          progress: Math.min(currentValue, condition.threshold),
-          ...(unlocked && !existing?.unlockedAt ? { unlockedAt: new Date() } : {}),
-        },
-      });
+      upsertOps.push(
+        this.prisma.userAchievement.upsert({
+          where: {
+            userId_achievementId: { userId, achievementId: achievement.id },
+          },
+          create: {
+            userId,
+            achievementId: achievement.id,
+            progress: Math.min(currentValue, condition.threshold),
+            unlockedAt: unlocked ? new Date() : null,
+          },
+          update: {
+            progress: Math.min(currentValue, condition.threshold),
+            ...(unlocked && !existing?.unlockedAt ? { unlockedAt: new Date() } : {}),
+          },
+        }),
+      );
 
       if (unlocked && !existing?.unlockedAt) {
         newlyUnlocked.push(achievement.code);
-
-        if (achievement.xpReward > 0) {
-          await this.prisma.userStats.update({
-            where: { userId },
-            data: { eruditionXp: { increment: achievement.xpReward } },
-          });
-        }
+        totalXpReward += achievement.xpReward;
 
         // Send Telegram notification (fire-and-forget)
         this.telegramNotification
@@ -121,6 +128,20 @@ export class AchievementsService {
             this.logger.warn(`Failed to send achievement notification: ${(err as Error).message}`),
           );
       }
+    }
+
+    // Execute all upserts + XP reward in a single transaction
+    if (upsertOps.length > 0) {
+      const ops = [...upsertOps];
+      if (totalXpReward > 0) {
+        ops.push(
+          this.prisma.userStats.update({
+            where: { userId },
+            data: { eruditionXp: { increment: totalXpReward } },
+          }) as any,
+        );
+      }
+      await this.prisma.$transaction(ops);
     }
 
     return { newlyUnlocked };

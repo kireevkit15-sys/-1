@@ -61,6 +61,10 @@ export class LeaderboardService {
     period: LeaderboardPeriod,
     limit: number,
   ) {
+    if (type === 'xp') {
+      return this.buildXpLeaderboard(period, limit);
+    }
+
     const orderBy = this.getOrderBy(type);
 
     const entries = await this.prisma.userStats.findMany({
@@ -84,9 +88,44 @@ export class LeaderboardService {
     return {
       type,
       period,
+      entries: entries.map((e, i) => this.mapLeaderboardEntry(e, i)),
+    };
+  }
+
+  private async buildXpLeaderboard(
+    period: LeaderboardPeriod,
+    limit: number,
+  ) {
+    const entries = await this.prisma.$queryRaw<
+      Array<{
+        userId: string;
+        rating: number;
+        streakDays: number;
+        logicXp: number;
+        eruditionXp: number;
+        strategyXp: number;
+        rhetoricXp: number;
+        intuitionXp: number;
+        totalXp: bigint;
+        name: string;
+        avatarUrl: string | null;
+      }>
+    >`
+      SELECT us."userId", us.rating, us."streakDays",
+             us."logicXp", us."eruditionXp", us."strategyXp", us."rhetoricXp", us."intuitionXp",
+             (us."logicXp" + us."eruditionXp" + us."strategyXp" + us."rhetoricXp" + us."intuitionXp") AS "totalXp",
+             u.name, u."avatarUrl"
+      FROM user_stats us
+      JOIN users u ON u.id = us."userId"
+      ORDER BY (us."logicXp" + us."eruditionXp" + us."strategyXp" + us."rhetoricXp" + us."intuitionXp") DESC
+      LIMIT ${limit}
+    `;
+
+    return {
+      type: 'xp' as const,
+      period,
       entries: entries.map((e, i) => {
-        const totalXp =
-          e.logicXp + e.eruditionXp + e.strategyXp + e.rhetoricXp + e.intuitionXp;
+        const totalXp = Number(e.totalXp);
         const level = Math.floor(Math.sqrt(totalXp / 100));
         const thinkerClass = determineThinkerClass({
           logic: e.logicXp,
@@ -98,7 +137,7 @@ export class LeaderboardService {
 
         return {
           rank: i + 1,
-          user: e.user,
+          user: { id: e.userId, name: e.name, avatarUrl: e.avatarUrl },
           rating: e.rating,
           totalXp,
           level,
@@ -106,6 +145,42 @@ export class LeaderboardService {
           thinkerClass,
         };
       }),
+    };
+  }
+
+  private mapLeaderboardEntry(
+    e: {
+      userId: string;
+      rating: number;
+      streakDays: number;
+      logicXp: number;
+      eruditionXp: number;
+      strategyXp: number;
+      rhetoricXp: number;
+      intuitionXp: number;
+      user: { id: string; name: string; avatarUrl: string | null };
+    },
+    i: number,
+  ) {
+    const totalXp =
+      e.logicXp + e.eruditionXp + e.strategyXp + e.rhetoricXp + e.intuitionXp;
+    const level = Math.floor(Math.sqrt(totalXp / 100));
+    const thinkerClass = determineThinkerClass({
+      logic: e.logicXp,
+      erudition: e.eruditionXp,
+      strategy: e.strategyXp,
+      rhetoric: e.rhetoricXp,
+      intuition: e.intuitionXp,
+    });
+
+    return {
+      rank: i + 1,
+      user: e.user,
+      rating: e.rating,
+      totalXp,
+      level,
+      streakDays: e.streakDays,
+      thinkerClass,
     };
   }
 
@@ -139,28 +214,30 @@ export class LeaderboardService {
       userStats.intuitionXp;
 
     let rank: number;
+    let total: number;
 
-    if (type === 'rating') {
-      rank =
-        (await this.prisma.userStats.count({
-          where: { rating: { gt: userStats.rating } },
-        })) + 1;
-    } else if (type === 'streak') {
-      rank =
-        (await this.prisma.userStats.count({
-          where: { streakDays: { gt: userStats.streakDays } },
-        })) + 1;
-    } else {
-      // XP — count users with higher total XP via raw query
-      const result = await this.prisma.$queryRaw<[{ count: bigint }]>`
-        SELECT COUNT(*) as count FROM user_stats
-        WHERE ("logicXp" + "eruditionXp" + "strategyXp" + "rhetoricXp" + "intuitionXp")
-          > ${totalXp}
+    if (type === 'xp') {
+      const result = await this.prisma.$queryRaw<[{ rank: bigint; total: bigint }]>`
+        SELECT
+          (SELECT COUNT(*) FROM user_stats
+           WHERE ("logicXp" + "eruditionXp" + "strategyXp" + "rhetoricXp" + "intuitionXp") > ${totalXp}
+          ) + 1 AS rank,
+          (SELECT COUNT(*) FROM user_stats) AS total
       `;
-      rank = Number(result[0].count) + 1;
+      rank = Number(result[0].rank);
+      total = Number(result[0].total);
+    } else {
+      const [above, count] = await Promise.all([
+        this.prisma.userStats.count({
+          where: type === 'rating'
+            ? { rating: { gt: userStats.rating } }
+            : { streakDays: { gt: userStats.streakDays } },
+        }),
+        this.prisma.userStats.count(),
+      ]);
+      rank = above + 1;
+      total = count;
     }
-
-    const total = await this.prisma.userStats.count();
 
     return {
       rank,

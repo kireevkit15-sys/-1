@@ -113,6 +113,7 @@ model UserStats {
   user User @relation(fields: [userId], references: [id])
 
   @@index([rating(sort: Desc)])
+  @@index([streakDays(sort: Desc)])
   @@map("user_stats")
 }
 
@@ -146,6 +147,7 @@ model Question {
   @@index([category])
   @@index([isActive])
   @@index([branch, difficulty, isActive])
+  @@index([branch, difficulty, category, isActive])
   @@map("questions")
 }
 
@@ -196,6 +198,8 @@ model Battle {
   @@index([player2Id, status])
   @@index([status])
   @@index([createdAt])
+  @@index([endedAt])
+  @@index([winnerId])
   @@map("battles")
 }
 
@@ -218,6 +222,8 @@ model BattleRound {
   attacker User     @relation(fields: [attackerId], references: [id])
   question Question @relation(fields: [questionId], references: [id])
 
+  @@index([battleId])
+  @@index([attackerId])
   @@map("battle_rounds")
 }
 
@@ -264,6 +270,7 @@ model AiDialogue {
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  @@index([userId])
   @@map("ai_dialogues")
 }
 

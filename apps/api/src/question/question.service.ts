@@ -1,4 +1,5 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { Question } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { AiService } from '../ai/ai.service';
 import { KnowledgeService } from '../knowledge/knowledge.service';
@@ -156,17 +157,39 @@ export class QuestionService {
   }) {
     const count = params.count || 5;
 
-    const where: any = { isActive: true };
-    if (params.branch) where.branch = params.branch;
-    if (params.difficulty) where.difficulty = params.difficulty;
-    if (params.category) where.category = params.category;
+    const conditions: string[] = ['"isActive" = true'];
+    const values: unknown[] = [];
+    let paramIndex = 1;
+
+    if (params.branch) {
+      conditions.push(`"branch" = $${paramIndex}::"Branch"`);
+      values.push(params.branch);
+      paramIndex++;
+    }
+    if (params.difficulty) {
+      conditions.push(`"difficulty" = $${paramIndex}::"Difficulty"`);
+      values.push(params.difficulty);
+      paramIndex++;
+    }
+    if (params.category) {
+      conditions.push(`"category" = $${paramIndex}`);
+      values.push(params.category);
+      paramIndex++;
+    }
     if (params.excludeIds?.length) {
-      where.id = { notIn: params.excludeIds };
+      conditions.push(`"id" NOT IN (${params.excludeIds.map((_, i) => `$${paramIndex + i}::uuid`).join(', ')})`);
+      values.push(...params.excludeIds);
+      paramIndex += params.excludeIds.length;
     }
 
-    const questions = await this.prisma.question.findMany({ where });
+    const whereClause = conditions.join(' AND ');
 
-    return this.shuffleArray(questions).slice(0, count);
+    const questions = await this.prisma.$queryRawUnsafe<Question[]>(
+      `SELECT * FROM questions WHERE ${whereClause} ORDER BY RANDOM() LIMIT ${count}`,
+      ...values,
+    );
+
+    return questions;
   }
 
   /**
@@ -264,17 +287,6 @@ export class QuestionService {
       // Return whatever we have from DB
       return dbQuestions;
     }
-  }
-
-  private shuffleArray<T>(array: T[]): T[] {
-    const arr = [...array];
-    for (let i = arr.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      const temp = arr[i] as T;
-      arr[i] = arr[j] as T;
-      arr[j] = temp;
-    }
-    return arr;
   }
 
   // ── BC8: Feedback system ─────────────────────────────────────────

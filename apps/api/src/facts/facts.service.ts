@@ -1,4 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { Branch } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { RedisService } from '../redis/redis.service';
 
@@ -86,18 +87,23 @@ export class FactsService {
   }
 
   private async pickRandomUnusedFact() {
-    const count = await this.prisma.dailyFact.count({
-      where: { isActive: true, usedAt: null },
-    });
-
-    if (count === 0) return null;
-
-    const skip = Math.floor(Math.random() * count);
-    const facts = await this.prisma.dailyFact.findMany({
-      where: { isActive: true, usedAt: null },
-      take: 1,
-      skip,
-    });
+    const facts = await this.prisma.$queryRaw<
+      Array<{
+        id: string;
+        text: string;
+        source: string | null;
+        branch: Branch;
+        category: string;
+        isActive: boolean;
+        usedAt: Date | null;
+        createdAt: Date;
+      }>
+    >`
+      SELECT * FROM daily_facts
+      WHERE "isActive" = true AND "usedAt" IS NULL
+      ORDER BY RANDOM()
+      LIMIT 1
+    `;
 
     return facts[0] ?? null;
   }
