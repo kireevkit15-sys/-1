@@ -4,7 +4,7 @@
   "scripts": {
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
-    "db:seed": "ts-node seed.ts",
+    "db:seed": "ts-node --project tsconfig.json seed.ts",
     "db:reset": "prisma migrate reset",
     "db:seed-demo": "npx tsx seed-demo.ts"
   },
@@ -20,6 +20,6 @@
     "@types/bcrypt": "^5.0.2"
   },
   "prisma": {
-    "seed": "ts-node seed.ts"
+    "seed": "ts-node --project tsconfig.json seed.ts"
   }
 }

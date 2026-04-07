@@ -1092,6 +1092,156 @@ async function main() {
   }
   console.log(`✓ Modules: ${modules.length} seeded`);
 
+  // 4. Achievements
+  const achievements = [
+    // ── BATTLE ──
+    {
+      code: "first_blood",
+      name: "Первая кровь",
+      description: "Выиграй свой первый баттл",
+      icon: "swords",
+      category: "BATTLE" as const,
+      condition: { type: "wins", threshold: 1 },
+      xpReward: 50,
+    },
+    {
+      code: "warrior_10",
+      name: "Воин",
+      description: "Одержи 10 побед в баттлах",
+      icon: "shield",
+      category: "BATTLE" as const,
+      condition: { type: "wins", threshold: 10 },
+      xpReward: 150,
+    },
+    {
+      code: "gladiator_50",
+      name: "Гладиатор",
+      description: "Одержи 50 побед в баттлах",
+      icon: "crown",
+      category: "BATTLE" as const,
+      condition: { type: "wins", threshold: 50 },
+      xpReward: 500,
+    },
+    {
+      code: "veteran_100",
+      name: "Ветеран арены",
+      description: "Проведи 100 баттлов",
+      icon: "trophy",
+      category: "BATTLE" as const,
+      condition: { type: "battles", threshold: 100 },
+      xpReward: 300,
+    },
+    // ── LEARNING ──
+    {
+      code: "curious_mind",
+      name: "Любопытный ум",
+      description: "Ответь на 50 вопросов",
+      icon: "brain",
+      category: "LEARNING" as const,
+      condition: { type: "questions_answered", threshold: 50 },
+      xpReward: 100,
+    },
+    {
+      code: "scholar",
+      name: "Учёный",
+      description: "Ответь на 500 вопросов",
+      icon: "book",
+      category: "LEARNING" as const,
+      condition: { type: "questions_answered", threshold: 500 },
+      xpReward: 400,
+    },
+    {
+      code: "first_module",
+      name: "Первый шаг",
+      description: "Пройди первый модуль обучения",
+      icon: "graduation",
+      category: "LEARNING" as const,
+      condition: { type: "modules_completed", threshold: 1 },
+      xpReward: 75,
+    },
+    {
+      code: "master_learner",
+      name: "Мастер знаний",
+      description: "Пройди 10 модулей обучения",
+      icon: "star",
+      category: "LEARNING" as const,
+      condition: { type: "modules_completed", threshold: 10 },
+      xpReward: 350,
+    },
+    // ── STREAK ──
+    {
+      code: "streak_3",
+      name: "Разгон",
+      description: "Поддерживай серию 3 дня подряд",
+      icon: "fire",
+      category: "STREAK" as const,
+      condition: { type: "streak", threshold: 3 },
+      xpReward: 50,
+    },
+    {
+      code: "streak_7",
+      name: "Неделя дисциплины",
+      description: "Поддерживай серию 7 дней подряд",
+      icon: "flame",
+      category: "STREAK" as const,
+      condition: { type: "streak", threshold: 7 },
+      xpReward: 150,
+    },
+    {
+      code: "streak_30",
+      name: "Железная воля",
+      description: "Поддерживай серию 30 дней подряд",
+      icon: "diamond",
+      category: "STREAK" as const,
+      condition: { type: "streak", threshold: 30 },
+      xpReward: 500,
+    },
+    // ── SOCIAL ──
+    {
+      code: "first_pvp",
+      name: "Дуэлянт",
+      description: "Проведи первый баттл с реальным игроком",
+      icon: "users",
+      category: "SOCIAL" as const,
+      condition: { type: "pvp_battles", threshold: 1 },
+      xpReward: 100,
+    },
+    {
+      code: "level_5",
+      name: "Восходящая звезда",
+      description: "Достигни 5 уровня",
+      icon: "rocket",
+      category: "LEARNING" as const,
+      condition: { type: "level", threshold: 5 },
+      xpReward: 200,
+    },
+    {
+      code: "level_10",
+      name: "Мудрец",
+      description: "Достигни 10 уровня",
+      icon: "compass",
+      category: "LEARNING" as const,
+      condition: { type: "level", threshold: 10 },
+      xpReward: 500,
+    },
+  ];
+
+  for (const a of achievements) {
+    await prisma.achievement.upsert({
+      where: { code: a.code },
+      update: {
+        name: a.name,
+        description: a.description,
+        icon: a.icon,
+        category: a.category,
+        condition: a.condition,
+        xpReward: a.xpReward,
+      },
+      create: a,
+    });
+  }
+  console.log(`✓ Achievements: ${achievements.length} seeded`);
+
   console.log("\nDone!");
 }
 

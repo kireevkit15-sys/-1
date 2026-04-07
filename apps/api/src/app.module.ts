@@ -17,6 +17,7 @@ import { StatsModule } from './stats/stats.module';
 import { HealthModule } from './health/health.module';
 import { WarmupModule } from './warmup/warmup.module';
 import { KnowledgeModule } from './knowledge/knowledge.module';
+import { AchievementsModule } from './achievements/achievements.module';
 import { AppController } from './app.controller';
 
 @Module({
@@ -83,6 +84,7 @@ import { AppController } from './app.controller';
     HealthModule,
     WarmupModule,
     KnowledgeModule,
+    AchievementsModule,
   ],
   providers: [
     {
