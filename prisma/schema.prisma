@@ -87,6 +87,7 @@ model User {
   achievements      UserAchievement[]
   referralsMade     Referral[]           @relation("referrer")
   referralsReceived Referral[]           @relation("invitee")
+  analyticsEvents   AnalyticsEvent[]
 
   @@map("users")
 }
@@ -328,4 +329,21 @@ model Referral {
 
   @@index([referrerId])
   @@map("referrals")
+}
+
+// ── Analytics ──────────────────────────────
+
+model AnalyticsEvent {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String?  @db.Uuid
+  type      String   // battle_started, battle_finished, answer_given, session_start, session_end, warmup_completed, etc.
+  payload   Json     @default("{}")
+  createdAt DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([type])
+  @@index([userId])
+  @@index([createdAt])
+  @@map("analytics_events")
 }

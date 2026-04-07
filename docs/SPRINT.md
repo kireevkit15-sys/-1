@@ -173,7 +173,7 @@
 | N7 | Система достижений (achievements) | done | `prisma/schema.prisma`, `apps/api/src/achievements/` |
 | N8 | Страницы ошибок (404, 500, offline) | todo | `apps/web/app/not-found.tsx`, `apps/web/app/error.tsx` |
 | N9 | Telegram-бот для уведомлений и инвайтов | done | `apps/api/src/telegram/` |
-| N10 | Система реферальных кодов | todo | `apps/api/src/referral/` |
+| N10 | Система реферальных кодов | done | `apps/api/src/referral/` |
 
 ## Новые задачи — Аналитика и мониторинг
 

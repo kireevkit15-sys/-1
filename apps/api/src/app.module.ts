@@ -20,6 +20,7 @@ import { KnowledgeModule } from './knowledge/knowledge.module';
 import { AchievementsModule } from './achievements/achievements.module';
 import { TelegramModule } from './telegram/telegram.module';
 import { ReferralModule } from './referral/referral.module';
+import { AnalyticsModule } from './analytics/analytics.module';
 import { AppController } from './app.controller';
 
 @Module({
@@ -89,6 +90,7 @@ import { AppController } from './app.controller';
     AchievementsModule,
     TelegramModule,
     ReferralModule,
+    AnalyticsModule,
   ],
   providers: [
     {
