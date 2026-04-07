@@ -15,6 +15,24 @@ function getContext(): AudioContext {
   return audioCtx;
 }
 
+/** Выбор элемента (мягкий клик) */
+export function playSelect(): void {
+  const ctx = getContext();
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+
+  osc.type = "sine";
+  osc.frequency.setValueAtTime(600, ctx.currentTime);
+  osc.frequency.exponentialRampToValueAtTime(900, ctx.currentTime + 0.06);
+
+  gain.gain.setValueAtTime(0.1, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
+
+  osc.connect(gain).connect(ctx.destination);
+  osc.start(ctx.currentTime);
+  osc.stop(ctx.currentTime + 0.1);
+}
+
 /** Тик выбора (короткий клик) */
 export function playTick(): void {
   const ctx = getContext();

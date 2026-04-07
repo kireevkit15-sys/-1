@@ -146,7 +146,7 @@ export default function LearnPage() {
           {branchConfig.map((cfg) => (
             <div key={cfg.key} className="space-y-3">
               <div className="flex items-center gap-2 px-1">
-                <div className={`w-2 h-2 rounded-full ${colorMap[cfg.color].progress}`} />
+                <div className={`w-2 h-2 rounded-full ${colorMap[cfg.color]?.progress}`} />
                 <h2 className="font-semibold text-sm">{cfg.title}</h2>
               </div>
               <ModuleSkeleton />
@@ -161,7 +161,7 @@ export default function LearnPage() {
       {!loading && branches.map((branch) => (
         <div key={branch.id} className="space-y-3">
           <div className="flex items-center gap-2 px-1">
-            <div className={`w-2 h-2 rounded-full ${colorMap[branch.color].progress}`} />
+            <div className={`w-2 h-2 rounded-full ${colorMap[branch.color]?.progress}`} />
             <h2 className="font-semibold text-sm">{branch.title}</h2>
           </div>
 
@@ -183,7 +183,7 @@ export default function LearnPage() {
                     <div
                       className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold ${
                         mod.progress === 100
-                          ? `${colorMap[branch.color].bg} ${colorMap[branch.color].text}`
+                          ? `${colorMap[branch.color]?.bg} ${colorMap[branch.color]?.text}`
                           : mod.progress > 0
                           ? "bg-surface-light text-white/60"
                           : "bg-surface-light text-text-muted"
@@ -201,13 +201,13 @@ export default function LearnPage() {
                     </div>
                   </div>
                   {mod.progress > 0 && (
-                    <span className={`text-xs font-semibold ${mod.progress === 100 ? colorMap[branch.color].text : "text-text-muted"}`}>
+                    <span className={`text-xs font-semibold ${mod.progress === 100 ? colorMap[branch.color]?.text : "text-text-muted"}`}>
                       {mod.progress}%
                     </span>
                   )}
                 </div>
                 {mod.progress > 0 && mod.progress < 100 && (
-                  <ProgressBar progress={mod.progress} colorClass={colorMap[branch.color].progress} />
+                  <ProgressBar progress={mod.progress} colorClass={colorMap[branch.color]?.progress ?? "bg-accent"} />
                 )}
               </Card>
             );
