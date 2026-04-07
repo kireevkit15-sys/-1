@@ -16,6 +16,7 @@ import { AiModule } from './ai/ai.module';
 import { StatsModule } from './stats/stats.module';
 import { HealthModule } from './health/health.module';
 import { WarmupModule } from './warmup/warmup.module';
+import { KnowledgeModule } from './knowledge/knowledge.module';
 import { AppController } from './app.controller';
 
 @Module({
@@ -81,6 +82,7 @@ import { AppController } from './app.controller';
     StatsModule,
     HealthModule,
     WarmupModule,
+    KnowledgeModule,
   ],
   providers: [
     {

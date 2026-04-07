@@ -49,6 +49,12 @@ enum DefenseType {
   COUNTER
 }
 
+enum FeedbackType {
+  LIKE
+  DISLIKE
+  REPORT
+}
+
 // ── User ─────────────────────────────────────
 
 model User {
@@ -66,8 +72,9 @@ model User {
   battlesAsP2    Battle[]             @relation("player2")
   wonBattles     Battle[]             @relation("winner")
   battleRounds   BattleRound[]
-  moduleProgress UserModuleProgress[]
-  aiDialogues    AiDialogue[]
+  moduleProgress    UserModuleProgress[]
+  aiDialogues       AiDialogue[]
+  questionFeedbacks QuestionFeedback[]
 
   @@map("users")
 }
@@ -108,12 +115,33 @@ model Question {
   createdAt      DateTime   @default(now())
 
   battleRounds BattleRound[]
+  feedbacks    QuestionFeedback[]
 
   @@index([branch])
   @@index([difficulty])
   @@index([category])
   @@index([isActive])
   @@map("questions")
+}
+
+// ── QuestionFeedback ────────────────────────────
+
+model QuestionFeedback {
+  id         String       @id @default(uuid()) @db.Uuid
+  questionId String       @db.Uuid
+  userId     String       @db.Uuid
+  type       FeedbackType
+  reason     String?      // For reports: "incorrect_answer", "unclear_question", "offensive", "other"
+  comment    String?      // Optional user comment
+  createdAt  DateTime     @default(now())
+
+  question Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([questionId, userId, type])
+  @@index([questionId])
+  @@index([userId])
+  @@map("question_feedbacks")
 }
 
 // ── Battle ───────────────────────────────────

@@ -111,11 +111,11 @@
 | BC1 | pgvector миграция + таблица `knowledge_chunks` | done | `prisma/schema.prisma`, миграция | — |
 | BC2 | `scripts/process-content.ts` — парсинг PDF/txt, очистка от мусора | done | `scripts/process-content.ts` | — |
 | BC3 | `scripts/extract-concepts.ts` — извлечение концептов через Haiku | done | `scripts/extract-concepts.ts` | BC2 ✅, LC4 ✅ |
-| BC4 | `scripts/embed-content.ts` — генерация эмбеддингов, запись в pgvector | todo | `scripts/embed-content.ts` | BC1, BC3 |
-| BC5 | KnowledgeService — поиск по векторной базе (similarity search) | todo | `apps/api/src/knowledge/` | BC4 |
-| BC6 | Обновить `generate-questions.ts` — батч-генерация по таксономии с антидубль-проверкой | todo | `scripts/generate-questions.ts` | LC1, LC3 |
-| BC7 | Адаптивная генерация — QuestionService.getForBattle() с fallback на AI | todo | `apps/api/src/question/question.service.ts` | BC5, LC4 |
-| BC8 | Система обратной связи — лайк/дизлайк/репорт на вопросы + авто-ревью | todo | `apps/api/src/question/` | — |
+| BC4 | `scripts/embed-content.ts` — генерация эмбеддингов, запись в pgvector | done | `scripts/embed-content.ts` | BC1 ✅, BC3 ✅ |
+| BC5 | KnowledgeService — поиск по векторной базе (similarity search) | done | `apps/api/src/knowledge/` | BC4 ✅ |
+| BC6 | Обновить `generate-questions.ts` — батч-генерация по таксономии с антидубль-проверкой | done | `scripts/generate-questions.ts` | LC1 ✅, LC3 ✅ |
+| BC7 | Адаптивная генерация — QuestionService.getForBattle() с fallback на AI | done | `apps/api/src/question/question.service.ts` | BC5 ✅, LC4 ✅ |
+| BC8 | Система обратной связи — лайк/дизлайк/репорт на вопросы + авто-ревью | done | `apps/api/src/question/` | — |
 | BC9 | Автоматическая адаптация сложности по статистике ответов | todo | `apps/api/src/question/`, `apps/api/src/stats/` | BC8 |
 
 ---
@@ -163,7 +163,7 @@
 | N3 | Rate limiting (глобальный + per-endpoint) | done | `apps/api/src/common/decorators/throttle.decorator.ts` |
 | N4 | Security headers (CSP, HSTS, X-Frame-Options) | done | `apps/api/src/main.ts`, `nginx/nginx.conf` |
 | N5 | API versioning (/v1/) | todo | `apps/api/src/` |
-| N19 | Обновить ANTHROPIC_API_KEY в `.env` (текущий невалидный, блокирует BC3/BC6) | todo | `.env` |
+| N19 | Обновить ANTHROPIC_API_KEY и OPENAI_API_KEY в `.env` (невалидные, блокируют BC3/BC4/BC6) | todo | `.env` |
 
 ## Новые задачи — Пользовательский опыт
 

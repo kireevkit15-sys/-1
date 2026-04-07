@@ -7,6 +7,7 @@ import {
   Param,
   Body,
   Query,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -25,6 +26,7 @@ import {
   BulkCreateQuestionsDto,
   UpdateQuestionDto,
 } from './dto/create-question.dto';
+import { CreateFeedbackDto } from './dto/question-feedback.dto';
 
 @ApiTags('Questions')
 @Controller('questions')
@@ -60,6 +62,29 @@ export class QuestionController {
     });
   }
 
+  @ApiOperation({ summary: 'Адаптивные вопросы для батла (DB + AI fallback)' })
+  @ApiBearerAuth()
+  @ApiQuery({ name: 'branch', required: false, enum: ['STRATEGY', 'LOGIC'] })
+  @ApiQuery({ name: 'difficulty', required: false, enum: ['BRONZE', 'SILVER', 'GOLD'] })
+  @ApiQuery({ name: 'category', required: false })
+  @ApiQuery({ name: 'count', required: false, type: Number })
+  @ApiResponse({ status: 200, description: 'Вопросы (из БД или сгенерированные)' })
+  @UseGuards(JwtAuthGuard)
+  @Get('adaptive')
+  async getForBattle(
+    @Query('branch') branch?: 'STRATEGY' | 'LOGIC',
+    @Query('difficulty') difficulty?: 'BRONZE' | 'SILVER' | 'GOLD',
+    @Query('category') category?: string,
+    @Query('count') count?: string,
+  ) {
+    return this.questionService.getForBattle({
+      branch,
+      difficulty,
+      category,
+      count: count ? parseInt(count, 10) : undefined,
+    });
+  }
+
   @ApiOperation({ summary: 'Получить вопрос по ID' })
   @ApiBearerAuth()
   @ApiParam({ name: 'id', description: 'UUID вопроса' })
@@ -70,6 +95,39 @@ export class QuestionController {
   @Get(':id')
   async findOne(@Param('id') id: string) {
     return this.questionService.findOne(id);
+  }
+
+  // ─── Feedback (BC8) ────────────────────────────────────────
+
+  @ApiOperation({ summary: 'Отправить отзыв на вопрос (лайк/дизлайк/репорт)' })
+  @ApiBearerAuth()
+  @ApiParam({ name: 'id', description: 'UUID вопроса' })
+  @ApiResponse({ status: 201, description: 'Отзыв сохранён' })
+  @ApiResponse({ status: 404, description: 'Вопрос не найден' })
+  @UseGuards(JwtAuthGuard)
+  @Post(':id/feedback')
+  async submitFeedback(
+    @Param('id') id: string,
+    @Body() dto: CreateFeedbackDto,
+    @Req() req: { user: { sub: string } },
+  ) {
+    return this.questionService.submitFeedback(
+      id,
+      req.user.sub,
+      dto.type,
+      dto.reason,
+      dto.comment,
+    );
+  }
+
+  @ApiOperation({ summary: 'Получить статистику отзывов на вопрос' })
+  @ApiBearerAuth()
+  @ApiParam({ name: 'id', description: 'UUID вопроса' })
+  @ApiResponse({ status: 200, description: 'Статистика отзывов' })
+  @UseGuards(JwtAuthGuard)
+  @Get(':id/feedback')
+  async getFeedbackStats(@Param('id') id: string) {
+    return this.questionService.getFeedbackStats(id);
   }
 
   // ─── Admin only ───────────────────────────────────────────
@@ -132,6 +190,18 @@ export class QuestionController {
   @Patch(':id')
   async update(@Param('id') id: string, @Body() dto: UpdateQuestionDto) {
     return this.questionService.update(id, dto);
+  }
+
+  @ApiOperation({ summary: 'Зарепорченные вопросы (админ)' })
+  @ApiBearerAuth()
+  @ApiQuery({ name: 'limit', required: false, type: Number, description: 'Лимит (по умолчанию 20)' })
+  @ApiResponse({ status: 200, description: 'Список зарепорченных вопросов' })
+  @UseGuards(JwtAuthGuard, AdminGuard)
+  @Get('reported')
+  async getReported(@Query('limit') limit?: string) {
+    return this.questionService.getReportedQuestions(
+      limit ? parseInt(limit, 10) : undefined,
+    );
   }
 
   @ApiOperation({ summary: 'Мягкое удаление вопроса (админ)' })
