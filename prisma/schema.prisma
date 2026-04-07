@@ -88,6 +88,7 @@ model User {
   referralsMade     Referral[]           @relation("referrer")
   referralsReceived Referral[]           @relation("invitee")
   analyticsEvents   AnalyticsEvent[]
+  dailyChallenges   DailyChallenge[]
 
   @@map("users")
 }
@@ -346,4 +347,29 @@ model AnalyticsEvent {
   @@index([userId])
   @@index([createdAt])
   @@map("analytics_events")
+}
+
+// ── Daily Challenge ────────────────────────
+
+model DailyChallenge {
+  id          String     @id @default(uuid()) @db.Uuid
+  userId      String     @db.Uuid
+  date        String     // YYYY-MM-DD (UTC)
+  difficulty  Difficulty
+  branch      Branch
+  category    String
+  questionIds Json       // UUID[] of questions
+  answers     Json?      // { questionId, selectedIndex, correct }[]
+  correct     Int?
+  total       Int?
+  xpEarned    Int        @default(0)
+  completedAt DateTime?
+  createdAt   DateTime   @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, date])
+  @@index([userId])
+  @@index([date])
+  @@map("daily_challenges")
 }
