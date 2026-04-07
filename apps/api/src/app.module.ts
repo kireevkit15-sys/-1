@@ -22,6 +22,7 @@ import { TelegramModule } from './telegram/telegram.module';
 import { ReferralModule } from './referral/referral.module';
 import { AnalyticsModule } from './analytics/analytics.module';
 import { ChallengeModule } from './challenge/challenge.module';
+import { FactsModule } from './facts/facts.module';
 import { AppController } from './app.controller';
 
 @Module({
@@ -93,6 +94,7 @@ import { AppController } from './app.controller';
     ReferralModule,
     AnalyticsModule,
     ChallengeModule,
+    FactsModule,
   ],
   providers: [
     {

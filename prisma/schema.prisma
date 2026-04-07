@@ -373,3 +373,21 @@ model DailyChallenge {
   @@index([date])
   @@map("daily_challenges")
 }
+
+// ── Daily Fact ─────────────────────────────
+
+model DailyFact {
+  id        String   @id @default(uuid()) @db.Uuid
+  text      String
+  source    String?  // Источник факта
+  branch    Branch
+  category  String
+  isActive  Boolean  @default(true)
+  usedAt    DateTime? @db.Date // Дата когда факт был показан
+  createdAt DateTime @default(now())
+
+  @@index([branch])
+  @@index([isActive])
+  @@index([usedAt])
+  @@map("daily_facts")
+}

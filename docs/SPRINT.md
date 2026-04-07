@@ -188,7 +188,7 @@
 | # | Задача | Статус | Файлы |
 |---|--------|--------|-------|
 | N14 | Система ежедневных челленджей | done | `apps/api/src/challenge/` |
-| N15 | «Факт дня» на главном экране | todo | `apps/api/src/facts/`, `apps/web/components/` |
+| N15 | «Факт дня» на главном экране | done | `apps/api/src/facts/`, `apps/web/components/` |
 | N16 | Звуковые эффекты для батлов (Web Audio API) | todo | `apps/web/lib/sounds.ts` |
 
 ## Новые задачи — DevOps
