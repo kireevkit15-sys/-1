@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Card from "@/components/ui/Card";
 import AiChat from "@/components/learn/AiChat";
+import { useApiToken } from "@/hooks/useApiToken";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/v1";
 
@@ -51,6 +52,7 @@ function formatDate(dateStr: string): string {
 }
 
 export default function DialoguesPage() {
+  const token = useApiToken();
   const [dialogues, setDialogues] = useState<Dialogue[]>([]);
   const [loading, setLoading] = useState(true);
   const [openChat, setOpenChat] = useState<{ topic: string } | null>(null);
@@ -58,13 +60,12 @@ export default function DialoguesPage() {
   useEffect(() => {
     async function fetchDialogues() {
       try {
-        const token = localStorage.getItem("admin_token") || "";
         const res = await fetch(`${API_BASE}/ai/dialogues`, {
           headers: token ? { Authorization: `Bearer ${token}` } : {},
         });
         if (res.ok) {
           const data = await res.json();
-          setDialogues(Array.isArray(data) ? data : data.items || []);
+          setDialogues(Array.isArray(data) ? data : data.data || data.items || []);
         } else {
           setDialogues(DEMO_DIALOGUES);
         }
@@ -74,7 +75,7 @@ export default function DialoguesPage() {
       setLoading(false);
     }
     fetchDialogues();
-  }, []);
+  }, [token]);
 
   if (loading) {
     return (

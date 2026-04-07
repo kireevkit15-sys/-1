@@ -9,6 +9,7 @@ import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import DifficultyPicker from "@/components/battle/DifficultyPicker";
 import { playTick, playCorrect, playWrong, playBattleStart, playVictory, playDefeat, playDamage } from "@/lib/sounds";
+import { useApiToken } from "@/hooks/useApiToken";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/v1";
 
@@ -257,6 +258,7 @@ const defenseConfig = [
 export default function BattlePage() {
   const router = useRouter();
   const params = useParams<{ id: string }>();
+  const token = useApiToken();
   const {
     status,
     battle,
@@ -308,7 +310,6 @@ export default function BattlePage() {
   useEffect(() => {
     if (!selectedDifficulty || !battle?.selectedCategory) return;
     setQuestionLoading(true);
-    const token = localStorage.getItem("admin_token") || "";
     fetch(
       `${API_BASE}/questions/adaptive?difficulty=${selectedDifficulty}&category=${encodeURIComponent(battle.selectedCategory)}&count=1`,
       { headers: token ? { Authorization: `Bearer ${token}` } : {} },
@@ -347,7 +348,7 @@ export default function BattlePage() {
         });
       })
       .finally(() => setQuestionLoading(false));
-  }, [selectedDifficulty, battle?.selectedCategory]);
+  }, [selectedDifficulty, battle?.selectedCategory, token]);
 
   const handleAttack = useCallback(
     (answerIndex: number) => {

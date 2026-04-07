@@ -6,6 +6,7 @@ import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
 import QuestionCard from "@/components/learn/QuestionCard";
 import AiChat from "@/components/learn/AiChat";
+import { useApiToken } from "@/hooks/useApiToken";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/v1";
 
@@ -112,6 +113,7 @@ const DEMO_MODULE: Module = {
 export default function ModulePage() {
   const params = useParams();
   const router = useRouter();
+  const token = useApiToken();
   const moduleId = params.moduleId as string;
 
   const [mod, setMod] = useState<Module | null>(null);
@@ -125,7 +127,6 @@ export default function ModulePage() {
   useEffect(() => {
     async function fetchModule() {
       try {
-        const token = localStorage.getItem("admin_token") || "";
         const res = await fetch(`${API_BASE}/modules/${moduleId}`, {
           headers: token ? { Authorization: `Bearer ${token}` } : {},
         });
@@ -141,7 +142,7 @@ export default function ModulePage() {
       setLoading(false);
     }
     fetchModule();
-  }, [moduleId]);
+  }, [moduleId, token]);
 
   const handleAnswer = useCallback(
     (isCorrect: boolean) => {
@@ -150,7 +151,6 @@ export default function ModulePage() {
 
       // Submit progress to backend
       if (mod && mod.questions[currentQ]) {
-        const token = localStorage.getItem("admin_token") || "";
         fetch(`${API_BASE}/modules/${mod.id}/progress`, {
           method: "POST",
           headers: {
@@ -159,12 +159,11 @@ export default function ModulePage() {
           },
           body: JSON.stringify({
             questionId: mod.questions[currentQ]!.id,
-            correct: isCorrect,
           }),
         }).catch(() => {});
       }
     },
-    [currentQ, mod],
+    [currentQ, mod, token],
   );
 
   const goNext = useCallback(() => {

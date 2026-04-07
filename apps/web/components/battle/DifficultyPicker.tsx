@@ -2,6 +2,7 @@
 
 import { useState, useRef, useCallback } from "react";
 import { Difficulty } from "@razum/shared";
+import { Brain, Eye, Crown } from "lucide-react";
 
 // ---------------------------------------------------------------------------
 // Config
@@ -9,11 +10,10 @@ import { Difficulty } from "@razum/shared";
 
 interface DifficultyOption {
   value: Difficulty;
-  symbol: string;
-  figure: string;
   label: string;
   tier: string;
-  desc: string;
+  damage: string;
+  icon: typeof Brain;
   colors: {
     primary: string;
     light: string;
@@ -21,17 +21,18 @@ interface DifficultyOption {
     glow: string;
     glowStrong: string;
     border: string;
+    gradientFrom: string;
+    gradientTo: string;
   };
 }
 
 const options: DifficultyOption[] = [
   {
     value: Difficulty.BRONZE,
-    symbol: "\u265E",
-    figure: "Конь",
     label: "Бронза",
     tier: "Лёгкий вопрос",
-    desc: "Малый урон крепости",
+    damage: "10",
+    icon: Brain,
     colors: {
       primary: "#B4783C",
       light: "#D4A574",
@@ -39,15 +40,16 @@ const options: DifficultyOption[] = [
       glow: "rgba(180, 120, 60, 0.20)",
       glowStrong: "rgba(180, 120, 60, 0.40)",
       border: "rgba(180, 120, 60, 0.35)",
+      gradientFrom: "rgba(180, 120, 60, 0.25)",
+      gradientTo: "rgba(100, 60, 20, 0.08)",
     },
   },
   {
     value: Difficulty.SILVER,
-    symbol: "\u265C",
-    figure: "Ладья",
     label: "Серебро",
     tier: "Средний вопрос",
-    desc: "Средний урон крепости",
+    damage: "20",
+    icon: Eye,
     colors: {
       primary: "#C0C0D2",
       light: "#E8E8F0",
@@ -55,15 +57,16 @@ const options: DifficultyOption[] = [
       glow: "rgba(192, 192, 210, 0.18)",
       glowStrong: "rgba(192, 192, 210, 0.35)",
       border: "rgba(192, 192, 210, 0.30)",
+      gradientFrom: "rgba(192, 192, 210, 0.20)",
+      gradientTo: "rgba(120, 120, 140, 0.06)",
     },
   },
   {
     value: Difficulty.GOLD,
-    symbol: "\u265B",
-    figure: "Ферзь",
     label: "Золото",
     tier: "Сложный вопрос",
-    desc: "Максимальный урон крепости",
+    damage: "30-35",
+    icon: Crown,
     colors: {
       primary: "#B98D34",
       light: "#E8C44A",
@@ -71,6 +74,8 @@ const options: DifficultyOption[] = [
       glow: "rgba(185, 141, 52, 0.22)",
       glowStrong: "rgba(185, 141, 52, 0.45)",
       border: "rgba(185, 141, 52, 0.40)",
+      gradientFrom: "rgba(185, 141, 52, 0.28)",
+      gradientTo: "rgba(120, 90, 20, 0.08)",
     },
   },
 ];
@@ -91,6 +96,7 @@ export default function DifficultyPicker({ onSelect }: DifficultyPickerProps) {
   const [dragOffset, setDragOffset] = useState(0);
 
   const opt = options[current]!;
+  const Icon = opt.icon;
 
   const goTo = useCallback((idx: number) => {
     setCurrent(((idx % options.length) + options.length) % options.length);
@@ -151,7 +157,7 @@ export default function DifficultyPicker({ onSelect }: DifficultyPickerProps) {
       {/* Card area */}
       <div
         className="relative w-full flex justify-center items-center"
-        style={{ minHeight: 320 }}
+        style={{ minHeight: 340 }}
         onTouchStart={onTouchStart}
         onTouchMove={onTouchMove}
         onTouchEnd={onTouchEnd}
@@ -160,88 +166,91 @@ export default function DifficultyPicker({ onSelect }: DifficultyPickerProps) {
         onMouseUp={onMouseUp}
         onMouseLeave={onMouseUp}
       >
-        {/* Glow */}
+        {/* Glow background */}
         <div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 rounded-full blur-3xl transition-all duration-500 pointer-events-none"
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 rounded-full blur-3xl transition-all duration-500 pointer-events-none"
           style={{ background: opt.colors.glow }}
         />
 
         {/* Card */}
         <div
-          className="relative w-[260px] rounded-3xl overflow-hidden pointer-events-none"
+          className="relative w-[240px] rounded-2xl overflow-hidden pointer-events-none"
           style={{
             transform: `translateX(${dragOffset}px) perspective(800px) rotateY(${dragOffset * 0.06}deg)`,
             transition: dragging ? "none" : "all 0.4s cubic-bezier(0.16, 1, 0.3, 1)",
-            background: "rgba(22, 33, 39, 0.4)",
+            background: `linear-gradient(170deg, ${opt.colors.gradientFrom}, rgba(22, 33, 39, 0.5) 40%, ${opt.colors.gradientTo})`,
             backdropFilter: "blur(40px) saturate(2) brightness(1.1)",
             WebkitBackdropFilter: "blur(40px) saturate(2) brightness(1.1)",
-            border: `1px solid ${opt.colors.border}`,
+            border: `1.5px solid ${opt.colors.border}`,
             boxShadow: `
-              0 0 40px ${opt.colors.glow},
-              0 20px 40px rgba(0,0,0,0.3),
-              inset 0 1px 0 rgba(255,255,255,0.06),
-              inset 0 -1px 0 rgba(0,0,0,0.1)
+              0 0 60px ${opt.colors.glow},
+              0 24px 48px rgba(0,0,0,0.4),
+              inset 0 1px 0 rgba(255,255,255,0.08),
+              inset 0 -1px 0 rgba(0,0,0,0.15)
             `,
           }}
         >
-          {/* Top gradient accent line */}
+          {/* Top accent line */}
           <div
             className="h-[2px] w-full"
             style={{
-              background: `linear-gradient(90deg, transparent, ${opt.colors.primary}, transparent)`,
+              background: `linear-gradient(90deg, transparent 10%, ${opt.colors.primary} 50%, transparent 90%)`,
             }}
           />
 
-          <div className="px-6 pt-8 pb-6 flex flex-col items-center space-y-5">
-            {/* Chess symbol */}
-            <div className="relative">
-              <span
-                className="text-[80px] leading-none block transition-colors duration-300"
+          <div className="px-6 pt-10 pb-6 flex flex-col items-center space-y-5">
+            {/* Icon with glow ring */}
+            <div className="relative flex items-center justify-center">
+              <div
+                className="absolute w-28 h-28 rounded-full"
                 style={{
-                  color: opt.colors.primary,
-                  filter: `drop-shadow(0 0 20px ${opt.colors.glowStrong})`,
+                  background: `radial-gradient(circle, ${opt.colors.glow} 0%, transparent 70%)`,
+                }}
+              />
+              <div
+                className="relative w-20 h-20 rounded-full flex items-center justify-center"
+                style={{
+                  border: `1.5px solid ${opt.colors.border}`,
+                  background: `radial-gradient(circle at 30% 30%, ${opt.colors.gradientFrom}, rgba(22, 33, 39, 0.6))`,
+                  boxShadow: `0 0 30px ${opt.colors.glow}, inset 0 1px 0 rgba(255,255,255,0.06)`,
                 }}
               >
-                {opt.symbol}
-              </span>
+                <Icon
+                  size={36}
+                  strokeWidth={1.5}
+                  color={opt.colors.primary}
+                  style={{
+                    filter: `drop-shadow(0 0 12px ${opt.colors.glowStrong})`,
+                  }}
+                />
+              </div>
             </div>
 
-            {/* Text */}
+            {/* Decorative divider */}
+            <div className="w-full flex items-center gap-2">
+              <div className="flex-1 h-px" style={{ background: `linear-gradient(90deg, transparent, ${opt.colors.border})` }} />
+              <div className="w-1.5 h-1.5 rotate-45" style={{ background: opt.colors.primary, opacity: 0.5 }} />
+              <div className="flex-1 h-px" style={{ background: `linear-gradient(90deg, ${opt.colors.border}, transparent)` }} />
+            </div>
+
+            {/* Tier label */}
             <div className="text-center space-y-1.5">
               <h3
-                className="text-2xl font-serif font-bold transition-colors duration-300"
-                style={{ color: opt.colors.primary }}
-              >
-                {opt.figure}
-              </h3>
-              <p
-                className="text-xs font-semibold tracking-[0.2em] uppercase transition-colors duration-300"
-                style={{ color: opt.colors.light }}
+                className="text-xl font-serif font-bold tracking-wide transition-colors duration-300"
+                style={{ color: opt.colors.primary, textShadow: `0 0 20px ${opt.colors.glow}` }}
               >
                 {opt.label}
-              </p>
-            </div>
-
-            {/* Divider */}
-            <div
-              className="w-16 h-px"
-              style={{
-                background: `linear-gradient(90deg, transparent, ${opt.colors.border}, transparent)`,
-              }}
-            />
-
-            {/* Description */}
-            <div className="text-center space-y-0.5">
-              <p className="text-sm text-text-secondary">{opt.tier}</p>
-              <p className="text-xs text-text-muted">{opt.desc}</p>
+              </h3>
+              <p className="text-[13px] text-text-secondary">{opt.tier}</p>
+              <p className="text-xs text-text-muted">Урон по крепости: {opt.damage}</p>
             </div>
           </div>
 
-          {/* Bottom gradient accent line */}
+          {/* Bottom accent line */}
           <div
             className="h-[1px] w-full"
             style={{
-              background: `linear-gradient(90deg, transparent, ${opt.colors.border}, transparent)`,
+              background: `linear-gradient(90deg, transparent 10%, ${opt.colors.border} 50%, transparent 90%)`,
             }}
           />
         </div>

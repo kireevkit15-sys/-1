@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
 import { playCorrect, playWrong, playTimerWarning } from "@/lib/sounds";
+import { useApiToken } from "@/hooks/useApiToken";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/v1";
 
@@ -58,11 +59,13 @@ type Phase = "loading" | "question" | "result";
 
 export default function WarmupPage() {
   const router = useRouter();
+  const token = useApiToken();
   const [phase, setPhase] = useState<Phase>("loading");
   const [questions, setQuestions] = useState<WarmupQuestion[]>([]);
   const [currentQ, setCurrentQ] = useState(0);
   const [selected, setSelected] = useState<number | null>(null);
   const [answers, setAnswers] = useState<boolean[]>([]);
+  const [selectedIndexes, setSelectedIndexes] = useState<number[]>([]);
   const [timeLeft, setTimeLeft] = useState(30);
   const [alreadyDone, setAlreadyDone] = useState(false);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -71,7 +74,6 @@ export default function WarmupPage() {
   useEffect(() => {
     async function fetchWarmup() {
       try {
-        const token = localStorage.getItem("admin_token") || "";
         const res = await fetch(`${API_BASE}/warmup/today`, {
           headers: token ? { Authorization: `Bearer ${token}` } : {},
         });
@@ -92,7 +94,7 @@ export default function WarmupPage() {
       }
     }
     fetchWarmup();
-  }, []);
+  }, [token]);
 
   // Timer
   useEffect(() => {
@@ -126,6 +128,7 @@ export default function WarmupPage() {
       const isCorrect = index === questions[currentQ]?.correctIndex;
       if (isCorrect) playCorrect(); else playWrong();
       setAnswers((prev) => [...prev, isCorrect]);
+      setSelectedIndexes((prev) => [...prev, index]);
     },
     [selected, questions, currentQ],
   );
@@ -137,7 +140,6 @@ export default function WarmupPage() {
     } else {
       setPhase("result");
       // Submit results
-      const token = localStorage.getItem("admin_token") || "";
       const correct = answers.filter(Boolean).length + (selected === questions[currentQ]?.correctIndex ? 1 : 0);
       fetch(`${API_BASE}/warmup/submit`, {
         method: "POST",
@@ -145,10 +147,10 @@ export default function WarmupPage() {
           "Content-Type": "application/json",
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
-        body: JSON.stringify({ answers: answers.map((a, i) => ({ questionId: questions[i]?.id, correct: a })) }),
+        body: JSON.stringify({ answers: selectedIndexes.map((sel, i) => ({ questionId: questions[i]?.id, selectedIndex: sel })) }),
       }).catch(() => {});
     }
-  }, [currentQ, questions, answers, selected]);
+  }, [currentQ, questions, answers, selected, selectedIndexes, token]);
 
   // Loading
   if (phase === "loading") {

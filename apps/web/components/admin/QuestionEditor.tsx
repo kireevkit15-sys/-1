@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from "react";
 import Button from "@/components/ui/Button";
+import { useApiToken } from "@/hooks/useApiToken";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/v1";
 
@@ -27,6 +28,7 @@ export default function QuestionEditor({
   onClose,
   onSaved,
 }: QuestionEditorProps) {
+  const token = useApiToken();
   const [text, setText] = useState(question.text);
   const [options, setOptions] = useState([...question.options]);
   const [correctIndex, setCorrectIndex] = useState(question.correctIndex);
@@ -46,7 +48,6 @@ export default function QuestionEditor({
   const handleSave = useCallback(async () => {
     setSaving(true);
     try {
-      const token = localStorage.getItem("admin_token") || "";
       const res = await fetch(`${API_BASE}/questions/${question.id}`, {
         method: "PATCH",
         headers: {
@@ -65,7 +66,7 @@ export default function QuestionEditor({
       onSaved({ ...question, text, options, correctIndex, explanation, difficulty });
     }
     setSaving(false);
-  }, [question, text, options, correctIndex, explanation, difficulty, onSaved]);
+  }, [question, text, options, correctIndex, explanation, difficulty, onSaved, token]);
 
   const inputClass =
     "w-full bg-surface border border-accent/10 rounded-xl px-3 py-2.5 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-accent/30 transition-colors";

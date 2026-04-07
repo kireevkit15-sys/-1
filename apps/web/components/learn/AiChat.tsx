@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import Card from "@/components/ui/Card";
+import { useApiToken } from "@/hooks/useApiToken";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/v1";
 
@@ -17,6 +18,7 @@ interface AiChatProps {
 }
 
 export default function AiChat({ topic, moduleId, onClose }: AiChatProps) {
+  const token = useApiToken();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -47,7 +49,6 @@ export default function AiChat({ topic, moduleId, onClose }: AiChatProps) {
     setIsLoading(true);
 
     try {
-      const token = localStorage.getItem("admin_token") || "";
       const headers: HeadersInit = {
         "Content-Type": "application/json",
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
@@ -63,10 +64,13 @@ export default function AiChat({ topic, moduleId, onClose }: AiChatProps) {
         if (res.ok) {
           const data = await res.json();
           setDialogueId(data.id);
-          if (data.reply) {
+          // Extract last assistant message from messages array
+          const msgs = data.messages || [];
+          const lastAssistant = [...msgs].reverse().find((m: Message) => m.role === "assistant");
+          if (lastAssistant) {
             setMessages((prev) => [
               ...prev,
-              { role: "assistant", content: data.reply },
+              { role: "assistant", content: lastAssistant.content },
             ]);
           }
         } else {
@@ -84,10 +88,12 @@ export default function AiChat({ topic, moduleId, onClose }: AiChatProps) {
         );
         if (res.ok) {
           const data = await res.json();
-          if (data.reply) {
+          const msgs = data.messages || [];
+          const lastAssistant = [...msgs].reverse().find((m: Message) => m.role === "assistant");
+          if (lastAssistant) {
             setMessages((prev) => [
               ...prev,
-              { role: "assistant", content: data.reply },
+              { role: "assistant", content: lastAssistant.content },
             ]);
           }
         } else {
@@ -110,7 +116,7 @@ export default function AiChat({ topic, moduleId, onClose }: AiChatProps) {
       ]);
     }
     setIsLoading(false);
-  }, [input, isLoading, limitReached, dialogueId, topic, moduleId, exchangeCount]);
+  }, [input, isLoading, limitReached, dialogueId, topic, moduleId, exchangeCount, token]);
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {

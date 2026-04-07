@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Card from "@/components/ui/Card";
+import { useApiToken } from "@/hooks/useApiToken";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/v1";
 
@@ -51,6 +52,7 @@ const classColors: Record<string, string> = {
 };
 
 export default function LeaderboardPage() {
+  const token = useApiToken();
   const [period, setPeriod] = useState<Period>("all");
   const [leaders, setLeaders] = useState<LeaderEntry[]>([]);
   const [myPosition, setMyPosition] = useState<MyPosition | null>(null);
@@ -58,7 +60,6 @@ export default function LeaderboardPage() {
 
   const fetchLeaderboard = useCallback(async () => {
     setLoading(true);
-    const token = localStorage.getItem("admin_token") || "";
     const headers: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
 
     try {
@@ -84,7 +85,7 @@ export default function LeaderboardPage() {
       setMyPosition(DEMO_MY_POS);
     }
     setLoading(false);
-  }, [period]);
+  }, [period, token]);
 
   useEffect(() => {
     fetchLeaderboard();

@@ -5,6 +5,7 @@ import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import Link from "next/link";
 import { usePushSubscription } from "@/hooks/usePushSubscription";
+import { useApiToken } from "@/hooks/useApiToken";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/v1";
 
@@ -30,12 +31,12 @@ const FALLBACK_STATS: UserStats = {
 
 export default function HomePage() {
   const { shouldPrompt, subscribe, dismiss } = usePushSubscription();
+  const token = useApiToken();
   const [stats, setStats] = useState<UserStats>(FALLBACK_STATS);
 
   useEffect(() => {
     async function fetchStats() {
       try {
-        const token = localStorage.getItem("admin_token") || "";
         if (!token) return;
         const [summaryRes, battlesRes] = await Promise.allSettled([
           fetch(`${API_BASE}/stats/me/summary`, { headers: { Authorization: `Bearer ${token}` } }),
@@ -63,7 +64,7 @@ export default function HomePage() {
       } catch {}
     }
     fetchStats();
-  }, []);
+  }, [token]);
 
   return (
     <div className="px-4 pt-12 pb-24 space-y-6">
@@ -143,7 +144,7 @@ export default function HomePage() {
               </p>
               <div className="flex gap-2 mt-2.5">
                 <button
-                  onClick={subscribe}
+                  onClick={() => subscribe(token)}
                   className="px-3 py-1.5 text-xs font-semibold bg-accent text-background rounded-lg active:scale-95 transition-all"
                 >
                   Включить

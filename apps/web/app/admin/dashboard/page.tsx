@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Card from "@/components/ui/Card";
+import { useApiToken } from "@/hooks/useApiToken";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/v1";
 
@@ -109,6 +110,7 @@ const eventLabels: Record<string, string> = {
 };
 
 export default function AdminDashboard() {
+  const token = useApiToken();
   const [questionStats, setQuestionStats] = useState<QuestionStats | null>(null);
   const [answerStats, setAnswerStats] = useState<AnswerStats | null>(null);
   const [analyticsCounts, setAnalyticsCounts] = useState<AnalyticsCounts | null>(null);
@@ -118,7 +120,6 @@ export default function AdminDashboard() {
 
   const fetchData = useCallback(async () => {
     setLoading(true);
-    const token = localStorage.getItem("admin_token") || "";
     const headers: HeadersInit = token
       ? { Authorization: `Bearer ${token}` }
       : {};
@@ -171,7 +172,7 @@ export default function AdminDashboard() {
       setLeaders(FALLBACK_LEADERS);
     }
     setLoading(false);
-  }, []);
+  }, [token]);
 
   useEffect(() => {
     fetchData();

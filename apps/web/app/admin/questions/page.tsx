@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import Card from "@/components/ui/Card";
 import QuestionEditor from "@/components/admin/QuestionEditor";
+import { useApiToken } from "@/hooks/useApiToken";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/v1";
 
@@ -37,6 +38,7 @@ const branchLabels: Record<string, string> = { STRATEGY: "Стратегия", L
 const difficultyLabels: Record<string, string> = { BRONZE: "Бронза", SILVER: "Серебро", GOLD: "Золото" };
 
 export default function AdminQuestionsPage() {
+  const token = useApiToken();
   const [questions, setQuestions] = useState<Question[]>([]);
   const [total, setTotal] = useState(0);
   const [filters, setFilters] = useState<Filters>({ branch: "", difficulty: "", category: "", page: 1 });
@@ -46,7 +48,6 @@ export default function AdminQuestionsPage() {
   const fetchQuestions = useCallback(async () => {
     setLoading(true);
     try {
-      const token = localStorage.getItem("admin_token") || "";
       const params = new URLSearchParams();
       if (filters.branch) params.set("branch", filters.branch);
       if (filters.difficulty) params.set("difficulty", filters.difficulty);
@@ -70,14 +71,13 @@ export default function AdminQuestionsPage() {
       setTotal(DEMO_QUESTIONS.length);
     }
     setLoading(false);
-  }, [filters]);
+  }, [filters, token]);
 
   useEffect(() => {
     fetchQuestions();
   }, [fetchQuestions]);
 
   const handleDeactivate = useCallback(async (id: string) => {
-    const token = localStorage.getItem("admin_token") || "";
     try {
       await fetch(`${API_BASE}/questions/${id}`, {
         method: "DELETE",
@@ -85,7 +85,7 @@ export default function AdminQuestionsPage() {
       });
     } catch {}
     setQuestions((prev) => prev.filter((q) => q.id !== id));
-  }, []);
+  }, [token]);
 
   const handleSaved = useCallback((updated: Question) => {
     setQuestions((prev) => prev.map((q) => (q.id === updated.id ? updated : q)));

@@ -10,6 +10,7 @@ import {
 } from "recharts";
 import Card from "@/components/ui/Card";
 import ShareButton from "@/components/profile/ShareButton";
+import { useApiToken } from "@/hooks/useApiToken";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/v1";
 
@@ -78,12 +79,12 @@ function formatRelativeDate(iso: string): string {
 // ---------------------------------------------------------------------------
 
 export default function ProfilePage() {
+  const token = useApiToken();
   const [profile, setProfile] = useState(mockProfile);
 
   useEffect(() => {
     async function fetchProfile() {
       try {
-        const token = localStorage.getItem("admin_token") || "";
         if (!token) return;
         const res = await fetch(`${API_BASE}/users/me`, {
           headers: { Authorization: `Bearer ${token}` },
@@ -107,7 +108,7 @@ export default function ProfilePage() {
       } catch {}
     }
     fetchProfile();
-  }, []);
+  }, [token]);
 
   const { stats, battleStats, recentBattles } = profile;
 

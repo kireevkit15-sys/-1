@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Card from "@/components/ui/Card";
+import { useApiToken } from "@/hooks/useApiToken";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/v1";
 
@@ -27,13 +28,13 @@ const difficultyColors: Record<string, string> = {
 };
 
 export default function AdminReportsPage() {
+  const token = useApiToken();
   const [reports, setReports] = useState<ReportedQuestion[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchReports() {
       try {
-        const token = localStorage.getItem("admin_token") || "";
         const res = await fetch(`${API_BASE}/questions/reported`, {
           headers: token ? { Authorization: `Bearer ${token}` } : {},
         });
@@ -49,10 +50,9 @@ export default function AdminReportsPage() {
       setLoading(false);
     }
     fetchReports();
-  }, []);
+  }, [token]);
 
   const handleDismiss = useCallback(async (id: string) => {
-    const token = localStorage.getItem("admin_token") || "";
     try {
       await fetch(`${API_BASE}/questions/${id}/report`, {
         method: "DELETE",
@@ -60,10 +60,9 @@ export default function AdminReportsPage() {
       });
     } catch {}
     setReports((prev) => prev.filter((r) => r.id !== id));
-  }, []);
+  }, [token]);
 
   const handleDeactivate = useCallback(async (id: string) => {
-    const token = localStorage.getItem("admin_token") || "";
     try {
       await fetch(`${API_BASE}/questions/${id}`, {
         method: "DELETE",
@@ -71,7 +70,7 @@ export default function AdminReportsPage() {
       });
     } catch {}
     setReports((prev) => prev.filter((r) => r.id !== id));
-  }, []);
+  }, [token]);
 
   return (
     <div className="space-y-6">

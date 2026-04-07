@@ -44,7 +44,7 @@ export function usePushSubscription() {
     }
   }, []);
 
-  const subscribe = useCallback(async () => {
+  const subscribe = useCallback(async (token?: string | null) => {
     try {
       const permission = await Notification.requestPermission();
       if (permission !== "granted") {
@@ -62,13 +62,13 @@ export function usePushSubscription() {
       const subscription = await registration.pushManager.subscribe(options);
 
       // Send subscription to backend
-      const token = localStorage.getItem("admin_token") || "";
+      const authToken = token || localStorage.getItem("admin_token") || "";
       const keys = subscription.toJSON().keys || {};
       await fetch(`${API_BASE}/notifications/subscribe`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          ...(authToken ? { Authorization: `Bearer ${authToken}` } : {}),
         },
         body: JSON.stringify({
           endpoint: subscription.endpoint,
