@@ -1,5 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { TelegramNotificationService } from '../telegram/telegram-notification.service';
 import { AchievementCategory } from '@prisma/client';
 
 interface AchievementCondition {
@@ -9,7 +10,12 @@ interface AchievementCondition {
 
 @Injectable()
 export class AchievementsService {
-  constructor(private readonly prisma: PrismaService) {}
+  private readonly logger = new Logger(AchievementsService.name);
+
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly telegramNotification: TelegramNotificationService,
+  ) {}
 
   async findAll(category?: AchievementCategory) {
     return this.prisma.achievement.findMany({
@@ -103,6 +109,17 @@ export class AchievementsService {
             data: { eruditionXp: { increment: achievement.xpReward } },
           });
         }
+
+        // Send Telegram notification (fire-and-forget)
+        this.telegramNotification
+          .sendAchievementUnlocked(userId, {
+            achievementName: achievement.name,
+            achievementIcon: achievement.icon,
+            xpReward: achievement.xpReward,
+          })
+          .catch((err) =>
+            this.logger.warn(`Failed to send achievement notification: ${(err as Error).message}`),
+          );
       }
     }
 

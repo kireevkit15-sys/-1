@@ -525,4 +525,5 @@ export class BattleService {
     });
     return result.map((q: { category: string }) => q.category);
   }
+
 }
