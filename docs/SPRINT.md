@@ -109,8 +109,8 @@
 | # | Задача | Статус | Файлы | Блокер |
 |---|--------|--------|-------|--------|
 | BC1 | pgvector миграция + таблица `knowledge_chunks` | done | `prisma/schema.prisma`, миграция | — |
-| BC2 | `scripts/process-content.ts` — парсинг PDF/txt, очистка от мусора | todo | `scripts/process-content.ts` | — |
-| BC3 | `scripts/extract-concepts.ts` — извлечение концептов через Haiku | todo | `scripts/extract-concepts.ts` | BC2, LC4 |
+| BC2 | `scripts/process-content.ts` — парсинг PDF/txt, очистка от мусора | done | `scripts/process-content.ts` | — |
+| BC3 | `scripts/extract-concepts.ts` — извлечение концептов через Haiku | done | `scripts/extract-concepts.ts` | BC2 ✅, LC4 ✅ |
 | BC4 | `scripts/embed-content.ts` — генерация эмбеддингов, запись в pgvector | todo | `scripts/embed-content.ts` | BC1, BC3 |
 | BC5 | KnowledgeService — поиск по векторной базе (similarity search) | todo | `apps/api/src/knowledge/` | BC4 |
 | BC6 | Обновить `generate-questions.ts` — батч-генерация по таксономии с антидубль-проверкой | todo | `scripts/generate-questions.ts` | LC1, LC3 |
@@ -163,6 +163,7 @@
 | N3 | Rate limiting (глобальный + per-endpoint) | done | `apps/api/src/common/decorators/throttle.decorator.ts` |
 | N4 | Security headers (CSP, HSTS, X-Frame-Options) | done | `apps/api/src/main.ts`, `nginx/nginx.conf` |
 | N5 | API versioning (/v1/) | todo | `apps/api/src/` |
+| N19 | Обновить ANTHROPIC_API_KEY в `.env` (текущий невалидный, блокирует BC3/BC6) | todo | `.env` |
 
 ## Новые задачи — Пользовательский опыт
 
