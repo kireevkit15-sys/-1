@@ -163,7 +163,7 @@
 | N3 | Rate limiting (глобальный + per-endpoint) | done | `apps/api/src/common/decorators/throttle.decorator.ts` |
 | N4 | Security headers (CSP, HSTS, X-Frame-Options) | done | `apps/api/src/main.ts`, `nginx/nginx.conf` |
 | N5 | API versioning (/v1/) | done | `apps/api/src/main.ts`, `apps/api/src/app.controller.ts` |
-| N19 | Обновить ANTHROPIC_API_KEY и OPENAI_API_KEY в `.env` (невалидные, блокируют BC3/BC4/BC6) | todo | `.env` |
+| N19 | ⚡ **ПЕРВООЧЕРЕДНАЯ для Lead** — Подключить ANTHROPIC_API_KEY и OPENAI_API_KEY в `.env` (невалидные, блокируют BC3/BC4/BC6) | todo | `.env` |
 
 ## Новые задачи — Пользовательский опыт
 
@@ -179,7 +179,7 @@
 
 | # | Задача | Статус | Файлы |
 |---|--------|--------|-------|
-| N11 | Event tracking (батлы, ответы, сессии) | todo | `apps/api/src/analytics/` |
+| N11 | Event tracking (батлы, ответы, сессии) | done | `apps/api/src/analytics/` |
 | N12 | Дашборд PO — статистика в реальном времени | todo | `apps/web/app/admin/dashboard/` |
 | N13 | Структурированные логи (Pino) | done | `nestjs-pino` в `app.module.ts` |
 
