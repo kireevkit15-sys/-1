@@ -199,7 +199,10 @@ export function useBattle(battleId?: string) {
 
   const createBotBattle = useCallback(() => {
     if (!socketRef.current) {
-      dispatch({ type: "ERROR", message: "Необходимо войти в аккаунт для игры" });
+      // No auth — redirect to demo battle
+      if (typeof window !== "undefined") {
+        window.location.href = "/battle/demo";
+      }
       return;
     }
     dispatch({ type: "CONNECTING" });
@@ -208,7 +211,7 @@ export function useBattle(battleId?: string) {
 
   const searchOpponent = useCallback((rating?: number) => {
     if (!socketRef.current) {
-      dispatch({ type: "ERROR", message: "Необходимо войти в аккаунт для поиска соперника" });
+      dispatch({ type: "ERROR", message: "Войдите в аккаунт для поиска соперника" });
       return;
     }
     dispatch({ type: "SEARCHING" });

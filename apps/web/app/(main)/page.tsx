@@ -103,9 +103,9 @@ export default function HomePage() {
           <p className="text-text-secondary text-sm">
             5 вопросов на логику и мышление
           </p>
-          <button className="w-full py-3 rounded-xl text-sm font-semibold bg-accent-warm/15 text-accent hover:bg-accent-warm/25 transition-all active:scale-95 border border-accent/15">
+          <Link href="/warmup" className="block w-full py-3 rounded-xl text-sm font-semibold bg-accent-warm/15 text-accent hover:bg-accent-warm/25 transition-all active:scale-95 border border-accent/15 text-center">
             Начать разминку
-          </button>
+          </Link>
         </div>
       </Card>
 

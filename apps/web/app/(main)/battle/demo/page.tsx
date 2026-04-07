@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import {
   BattlePhase,
@@ -204,6 +204,22 @@ const defenseLabels: Record<string, string> = {
 // Demo Page
 // ---------------------------------------------------------------------------
 
+// Defense questions — grouped by difficulty (bot picks difficulty, you answer to defend)
+const DEFENSE_QUESTIONS: Record<string, { text: string; options: string[]; correctIdx: number }[]> = {
+  [Difficulty.BRONZE]: [
+    { text: "Какой стратегический принцип описывает ситуацию, когда лучший выбор зависит от действий другого участника?", options: ["Доминирование", "Взаимозависимость решений", "Абсолютное преимущество", "Случайный выбор"], correctIdx: 1 },
+    { text: "Что из следующего является примером дедуктивного рассуждения?", options: ["Наблюдение закономерностей", "Вывод частного из общего", "Построение гипотезы", "Статистический анализ"], correctIdx: 1 },
+  ],
+  [Difficulty.SILVER]: [
+    { text: "Как называется парадокс, в котором корабль постепенно заменяет все свои части?", options: ["Парадокс лжеца", "Корабль Тесея", "Парадокс Зенона", "Буриданов осёл"], correctIdx: 1 },
+    { text: "Какое когнитивное искажение заставляет нас переоценивать вероятность событий, которые легко вспомнить?", options: ["Эффект якоря", "Эвристика доступности", "Ошибка выжившего", "Эффект ореола"], correctIdx: 1 },
+  ],
+  [Difficulty.GOLD]: [
+    { text: "В байесовской статистике, как называется обновление вероятности гипотезы при получении новых данных?", options: ["Регрессия к среднему", "Апостериорная вероятность", "Закон больших чисел", "Центральная предельная теорема"], correctIdx: 1 },
+    { text: "Какой принцип утверждает, что из двух объяснений следует предпочесть более простое?", options: ["Принцип фальсифицируемости", "Бритва Оккама", "Принцип верификации", "Принцип дополнительности"], correctIdx: 1 },
+  ],
+};
+
 export default function BattleDemoPage() {
   const router = useRouter();
   const [battle, setBattle] = useState<BattleState>(createMockBattle);
@@ -211,6 +227,11 @@ export default function BattleDemoPage() {
   const [lastRound, setLastRound] = useState<BattleRound | null>(null);
   const [result, setResult] = useState<BattleResult | null>(null);
   const [answerSelected, setAnswerSelected] = useState<number | null>(null);
+  // Track whose turn it is (alternates each round)
+  const [playerAttacks, setPlayerAttacks] = useState(true);
+  // For bot attack phase: player's defense choice
+  const [botAttackPhase, setBotAttackPhase] = useState<"choosing" | "defending" | "result" | null>(null);
+  const [botChosenDifficulty, setBotChosenDifficulty] = useState<Difficulty | null>(null);
 
   const timerActive =
     battle.phase === BattlePhase.ROUND_ATTACK ||
@@ -272,9 +293,9 @@ export default function BattleDemoPage() {
     );
   }
 
-  // -- ROUND_ATTACK ---------------------------------------------------------
+  // -- ROUND_ATTACK (player attacks) -----------------------------------------
 
-  if (battle.phase === BattlePhase.ROUND_ATTACK) {
+  if (battle.phase === BattlePhase.ROUND_ATTACK && playerAttacks) {
     const question = selectedDifficulty ? MOCK_QUESTIONS[selectedDifficulty] : null;
 
     return (
@@ -328,9 +349,10 @@ export default function BattleDemoPage() {
                     };
                     setLastRound(round);
 
-                    // Transition to defense phase after 1 sec
+                    // Transition after 1.2 sec — HP/score updated in BotAutoDefend or ROUND_RESULT
                     setTimeout(() => {
                       if (isCorrect) {
+                        // Go to bot defense — HP will be resolved there
                         setBattle((b) => ({
                           ...b,
                           phase: BattlePhase.ROUND_DEFENSE,
@@ -338,11 +360,10 @@ export default function BattleDemoPage() {
                           currentDefenderId: "bot",
                         }));
                       } else {
-                        // Missed — skip to result
+                        // Missed — no damage, skip to result
                         setBattle((b) => ({
                           ...b,
                           phase: BattlePhase.ROUND_RESULT,
-                          player1: { ...b.player1, score: b.player1.score },
                         }));
                       }
                     }, 1200);
@@ -367,6 +388,134 @@ export default function BattleDemoPage() {
         )}
       </div>
     );
+  }
+
+  // -- BOT ATTACKS YOU -------------------------------------------------------
+
+  if (battle.phase === BattlePhase.ROUND_ATTACK && !playerAttacks) {
+    const cat = battle.selectedCategory || MOCK_CATEGORIES[0]!;
+
+    // Bot "choosing" phase — auto-pick difficulty after 1.5s
+    if (botAttackPhase === "choosing") {
+      return (
+        <div className="px-4 pt-8 pb-24 space-y-6">
+          {demoBadge}
+          <ScoreBar battle={battle} />
+          <div className="text-center space-y-4 pt-8">
+            <h2 className="text-lg font-bold text-accent-red">Бот атакует!</h2>
+            <p className="text-text-muted text-sm">Бот выбирает сложность вопроса...</p>
+            <div className="w-12 h-12 rounded-full border-2 border-accent-red/30 border-t-accent-red animate-spin mx-auto" />
+          </div>
+          <BotAutoAttack
+            onDone={(difficulty) => {
+              setBotChosenDifficulty(difficulty);
+              setBotAttackPhase("defending");
+              setBattle((b) => ({ ...b, selectedCategory: cat }));
+            }}
+          />
+        </div>
+      );
+    }
+
+    // Player defends — answer the question to block damage
+    if (botAttackPhase === "defending" && botChosenDifficulty) {
+      const pool = DEFENSE_QUESTIONS[botChosenDifficulty] || DEFENSE_QUESTIONS[Difficulty.BRONZE]!;
+      const defQ = pool[battle.currentRound % pool.length]!;
+      const dmgConfig = difficultyConfig.find((d) => d.value === botChosenDifficulty);
+      const botDmg = dmgConfig?.damage ?? 10;
+
+      return (
+        <div className="px-4 pt-8 pb-24 space-y-6">
+          {demoBadge}
+          <ScoreBar battle={battle} />
+
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-lg font-bold text-accent-red">Защищайся!</h2>
+              <p className="text-text-muted text-sm">
+                Ответь правильно, чтобы отразить урон{" "}
+                <span className={dmgConfig?.text}>({dmgConfig?.label})</span>
+              </p>
+            </div>
+            <TimerCircle seconds={seconds} progress={progress} />
+          </div>
+
+          {/* Defense question */}
+          <Card padding="lg" className="space-y-4 border-accent-red/20">
+            <div className="flex items-center gap-2">
+              <span className={`text-xs font-semibold px-2.5 py-1 rounded-lg ${dmgConfig?.badge}`}>
+                {dmgConfig?.label} — защита
+              </span>
+            </div>
+            <p className="text-text-primary text-sm leading-relaxed">{defQ.text}</p>
+            <div className="space-y-2">
+              {defQ.options.map((opt, idx) => {
+                const isAnswered = answerSelected !== null;
+                const isThis = answerSelected === idx;
+                const isCorrect = idx === defQ.correctIdx;
+
+                let style = "border-accent/15 bg-surface-light hover:border-accent/40 text-text-primary";
+                if (isAnswered) {
+                  if (isCorrect) style = "border-green-500/50 bg-green-500/10 text-green-400";
+                  else if (isThis) style = "border-accent-red/50 bg-accent-red/10 text-accent-red";
+                  else style = "border-accent/10 bg-surface-light text-text-muted opacity-50";
+                }
+
+                return (
+                  <button
+                    key={idx}
+                    disabled={isAnswered}
+                    onClick={() => {
+                      setAnswerSelected(idx);
+                      const defended = idx === defQ.correctIdx;
+                      const finalDmg = defended ? 0 : botDmg;
+
+                      setTimeout(() => {
+                        const round: BattleRound = {
+                          roundNumber: battle.currentRound,
+                          attackerId: "bot",
+                          defenderId: "player",
+                          difficulty: botChosenDifficulty,
+                          attackerAnswer: defQ.correctIdx,
+                          attackerCorrect: true,
+                          defenseType: defended ? DefenseType.DISPUTE : DefenseType.ACCEPT,
+                          defenseSuccess: defended,
+                          damageDealt: finalDmg,
+                          pointsAwarded: finalDmg,
+                        };
+                        setLastRound(round);
+                        setBotAttackPhase("result");
+
+                        setBattle((b) => ({
+                          ...b,
+                          phase: BattlePhase.ROUND_RESULT,
+                          player1: { ...b.player1, hp: b.player1.hp - finalDmg },
+                          player2: { ...b.player2, score: b.player2.score + finalDmg },
+                        }));
+                      }, 1200);
+                    }}
+                    className={`w-full text-left p-3 rounded-xl border transition-all text-sm ${style} ${!isAnswered ? "active:scale-[0.98]" : ""}`}
+                  >
+                    <span className="text-text-muted mr-2 font-medium">
+                      {String.fromCharCode(65 + idx)}.
+                    </span>
+                    {opt}
+                  </button>
+                );
+              })}
+            </div>
+          </Card>
+
+          {answerSelected !== null && (
+            <div className="text-center animate-[onboarding-fade-in_0.3s_ease-out]">
+              <p className={`text-sm font-semibold ${answerSelected === defQ.correctIdx ? "text-green-400" : "text-accent-red"}`}>
+                {answerSelected === defQ.correctIdx ? "Урон отражён!" : `Пропущен удар: -${botDmg} HP`}
+              </p>
+            </div>
+          )}
+        </div>
+      );
+    }
   }
 
   // -- ROUND_DEFENSE (bot defends — auto-simulate) --------------------------
@@ -509,24 +658,43 @@ export default function BattleDemoPage() {
         </div>
 
         <div className="space-y-3 pt-4 battle-fade-up battle-stagger-4">
-          {battle.currentRound < battle.totalRounds && battle.player2.hp > 0 ? (
+          {battle.currentRound < battle.totalRounds && battle.player2.hp > 0 && battle.player1.hp > 0 ? (
             <Button
               fullWidth
               onClick={() => {
-                setBattle((b) => ({
-                  ...b,
-                  phase: BattlePhase.CATEGORY_SELECT,
-                  currentRound: b.currentRound + 1,
-                  currentAttackerId: "player",
-                  currentDefenderId: "bot",
-                  selectedCategory: undefined,
-                }));
-                setSelectedDifficulty(null);
-                setAnswerSelected(null);
-                setLastRound(null);
+                if (playerAttacks) {
+                  // After player attacked → bot's turn to attack
+                  setPlayerAttacks(false);
+                  setBotAttackPhase("choosing");
+                  setBotChosenDifficulty(null);
+                  setLastRound(null);
+                  setAnswerSelected(null);
+                  setBattle((b) => ({
+                    ...b,
+                    phase: BattlePhase.ROUND_ATTACK,
+                    currentAttackerId: "bot",
+                    currentDefenderId: "player",
+                  }));
+                } else {
+                  // After bot attacked → next round, player attacks
+                  setPlayerAttacks(true);
+                  setBotAttackPhase(null);
+                  setBotChosenDifficulty(null);
+                  setLastRound(null);
+                  setSelectedDifficulty(null);
+                  setAnswerSelected(null);
+                  setBattle((b) => ({
+                    ...b,
+                    phase: BattlePhase.CATEGORY_SELECT,
+                    currentRound: b.currentRound + 1,
+                    currentAttackerId: "player",
+                    currentDefenderId: "bot",
+                    selectedCategory: undefined,
+                  }));
+                }
               }}
             >
-              Следующий раунд
+              {playerAttacks ? "Ход бота" : "Следующий раунд"}
             </Button>
           ) : (
             <Button
@@ -666,13 +834,39 @@ export default function BattleDemoPage() {
 // Helper: Bot auto-defense after 2 seconds
 // ---------------------------------------------------------------------------
 
+function BotAutoAttack({
+  onDone,
+}: {
+  onDone: (difficulty: Difficulty) => void;
+}) {
+  const called = useRef(false);
+  useEffect(() => {
+    if (called.current) return;
+    const timer = setTimeout(() => {
+      if (called.current) return;
+      called.current = true;
+      const diffs = [Difficulty.BRONZE, Difficulty.SILVER, Difficulty.GOLD];
+      const chosen = diffs[Math.floor(Math.random() * diffs.length)]!;
+      onDone(chosen);
+    }, 1500);
+    return () => clearTimeout(timer);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  return null;
+}
+
 function BotAutoDefend({
   onDone,
 }: {
   onDone: (defenseType: DefenseType, success: boolean) => void;
 }) {
+  const called = useRef(false);
   useEffect(() => {
+    if (called.current) return;
     const timer = setTimeout(() => {
+      if (called.current) return;
+      called.current = true;
       const types = [DefenseType.ACCEPT, DefenseType.DISPUTE, DefenseType.COUNTER];
       const chosen = types[Math.floor(Math.random() * types.length)]!;
       const success =
@@ -684,7 +878,8 @@ function BotAutoDefend({
       onDone(chosen, success);
     }, 2000);
     return () => clearTimeout(timer);
-  }, [onDone]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return null;
 }

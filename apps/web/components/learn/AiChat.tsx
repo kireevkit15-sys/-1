@@ -129,7 +129,7 @@ export default function AiChat({ topic, moduleId, onClose }: AiChatProps) {
   );
 
   return (
-    <div className="fixed inset-0 z-50 bg-background/95 backdrop-blur-md flex flex-col">
+    <div className="fixed inset-0 z-[60] bg-background backdrop-blur-md flex flex-col">
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-3 border-b border-border">
         <div className="flex items-center gap-2">

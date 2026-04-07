@@ -232,6 +232,22 @@ export default function NewBattlePage() {
         </div>
       </Card>
 
+      {/* Demo mode */}
+      <Card padding="sm" className="border-accent/15">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm font-medium text-text-primary">Демо-режим</p>
+            <p className="text-xs text-text-muted">Попробуй баттл без регистрации</p>
+          </div>
+          <a
+            href="/battle/demo"
+            className="px-4 py-2 rounded-xl text-xs font-semibold bg-surface-light text-text-primary hover:bg-surface-light/80 transition-all active:scale-95 border border-accent/10"
+          >
+            Попробовать
+          </a>
+        </div>
+      </Card>
+
       {/* Rules */}
       <Card padding="sm" className="space-y-2">
         <h3 className="text-xs font-semibold text-text-muted uppercase tracking-wider">
