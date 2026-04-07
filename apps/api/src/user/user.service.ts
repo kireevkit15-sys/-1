@@ -1,6 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { LeaderboardService } from '../stats/leaderboard.service';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { determineThinkerClass } from '@razum/shared';
 
 interface XpFields {
   logicXp: number;
@@ -12,7 +14,10 @@ interface XpFields {
 
 @Injectable()
 export class UserService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly leaderboardService: LeaderboardService,
+  ) {}
 
   async getMe(userId: string, battleLimit = 10) {
     const user = await this.prisma.user.findUnique({
@@ -70,6 +75,7 @@ export class UserService {
             strategyXp: true,
             rhetoricXp: true,
             intuitionXp: true,
+            thinkerClass: true,
           },
         },
       },
@@ -80,11 +86,29 @@ export class UserService {
     }
 
     const enrichedStats = user.stats ? this.enrichStats(user.stats) : null;
-    const battleStats = await this.getBattleStats(userId);
+
+    // Calculate thinker class if not stored yet
+    const thinkerClass = user.stats
+      ? user.stats.thinkerClass ??
+        determineThinkerClass({
+          logic: user.stats.logicXp,
+          erudition: user.stats.eruditionXp,
+          strategy: user.stats.strategyXp,
+          rhetoric: user.stats.rhetoricXp,
+          intuition: user.stats.intuitionXp,
+        })
+      : null;
+
+    const [battleStats, position] = await Promise.all([
+      this.getBattleStats(userId),
+      this.leaderboardService.getMyPosition(userId, 'rating', 'all'),
+    ]);
 
     return {
       ...user,
       stats: enrichedStats,
+      thinkerClass,
+      leaderboardRank: position.rank,
       battleStats,
     };
   }

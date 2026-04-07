@@ -134,6 +134,22 @@ export class StatsService {
       },
     });
 
+    // Recalculate thinker class
+    const newClass = determineThinkerClass({
+      logic: updated.logicXp,
+      erudition: updated.eruditionXp,
+      strategy: updated.strategyXp,
+      rhetoric: updated.rhetoricXp,
+      intuition: updated.intuitionXp,
+    });
+
+    if (updated.thinkerClass !== newClass) {
+      await this.prisma.userStats.update({
+        where: { userId },
+        data: { thinkerClass: newClass },
+      });
+    }
+
     return this.enrichStats(updated);
   }
 
