@@ -231,7 +231,7 @@ export class BattleGateway
 
       // Create in-memory state via shared state machine
       const state = createBattle(
-        { id: player1.id, name: player1.name, avatarUrl: (player1 as any).avatar },
+        { id: player1.id, name: player1.name, avatarUrl: player1.avatarUrl ?? undefined },
         BOT_PLAYER,
         BattleMode.SIEGE,
         DEFAULT_CATEGORIES,
@@ -462,7 +462,7 @@ export class BattleGateway
         const player1Info = fullBattle?.player1 ?? { id: userId, name: 'Player 1' };
 
         const state = createBattle(
-          { id: player1Info.id, name: player1Info.name, avatarUrl: (player1Info as any).avatar },
+          { id: player1Info.id, name: player1Info.name, avatarUrl: player1Info.avatarUrl ?? undefined },
           { id: match.opponentId, name: 'Opponent' },
           BattleMode.SIEGE,
           DEFAULT_CATEGORIES,

@@ -1,4 +1,4 @@
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus, Logger } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { BotService } from './bot.service';
@@ -23,6 +23,8 @@ import type { BattleState, BattleResult } from '@razum/shared';
 
 @Injectable()
 export class BattleService {
+  private readonly logger = new Logger(BattleService.name);
+
   constructor(
     private readonly prisma: PrismaService,
     private readonly botService: BotService,
@@ -247,7 +249,7 @@ export class BattleService {
       // BC9: Update question answer statistics (fire-and-forget)
       this.questionService
         .updateAnswerStats(questionId, isCorrect)
-        .catch(() => {});
+        .catch((err) => this.logger.warn(`Failed to update answer stats for question ${questionId}: ${err.message}`));
     }
 
     await this.saveState(battleId, state);
@@ -326,7 +328,18 @@ export class BattleService {
     let result: BattleResult;
 
     try {
-      result = getResult(state);
+      // Fetch real ratings for accurate ratingChange in BattleResult
+      const [p1Stats, p2Stats] = await Promise.all([
+        this.prisma.userStats.findUnique({ where: { userId: state.player1.id } }),
+        state.player2.id !== 'bot'
+          ? this.prisma.userStats.findUnique({ where: { userId: state.player2.id } })
+          : null,
+      ]);
+
+      result = getResult(state, {
+        player1Rating: p1Stats?.rating,
+        player2Rating: p2Stats?.rating,
+      });
     } catch (err) {
       throw new HttpException(
         (err as Error).message,

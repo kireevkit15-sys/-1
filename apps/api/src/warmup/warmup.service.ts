@@ -115,15 +115,13 @@ export class WarmupService {
       this.logger.warn(
         `Not enough unseen questions for user ${userId}, got ${questions.length}/${WARMUP_COUNT}. Falling back to any questions.`,
       );
-      // Если не хватает невиденных — берём любые
-      if (questions.length === 0) {
-        const fallback = await this.questionService.getRandomForBattle({
-          count: WARMUP_COUNT,
-        });
-        questions.push(
-          ...fallback.slice(0, WARMUP_COUNT - questions.length),
-        );
-      }
+      const needed = WARMUP_COUNT - questions.length;
+      const existingIds = questions.map((q: { id: string }) => q.id);
+      const fallback = await this.questionService.getRandomForBattle({
+        excludeIds: existingIds,
+        count: needed,
+      });
+      questions.push(...fallback);
     }
 
     if (questions.length === 0) {

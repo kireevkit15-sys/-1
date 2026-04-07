@@ -410,7 +410,10 @@ export function isGameOver(state: BattleState): boolean {
 /**
  * Get the final result of a completed battle.
  */
-export function getResult(state: BattleState): BattleResult {
+export function getResult(
+  state: BattleState,
+  options?: { player1Rating?: number; player2Rating?: number },
+): BattleResult {
   if (state.phase !== BattlePhase.FINAL_RESULT && !isGameOver(state)) {
     throw new Error('Battle is not over yet');
   }
@@ -434,11 +437,9 @@ export function getResult(state: BattleState): BattleResult {
     [state.player2.id]: p2Xp['battle'] ?? 0,
   };
 
-  const ratingChange = calculateRatingChange(
-    ELO_DEFAULT_RATING,
-    ELO_DEFAULT_RATING,
-    p1Won,
-  );
+  const p1Rating = options?.player1Rating ?? ELO_DEFAULT_RATING;
+  const p2Rating = options?.player2Rating ?? ELO_DEFAULT_RATING;
+  const ratingChange = calculateRatingChange(p1Rating, p2Rating, p1Won);
 
   return {
     winnerId,
