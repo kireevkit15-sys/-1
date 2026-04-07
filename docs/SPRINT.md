@@ -79,6 +79,18 @@
 - UserModule: GET /users/me, PATCH /users/me
 - Добавить таблицы Question, Battle, BattleRound в Prisma → миграция
 
+# Текущие задачи Бонди (Frontend + Дизайн)
+
+## Неделя 4
+
+| # | Задача | Статус | Файлы |
+|---|--------|--------|-------|
+| F4.1 | Дополнить экран баттла: защита (иконки), анимация результата раунда, финальный экран (корона/щит, glow, рейтинг) | done | `apps/web/app/(main)/battle/[id]/page.tsx`, `apps/web/app/globals.css` |
+| F4.2 | Страница профиля: RadarChart 5 статов, XP прогресс-бар, статистика баттлов, стрик, 10 последних баттлов | done | `apps/web/app/(main)/profile/page.tsx` |
+| F4.3 | Кнопка «Найти соперника»: пульсирующие кольца поиска, экран VS перед стартом, ошибка без авторизации | done | `apps/web/app/(main)/battle/new/page.tsx`, `apps/web/hooks/useBattle.ts` |
+
+---
+
 # Текущие задачи Яшкина (Backend)
 
 ## Неделя 4
