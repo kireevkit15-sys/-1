@@ -198,6 +198,76 @@
 **Коммиты:**
 - `86593f9` — feat(web): week 4 — battle animations, profile RadarChart, matchmaking UI
 
+### 2026-04-07/08 — Сессия 5: Недели 5-12 фронтенд + критический аудит + баги
+
+**Время:** ~6 часов
+**Статус:** Завершена
+
+**Что сделано:**
+
+*Новые страницы и компоненты:*
+- Онбординг-флоу (5 шагов, Dark Academia) — N6
+- Страницы ошибок: 404, 500, offline — N8
+- Звуковая система Web Audio API (9 звуков + playSelect) — N16
+- Админ-дашборд со статистикой — N12
+- Страница модуля обучения + QuestionCard — неделя 5
+- AI Chat компонент (сократический метод) — неделя 6
+- Кнопка «Спросить AI» на модулях + страница диалогов — неделя 7
+- Экран разминки (5 вопросов, таймер 30с) — неделя 8
+- Push-подписка (SW + хук + баннер) — неделя 8
+- Админ-панель вопросов + QuestionEditor — неделя 9
+- Страница жалоб + Skeleton loaders — неделя 10
+- PageTransition (framer-motion) — неделя 10
+- Лидерборд (табы период, топ-20, моя позиция) — неделя 11
+- ShareButton (Web Share API + clipboard) — неделя 11
+- PWA Install Banner — неделя 12
+- 8 уникальных демо-модулей (40 вопросов)
+
+*Критический аудит и фиксы:*
+- Создан useApiToken хук — единый источник токена из NextAuth
+- Заменён localStorage.admin_token на useApiToken в 13 файлах
+- Warmup submit: selectedIndex вместо incorrect "correct"
+- Learn progress: убран лишний "correct" из SubmitProgressDto
+- AI dialogue: парсинг messages[] вместо несуществующего "reply"
+- AI dialogues list: обработка {data: [...]} пагинации
+- Баттл: реальные вопросы из API вместо заглушек "Вариант 1-4"
+- Баттл демо: полный цикл атака+защита, фиксы HP/score, 24 вопроса
+- AI чат: база знаний с рекомендациями книг, лимит 50 сообщений
+- AI диалоги: иконки chat bubble, загрузка истории, кнопка "+"
+- playSelect звук для Lead-кода, TS-фиксы после мержа
+
+**Файлы созданы:**
+- `apps/web/app/(main)/onboarding/page.tsx`
+- `apps/web/app/(main)/warmup/page.tsx`
+- `apps/web/app/(main)/leaderboard/page.tsx`
+- `apps/web/app/(main)/learn/[moduleId]/page.tsx`
+- `apps/web/app/(main)/learn/dialogues/page.tsx`
+- `apps/web/app/admin/dashboard/page.tsx`
+- `apps/web/app/admin/questions/page.tsx`
+- `apps/web/app/admin/reports/page.tsx`
+- `apps/web/app/admin/layout.tsx`
+- `apps/web/app/not-found.tsx`, `error.tsx`, `offline.tsx`
+- `apps/web/components/learn/QuestionCard.tsx`, `AiChat.tsx`
+- `apps/web/components/admin/QuestionEditor.tsx`
+- `apps/web/components/profile/ShareButton.tsx`
+- `apps/web/components/layout/PageTransition.tsx`
+- `apps/web/components/ui/InstallBanner.tsx`, `Skeleton.tsx`
+- `apps/web/hooks/useApiToken.ts`, `usePushSubscription.ts`
+- `apps/web/lib/sounds.ts`
+
+**Задачи из SPRINT.md закрыты:** N6, N8, N12, N16
+
+**Коммиты:**
+- `63b353e` — feat(web): onboarding, error pages, sounds, admin dashboard
+- `73de362` — feat(web): weeks 5-12 frontend
+- `76c2ffd` — fix(web): critical API contract fixes
+- `698e295` — fix(web): battle demo full cycle, HP/score bugs
+- `451e4d6` — fix(web): diverse question pools
+- `bf8d550` — feat(web): AI chat Socratic replies, dialogue history
+- `d187c1b` — feat(web): 8 unique demo modules (40 questions)
+- `12504d9` — feat(web): AI knowledge base, book recommendations
+- `243f27d` — fix(web): playSelect sound, TS errors after Lead merge
+
 ---
 
 ## Яшкин (Backend)
