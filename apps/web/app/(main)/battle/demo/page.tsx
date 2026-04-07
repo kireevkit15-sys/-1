@@ -25,29 +25,31 @@ const difficultyLabels: Record<string, string> = {
   [Difficulty.GOLD]: "Золото",
 };
 
-const MOCK_QUESTIONS: Record<string, { text: string; answers: string[] }> = {
-  [Difficulty.BRONZE]: {
-    text: "Какой древнегреческий философ основал Академию в Афинах?",
-    answers: ["Платон", "Аристотель", "Сократ", "Диоген"],
-  },
-  [Difficulty.SILVER]: {
-    text: "Является ли следующее утверждение логической ошибкой: «Все успешные люди встают рано, значит, чтобы быть успешным, нужно вставать рано»?",
-    answers: [
-      "Да, это ошибка корреляции",
-      "Нет, это верная дедукция",
-      "Да, это ошибка выживших",
-      "Нет, это индуктивное рассуждение",
-    ],
-  },
-  [Difficulty.GOLD]: {
-    text: "В теории игр, каково равновесие Нэша в однократной «дилемме заключённого» для обоих рациональных игроков?",
-    answers: [
-      "Оба предают",
-      "Оба сотрудничают",
-      "Один предаёт, другой сотрудничает",
-      "Равновесия не существует",
-    ],
-  },
+interface DemoQuestion {
+  text: string;
+  options: string[];
+  correctIdx: number;
+}
+
+const ATTACK_QUESTIONS: Record<string, DemoQuestion[]> = {
+  [Difficulty.BRONZE]: [
+    { text: "Какой древнегреческий философ основал Академию в Афинах?", options: ["Аристотель", "Сократ", "Платон", "Диоген"], correctIdx: 2 },
+    { text: "Что означает латинское выражение «post hoc ergo propter hoc»?", options: ["Цель оправдывает средства", "После — значит вследствие", "Знание — сила", "Я мыслю — значит существую"], correctIdx: 1 },
+    { text: "Какой тип мышления направлен на поиск одного правильного ответа?", options: ["Дивергентное", "Латеральное", "Конвергентное", "Ассоциативное"], correctIdx: 2 },
+    { text: "Кто автор концепции «невидимой руки рынка»?", options: ["Карл Маркс", "Адам Смит", "Джон Кейнс", "Давид Рикардо"], correctIdx: 1 },
+  ],
+  [Difficulty.SILVER]: [
+    { text: "«Все успешные люди встают рано, значит, чтобы быть успешным, нужно вставать рано» — это:", options: ["Верная дедукция", "Ошибка корреляции и причинности", "Индуктивное рассуждение", "Ошибка выжившего"], correctIdx: 1 },
+    { text: "Какое когнитивное искажение заставляет нас искать информацию, подтверждающую наши убеждения?", options: ["Эффект якоря", "Ошибка игрока", "Предвзятость подтверждения", "Каскад доступности"], correctIdx: 2 },
+    { text: "В матричной игре 2x2 стратегия называется доминируемой, если:", options: ["Она всегда даёт максимальный выигрыш", "Существует другая стратегия, всегда дающая не меньший результат", "Она выбирается первым игроком", "Оба игрока её предпочитают"], correctIdx: 1 },
+    { text: "Принцип Парето (80/20) утверждает, что:", options: ["80% работы делается за 20% времени", "20% причин дают 80% результата", "80% людей владеют 20% ресурсов", "20% решений правильны на 80%"], correctIdx: 1 },
+  ],
+  [Difficulty.GOLD]: [
+    { text: "Каково равновесие Нэша в однократной дилемме заключённого для рациональных игроков?", options: ["Оба сотрудничают", "Один предаёт, другой сотрудничает", "Оба предают", "Равновесия не существует"], correctIdx: 2 },
+    { text: "Теорема Эрроу о невозможности доказывает, что:", options: ["Демократическое голосование всегда справедливо", "Не существует идеальной системы голосования при 3+ альтернативах", "Диктатура эффективнее демократии", "Консенсус всегда достижим"], correctIdx: 1 },
+    { text: "Что такое «трагедия общин» в теории игр?", options: ["Конфликт между двумя игроками за один ресурс", "Истощение общего ресурса из-за индивидуальной рациональности", "Невозможность кооперации в больших группах", "Проигрыш всех участников в игре с нулевой суммой"], correctIdx: 1 },
+    { text: "Метод обратной индукции в теории игр предполагает:", options: ["Анализ от начала к концу игры", "Анализ от конца к началу игры", "Рандомизацию стратегий", "Кооперацию на каждом шаге"], correctIdx: 1 },
+  ],
 };
 
 function createMockBattle(): BattleState {
@@ -204,19 +206,24 @@ const defenseLabels: Record<string, string> = {
 // Demo Page
 // ---------------------------------------------------------------------------
 
-// Defense questions — grouped by difficulty (bot picks difficulty, you answer to defend)
-const DEFENSE_QUESTIONS: Record<string, { text: string; options: string[]; correctIdx: number }[]> = {
+const DEFENSE_QUESTIONS: Record<string, DemoQuestion[]> = {
   [Difficulty.BRONZE]: [
-    { text: "Какой стратегический принцип описывает ситуацию, когда лучший выбор зависит от действий другого участника?", options: ["Доминирование", "Взаимозависимость решений", "Абсолютное преимущество", "Случайный выбор"], correctIdx: 1 },
-    { text: "Что из следующего является примером дедуктивного рассуждения?", options: ["Наблюдение закономерностей", "Вывод частного из общего", "Построение гипотезы", "Статистический анализ"], correctIdx: 1 },
+    { text: "Что из следующего является примером дедуктивного рассуждения?", options: ["Наблюдение закономерностей", "Построение гипотезы", "Вывод частного из общего", "Статистический анализ"], correctIdx: 2 },
+    { text: "Какой принцип гласит: «Бремя доказательства лежит на утверждающем»?", options: ["Презумпция невиновности", "Onus probandi", "Принцип достаточного основания", "Закон тождества"], correctIdx: 1 },
+    { text: "Что такое силлогизм?", options: ["Вид метафоры", "Логическое умозаключение из двух посылок", "Математическая формула", "Риторический приём"], correctIdx: 1 },
+    { text: "Какой тип аргумента апеллирует к авторитету?", options: ["Ad hominem", "Ad verecundiam", "Ad populum", "Ad ignorantiam"], correctIdx: 1 },
   ],
   [Difficulty.SILVER]: [
-    { text: "Как называется парадокс, в котором корабль постепенно заменяет все свои части?", options: ["Парадокс лжеца", "Корабль Тесея", "Парадокс Зенона", "Буриданов осёл"], correctIdx: 1 },
-    { text: "Какое когнитивное искажение заставляет нас переоценивать вероятность событий, которые легко вспомнить?", options: ["Эффект якоря", "Эвристика доступности", "Ошибка выжившего", "Эффект ореола"], correctIdx: 1 },
+    { text: "Как называется парадокс, в котором корабль постепенно заменяет все части?", options: ["Парадокс лжеца", "Парадокс Зенона", "Корабль Тесея", "Буриданов осёл"], correctIdx: 2 },
+    { text: "Какое когнитивное искажение переоценивает вероятность ярких событий?", options: ["Эффект якоря", "Ошибка выжившего", "Эффект ореола", "Эвристика доступности"], correctIdx: 3 },
+    { text: "Что такое «ошибка техасского стрелка»?", options: ["Стрельба без цели", "Подгонка объяснения под случайные данные", "Слишком узкая выборка", "Использование ложных аналогий"], correctIdx: 1 },
+    { text: "Принцип фальсифицируемости Поппера означает, что научная теория:", options: ["Всегда верна", "Должна быть подтверждена экспериментом", "Должна допускать возможность опровержения", "Не может быть опровергнута"], correctIdx: 2 },
   ],
   [Difficulty.GOLD]: [
-    { text: "В байесовской статистике, как называется обновление вероятности гипотезы при получении новых данных?", options: ["Регрессия к среднему", "Апостериорная вероятность", "Закон больших чисел", "Центральная предельная теорема"], correctIdx: 1 },
-    { text: "Какой принцип утверждает, что из двух объяснений следует предпочесть более простое?", options: ["Принцип фальсифицируемости", "Бритва Оккама", "Принцип верификации", "Принцип дополнительности"], correctIdx: 1 },
+    { text: "В байесовской статистике обновление вероятности гипотезы при новых данных — это:", options: ["Закон больших чисел", "Центральная предельная теорема", "Регрессия к среднему", "Апостериорная вероятность"], correctIdx: 3 },
+    { text: "Какой принцип утверждает, что из двух объяснений предпочтительнее простое?", options: ["Принцип фальсифицируемости", "Принцип верификации", "Бритва Оккама", "Принцип дополнительности"], correctIdx: 2 },
+    { text: "Что доказывает теорема Гёделя о неполноте?", options: ["Любая математика противоречива", "Достаточно сложная система не может быть одновременно полной и непротиворечивой", "Все аксиомы доказуемы", "Логика не применима к математике"], correctIdx: 1 },
+    { text: "Парадокс Симпсона в статистике показывает, что:", options: ["Среднее всегда репрезентативно", "Тренд в группах может исчезать или обращаться при объединении данных", "Корреляция равна причинности", "Большие выборки всегда точнее"], correctIdx: 1 },
   ],
 };
 
@@ -232,6 +239,8 @@ export default function BattleDemoPage() {
   // For bot attack phase: player's defense choice
   const [botAttackPhase, setBotAttackPhase] = useState<"choosing" | "defending" | "result" | null>(null);
   const [botChosenDifficulty, setBotChosenDifficulty] = useState<Difficulty | null>(null);
+  // Current attack question (randomized)
+  const [attackQuestion, setAttackQuestion] = useState<DemoQuestion | null>(null);
 
   const timerActive =
     battle.phase === BattlePhase.ROUND_ATTACK ||
@@ -279,6 +288,7 @@ export default function BattleDemoPage() {
                     selectedCategory: cat,
                   }));
                   setSelectedDifficulty(null);
+                  setAttackQuestion(null);
                   setAnswerSelected(null);
                 }}
                 className={`w-full flex items-center gap-4 p-4 rounded-2xl border transition-all active:scale-[0.98] ${styles[idx % styles.length]}`}
@@ -296,7 +306,7 @@ export default function BattleDemoPage() {
   // -- ROUND_ATTACK (player attacks) -----------------------------------------
 
   if (battle.phase === BattlePhase.ROUND_ATTACK && playerAttacks) {
-    const question = selectedDifficulty ? MOCK_QUESTIONS[selectedDifficulty] : null;
+    const question = attackQuestion;
 
     return (
       <div className="px-4 pt-8 pb-24 space-y-6">
@@ -314,7 +324,11 @@ export default function BattleDemoPage() {
         {/* Step 1: Choose difficulty */}
         {!selectedDifficulty && (
           <DifficultyPicker
-            onSelect={(difficulty) => setSelectedDifficulty(difficulty)}
+            onSelect={(difficulty) => {
+              setSelectedDifficulty(difficulty);
+              const pool = ATTACK_QUESTIONS[difficulty] || [];
+              setAttackQuestion(pool[Math.floor(Math.random() * pool.length)] ?? null);
+            }}
           />
         )}
 
@@ -326,15 +340,27 @@ export default function BattleDemoPage() {
                 {difficultyConfig.find((d) => d.value === selectedDifficulty)?.label}
               </span>
             </div>
-            <p className="text-text-primary leading-relaxed">{question.text}</p>
+            <p className="text-text-primary leading-relaxed text-sm">{question.text}</p>
             <div className="space-y-2">
-              {question.answers.map((ans, idx) => (
+              {question.options.map((opt, idx) => {
+                const isAnswered = answerSelected !== null;
+                const isThis = answerSelected === idx;
+                const isCorrect = idx === question.correctIdx;
+
+                let style = "border-accent/15 bg-surface-light hover:border-accent/40 text-text-primary";
+                if (isAnswered) {
+                  if (isCorrect) style = "border-green-500/50 bg-green-500/10 text-green-400";
+                  else if (isThis) style = "border-accent-red/50 bg-accent-red/10 text-accent-red";
+                  else style = "border-accent/10 bg-surface-light text-text-muted opacity-50";
+                }
+
+                return (
                 <button
                   key={idx}
+                  disabled={isAnswered}
                   onClick={() => {
-                    if (answerSelected !== null) return;
                     setAnswerSelected(idx);
-                    const isCorrect = idx === 0; // first answer is always correct in demo
+                    const correct = idx === question.correctIdx;
                     const dmg = difficultyConfig.find((d) => d.value === selectedDifficulty)?.damage ?? 10;
 
                     const round: BattleRound = {
@@ -343,16 +369,14 @@ export default function BattleDemoPage() {
                       defenderId: "bot",
                       difficulty: selectedDifficulty,
                       attackerAnswer: idx,
-                      attackerCorrect: isCorrect,
-                      damageDealt: isCorrect ? dmg : 0,
-                      pointsAwarded: isCorrect ? dmg : 0,
+                      attackerCorrect: correct,
+                      damageDealt: correct ? dmg : 0,
+                      pointsAwarded: correct ? dmg : 0,
                     };
                     setLastRound(round);
 
-                    // Transition after 1.2 sec — HP/score updated in BotAutoDefend or ROUND_RESULT
                     setTimeout(() => {
-                      if (isCorrect) {
-                        // Go to bot defense — HP will be resolved there
+                      if (correct) {
                         setBattle((b) => ({
                           ...b,
                           phase: BattlePhase.ROUND_DEFENSE,
@@ -360,7 +384,6 @@ export default function BattleDemoPage() {
                           currentDefenderId: "bot",
                         }));
                       } else {
-                        // Missed — no damage, skip to result
                         setBattle((b) => ({
                           ...b,
                           phase: BattlePhase.ROUND_RESULT,
@@ -368,21 +391,13 @@ export default function BattleDemoPage() {
                       }
                     }, 1200);
                   }}
-                  className={`w-full text-left p-3 rounded-xl border transition-all text-sm ${
-                    answerSelected === null
-                      ? "border-accent/15 bg-surface-light hover:border-accent/40 text-text-primary"
-                      : answerSelected === idx
-                        ? idx === 0
-                          ? "border-accent/40 bg-accent/10 text-accent"
-                          : "border-accent-red/40 bg-accent-red/10 text-accent-red"
-                        : idx === 0 && answerSelected !== null
-                          ? "border-accent/30 bg-accent/5 text-accent"
-                          : "border-accent/10 bg-surface-light text-text-muted opacity-50"
-                  }`}
+                  className={`w-full text-left p-3 rounded-xl border transition-all text-sm ${style} ${!isAnswered ? "active:scale-[0.98]" : ""}`}
                 >
-                  {ans}
+                  <span className="text-text-muted mr-2 font-medium">{String.fromCharCode(65 + idx)}.</span>
+                  {opt}
                 </button>
-              ))}
+                );
+              })}
             </div>
           </Card>
         )}
@@ -682,6 +697,7 @@ export default function BattleDemoPage() {
                   setBotChosenDifficulty(null);
                   setLastRound(null);
                   setSelectedDifficulty(null);
+                  setAttackQuestion(null);
                   setAnswerSelected(null);
                   setBattle((b) => ({
                     ...b,
