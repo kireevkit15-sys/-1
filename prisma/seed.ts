@@ -2,6 +2,7 @@ import { PrismaClient, Branch, Difficulty, Role } from "@prisma/client";
 import { randomUUID } from "crypto";
 import { readdirSync, readFileSync } from "fs";
 import { join } from "path";
+import { SEED_FACTS } from "../apps/api/src/facts/facts.seed";
 
 const prisma = new PrismaClient();
 
@@ -1241,6 +1242,24 @@ async function main() {
     });
   }
   console.log(`✓ Achievements: ${achievements.length} seeded`);
+
+  // 5. Daily Facts
+  for (const f of SEED_FACTS) {
+    const existing = await prisma.dailyFact.findFirst({
+      where: { text: f.text },
+    });
+    if (!existing) {
+      await prisma.dailyFact.create({
+        data: {
+          text: f.text,
+          source: f.source,
+          branch: f.branch as Branch,
+          category: f.category,
+        },
+      });
+    }
+  }
+  console.log(`✓ Daily facts: ${SEED_FACTS.length} seeded`);
 
   console.log("\nDone!");
 }
