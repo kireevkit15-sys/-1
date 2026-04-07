@@ -198,13 +198,19 @@ export function useBattle(battleId?: string) {
   // -- Actions --------------------------------------------------------------
 
   const createBotBattle = useCallback(() => {
-    if (!socketRef.current) return;
+    if (!socketRef.current) {
+      dispatch({ type: "ERROR", message: "Необходимо войти в аккаунт для игры" });
+      return;
+    }
     dispatch({ type: "CONNECTING" });
     socketRef.current.emit("battle:create_bot");
   }, []);
 
   const searchOpponent = useCallback((rating?: number) => {
-    if (!socketRef.current) return;
+    if (!socketRef.current) {
+      dispatch({ type: "ERROR", message: "Необходимо войти в аккаунт для поиска соперника" });
+      return;
+    }
     dispatch({ type: "SEARCHING" });
     socketRef.current.emit("battle:matchmake", { rating });
   }, []);

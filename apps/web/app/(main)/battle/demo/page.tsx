@@ -194,6 +194,12 @@ const defenseConfig = [
   { value: DefenseType.COUNTER, label: "Контратака", desc: "30% шанс, но отражает весь урон", bg: "bg-accent-gold/15", border: "border-accent-gold/30", text: "text-accent-gold" },
 ];
 
+const defenseLabels: Record<string, string> = {
+  [DefenseType.ACCEPT]: "Принять удар",
+  [DefenseType.DISPUTE]: "Оспорить",
+  [DefenseType.COUNTER]: "Контратака",
+};
+
 // ---------------------------------------------------------------------------
 // Demo Page
 // ---------------------------------------------------------------------------
@@ -418,44 +424,95 @@ export default function BattleDemoPage() {
   // -- ROUND_RESULT ---------------------------------------------------------
 
   if (battle.phase === BattlePhase.ROUND_RESULT && !result) {
+    const isHit = lastRound && lastRound.damageDealt > 0;
+
     return (
       <div className="px-4 pt-8 pb-24 space-y-6">
         {demoBadge}
         <ScoreBar battle={battle} />
 
-        <div className="text-center space-y-4 pt-4">
-          <h2 className="text-xl font-bold">Результат раунда</h2>
-
-          {lastRound && (
-            <Card padding="lg" className="space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-text-secondary">Урон</span>
-                <span className="text-sm font-bold text-accent-red">
-                  {lastRound.damageDealt > 0 ? `-${lastRound.damageDealt} HP` : "Промах"}
+        <div className="text-center space-y-5 pt-2">
+          {/* Big damage/miss indicator */}
+          <div className="battle-slam">
+            {isHit ? (
+              <div className="inline-flex flex-col items-center">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#89352A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-10 h-10 mb-2">
+                  <path d="M14.5 17.5L3 6V3h3l11.5 11.5" />
+                  <path d="M13 19l6-6" />
+                  <path d="M16 16l4 4" />
+                  <path d="M19 21l2-2" />
+                </svg>
+                <span className="text-4xl font-bold text-accent-red font-mono">
+                  -{lastRound!.damageDealt} HP
                 </span>
               </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-text-secondary">Очки</span>
-                <span className="text-sm font-bold text-accent-gold">+{lastRound.pointsAwarded}</span>
+            ) : (
+              <div className="inline-flex flex-col items-center">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-10 h-10 mb-2 text-text-muted">
+                  <path d="M12 2L3 7v6c0 5.25 3.75 9.75 9 11 5.25-1.25 9-5.75 9-11V7l-9-5z" />
+                </svg>
+                <span className="text-3xl font-bold text-text-muted">Промах</span>
               </div>
-              {lastRound.defenseType && (
+            )}
+          </div>
+
+          {/* Stats cards */}
+          {lastRound && (
+            <div className="space-y-3">
+              <Card padding="sm" className="battle-fade-up battle-stagger-1">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-text-secondary">Защита бота</span>
-                  <span className={`text-sm font-semibold ${lastRound.defenseSuccess ? "text-accent" : "text-accent-red"}`}>
-                    {lastRound.defenseSuccess ? "Отражено!" : "Провал"}
+                  <div className="flex items-center gap-2">
+                    <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-accent-gold">
+                      <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" />
+                    </svg>
+                    <span className="text-sm text-text-secondary">Очки</span>
+                  </div>
+                  <span className="text-lg font-bold text-accent-gold font-mono">+{lastRound.pointsAwarded}</span>
+                </div>
+              </Card>
+
+              <Card padding="sm" className="battle-fade-up battle-stagger-2">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4 text-text-secondary">
+                      <circle cx="12" cy="12" r="10" />
+                      <circle cx="12" cy="12" r="6" />
+                      <circle cx="12" cy="12" r="2" />
+                    </svg>
+                    <span className="text-sm text-text-secondary">Атака</span>
+                  </div>
+                  <span className={`text-sm font-semibold ${lastRound.attackerCorrect ? "text-accent" : "text-accent-red"}`}>
+                    {lastRound.attackerCorrect ? "Точный ответ" : "Неверный ответ"}
                   </span>
                 </div>
+              </Card>
+
+              {lastRound.defenseType && (
+                <Card padding="sm" className="battle-fade-up battle-stagger-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 text-text-secondary">
+                        <path d="M12 2L3 7v6c0 5.25 3.75 9.75 9 11 5.25-1.25 9-5.75 9-11V7l-9-5z" />
+                      </svg>
+                      <span className="text-sm text-text-secondary">
+                        {defenseLabels[lastRound.defenseType] ?? "Защита"}
+                      </span>
+                    </div>
+                    <span className={`text-sm font-semibold ${lastRound.defenseSuccess ? "text-accent" : "text-accent-red"}`}>
+                      {lastRound.defenseSuccess ? "Отражено" : "Пробито"}
+                    </span>
+                  </div>
+                </Card>
               )}
-            </Card>
+            </div>
           )}
         </div>
 
-        <div className="space-y-3 pt-4">
+        <div className="space-y-3 pt-4 battle-fade-up battle-stagger-4">
           {battle.currentRound < battle.totalRounds && battle.player2.hp > 0 ? (
             <Button
               fullWidth
               onClick={() => {
-                // Swap roles: now bot attacks, player defends
                 setBattle((b) => ({
                   ...b,
                   phase: BattlePhase.CATEGORY_SELECT,
@@ -500,56 +557,88 @@ export default function BattleDemoPage() {
   if (result) {
     const isWin = result.winnerId === "player";
     const isDraw = result.winnerId === null;
+    const ratingPositive = result.ratingChange > 0;
 
     return (
       <div className="px-4 pt-8 pb-24 space-y-6">
         {demoBadge}
-        <div className="text-center space-y-4 pt-8">
-          <div>
+        <div className="text-center space-y-4 pt-4">
+          {/* Big result icon with glow */}
+          <div className={`battle-slam ${isWin ? "battle-glow-gold" : isDraw ? "" : "battle-glow-red"}`}>
             {isWin ? (
-              <span className="text-6xl text-accent-gold font-serif">W</span>
+              <svg viewBox="0 0 24 24" fill="currentColor" className="w-16 h-16 text-accent-gold mx-auto mb-2">
+                <path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5z" />
+                <path d="M19 19H5a1 1 0 010-2h14a1 1 0 010 2z" />
+              </svg>
             ) : isDraw ? (
-              <span className="text-5xl text-text-secondary font-serif">&mdash;</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-16 h-16 text-text-secondary mx-auto mb-2">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M8 12h8" strokeLinecap="round" />
+              </svg>
             ) : (
-              <span className="text-5xl text-accent-red font-serif">L</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-16 h-16 text-accent-red mx-auto mb-2">
+                <path d="M12 2L3 7v6c0 5.25 3.75 9.75 9 11 5.25-1.25 9-5.75 9-11V7l-9-5z" />
+                <path d="M9 12l2 2 4-4" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
+              </svg>
             )}
           </div>
-          <h2 className="text-2xl font-bold">
+
+          <h2 className="text-2xl font-bold battle-fade-up battle-stagger-1">
             {isWin ? "Победа!" : isDraw ? "Ничья" : "Поражение"}
           </h2>
 
-          <div className="flex items-center justify-center gap-6 py-4">
+          {/* Score comparison */}
+          <div className="flex items-center justify-center gap-8 py-4 battle-fade-up battle-stagger-2">
             <div className="text-center">
-              <p className="text-3xl font-bold text-accent">{result.player1Score}</p>
+              <p className="text-4xl font-bold text-accent font-mono">{result.player1Score}</p>
               <p className="text-xs text-text-muted mt-1">Вы</p>
             </div>
-            <span className="text-text-muted text-2xl">:</span>
+            <span className="text-text-muted text-3xl font-light">:</span>
             <div className="text-center">
-              <p className="text-3xl font-bold text-accent-red">{result.player2Score}</p>
+              <p className="text-4xl font-bold text-accent-red font-mono">{result.player2Score}</p>
               <p className="text-xs text-text-muted mt-1">Бот</p>
             </div>
           </div>
 
-          <Card padding="sm">
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-text-secondary">Опыт получен</span>
-              <span className="text-sm font-semibold text-accent-gold">
-                +{result.xpGained.player ?? 0} XP
-              </span>
-            </div>
-          </Card>
+          {/* Rewards */}
+          <div className="space-y-3">
+            <Card padding="sm" className="battle-fade-up battle-stagger-2">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-accent-gold">
+                    <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" />
+                  </svg>
+                  <span className="text-sm text-text-secondary">Опыт</span>
+                </div>
+                <span className="text-lg font-bold text-accent-gold font-mono">
+                  +{result.xpGained.player ?? 0} XP
+                </span>
+              </div>
+            </Card>
 
-          <Card padding="sm">
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-text-secondary">Рейтинг</span>
-              <span className={`text-sm font-semibold ${result.ratingChange >= 0 ? "text-accent" : "text-accent-red"}`}>
-                {result.ratingChange >= 0 ? "+" : ""}{result.ratingChange}
-              </span>
-            </div>
-          </Card>
+            {result.ratingChange !== 0 && (
+              <Card padding="sm" className="battle-fade-up battle-stagger-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`w-4 h-4 ${ratingPositive ? "text-accent" : "text-accent-red"}`}>
+                      {ratingPositive ? (
+                        <polyline points="23,6 13.5,15.5 8.5,10.5 1,18" />
+                      ) : (
+                        <polyline points="23,18 13.5,8.5 8.5,13.5 1,6" />
+                      )}
+                    </svg>
+                    <span className="text-sm text-text-secondary">Рейтинг</span>
+                  </div>
+                  <span className={`text-lg font-bold font-mono ${ratingPositive ? "text-accent" : "text-accent-red"}`}>
+                    {ratingPositive ? "+" : ""}{result.ratingChange}
+                  </span>
+                </div>
+              </Card>
+            )}
+          </div>
         </div>
 
-        <div className="space-y-3 pt-4">
+        <div className="space-y-3 pt-4 battle-fade-up battle-stagger-4">
           <Button
             fullWidth
             onClick={() => {

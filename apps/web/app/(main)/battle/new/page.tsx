@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useBattle } from "@/hooks/useBattle";
 import Button from "@/components/ui/Button";
@@ -18,23 +18,96 @@ export default function NewBattlePage() {
     reset,
   } = useBattle();
 
-  // When battle starts, redirect to the battle screen
+  const [showOpponent, setShowOpponent] = useState(false);
+  const redirectTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // When battle starts, show opponent screen for 2.5s then redirect
   useEffect(() => {
     if (status === "in_battle" && battle) {
-      router.push(`/battle/${battle.id}`);
+      setShowOpponent(true);
+      redirectTimer.current = setTimeout(() => {
+        router.push(`/battle/${battle.id}`);
+      }, 2500);
     }
+    return () => {
+      if (redirectTimer.current) clearTimeout(redirectTimer.current);
+    };
   }, [status, battle, router]);
 
-  // Searching state
+  // -- Opponent found screen --------------------------------------------------
+
+  if (showOpponent && battle) {
+    const opponent = battle.player2;
+    return (
+      <div className="px-4 pt-20 flex flex-col items-center justify-center min-h-[70vh] space-y-8">
+        <div className="text-center space-y-6">
+          <p className="text-sm text-accent-gold font-semibold uppercase tracking-wider battle-fade-up battle-stagger-1">
+            Соперник найден
+          </p>
+
+          {/* VS display */}
+          <div className="flex items-center justify-center gap-6 battle-scale-in">
+            {/* Player */}
+            <div className="flex flex-col items-center gap-2">
+              <div className="w-16 h-16 rounded-full bg-accent/20 flex items-center justify-center border-2 border-accent/30">
+                <span className="text-accent text-xl font-bold">
+                  {battle.player1.name.charAt(0).toUpperCase()}
+                </span>
+              </div>
+              <span className="text-sm font-medium text-text-primary max-w-[80px] truncate">
+                {battle.player1.name}
+              </span>
+            </div>
+
+            {/* VS */}
+            <div className="battle-slam">
+              <span className="text-2xl font-bold text-accent-gold font-serif">VS</span>
+            </div>
+
+            {/* Opponent */}
+            <div className="flex flex-col items-center gap-2">
+              <div className="w-16 h-16 rounded-full bg-accent-red/20 flex items-center justify-center border-2 border-accent-red/30">
+                <span className="text-accent-red text-xl font-bold">
+                  {opponent.name.charAt(0).toUpperCase()}
+                </span>
+              </div>
+              <span className="text-sm font-medium text-text-primary max-w-[80px] truncate">
+                {opponent.name}
+              </span>
+            </div>
+          </div>
+
+          <p className="text-text-muted text-sm battle-fade-up battle-stagger-3">
+            Баттл начинается...
+          </p>
+        </div>
+
+        {/* Loading bar */}
+        <div className="w-48 h-1 bg-surface-light rounded-full overflow-hidden battle-fade-up battle-stagger-3">
+          <div
+            className="h-full rounded-full bg-gradient-to-r from-accent to-accent-gold"
+            style={{
+              animation: "battle-load-bar 2.5s ease-in-out forwards",
+            }}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  // -- Searching state --------------------------------------------------------
+
   if (status === "searching" || status === "connecting") {
     return (
       <div className="px-4 pt-20 flex flex-col items-center justify-center min-h-[70vh] space-y-8">
-        {/* Pulsing animation */}
-        <div className="relative w-24 h-24">
-          <div className="w-24 h-24 rounded-full bg-accent/20 animate-ping absolute inset-0" />
-          <div className="w-24 h-24 rounded-full bg-accent/30 flex items-center justify-center relative">
+        {/* Pulsing rings */}
+        <div className="relative w-28 h-28 flex items-center justify-center">
+          <div className="absolute inset-0 rounded-full border border-accent/20 animate-ping" />
+          <div className="absolute inset-2 rounded-full border border-accent/15" style={{ animation: "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite 0.4s" }} />
+          <div className="absolute inset-4 rounded-full border border-accent/10" style={{ animation: "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite 0.8s" }} />
+          <div className="w-16 h-16 rounded-full bg-accent/15 flex items-center justify-center border border-accent/25 relative">
             <svg
-              className="w-10 h-10 text-accent-gold"
+              className="w-7 h-7 text-accent-gold"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"

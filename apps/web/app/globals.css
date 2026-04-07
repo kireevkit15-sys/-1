@@ -104,4 +104,61 @@
       inset 0 1px 0 rgba(255, 255, 255, 0.1),
       inset 0 -0.5px 0 rgba(0, 0, 0, 0.15);
   }
+
+  /* Battle animations */
+  .battle-slam {
+    animation: battle-slam 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .battle-fade-up {
+    animation: battle-fade-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .battle-scale-in {
+    animation: battle-scale-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+
+  .battle-glow-gold {
+    animation: battle-glow-gold 2s ease-in-out infinite alternate;
+  }
+
+  .battle-glow-red {
+    animation: battle-glow-red 2s ease-in-out infinite alternate;
+  }
+
+  .battle-stagger-1 { animation-delay: 0.1s; opacity: 0; }
+  .battle-stagger-2 { animation-delay: 0.25s; opacity: 0; }
+  .battle-stagger-3 { animation-delay: 0.4s; opacity: 0; }
+  .battle-stagger-4 { animation-delay: 0.55s; opacity: 0; }
+}
+
+@keyframes battle-slam {
+  0% { opacity: 0; transform: scale(2.5) translateY(-10px); }
+  60% { opacity: 1; transform: scale(0.95) translateY(2px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes battle-fade-up {
+  0% { opacity: 0; transform: translateY(16px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes battle-scale-in {
+  0% { opacity: 0; transform: scale(0.5); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes battle-glow-gold {
+  0% { filter: drop-shadow(0 0 8px rgba(185, 141, 52, 0.3)); }
+  100% { filter: drop-shadow(0 0 20px rgba(185, 141, 52, 0.6)); }
+}
+
+@keyframes battle-glow-red {
+  0% { filter: drop-shadow(0 0 8px rgba(137, 53, 42, 0.3)); }
+  100% { filter: drop-shadow(0 0 20px rgba(137, 53, 42, 0.6)); }
+}
+
+@keyframes battle-load-bar {
+  0% { width: 0%; }
+  100% { width: 100%; }
 }
