@@ -132,6 +132,19 @@
 | B6.3 | AiController: POST /ai/dialogue, POST /ai/dialogue/:id/message, GET /ai/dialogue/:id, GET /ai/dialogues | done | `apps/api/src/ai/ai.controller.ts` |
 | B6.4 | Обновить AiModule — подключить контроллер, PrismaModule, RedisModule | done | `apps/api/src/ai/ai.module.ts` |
 
+## Неделя 12 — Финальная оптимизация БД
+
+| # | Задача | Статус | Файлы |
+|---|--------|--------|-------|
+| B12.1 | Добавить 8 недостающих индексов (battleRounds, aiDialogues, userStats streak, battles endedAt/winnerId, questions composite, expression index totalXp) | done | `prisma/schema.prisma`, `prisma/migrations/20260407280000_add_performance_indexes/` |
+| B12.2 | Оптимизировать getRandomForBattle — ORDER BY RANDOM() вместо загрузки всех в память | done | `apps/api/src/question/question.service.ts` |
+| B12.3 | Оптимизировать leaderboard XP — raw SQL + expression index вместо fallback на rating | done | `apps/api/src/stats/leaderboard.service.ts` |
+| B12.4 | Исправить N+1 в achievements — batch findMany + $transaction | done | `apps/api/src/achievements/achievements.service.ts` |
+| B12.5 | Оптимизировать random fact selection — один запрос вместо count + skip | done | `apps/api/src/facts/facts.service.ts` |
+| B12.6 | Настроить connection pooling + slow query logging | done | `apps/api/src/prisma/prisma.service.ts`, `.env.example` |
+| B12.7 | Edge cases: 0 вопросов в категории, удаление пользователя, JWT expiry в батле | todo | — |
+| B12.8 | Production seed: все 500+ вопросов и модули в production БД | todo | — |
+
 ## Ядро контента — RAG-пайплайн и генерация (Backend)
 
 | # | Задача | Статус | Файлы | Блокер |
