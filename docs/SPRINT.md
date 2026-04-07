@@ -162,7 +162,7 @@
 | N2 | Health-check эндпоинты (/health, /ready) | done | `apps/api/src/health/` |
 | N3 | Rate limiting (глобальный + per-endpoint) | done | `apps/api/src/common/decorators/throttle.decorator.ts` |
 | N4 | Security headers (CSP, HSTS, X-Frame-Options) | done | `apps/api/src/main.ts`, `nginx/nginx.conf` |
-| N5 | API versioning (/v1/) | todo | `apps/api/src/` |
+| N5 | API versioning (/v1/) | done | `apps/api/src/main.ts`, `apps/api/src/app.controller.ts` |
 | N19 | Обновить ANTHROPIC_API_KEY и OPENAI_API_KEY в `.env` (невалидные, блокируют BC3/BC4/BC6) | todo | `.env` |
 
 ## Новые задачи — Пользовательский опыт

@@ -39,6 +39,11 @@ async function bootstrap() {
     credentials: true,
   });
 
+  // API versioning — all routes under /v1/, except health checks
+  app.setGlobalPrefix('v1', {
+    exclude: ['health', 'ready', 'docs', 'docs/(.*)'],
+  });
+
   app.useGlobalFilters(new AllExceptionsFilter());
 
   app.useGlobalPipes(
@@ -51,9 +56,9 @@ async function bootstrap() {
 
   // Swagger
   const config = new DocumentBuilder()
-    .setTitle('РАЗУМ API')
-    .setDescription('Интеллектуальная PWA-платформа — REST API')
-    .setVersion('0.1.0')
+    .setTitle('РАЗУМ API v1')
+    .setDescription('Интеллектуальная PWA-платформа — REST API. Все эндпоинты под префиксом /v1/')
+    .setVersion('1.0')
     .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);
