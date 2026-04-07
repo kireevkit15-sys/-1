@@ -12,7 +12,7 @@ interface Dialogue {
   topic: string;
   messageCount: number;
   createdAt: string;
-  lastMessageAt: string;
+  lastMessageAt?: string;
 }
 
 const DEMO_DIALOGUES: Dialogue[] = [
@@ -55,7 +55,7 @@ export default function DialoguesPage() {
   const token = useApiToken();
   const [dialogues, setDialogues] = useState<Dialogue[]>([]);
   const [loading, setLoading] = useState(true);
-  const [openChat, setOpenChat] = useState<{ topic: string } | null>(null);
+  const [openChat, setOpenChat] = useState<{ topic: string; dialogueId?: string } | null>(null);
 
   useEffect(() => {
     async function fetchDialogues() {
@@ -88,11 +88,21 @@ export default function DialoguesPage() {
   return (
     <div className="px-4 pt-12 pb-24 space-y-6">
       {/* Header */}
-      <div>
-        <h1 className="text-2xl font-bold text-text-primary">AI-диалоги</h1>
-        <p className="text-text-muted text-sm mt-1">
-          История бесед с AI-наставником
-        </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-text-primary">AI-диалоги</h1>
+          <p className="text-text-muted text-sm mt-1">
+            История бесед с AI-наставником
+          </p>
+        </div>
+        <button
+          onClick={() => setOpenChat({ topic: "Свободная тема" })}
+          className="w-9 h-9 rounded-xl bg-accent flex items-center justify-center text-background active:scale-95 transition-all shadow-lg shadow-accent/20"
+        >
+          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+          </svg>
+        </button>
       </div>
 
       {/* Dialogues list */}
@@ -105,7 +115,7 @@ export default function DialoguesPage() {
           </div>
           <p className="text-text-secondary text-sm">Диалогов пока нет</p>
           <p className="text-text-muted text-xs mt-1">
-            Нажми &laquo;Спросить AI&raquo; в модуле обучения
+            Нажми + чтобы начать первый диалог
           </p>
         </div>
       ) : (
@@ -115,7 +125,7 @@ export default function DialoguesPage() {
               key={d.id}
               padding="md"
               className="cursor-pointer active:scale-[0.99] transition-transform hover:border-accent/20"
-              onClick={() => setOpenChat({ topic: d.topic })}
+              onClick={() => setOpenChat({ topic: d.topic, dialogueId: d.id })}
             >
               <div className="flex items-start justify-between gap-3">
                 <div className="flex items-start gap-3 min-w-0">
@@ -134,7 +144,7 @@ export default function DialoguesPage() {
                   </div>
                 </div>
                 <span className="text-xs text-text-muted whitespace-nowrap flex-shrink-0">
-                  {formatDate(d.lastMessageAt)}
+                  {formatDate(d.lastMessageAt || d.createdAt)}
                 </span>
               </div>
             </Card>
@@ -146,6 +156,7 @@ export default function DialoguesPage() {
       {openChat && (
         <AiChat
           topic={openChat.topic}
+          existingDialogueId={openChat.dialogueId}
           onClose={() => setOpenChat(null)}
         />
       )}
