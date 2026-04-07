@@ -1,19 +1,70 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import Link from "next/link";
+import { usePushSubscription } from "@/hooks/usePushSubscription";
 
-const mockStats = {
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/v1";
+
+interface UserStats {
+  streak: number;
+  battles: number;
+  winRate: number;
+  rank: string;
+  xp: number;
+  level: number;
+  xpToNext: number;
+}
+
+const FALLBACK_STATS: UserStats = {
   streak: 7,
   battles: 42,
   winRate: 68,
   rank: "Стратег",
   xp: 2450,
   level: 12,
+  xpToNext: 3000,
 };
 
 export default function HomePage() {
+  const { shouldPrompt, subscribe, dismiss } = usePushSubscription();
+  const [stats, setStats] = useState<UserStats>(FALLBACK_STATS);
+
+  useEffect(() => {
+    async function fetchStats() {
+      try {
+        const token = localStorage.getItem("admin_token") || "";
+        if (!token) return;
+        const [summaryRes, battlesRes] = await Promise.allSettled([
+          fetch(`${API_BASE}/stats/me/summary`, { headers: { Authorization: `Bearer ${token}` } }),
+          fetch(`${API_BASE}/stats/me/battles`, { headers: { Authorization: `Bearer ${token}` } }),
+        ]);
+
+        const newStats = { ...FALLBACK_STATS };
+
+        if (summaryRes.status === "fulfilled" && summaryRes.value.ok) {
+          const data = await summaryRes.value.json();
+          newStats.level = data.level ?? newStats.level;
+          newStats.xp = data.totalXp ?? newStats.xp;
+          newStats.streak = data.streakDays ?? data.streak ?? newStats.streak;
+          newStats.rank = data.thinkerClass ?? newStats.rank;
+          newStats.xpToNext = data.xpToNext ?? newStats.xpToNext;
+        }
+
+        if (battlesRes.status === "fulfilled" && battlesRes.value.ok) {
+          const data = await battlesRes.value.json();
+          newStats.battles = data.total ?? newStats.battles;
+          newStats.winRate = data.winRate ?? newStats.winRate;
+        }
+
+        setStats(newStats);
+      } catch {}
+    }
+    fetchStats();
+  }, []);
+
   return (
     <div className="px-4 pt-12 pb-24 space-y-6">
       {/* Header */}
@@ -30,7 +81,7 @@ export default function HomePage() {
             <path d="M 7 0 C 7 0 10 4 10 4 C 12 6 14 8 14 11 C 14 15 11 18 7 18 C 3 18 0 15 0 11 C 0 8 2 6 4 4 C 4 4 4 7 5.5 8 C 5.5 8 7 0 7 0 Z" />
           </svg>
           <span className="text-sm font-bold text-accent-gold">
-            {mockStats.streak}
+            {stats.streak}
           </span>
         </div>
       </div>
@@ -74,6 +125,41 @@ export default function HomePage() {
         </Card>
       </Link>
 
+      {/* Push notification prompt */}
+      {shouldPrompt && (
+        <Card padding="md" className="border-accent/20">
+          <div className="flex items-start gap-3">
+            <div className="w-8 h-8 rounded-lg bg-accent-warm/20 flex items-center justify-center flex-shrink-0">
+              <svg className="w-5 h-5 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
+              </svg>
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-text-primary">
+                Включить уведомления?
+              </p>
+              <p className="text-xs text-text-muted mt-0.5">
+                Напомним о разминке и вызовах
+              </p>
+              <div className="flex gap-2 mt-2.5">
+                <button
+                  onClick={subscribe}
+                  className="px-3 py-1.5 text-xs font-semibold bg-accent text-background rounded-lg active:scale-95 transition-all"
+                >
+                  Включить
+                </button>
+                <button
+                  onClick={dismiss}
+                  className="px-3 py-1.5 text-xs text-text-muted hover:text-text-secondary transition-colors"
+                >
+                  Не сейчас
+                </button>
+              </div>
+            </div>
+          </div>
+        </Card>
+      )}
+
       {/* Stats */}
       <div>
         <p className="text-text-muted text-xs tracking-widest mb-3">
@@ -82,26 +168,26 @@ export default function HomePage() {
         <div className="grid grid-cols-2 gap-2.5">
           <Card padding="sm">
             <p className="text-[26px] font-bold text-accent">
-              {mockStats.battles}
+              {stats.battles}
             </p>
             <p className="text-text-secondary text-xs mt-1">Баттлов</p>
           </Card>
           <Card padding="sm">
             <p className="text-[26px] font-bold text-accent-gold">
-              {mockStats.winRate}%
+              {stats.winRate}%
             </p>
             <p className="text-text-secondary text-xs mt-1">Побед</p>
           </Card>
           <Card padding="sm">
             <p className="text-[24px] font-bold text-accent">
-              Lvl {mockStats.level}
+              Lvl {stats.level}
             </p>
             <p className="text-text-secondary text-xs mt-1">Уровень</p>
             <div className="w-[60px] h-[3px] rounded-full bg-gradient-to-r from-accent to-transparent mt-1" />
           </Card>
           <Card padding="sm">
             <p className="text-xl font-bold text-accent-gold">
-              {mockStats.rank}
+              {stats.rank}
             </p>
             <p className="text-text-secondary text-xs mt-1">Класс</p>
           </Card>
@@ -117,13 +203,13 @@ export default function HomePage() {
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm text-text-secondary">Опыт</span>
             <span className="text-xs text-text-muted">
-              {mockStats.xp} / 3000 XP
+              {stats.xp} / {stats.xpToNext} XP
             </span>
           </div>
           <div className="h-2.5 bg-surface-light rounded-full overflow-hidden">
             <div
               className="h-full bg-gradient-to-r from-accent-warm via-accent to-accent-gold rounded-full transition-all shadow-[0_2px_8px_rgba(207,157,123,0.3)]"
-              style={{ width: `${(mockStats.xp / 3000) * 100}%` }}
+              style={{ width: `${(stats.xp / stats.xpToNext) * 100}%` }}
             />
           </div>
         </Card>

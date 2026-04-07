@@ -245,9 +245,9 @@
 
 | # | Задача | Статус | Файлы |
 |---|--------|--------|-------|
-| N6 | Онбординг-флоу для нового пользователя | todo | `apps/web/app/(main)/onboarding/` |
+| N6 | Онбординг-флоу для нового пользователя | done | `apps/web/app/(main)/onboarding/page.tsx` |
 | N7 | Система достижений (achievements) | done | `prisma/schema.prisma`, `apps/api/src/achievements/` |
-| N8 | Страницы ошибок (404, 500, offline) | todo | `apps/web/app/not-found.tsx`, `apps/web/app/error.tsx` |
+| N8 | Страницы ошибок (404, 500, offline) | done | `apps/web/app/not-found.tsx`, `apps/web/app/error.tsx`, `apps/web/app/offline.tsx` |
 | N9 | Telegram-бот для уведомлений и инвайтов | done | `apps/api/src/telegram/` |
 | N10 | Система реферальных кодов | done | `apps/api/src/referral/` |
 
@@ -256,7 +256,7 @@
 | # | Задача | Статус | Файлы |
 |---|--------|--------|-------|
 | N11 | Event tracking (батлы, ответы, сессии) | done | `apps/api/src/analytics/` |
-| N12 | Дашборд PO — статистика в реальном времени | todo | `apps/web/app/admin/dashboard/` |
+| N12 | Дашборд PO — статистика в реальном времени | done | `apps/web/app/admin/dashboard/page.tsx` |
 | N13 | Структурированные логи (Pino) | done | `nestjs-pino` в `app.module.ts` |
 
 ## Новые задачи — Контент и игровые механики
@@ -265,7 +265,7 @@
 |---|--------|--------|-------|
 | N14 | Система ежедневных челленджей | done | `apps/api/src/challenge/` |
 | N15 | «Факт дня» на главном экране | done | `apps/api/src/facts/`, `apps/web/components/` |
-| N16 | Звуковые эффекты для батлов (Web Audio API) | todo | `apps/web/lib/sounds.ts` |
+| N16 | Звуковые эффекты для баттлов (Web Audio API) | done | `apps/web/lib/sounds.ts` |
 
 ## Новые задачи — DevOps
 

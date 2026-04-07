@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import {
   RadarChart,
   PolarGrid,
@@ -9,9 +9,12 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import Card from "@/components/ui/Card";
+import ShareButton from "@/components/profile/ShareButton";
+
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/v1";
 
 // ---------------------------------------------------------------------------
-// Mock data — matches GET /users/me response shape
+// Fallback data — used when API unavailable
 // ---------------------------------------------------------------------------
 
 const mockProfile = {
@@ -75,7 +78,38 @@ function formatRelativeDate(iso: string): string {
 // ---------------------------------------------------------------------------
 
 export default function ProfilePage() {
-  const { stats, battleStats, recentBattles } = mockProfile;
+  const [profile, setProfile] = useState(mockProfile);
+
+  useEffect(() => {
+    async function fetchProfile() {
+      try {
+        const token = localStorage.getItem("admin_token") || "";
+        if (!token) return;
+        const res = await fetch(`${API_BASE}/users/me`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (res.ok) {
+          const data = await res.json();
+          setProfile((prev) => ({
+            ...prev,
+            name: data.username || data.name || prev.name,
+            avatarUrl: data.avatarUrl || prev.avatarUrl,
+            stats: {
+              ...prev.stats,
+              ...(data.stats || {}),
+              rating: data.stats?.rating ?? prev.stats.rating,
+              totalXp: data.stats?.totalXp ?? prev.stats.totalXp,
+              level: data.stats?.level ?? prev.stats.level,
+              streakDays: data.stats?.streakDays ?? prev.stats.streakDays,
+            },
+          }));
+        }
+      } catch {}
+    }
+    fetchProfile();
+  }, []);
+
+  const { stats, battleStats, recentBattles } = profile;
 
   const radarData = useMemo(
     () =>
@@ -97,11 +131,11 @@ export default function ProfilePage() {
       <div className="flex items-center gap-4">
         <div className="w-16 h-16 rounded-full bg-accent/20 flex items-center justify-center border border-accent/15">
           <span className="text-accent text-2xl font-bold">
-            {mockProfile.name.charAt(0).toUpperCase()}
+            {profile.name.charAt(0).toUpperCase()}
           </span>
         </div>
         <div className="flex-1 min-w-0">
-          <h1 className="text-xl font-bold truncate">{mockProfile.name}</h1>
+          <h1 className="text-xl font-bold truncate">{profile.name}</h1>
           <div className="flex items-center gap-2 mt-1">
             <span className="px-2.5 py-0.5 rounded-full bg-accent-gold/15 text-accent-gold text-xs font-semibold border border-accent-gold/20">
               Ур. {stats.level}
@@ -114,6 +148,11 @@ export default function ProfilePage() {
             </span>
           </div>
         </div>
+        <ShareButton
+          username={profile.name}
+          level={stats.level}
+          thinkerClass="Стратег"
+        />
       </div>
 
       {/* ── XP Progress ──────────────────────────────── */}
