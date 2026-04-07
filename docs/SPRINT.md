@@ -114,6 +114,15 @@
 | B5.4 | DTO с class-validator: GetModulesQueryDto, SubmitProgressDto | done | `apps/api/src/learn/dto/` |
 | B5.5 | Seed 10 модулей (5 Стратегия + 5 Логика) по 5 вопросов | done | `prisma/seed.ts` |
 
+## Неделя 6 — AI-диалог (контроллер + БД)
+
+| # | Задача | Статус | Файлы |
+|---|--------|--------|-------|
+| B6.1 | Проверить таблицу AiDialogue в Prisma (уже есть) | done | `prisma/schema.prisma` |
+| B6.2 | DTO: CreateDialogueDto, SendMessageDto, GetDialoguesQueryDto | done | `apps/api/src/ai/dto/` |
+| B6.3 | AiController: POST /ai/dialogue, POST /ai/dialogue/:id/message, GET /ai/dialogue/:id, GET /ai/dialogues | done | `apps/api/src/ai/ai.controller.ts` |
+| B6.4 | Обновить AiModule — подключить контроллер, PrismaModule, RedisModule | done | `apps/api/src/ai/ai.module.ts` |
+
 ## Ядро контента — RAG-пайплайн и генерация (Backend)
 
 | # | Задача | Статус | Файлы | Блокер |
