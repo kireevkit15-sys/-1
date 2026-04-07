@@ -13,6 +13,7 @@ import { JwtService } from '@nestjs/jwt';
 import { BattleService } from './battle.service';
 import { MatchmakingService } from './matchmaking.service';
 import { BotService } from './bot.service';
+import { QuestionService } from '../question/question.service';
 import {
   BattleState,
   BattlePhase,
@@ -100,6 +101,7 @@ export class BattleGateway
     private readonly battleService: BattleService,
     private readonly matchmakingService: MatchmakingService,
     private readonly botService: BotService,
+    private readonly questionService: QuestionService,
   ) {}
 
   // ---------------------------------------------------------------------------
@@ -342,11 +344,14 @@ export class BattleGateway
         lastRound.questionId = data.questionId;
       }
 
-      // Step 2: Submit the answer
-      // For now we determine correctness on the client or question service;
-      // accept the answerIndex as-is and mark correctness based on questionId.
-      // The gateway trusts the answer index — server-side validation can be added.
-      const isCorrect = data.answerIndex === 0; // placeholder: real check uses question data
+      // Step 2: Submit the answer — verify against question's correctIndex
+      let isCorrect = false;
+      try {
+        const question = await this.questionService.findOne(data.questionId);
+        isCorrect = data.answerIndex === question.correctIndex;
+      } catch {
+        this.logger.warn(`Question ${data.questionId} not found during battle attack`);
+      }
       state = submitAnswer(state, userId, data.answerIndex, isCorrect);
       this.battles.set(data.battleId, state);
 

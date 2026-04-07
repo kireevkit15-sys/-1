@@ -18,14 +18,14 @@ export const authOptions: NextAuthOptions = {
         if (!credentials?.email || !credentials?.password) return null;
 
         const isRegister = credentials.mode === "register";
-        const endpoint = isRegister ? "/auth/register" : "/auth/login";
+        const endpoint = isRegister ? "/v1/auth/register" : "/v1/auth/login";
 
         const body: Record<string, string> = {
           email: credentials.email,
           password: credentials.password,
         };
         if (isRegister && credentials.username) {
-          body.username = credentials.username;
+          body.name = credentials.username;
         }
 
         const res = await fetch(`${API_URL}${endpoint}`, {
@@ -53,7 +53,7 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials) {
         if (!credentials?.telegramData) return null;
 
-        const res = await fetch(`${API_URL}/auth/telegram`, {
+        const res = await fetch(`${API_URL}/v1/auth/telegram`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: credentials.telegramData,

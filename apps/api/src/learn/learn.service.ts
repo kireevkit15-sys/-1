@@ -1,6 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { Difficulty } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
+
+const VALID_DIFFICULTIES = new Set<string>(['BRONZE', 'SILVER', 'GOLD']);
 
 @Injectable()
 export class LearnService {
@@ -20,11 +22,15 @@ export class LearnService {
   }
 
   async startSession(userId: string, topicId: string, difficulty: string) {
-    // Fetch questions for the topic and difficulty
+    const normalized = difficulty.toUpperCase();
+    if (!VALID_DIFFICULTIES.has(normalized)) {
+      throw new BadRequestException(`Invalid difficulty: ${difficulty}. Must be BRONZE, SILVER, or GOLD`);
+    }
+
     const questions = await this.prisma.question.findMany({
       where: {
         category: topicId,
-        difficulty: difficulty.toUpperCase() as Difficulty,
+        difficulty: normalized as Difficulty,
       },
       take: 10,
       orderBy: { createdAt: 'asc' },
