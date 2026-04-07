@@ -26,12 +26,11 @@ export class KnowledgeService {
     private readonly prisma: PrismaService,
     private readonly config: ConfigService,
   ) {
-    if (OpenAI) {
-      this.openai = new OpenAI({
-        apiKey: this.config.get<string>('OPENAI_API_KEY'),
-      });
+    const apiKey = this.config.get<string>('OPENAI_API_KEY');
+    if (OpenAI && apiKey) {
+      this.openai = new OpenAI({ apiKey });
     } else {
-      this.logger.warn('OpenAI package not installed — knowledge search disabled');
+      this.logger.warn('OPENAI_API_KEY not set — knowledge search disabled');
       this.openai = null;
     }
   }
