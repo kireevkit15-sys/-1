@@ -8,6 +8,7 @@ import {
   DefenseType,
   BattleMode,
 } from "@razum/shared";
+import { playBattleStart, playSelect, playCorrect, playWrong, playTick, playVictory, playDefeat } from "@/lib/sounds";
 import type { BattleState, BattleRound, BattleResult } from "@razum/shared";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
@@ -25,31 +26,29 @@ const difficultyLabels: Record<string, string> = {
   [Difficulty.GOLD]: "Золото",
 };
 
-interface DemoQuestion {
-  text: string;
-  options: string[];
-  correctIdx: number;
-}
-
-const ATTACK_QUESTIONS: Record<string, DemoQuestion[]> = {
-  [Difficulty.BRONZE]: [
-    { text: "Какой древнегреческий философ основал Академию в Афинах?", options: ["Аристотель", "Сократ", "Платон", "Диоген"], correctIdx: 2 },
-    { text: "Что означает латинское выражение «post hoc ergo propter hoc»?", options: ["Цель оправдывает средства", "После — значит вследствие", "Знание — сила", "Я мыслю — значит существую"], correctIdx: 1 },
-    { text: "Какой тип мышления направлен на поиск одного правильного ответа?", options: ["Дивергентное", "Латеральное", "Конвергентное", "Ассоциативное"], correctIdx: 2 },
-    { text: "Кто автор концепции «невидимой руки рынка»?", options: ["Карл Маркс", "Адам Смит", "Джон Кейнс", "Давид Рикардо"], correctIdx: 1 },
-  ],
-  [Difficulty.SILVER]: [
-    { text: "«Все успешные люди встают рано, значит, чтобы быть успешным, нужно вставать рано» — это:", options: ["Верная дедукция", "Ошибка корреляции и причинности", "Индуктивное рассуждение", "Ошибка выжившего"], correctIdx: 1 },
-    { text: "Какое когнитивное искажение заставляет нас искать информацию, подтверждающую наши убеждения?", options: ["Эффект якоря", "Ошибка игрока", "Предвзятость подтверждения", "Каскад доступности"], correctIdx: 2 },
-    { text: "В матричной игре 2x2 стратегия называется доминируемой, если:", options: ["Она всегда даёт максимальный выигрыш", "Существует другая стратегия, всегда дающая не меньший результат", "Она выбирается первым игроком", "Оба игрока её предпочитают"], correctIdx: 1 },
-    { text: "Принцип Парето (80/20) утверждает, что:", options: ["80% работы делается за 20% времени", "20% причин дают 80% результата", "80% людей владеют 20% ресурсов", "20% решений правильны на 80%"], correctIdx: 1 },
-  ],
-  [Difficulty.GOLD]: [
-    { text: "Каково равновесие Нэша в однократной дилемме заключённого для рациональных игроков?", options: ["Оба сотрудничают", "Один предаёт, другой сотрудничает", "Оба предают", "Равновесия не существует"], correctIdx: 2 },
-    { text: "Теорема Эрроу о невозможности доказывает, что:", options: ["Демократическое голосование всегда справедливо", "Не существует идеальной системы голосования при 3+ альтернативах", "Диктатура эффективнее демократии", "Консенсус всегда достижим"], correctIdx: 1 },
-    { text: "Что такое «трагедия общин» в теории игр?", options: ["Конфликт между двумя игроками за один ресурс", "Истощение общего ресурса из-за индивидуальной рациональности", "Невозможность кооперации в больших группах", "Проигрыш всех участников в игре с нулевой суммой"], correctIdx: 1 },
-    { text: "Метод обратной индукции в теории игр предполагает:", options: ["Анализ от начала к концу игры", "Анализ от конца к началу игры", "Рандомизацию стратегий", "Кооперацию на каждом шаге"], correctIdx: 1 },
-  ],
+const MOCK_QUESTIONS: Record<string, { text: string; answers: string[] }> = {
+  [Difficulty.BRONZE]: {
+    text: "Какой древнегреческий философ основал Академию в Афинах?",
+    answers: ["Платон", "Аристотель", "Сократ", "Диоген"],
+  },
+  [Difficulty.SILVER]: {
+    text: "Является ли следующее утверждение логической ошибкой: «Все успешные люди встают рано, значит, чтобы быть успешным, нужно вставать рано»?",
+    answers: [
+      "Да, это ошибка корреляции",
+      "Нет, это верная дедукция",
+      "Да, это ошибка выживших",
+      "Нет, это индуктивное рассуждение",
+    ],
+  },
+  [Difficulty.GOLD]: {
+    text: "В теории игр, каково равновесие Нэша в однократной «дилемме заключённого» для обоих рациональных игроков?",
+    answers: [
+      "Оба предают",
+      "Оба сотрудничают",
+      "Один предаёт, другой сотрудничает",
+      "Равновесия не существует",
+    ],
+  },
 };
 
 function createMockBattle(): BattleState {
@@ -84,7 +83,12 @@ function useCountdown(timeLimit: number, active: boolean) {
     }
     setSeconds(timeLimit);
     const interval = setInterval(() => {
-      setSeconds((s) => (s <= 1 ? 0 : s - 1));
+      setSeconds((s) => {
+        if (s <= 1) return 0;
+        const next = s - 1;
+        if (next > 0 && next < 10) playTick();
+        return next;
+      });
     }, 1000);
     return () => clearInterval(interval);
   }, [timeLimit, active]);
@@ -206,27 +210,6 @@ const defenseLabels: Record<string, string> = {
 // Demo Page
 // ---------------------------------------------------------------------------
 
-const DEFENSE_QUESTIONS: Record<string, DemoQuestion[]> = {
-  [Difficulty.BRONZE]: [
-    { text: "Что из следующего является примером дедуктивного рассуждения?", options: ["Наблюдение закономерностей", "Построение гипотезы", "Вывод частного из общего", "Статистический анализ"], correctIdx: 2 },
-    { text: "Какой принцип гласит: «Бремя доказательства лежит на утверждающем»?", options: ["Презумпция невиновности", "Onus probandi", "Принцип достаточного основания", "Закон тождества"], correctIdx: 1 },
-    { text: "Что такое силлогизм?", options: ["Вид метафоры", "Логическое умозаключение из двух посылок", "Математическая формула", "Риторический приём"], correctIdx: 1 },
-    { text: "Какой тип аргумента апеллирует к авторитету?", options: ["Ad hominem", "Ad verecundiam", "Ad populum", "Ad ignorantiam"], correctIdx: 1 },
-  ],
-  [Difficulty.SILVER]: [
-    { text: "Как называется парадокс, в котором корабль постепенно заменяет все части?", options: ["Парадокс лжеца", "Парадокс Зенона", "Корабль Тесея", "Буриданов осёл"], correctIdx: 2 },
-    { text: "Какое когнитивное искажение переоценивает вероятность ярких событий?", options: ["Эффект якоря", "Ошибка выжившего", "Эффект ореола", "Эвристика доступности"], correctIdx: 3 },
-    { text: "Что такое «ошибка техасского стрелка»?", options: ["Стрельба без цели", "Подгонка объяснения под случайные данные", "Слишком узкая выборка", "Использование ложных аналогий"], correctIdx: 1 },
-    { text: "Принцип фальсифицируемости Поппера означает, что научная теория:", options: ["Всегда верна", "Должна быть подтверждена экспериментом", "Должна допускать возможность опровержения", "Не может быть опровергнута"], correctIdx: 2 },
-  ],
-  [Difficulty.GOLD]: [
-    { text: "В байесовской статистике обновление вероятности гипотезы при новых данных — это:", options: ["Закон больших чисел", "Центральная предельная теорема", "Регрессия к среднему", "Апостериорная вероятность"], correctIdx: 3 },
-    { text: "Какой принцип утверждает, что из двух объяснений предпочтительнее простое?", options: ["Принцип фальсифицируемости", "Принцип верификации", "Бритва Оккама", "Принцип дополнительности"], correctIdx: 2 },
-    { text: "Что доказывает теорема Гёделя о неполноте?", options: ["Любая математика противоречива", "Достаточно сложная система не может быть одновременно полной и непротиворечивой", "Все аксиомы доказуемы", "Логика не применима к математике"], correctIdx: 1 },
-    { text: "Парадокс Симпсона в статистике показывает, что:", options: ["Среднее всегда репрезентативно", "Тренд в группах может исчезать или обращаться при объединении данных", "Корреляция равна причинности", "Большие выборки всегда точнее"], correctIdx: 1 },
-  ],
-};
-
 export default function BattleDemoPage() {
   const router = useRouter();
   const [battle, setBattle] = useState<BattleState>(createMockBattle);
@@ -234,13 +217,27 @@ export default function BattleDemoPage() {
   const [lastRound, setLastRound] = useState<BattleRound | null>(null);
   const [result, setResult] = useState<BattleResult | null>(null);
   const [answerSelected, setAnswerSelected] = useState<number | null>(null);
-  // Track whose turn it is (alternates each round)
-  const [playerAttacks, setPlayerAttacks] = useState(true);
-  // For bot attack phase: player's defense choice
-  const [botAttackPhase, setBotAttackPhase] = useState<"choosing" | "defending" | "result" | null>(null);
-  const [botChosenDifficulty, setBotChosenDifficulty] = useState<Difficulty | null>(null);
-  // Current attack question (randomized)
-  const [attackQuestion, setAttackQuestion] = useState<DemoQuestion | null>(null);
+
+  // Play battle start sound once
+  const battleStartPlayed = useRef(false);
+  useEffect(() => {
+    if (!battleStartPlayed.current) {
+      battleStartPlayed.current = true;
+      playBattleStart();
+    }
+  }, []);
+
+  // Play victory/defeat sound when result appears
+  const resultSoundPlayed = useRef(false);
+  useEffect(() => {
+    if (result && !resultSoundPlayed.current) {
+      resultSoundPlayed.current = true;
+      const isWin = result.winnerId === "player";
+      const isDraw = result.winnerId === null;
+      if (isWin) playVictory();
+      else if (!isDraw) playDefeat();
+    }
+  }, [result]);
 
   const timerActive =
     battle.phase === BattlePhase.ROUND_ATTACK ||
@@ -282,13 +279,13 @@ export default function BattleDemoPage() {
               <button
                 key={cat}
                 onClick={() => {
+                  playSelect();
                   setBattle((b) => ({
                     ...b,
                     phase: BattlePhase.ROUND_ATTACK,
                     selectedCategory: cat,
                   }));
                   setSelectedDifficulty(null);
-                  setAttackQuestion(null);
                   setAnswerSelected(null);
                 }}
                 className={`w-full flex items-center gap-4 p-4 rounded-2xl border transition-all active:scale-[0.98] ${styles[idx % styles.length]}`}
@@ -303,10 +300,10 @@ export default function BattleDemoPage() {
     );
   }
 
-  // -- ROUND_ATTACK (player attacks) -----------------------------------------
+  // -- ROUND_ATTACK ---------------------------------------------------------
 
-  if (battle.phase === BattlePhase.ROUND_ATTACK && playerAttacks) {
-    const question = attackQuestion;
+  if (battle.phase === BattlePhase.ROUND_ATTACK) {
+    const question = selectedDifficulty ? MOCK_QUESTIONS[selectedDifficulty] : null;
 
     return (
       <div className="px-4 pt-8 pb-24 space-y-6">
@@ -324,11 +321,7 @@ export default function BattleDemoPage() {
         {/* Step 1: Choose difficulty */}
         {!selectedDifficulty && (
           <DifficultyPicker
-            onSelect={(difficulty) => {
-              setSelectedDifficulty(difficulty);
-              const pool = ATTACK_QUESTIONS[difficulty] || [];
-              setAttackQuestion(pool[Math.floor(Math.random() * pool.length)] ?? null);
-            }}
+            onSelect={(difficulty) => setSelectedDifficulty(difficulty)}
           />
         )}
 
@@ -340,27 +333,17 @@ export default function BattleDemoPage() {
                 {difficultyConfig.find((d) => d.value === selectedDifficulty)?.label}
               </span>
             </div>
-            <p className="text-text-primary leading-relaxed text-sm">{question.text}</p>
+            <p className="text-text-primary leading-relaxed">{question.text}</p>
             <div className="space-y-2">
-              {question.options.map((opt, idx) => {
-                const isAnswered = answerSelected !== null;
-                const isThis = answerSelected === idx;
-                const isCorrect = idx === question.correctIdx;
-
-                let style = "border-accent/15 bg-surface-light hover:border-accent/40 text-text-primary";
-                if (isAnswered) {
-                  if (isCorrect) style = "border-green-500/50 bg-green-500/10 text-green-400";
-                  else if (isThis) style = "border-accent-red/50 bg-accent-red/10 text-accent-red";
-                  else style = "border-accent/10 bg-surface-light text-text-muted opacity-50";
-                }
-
-                return (
+              {question.answers.map((ans, idx) => (
                 <button
                   key={idx}
-                  disabled={isAnswered}
                   onClick={() => {
+                    if (answerSelected !== null) return;
+                    playSelect();
                     setAnswerSelected(idx);
-                    const correct = idx === question.correctIdx;
+                    const isCorrect = idx === 0; // first answer is always correct in demo
+                    if (isCorrect) playCorrect(); else playWrong();
                     const dmg = difficultyConfig.find((d) => d.value === selectedDifficulty)?.damage ?? 10;
 
                     const round: BattleRound = {
@@ -369,14 +352,15 @@ export default function BattleDemoPage() {
                       defenderId: "bot",
                       difficulty: selectedDifficulty,
                       attackerAnswer: idx,
-                      attackerCorrect: correct,
-                      damageDealt: correct ? dmg : 0,
-                      pointsAwarded: correct ? dmg : 0,
+                      attackerCorrect: isCorrect,
+                      damageDealt: isCorrect ? dmg : 0,
+                      pointsAwarded: isCorrect ? dmg : 0,
                     };
                     setLastRound(round);
 
+                    // Transition to defense phase after 1 sec
                     setTimeout(() => {
-                      if (correct) {
+                      if (isCorrect) {
                         setBattle((b) => ({
                           ...b,
                           phase: BattlePhase.ROUND_DEFENSE,
@@ -384,153 +368,35 @@ export default function BattleDemoPage() {
                           currentDefenderId: "bot",
                         }));
                       } else {
+                        // Missed — skip to result
                         setBattle((b) => ({
                           ...b,
                           phase: BattlePhase.ROUND_RESULT,
+                          player1: { ...b.player1, score: b.player1.score },
                         }));
                       }
                     }, 1200);
                   }}
-                  className={`w-full text-left p-3 rounded-xl border transition-all text-sm ${style} ${!isAnswered ? "active:scale-[0.98]" : ""}`}
+                  className={`w-full text-left p-3 rounded-xl border transition-all text-sm ${
+                    answerSelected === null
+                      ? "border-accent/15 bg-surface-light hover:border-accent/40 text-text-primary"
+                      : answerSelected === idx
+                        ? idx === 0
+                          ? "border-accent/40 bg-accent/10 text-accent"
+                          : "border-accent-red/40 bg-accent-red/10 text-accent-red"
+                        : idx === 0 && answerSelected !== null
+                          ? "border-accent/30 bg-accent/5 text-accent"
+                          : "border-accent/10 bg-surface-light text-text-muted opacity-50"
+                  }`}
                 >
-                  <span className="text-text-muted mr-2 font-medium">{String.fromCharCode(65 + idx)}.</span>
-                  {opt}
+                  {ans}
                 </button>
-                );
-              })}
+              ))}
             </div>
           </Card>
         )}
       </div>
     );
-  }
-
-  // -- BOT ATTACKS YOU -------------------------------------------------------
-
-  if (battle.phase === BattlePhase.ROUND_ATTACK && !playerAttacks) {
-    const cat = battle.selectedCategory || MOCK_CATEGORIES[0]!;
-
-    // Bot "choosing" phase — auto-pick difficulty after 1.5s
-    if (botAttackPhase === "choosing") {
-      return (
-        <div className="px-4 pt-8 pb-24 space-y-6">
-          {demoBadge}
-          <ScoreBar battle={battle} />
-          <div className="text-center space-y-4 pt-8">
-            <h2 className="text-lg font-bold text-accent-red">Бот атакует!</h2>
-            <p className="text-text-muted text-sm">Бот выбирает сложность вопроса...</p>
-            <div className="w-12 h-12 rounded-full border-2 border-accent-red/30 border-t-accent-red animate-spin mx-auto" />
-          </div>
-          <BotAutoAttack
-            onDone={(difficulty) => {
-              setBotChosenDifficulty(difficulty);
-              setBotAttackPhase("defending");
-              setBattle((b) => ({ ...b, selectedCategory: cat }));
-            }}
-          />
-        </div>
-      );
-    }
-
-    // Player defends — answer the question to block damage
-    if (botAttackPhase === "defending" && botChosenDifficulty) {
-      const pool = DEFENSE_QUESTIONS[botChosenDifficulty] || DEFENSE_QUESTIONS[Difficulty.BRONZE]!;
-      const defQ = pool[battle.currentRound % pool.length]!;
-      const dmgConfig = difficultyConfig.find((d) => d.value === botChosenDifficulty);
-      const botDmg = dmgConfig?.damage ?? 10;
-
-      return (
-        <div className="px-4 pt-8 pb-24 space-y-6">
-          {demoBadge}
-          <ScoreBar battle={battle} />
-
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className="text-lg font-bold text-accent-red">Защищайся!</h2>
-              <p className="text-text-muted text-sm">
-                Ответь правильно, чтобы отразить урон{" "}
-                <span className={dmgConfig?.text}>({dmgConfig?.label})</span>
-              </p>
-            </div>
-            <TimerCircle seconds={seconds} progress={progress} />
-          </div>
-
-          {/* Defense question */}
-          <Card padding="lg" className="space-y-4 border-accent-red/20">
-            <div className="flex items-center gap-2">
-              <span className={`text-xs font-semibold px-2.5 py-1 rounded-lg ${dmgConfig?.badge}`}>
-                {dmgConfig?.label} — защита
-              </span>
-            </div>
-            <p className="text-text-primary text-sm leading-relaxed">{defQ.text}</p>
-            <div className="space-y-2">
-              {defQ.options.map((opt, idx) => {
-                const isAnswered = answerSelected !== null;
-                const isThis = answerSelected === idx;
-                const isCorrect = idx === defQ.correctIdx;
-
-                let style = "border-accent/15 bg-surface-light hover:border-accent/40 text-text-primary";
-                if (isAnswered) {
-                  if (isCorrect) style = "border-green-500/50 bg-green-500/10 text-green-400";
-                  else if (isThis) style = "border-accent-red/50 bg-accent-red/10 text-accent-red";
-                  else style = "border-accent/10 bg-surface-light text-text-muted opacity-50";
-                }
-
-                return (
-                  <button
-                    key={idx}
-                    disabled={isAnswered}
-                    onClick={() => {
-                      setAnswerSelected(idx);
-                      const defended = idx === defQ.correctIdx;
-                      const finalDmg = defended ? 0 : botDmg;
-
-                      setTimeout(() => {
-                        const round: BattleRound = {
-                          roundNumber: battle.currentRound,
-                          attackerId: "bot",
-                          defenderId: "player",
-                          difficulty: botChosenDifficulty,
-                          attackerAnswer: defQ.correctIdx,
-                          attackerCorrect: true,
-                          defenseType: defended ? DefenseType.DISPUTE : DefenseType.ACCEPT,
-                          defenseSuccess: defended,
-                          damageDealt: finalDmg,
-                          pointsAwarded: finalDmg,
-                        };
-                        setLastRound(round);
-                        setBotAttackPhase("result");
-
-                        setBattle((b) => ({
-                          ...b,
-                          phase: BattlePhase.ROUND_RESULT,
-                          player1: { ...b.player1, hp: b.player1.hp - finalDmg },
-                          player2: { ...b.player2, score: b.player2.score + finalDmg },
-                        }));
-                      }, 1200);
-                    }}
-                    className={`w-full text-left p-3 rounded-xl border transition-all text-sm ${style} ${!isAnswered ? "active:scale-[0.98]" : ""}`}
-                  >
-                    <span className="text-text-muted mr-2 font-medium">
-                      {String.fromCharCode(65 + idx)}.
-                    </span>
-                    {opt}
-                  </button>
-                );
-              })}
-            </div>
-          </Card>
-
-          {answerSelected !== null && (
-            <div className="text-center animate-[onboarding-fade-in_0.3s_ease-out]">
-              <p className={`text-sm font-semibold ${answerSelected === defQ.correctIdx ? "text-green-400" : "text-accent-red"}`}>
-                {answerSelected === defQ.correctIdx ? "Урон отражён!" : `Пропущен удар: -${botDmg} HP`}
-              </p>
-            </div>
-          )}
-        </div>
-      );
-    }
   }
 
   // -- ROUND_DEFENSE (bot defends — auto-simulate) --------------------------
@@ -673,44 +539,24 @@ export default function BattleDemoPage() {
         </div>
 
         <div className="space-y-3 pt-4 battle-fade-up battle-stagger-4">
-          {battle.currentRound < battle.totalRounds && battle.player2.hp > 0 && battle.player1.hp > 0 ? (
+          {battle.currentRound < battle.totalRounds && battle.player2.hp > 0 ? (
             <Button
               fullWidth
               onClick={() => {
-                if (playerAttacks) {
-                  // After player attacked → bot's turn to attack
-                  setPlayerAttacks(false);
-                  setBotAttackPhase("choosing");
-                  setBotChosenDifficulty(null);
-                  setLastRound(null);
-                  setAnswerSelected(null);
-                  setBattle((b) => ({
-                    ...b,
-                    phase: BattlePhase.ROUND_ATTACK,
-                    currentAttackerId: "bot",
-                    currentDefenderId: "player",
-                  }));
-                } else {
-                  // After bot attacked → next round, player attacks
-                  setPlayerAttacks(true);
-                  setBotAttackPhase(null);
-                  setBotChosenDifficulty(null);
-                  setLastRound(null);
-                  setSelectedDifficulty(null);
-                  setAttackQuestion(null);
-                  setAnswerSelected(null);
-                  setBattle((b) => ({
-                    ...b,
-                    phase: BattlePhase.CATEGORY_SELECT,
-                    currentRound: b.currentRound + 1,
-                    currentAttackerId: "player",
-                    currentDefenderId: "bot",
-                    selectedCategory: undefined,
-                  }));
-                }
+                setBattle((b) => ({
+                  ...b,
+                  phase: BattlePhase.CATEGORY_SELECT,
+                  currentRound: b.currentRound + 1,
+                  currentAttackerId: "player",
+                  currentDefenderId: "bot",
+                  selectedCategory: undefined,
+                }));
+                setSelectedDifficulty(null);
+                setAnswerSelected(null);
+                setLastRound(null);
               }}
             >
-              {playerAttacks ? "Ход бота" : "Следующий раунд"}
+              Следующий раунд
             </Button>
           ) : (
             <Button
@@ -850,39 +696,13 @@ export default function BattleDemoPage() {
 // Helper: Bot auto-defense after 2 seconds
 // ---------------------------------------------------------------------------
 
-function BotAutoAttack({
-  onDone,
-}: {
-  onDone: (difficulty: Difficulty) => void;
-}) {
-  const called = useRef(false);
-  useEffect(() => {
-    if (called.current) return;
-    const timer = setTimeout(() => {
-      if (called.current) return;
-      called.current = true;
-      const diffs = [Difficulty.BRONZE, Difficulty.SILVER, Difficulty.GOLD];
-      const chosen = diffs[Math.floor(Math.random() * diffs.length)]!;
-      onDone(chosen);
-    }, 1500);
-    return () => clearTimeout(timer);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  return null;
-}
-
 function BotAutoDefend({
   onDone,
 }: {
   onDone: (defenseType: DefenseType, success: boolean) => void;
 }) {
-  const called = useRef(false);
   useEffect(() => {
-    if (called.current) return;
     const timer = setTimeout(() => {
-      if (called.current) return;
-      called.current = true;
       const types = [DefenseType.ACCEPT, DefenseType.DISPUTE, DefenseType.COUNTER];
       const chosen = types[Math.floor(Math.random() * types.length)]!;
       const success =
@@ -894,8 +714,7 @@ function BotAutoDefend({
       onDone(chosen, success);
     }, 2000);
     return () => clearTimeout(timer);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [onDone]);
 
   return null;
 }

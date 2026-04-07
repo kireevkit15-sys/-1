@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useBattle } from "@/hooks/useBattle";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
+import { playSelect, playBattleStart } from "@/lib/sounds";
 
 export default function NewBattlePage() {
   const router = useRouter();
@@ -25,6 +26,7 @@ export default function NewBattlePage() {
   useEffect(() => {
     if (status === "in_battle" && battle) {
       setShowOpponent(true);
+      playBattleStart();
       redirectTimer.current = setTimeout(() => {
         router.push(`/battle/${battle.id}`);
       }, 2500);
@@ -193,7 +195,7 @@ export default function NewBattlePage() {
               </p>
             </div>
           </div>
-          <Button fullWidth onClick={createBotBattle}>
+          <Button fullWidth onClick={() => { playSelect(); createBotBattle(); }}>
             Играть с ботом
           </Button>
         </div>
@@ -226,7 +228,7 @@ export default function NewBattlePage() {
               </p>
             </div>
           </div>
-          <Button fullWidth onClick={() => searchOpponent()}>
+          <Button fullWidth onClick={() => { playSelect(); searchOpponent(); }}>
             Найти соперника
           </Button>
         </div>

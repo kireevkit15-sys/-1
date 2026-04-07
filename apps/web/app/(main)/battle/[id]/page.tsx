@@ -1,24 +1,14 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { useBattle } from "@/hooks/useBattle";
 import { BattlePhase, Difficulty, DefenseType } from "@razum/shared";
+import { playBattleStart, playSelect, playCorrect, playWrong, playTick, playVictory, playDefeat } from "@/lib/sounds";
 import type { BattleState } from "@razum/shared";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import DifficultyPicker from "@/components/battle/DifficultyPicker";
-import { playTick, playCorrect, playWrong, playBattleStart, playVictory, playDefeat, playDamage } from "@/lib/sounds";
-import { useApiToken } from "@/hooks/useApiToken";
-
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/v1";
-
-interface BattleQuestion {
-  id: string;
-  text: string;
-  options: string[];
-  correctIndex: number;
-}
 
 const difficultyLabels: Record<string, string> = {
   [Difficulty.BRONZE]: "Бронза",
@@ -45,7 +35,9 @@ function useCountdown(timeLimit: number, active: boolean) {
           clearInterval(interval);
           return 0;
         }
-        return s - 1;
+        const next = s - 1;
+        if (next > 0 && next < 10) playTick();
+        return next;
       });
     }, 1000);
     return () => clearInterval(interval);
@@ -258,7 +250,6 @@ const defenseConfig = [
 export default function BattlePage() {
   const router = useRouter();
   const params = useParams<{ id: string }>();
-  const token = useApiToken();
   const {
     status,
     battle,
@@ -274,8 +265,6 @@ export default function BattlePage() {
 
   const [selectedDifficulty, setSelectedDifficulty] =
     useState<Difficulty | null>(null);
-  const [currentQuestion, setCurrentQuestion] = useState<BattleQuestion | null>(null);
-  const [questionLoading, setQuestionLoading] = useState(false);
 
   const timerActive =
     !!battle &&
@@ -287,77 +276,49 @@ export default function BattlePage() {
     timerActive,
   );
 
-  // Reset difficulty and question when phase changes
+  // Play battle start sound on first round
+  const battleStartPlayed = useRef(false);
   useEffect(() => {
-    setSelectedDifficulty(null);
-    setCurrentQuestion(null);
-  }, [battle?.phase]);
+    if (battle && !battleStartPlayed.current) {
+      battleStartPlayed.current = true;
+      playBattleStart();
+    }
+  }, [battle]);
 
-  // Play sounds on status changes
+  // Play victory/defeat sound when battle finishes
   useEffect(() => {
-    if (status === "in_battle") playBattleStart();
-    if (status === "finished" && result) {
-      if (result.winnerId && battle && result.winnerId === battle.player1.id) {
-        playVictory();
-      } else if (result.winnerId) {
-        playDefeat();
+    if (status === "finished" && result && battle) {
+      const isWin = result.winnerId === battle.player1.id;
+      const isDraw = result.winnerId === null;
+      if (isWin) playVictory();
+      else if (!isDraw) playDefeat();
+    }
+  }, [status, result, battle]);
+
+  // Play correct/wrong sound when round result is revealed
+  useEffect(() => {
+    if (battle?.phase === BattlePhase.ROUND_RESULT) {
+      const lastRound = battle.rounds[battle.rounds.length - 1];
+      if (lastRound) {
+        if (lastRound.attackerCorrect && lastRound.attackerId === battle.player1.id) playCorrect();
+        else if (!lastRound.attackerCorrect && lastRound.attackerId === battle.player1.id) playWrong();
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [status]);
+  }, [battle?.phase, battle?.rounds, battle?.player1?.id]);
 
-  // Fetch question when difficulty is selected
+  // Reset difficulty selection when phase changes
   useEffect(() => {
-    if (!selectedDifficulty || !battle?.selectedCategory) return;
-    setQuestionLoading(true);
-    fetch(
-      `${API_BASE}/questions/adaptive?difficulty=${selectedDifficulty}&category=${encodeURIComponent(battle.selectedCategory)}&count=1`,
-      { headers: token ? { Authorization: `Bearer ${token}` } : {} },
-    )
-      .then((res) => (res.ok ? res.json() : null))
-      .then((data) => {
-        if (Array.isArray(data) && data.length > 0) {
-          setCurrentQuestion(data[0] as BattleQuestion);
-        } else {
-          // Fallback demo question
-          setCurrentQuestion({
-            id: "demo-q",
-            text: "Какой из принципов лежит в основе рационального принятия решений?",
-            options: [
-              "Эмоциональная интуиция",
-              "Анализ альтернатив и их последствий",
-              "Следование авторитету",
-              "Случайный выбор",
-            ],
-            correctIndex: 1,
-          });
-        }
-        playTick();
-      })
-      .catch(() => {
-        setCurrentQuestion({
-          id: "demo-q",
-          text: "Какой из принципов лежит в основе рационального принятия решений?",
-          options: [
-            "Эмоциональная интуиция",
-            "Анализ альтернатив и их последствий",
-            "Следование авторитету",
-            "Случайный выбор",
-          ],
-          correctIndex: 1,
-        });
-      })
-      .finally(() => setQuestionLoading(false));
-  }, [selectedDifficulty, battle?.selectedCategory, token]);
+    setSelectedDifficulty(null);
+  }, [battle?.phase]);
 
   const handleAttack = useCallback(
     (answerIndex: number) => {
-      if (!selectedDifficulty || !currentQuestion) return;
-      const isCorrect = answerIndex === currentQuestion.correctIndex;
-      if (isCorrect) playCorrect(); else playWrong();
-      attack(selectedDifficulty, answerIndex, currentQuestion.id);
+      if (!selectedDifficulty) return;
+      // TODO: questionId will come from server question service
+      const questionId = "placeholder";
+      attack(selectedDifficulty, answerIndex, questionId);
     },
-    [selectedDifficulty, currentQuestion, attack],
+    [selectedDifficulty, attack],
   );
 
   // -- No battle state yet --------------------------------------------------
@@ -547,7 +508,7 @@ export default function BattlePage() {
               return (
                 <button
                   key={cat}
-                  onClick={() => selectCategory(cat)}
+                  onClick={() => { playSelect(); selectCategory(cat); }}
                   className={`w-full flex items-center gap-4 p-4 rounded-2xl border transition-all active:scale-[0.98] ${styles[idx % styles.length]}`}
                 >
                   <span className="text-lg font-serif font-bold">
@@ -612,36 +573,21 @@ export default function BattlePage() {
                     {difficultyConfig.find((d) => d.value === selectedDifficulty)?.label}
                   </span>
                 </div>
-
-                {questionLoading ? (
-                  <div className="flex items-center justify-center py-8">
-                    <div className="w-6 h-6 border-2 border-accent border-t-transparent rounded-full animate-spin" />
-                  </div>
-                ) : currentQuestion ? (
-                  <>
-                    <p className="text-text-primary leading-relaxed text-sm">
-                      {currentQuestion.text}
-                    </p>
-                    <div className="space-y-2">
-                      {currentQuestion.options.map((option, idx) => (
-                        <button
-                          key={idx}
-                          onClick={() => handleAttack(idx)}
-                          className="w-full text-left p-3 rounded-xl border border-accent/15 bg-surface-light hover:border-accent/40 transition-all text-sm text-text-primary active:scale-[0.98]"
-                        >
-                          <span className="text-text-muted mr-2 font-medium">
-                            {String.fromCharCode(65 + idx)}.
-                          </span>
-                          {option}
-                        </button>
-                      ))}
-                    </div>
-                  </>
-                ) : (
-                  <p className="text-text-muted text-sm text-center py-4">
-                    Не удалось загрузить вопрос
-                  </p>
-                )}
+                <p className="text-text-primary leading-relaxed">
+                  Вопрос загружается...
+                </p>
+                {/* TODO: render actual question from server */}
+                <div className="space-y-2">
+                  {[0, 1, 2, 3].map((idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => { playSelect(); handleAttack(idx); }}
+                      className="w-full text-left p-3 rounded-xl border border-accent/15 bg-surface-light hover:border-accent/40 transition-all text-sm text-text-primary"
+                    >
+                      Вариант {idx + 1}
+                    </button>
+                  ))}
+                </div>
               </Card>
             )}
           </>
@@ -708,7 +654,7 @@ export default function BattlePage() {
             {defenseConfig.map((d, i) => (
               <button
                 key={d.value}
-                onClick={() => defend(d.value)}
+                onClick={() => { playSelect(); defend(d.value); }}
                 className={`w-full flex items-center gap-4 p-4 rounded-2xl border transition-all active:scale-[0.98] battle-fade-up battle-stagger-${i + 1} ${d.bg} ${d.border}`}
               >
                 <div className={`flex-shrink-0 ${d.text}`}>
@@ -735,7 +681,6 @@ export default function BattlePage() {
   if (battle.phase === BattlePhase.ROUND_RESULT) {
     const lastRound = battle.rounds[battle.rounds.length - 1];
     const isHit = lastRound && lastRound.damageDealt > 0;
-    if (isHit) playDamage();
 
     return (
       <div className="px-4 pt-8 pb-24 space-y-6">

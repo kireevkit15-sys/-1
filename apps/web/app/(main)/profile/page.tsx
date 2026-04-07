@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useEffect, useState } from "react";
 import {
   RadarChart,
   PolarGrid,
@@ -9,45 +9,37 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import Card from "@/components/ui/Card";
-import ShareButton from "@/components/profile/ShareButton";
-import { useApiToken } from "@/hooks/useApiToken";
-
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/v1";
+import { useAuth } from "@/hooks/useAuth";
+import Link from "next/link";
 
 // ---------------------------------------------------------------------------
-// Fallback data — used when API unavailable
+// API
 // ---------------------------------------------------------------------------
 
-const mockProfile = {
-  name: "Игрок",
-  avatarUrl: null as string | null,
-  createdAt: "2026-04-01T00:00:00Z",
+const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
+
+interface UserProfile {
+  id: string;
+  name: string;
+  email: string;
+  avatarUrl: string | null;
+  role: string;
   stats: {
-    strategyXp: 780,
-    logicXp: 1250,
-    rhetoricXp: 420,
-    eruditionXp: 650,
-    intuitionXp: 310,
-    rating: 1247,
-    streakDays: 5,
-    totalXp: 3410,
-    level: 5,
-    xpProgress: { current: 810, required: 1100 },
-  },
-  battleStats: { total: 34, wins: 21, losses: 13, winRate: 62 },
-  recentBattles: [
-    { id: "1", opponent: { id: "a", name: "LogicMaster", avatarUrl: null }, myScore: 3, opponentScore: 2, won: true, endedAt: "2026-04-07T14:00:00Z" },
-    { id: "2", opponent: { id: "b", name: "PhiloKing", avatarUrl: null }, myScore: 1, opponentScore: 4, won: false, endedAt: "2026-04-06T18:00:00Z" },
-    { id: "3", opponent: { id: "c", name: "BrainStorm", avatarUrl: null }, myScore: 4, opponentScore: 1, won: true, endedAt: "2026-04-06T10:00:00Z" },
-    { id: "4", opponent: { id: "d", name: "MindForge", avatarUrl: null }, myScore: 3, opponentScore: 2, won: true, endedAt: "2026-04-05T20:00:00Z" },
-    { id: "5", opponent: { id: "e", name: "Strategist", avatarUrl: null }, myScore: 2, opponentScore: 3, won: false, endedAt: "2026-04-05T12:00:00Z" },
-    { id: "6", opponent: { id: "bot", name: "РАЗУМ-бот", avatarUrl: null }, myScore: 4, opponentScore: 0, won: true, endedAt: "2026-04-04T16:00:00Z" },
-    { id: "7", opponent: { id: "f", name: "QuizNinja", avatarUrl: null }, myScore: 2, opponentScore: 3, won: false, endedAt: "2026-04-04T09:00:00Z" },
-    { id: "8", opponent: { id: "g", name: "DeepThink", avatarUrl: null }, myScore: 3, opponentScore: 1, won: true, endedAt: "2026-04-03T21:00:00Z" },
-    { id: "9", opponent: { id: "h", name: "RhetorPro", avatarUrl: null }, myScore: 0, opponentScore: 4, won: false, endedAt: "2026-04-03T14:00:00Z" },
-    { id: "10", opponent: { id: "i", name: "WiseOwl", avatarUrl: null }, myScore: 4, opponentScore: 2, won: true, endedAt: "2026-04-02T17:00:00Z" },
-  ],
-};
+    level: number;
+    rating: number;
+    totalXp: number;
+    logicXp: number;
+    strategyXp: number;
+    eruditionXp: number;
+    rhetoricXp: number;
+    intuitionXp: number;
+    battlesPlayed: number;
+    battlesWon: number;
+    winRate: number;
+    streakDays: number;
+    thinkerClass: string;
+  };
+}
 
 // ---------------------------------------------------------------------------
 // Radar config
@@ -62,69 +54,114 @@ const radarKeys = [
 ] as const;
 
 // ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
-
-function formatRelativeDate(iso: string): string {
-  const diff = Date.now() - new Date(iso).getTime();
-  const days = Math.floor(diff / 86_400_000);
-  if (days === 0) return "Сегодня";
-  if (days === 1) return "Вчера";
-  if (days < 7) return `${days} дн. назад`;
-  return new Date(iso).toLocaleDateString("ru-RU", { day: "numeric", month: "short" });
-}
-
-// ---------------------------------------------------------------------------
 // Page
 // ---------------------------------------------------------------------------
 
 export default function ProfilePage() {
-  const token = useApiToken();
-  const [profile, setProfile] = useState(mockProfile);
+  const { accessToken, isAuthenticated, isLoading: authLoading } = useAuth();
+
+  const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    async function fetchProfile() {
-      try {
-        if (!token) return;
-        const res = await fetch(`${API_BASE}/users/me`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        if (res.ok) {
-          const data = await res.json();
-          setProfile((prev) => ({
-            ...prev,
-            name: data.username || data.name || prev.name,
-            avatarUrl: data.avatarUrl || prev.avatarUrl,
-            stats: {
-              ...prev.stats,
-              ...(data.stats || {}),
-              rating: data.stats?.rating ?? prev.stats.rating,
-              totalXp: data.stats?.totalXp ?? prev.stats.totalXp,
-              level: data.stats?.level ?? prev.stats.level,
-              streakDays: data.stats?.streakDays ?? prev.stats.streakDays,
-            },
-          }));
-        }
-      } catch {}
+    if (authLoading) return;
+    if (!accessToken) {
+      setLoading(false);
+      return;
     }
+
+    async function fetchProfile() {
+      setLoading(true);
+      setError(null);
+      try {
+        const res = await fetch(`${API_BASE}/v1/users/me`, {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        });
+        if (!res.ok) throw new Error(`Ошибка ${res.status}`);
+        const data: UserProfile = await res.json();
+        setProfile(data);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Не удалось загрузить профиль");
+      } finally {
+        setLoading(false);
+      }
+    }
+
     fetchProfile();
-  }, [token]);
+  }, [accessToken, authLoading]);
 
-  const { stats, battleStats, recentBattles } = profile;
+  // ── Not authenticated ──────────────────────────────
+  if (!authLoading && !isAuthenticated) {
+    return (
+      <div className="px-4 pt-24 pb-24 text-center space-y-4">
+        <p className="text-text-secondary text-lg">Войдите в аккаунт</p>
+        <Link
+          href="/login"
+          className="inline-block px-6 py-2.5 rounded-xl bg-accent text-white font-semibold text-sm"
+        >
+          Войти
+        </Link>
+      </div>
+    );
+  }
 
-  const radarData = useMemo(
-    () =>
-      radarKeys.map(({ key, label }) => ({
-        stat: label,
-        value: stats[key],
-      })),
-    [stats],
-  );
+  // ── Loading skeleton ───────────────────────────────
+  if (loading || authLoading) {
+    return (
+      <div className="px-4 pt-12 pb-24 space-y-6">
+        <div className="flex items-center gap-4">
+          <div className="w-16 h-16 rounded-full bg-surface-light animate-pulse" />
+          <div className="flex-1 space-y-2">
+            <div className="h-5 w-32 rounded bg-surface-light animate-pulse" />
+            <div className="h-4 w-24 rounded bg-surface-light animate-pulse" />
+          </div>
+        </div>
+        <div className="h-16 rounded-2xl bg-surface-light animate-pulse" />
+        <div className="grid grid-cols-3 gap-3">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="h-20 rounded-2xl bg-surface-light animate-pulse" />
+          ))}
+        </div>
+        <div className="h-80 rounded-2xl bg-surface-light animate-pulse" />
+      </div>
+    );
+  }
+
+  // ── Error state ────────────────────────────────────
+  if (error || !profile) {
+    return (
+      <div className="px-4 pt-24 pb-24 text-center space-y-4">
+        <p className="text-accent-red text-lg">{error ?? "Профиль не найден"}</p>
+        <button
+          onClick={() => window.location.reload()}
+          className="px-6 py-2.5 rounded-xl bg-surface-light text-text-secondary font-semibold text-sm"
+        >
+          Попробовать снова
+        </button>
+      </div>
+    );
+  }
+
+  // ── Derived data ───────────────────────────────────
+  const { stats } = profile;
+
+  // XP progress: estimate current/required from totalXp and level
+  // Level formula: each level = level * 1000 XP threshold
+  const xpForCurrentLevel = stats.level * 1000;
+  const xpForNextLevel = (stats.level + 1) * 1000;
+  const xpCurrent = stats.totalXp - (xpForCurrentLevel > 0 ? xpForCurrentLevel - 1000 : 0);
+  const xpRequired = xpForNextLevel - (xpForCurrentLevel > 0 ? xpForCurrentLevel - 1000 : 0);
 
   const xpPct =
-    stats.xpProgress.required > 0
-      ? Math.min(100, Math.round((stats.xpProgress.current / stats.xpProgress.required) * 100))
+    xpRequired > 0
+      ? Math.min(100, Math.round((xpCurrent / xpRequired) * 100))
       : 0;
+
+  const radarData = radarKeys.map(({ key, label }) => ({
+    stat: label,
+    value: stats[key],
+  }));
 
   return (
     <div className="px-4 pt-12 pb-24 space-y-6">
@@ -149,11 +186,6 @@ export default function ProfilePage() {
             </span>
           </div>
         </div>
-        <ShareButton
-          username={profile.name}
-          level={stats.level}
-          thinkerClass="Стратег"
-        />
       </div>
 
       {/* ── XP Progress ──────────────────────────────── */}
@@ -163,7 +195,7 @@ export default function ProfilePage() {
             До уровня {stats.level + 1}
           </span>
           <span className="text-xs text-text-muted font-mono">
-            {stats.xpProgress.current} / {stats.xpProgress.required} XP
+            {xpCurrent} / {xpRequired} XP
           </span>
         </div>
         <div className="h-2 bg-surface-light rounded-full overflow-hidden">
@@ -177,15 +209,15 @@ export default function ProfilePage() {
       {/* ── Battle Stats Row ─────────────────────────── */}
       <div className="grid grid-cols-3 gap-3">
         <Card padding="sm" className="text-center">
-          <p className="text-2xl font-bold text-accent font-mono">{battleStats.total}</p>
+          <p className="text-2xl font-bold text-accent font-mono">{stats.battlesPlayed}</p>
           <p className="text-xs text-text-muted mt-0.5">Баттлов</p>
         </Card>
         <Card padding="sm" className="text-center">
-          <p className="text-2xl font-bold text-accent-gold font-mono">{battleStats.wins}</p>
+          <p className="text-2xl font-bold text-accent-gold font-mono">{stats.battlesWon}</p>
           <p className="text-xs text-text-muted mt-0.5">Побед</p>
         </Card>
         <Card padding="sm" className="text-center">
-          <p className="text-2xl font-bold text-accent font-mono">{battleStats.winRate}%</p>
+          <p className="text-2xl font-bold text-accent font-mono">{Math.round(stats.winRate)}%</p>
           <p className="text-xs text-text-muted mt-0.5">Винрейт</p>
         </Card>
       </div>
@@ -203,6 +235,16 @@ export default function ProfilePage() {
             <span className="text-lg font-bold text-accent-gold font-mono">
               {stats.streakDays}
             </span>
+          </div>
+        </Card>
+      )}
+
+      {/* ── Thinker Class ────────────────────────────── */}
+      {stats.thinkerClass && (
+        <Card padding="sm">
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-text-secondary">Класс мыслителя</span>
+            <span className="text-sm font-semibold text-accent">{stats.thinkerClass}</span>
           </div>
         </Card>
       )}
@@ -242,41 +284,6 @@ export default function ProfilePage() {
           ))}
         </div>
       </Card>
-
-      {/* ── Battle History ────────────────────────────── */}
-      <div className="space-y-3">
-        <h2 className="font-semibold text-sm text-text-secondary uppercase tracking-wider px-1">
-          Последние баттлы
-        </h2>
-        {recentBattles.map((b) => (
-          <Card key={b.id} padding="sm">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div
-                  className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold ${
-                    b.won
-                      ? "bg-accent-gold/20 text-accent-gold"
-                      : "bg-accent-red/20 text-accent-red"
-                  }`}
-                >
-                  {b.won ? "W" : "L"}
-                </div>
-                <div>
-                  <p className="text-sm font-medium">{b.opponent.name}</p>
-                  <p className="text-xs text-text-muted">
-                    {formatRelativeDate(b.endedAt)}
-                  </p>
-                </div>
-              </div>
-              <span
-                className={`text-sm font-mono ${b.won ? "text-accent" : "text-accent-red"}`}
-              >
-                {b.myScore}:{b.opponentScore}
-              </span>
-            </div>
-          </Card>
-        ))}
-      </div>
     </div>
   );
 }

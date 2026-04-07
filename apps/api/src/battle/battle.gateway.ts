@@ -127,8 +127,22 @@ export class BattleGateway
 
       // Check if this is a reconnection during an active battle
       await this.handleReconnect(payload.sub, client);
-    } catch {
-      this.logger.warn('Connection rejected: invalid token');
+    } catch (err: any) {
+      const isExpired = err?.name === 'TokenExpiredError';
+      if (isExpired) {
+        this.logger.warn(
+          `Connection rejected: JWT expired. ` +
+          `The existing disconnect handler will handle any active battle gracefully (30s reconnect window).`,
+        );
+      } else {
+        this.logger.warn('Connection rejected: invalid token');
+      }
+      client.emit('battle:auth_error', {
+        reason: isExpired ? 'token_expired' : 'invalid_token',
+        message: isExpired
+          ? 'Your session has expired. Please re-authenticate and reconnect.'
+          : 'Authentication failed.',
+      });
       client.disconnect();
     }
   }

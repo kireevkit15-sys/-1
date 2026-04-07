@@ -1,69 +1,89 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import Link from "next/link";
+import { useEffect, useState } from "react";
 import Card from "@/components/ui/Card";
-import { useApiToken } from "@/hooks/useApiToken";
+import { useAuth } from "@/hooks/useAuth";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/v1";
+// ---------------------------------------------------------------------------
+// Types
+// ---------------------------------------------------------------------------
 
-interface ModuleItem {
+interface ModuleData {
   id: string;
   title: string;
-  description?: string;
-  branch: string;
-  order: number;
-  questionCount?: number;
-  progress?: {
-    completedQuestions: number;
-    totalQuestions: number;
-    isCompleted: boolean;
-  };
+  progress: number;
+  lessons: number;
 }
 
 interface BranchData {
   id: string;
   title: string;
-  color: "accent-red" | "accent-gold";
-  modules: ModuleItem[];
+  color: string;
+  modules: ModuleData[];
 }
+
+// ---------------------------------------------------------------------------
+// API helpers
+// ---------------------------------------------------------------------------
+
+const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
+
+async function fetchJson<T>(
+  url: string,
+  token: string | null,
+): Promise<T | null> {
+  try {
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json",
+    };
+    if (token) headers["Authorization"] = `Bearer ${token}`;
+    const res = await fetch(url, { headers });
+    if (!res.ok) return null;
+    return (await res.json()) as T;
+  } catch {
+    return null;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Skeleton
+// ---------------------------------------------------------------------------
+
+function Skeleton({ className = "" }: { className?: string }) {
+  return (
+    <div
+      className={`animate-pulse rounded-lg bg-surface-light ${className}`}
+    />
+  );
+}
+
+function ModuleSkeleton() {
+  return (
+    <Card padding="sm" className="space-y-3">
+      <div className="flex items-center gap-3">
+        <Skeleton className="w-8 h-8 rounded-lg" />
+        <div className="space-y-1.5 flex-1">
+          <Skeleton className="w-32 h-4" />
+          <Skeleton className="w-16 h-3" />
+        </div>
+      </div>
+    </Card>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Constants
+// ---------------------------------------------------------------------------
 
 const colorMap: Record<string, { bg: string; text: string; progress: string }> = {
   "accent-red": { bg: "bg-accent-red/20", text: "text-accent-red", progress: "bg-accent-red" },
   "accent-gold": { bg: "bg-accent-gold/20", text: "text-accent-gold", progress: "bg-accent-gold" },
 };
 
-const FALLBACK_BRANCHES: BranchData[] = [
-  {
-    id: "STRATEGY",
-    title: "Стратегическое мышление",
-    color: "accent-red",
-    modules: [
-      { id: "demo-s1", title: "Основы стратегии", branch: "STRATEGY", order: 1, progress: { completedQuestions: 5, totalQuestions: 5, isCompleted: true } },
-      { id: "demo-s2", title: "Теория игр", branch: "STRATEGY", order: 2, progress: { completedQuestions: 3, totalQuestions: 8, isCompleted: false } },
-      { id: "demo-s3", title: "Принятие решений", branch: "STRATEGY", order: 3, progress: { completedQuestions: 1, totalQuestions: 6, isCompleted: false } },
-      { id: "demo-s4", title: "Системное мышление", branch: "STRATEGY", order: 4, progress: { completedQuestions: 0, totalQuestions: 7, isCompleted: false } },
-    ],
-  },
-  {
-    id: "LOGIC",
-    title: "Логика и аргументация",
-    color: "accent-gold",
-    modules: [
-      { id: "demo-l1", title: "Формальная логика", branch: "LOGIC", order: 1, progress: { completedQuestions: 6, totalQuestions: 6, isCompleted: true } },
-      { id: "demo-l2", title: "Логические ошибки", branch: "LOGIC", order: 2, progress: { completedQuestions: 8, totalQuestions: 10, isCompleted: false } },
-      { id: "demo-l3", title: "Критический анализ", branch: "LOGIC", order: 3, progress: { completedQuestions: 2, totalQuestions: 8, isCompleted: false } },
-      { id: "demo-l4", title: "Дедукция и индукция", branch: "LOGIC", order: 4, progress: { completedQuestions: 0, totalQuestions: 5, isCompleted: false } },
-    ],
-  },
+const branchConfig: { key: string; title: string; color: string }[] = [
+  { key: "STRATEGY", title: "Стратегическое мышление", color: "accent-red" },
+  { key: "LOGIC", title: "Логика и аргументация", color: "accent-gold" },
 ];
-
-function getProgress(mod: ModuleItem): number {
-  if (!mod.progress || mod.progress.totalQuestions === 0) return 0;
-  return Math.round(
-    (mod.progress.completedQuestions / mod.progress.totalQuestions) * 100,
-  );
-}
 
 function ProgressBar({ progress, colorClass }: { progress: number; colorClass: string }) {
   return (
@@ -77,58 +97,38 @@ function ProgressBar({ progress, colorClass }: { progress: number; colorClass: s
 }
 
 export default function LearnPage() {
-  const token = useApiToken();
-  const [branches, setBranches] = useState<BranchData[]>(FALLBACK_BRANCHES);
+  const { accessToken, isLoading: authLoading } = useAuth();
+
+  const [branches, setBranches] = useState<BranchData[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchModules() {
-      const headers: HeadersInit = token
-        ? { Authorization: `Bearer ${token}` }
-        : {};
+    if (authLoading) return;
 
-      try {
-        const [stratRes, logicRes] = await Promise.allSettled([
-          fetch(`${API_BASE}/modules?branch=STRATEGY`, { headers }),
-          fetch(`${API_BASE}/modules?branch=LOGIC`, { headers }),
-        ]);
+    async function load() {
+      setLoading(true);
 
-        const result: BranchData[] = [];
+      const results = await Promise.all(
+        branchConfig.map(async (cfg) => {
+          const modules = await fetchJson<ModuleData[]>(
+            `${API_BASE}/v1/modules?branch=${cfg.key}`,
+            accessToken,
+          );
+          return {
+            id: cfg.key.toLowerCase(),
+            title: cfg.title,
+            color: cfg.color,
+            modules: modules ?? [],
+          };
+        }),
+      );
 
-        if (stratRes.status === "fulfilled" && stratRes.value.ok) {
-          const data = await stratRes.value.json();
-          const mods = Array.isArray(data) ? data : data.data || [];
-          if (mods.length > 0) {
-            result.push({
-              id: "STRATEGY",
-              title: "Стратегическое мышление",
-              color: "accent-red",
-              modules: mods,
-            });
-          }
-        }
-
-        if (logicRes.status === "fulfilled" && logicRes.value.ok) {
-          const data = await logicRes.value.json();
-          const mods = Array.isArray(data) ? data : data.data || [];
-          if (mods.length > 0) {
-            result.push({
-              id: "LOGIC",
-              title: "Логика и аргументация",
-              color: "accent-gold",
-              modules: mods,
-            });
-          }
-        }
-
-        if (result.length > 0) {
-          setBranches(result);
-        }
-      } catch {}
+      setBranches(results);
       setLoading(false);
     }
-    fetchModules();
-  }, [token]);
+
+    load();
+  }, [accessToken, authLoading]);
 
   return (
     <div className="px-4 pt-12 pb-24 space-y-8">
@@ -140,30 +140,41 @@ export default function LearnPage() {
         </p>
       </div>
 
+      {/* Loading state */}
       {loading && (
-        <div className="flex justify-center py-8">
-          <div className="w-8 h-8 border-2 border-accent border-t-transparent rounded-full animate-spin" />
-        </div>
+        <>
+          {branchConfig.map((cfg) => (
+            <div key={cfg.key} className="space-y-3">
+              <div className="flex items-center gap-2 px-1">
+                <div className={`w-2 h-2 rounded-full ${colorMap[cfg.color].progress}`} />
+                <h2 className="font-semibold text-sm">{cfg.title}</h2>
+              </div>
+              <ModuleSkeleton />
+              <ModuleSkeleton />
+              <ModuleSkeleton />
+            </div>
+          ))}
+        </>
       )}
 
       {/* Branches */}
-      {branches.map((branch) => {
-        const colors = colorMap[branch.color] ?? { bg: "bg-accent/20", text: "text-accent", progress: "bg-accent" };
-        return (
+      {!loading && branches.map((branch) => (
         <div key={branch.id} className="space-y-3">
           <div className="flex items-center gap-2 px-1">
-            <div className={`w-2 h-2 rounded-full ${colors.progress}`} />
+            <div className={`w-2 h-2 rounded-full ${colorMap[branch.color].progress}`} />
             <h2 className="font-semibold text-sm">{branch.title}</h2>
           </div>
 
-          {branch.modules.map((mod, idx) => {
-            const pct = getProgress(mod);
-            const prevPct = idx > 0 ? getProgress(branch.modules[idx - 1] as ModuleItem) : 100;
-            const isLocked = pct === 0 && idx > 0 && prevPct < 100;
+          {branch.modules.length === 0 && (
+            <p className="text-text-muted text-sm px-1">Модули пока недоступны</p>
+          )}
 
-            const cardContent = (
+          {branch.modules.map((mod, idx) => {
+            const isLocked = mod.progress === 0 && idx > 0 && (branch.modules[idx - 1]?.progress ?? 0) < 100;
+
+            return (
               <Card
-                key={mod.id}
+                key={mod.id ?? mod.title}
                 padding="sm"
                 className={`space-y-3 ${isLocked ? "opacity-60" : "cursor-pointer active:scale-[0.99] transition-transform"}`}
               >
@@ -171,14 +182,14 @@ export default function LearnPage() {
                   <div className="flex items-center gap-3">
                     <div
                       className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold ${
-                        pct === 100
-                          ? `${colors.bg} ${colors.text}`
-                          : pct > 0
+                        mod.progress === 100
+                          ? `${colorMap[branch.color].bg} ${colorMap[branch.color].text}`
+                          : mod.progress > 0
                           ? "bg-surface-light text-white/60"
                           : "bg-surface-light text-text-muted"
                       }`}
                     >
-                      {pct === 100 ? (
+                      {mod.progress === 100 ? (
                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
                       ) : isLocked ? (
                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" /></svg>
@@ -186,53 +197,23 @@ export default function LearnPage() {
                     </div>
                     <div>
                       <p className="text-sm font-medium">{mod.title}</p>
-                      <p className="text-xs text-text-muted">
-                        {mod.progress
-                          ? `${mod.progress.completedQuestions}/${mod.progress.totalQuestions} вопросов`
-                          : `${mod.questionCount ?? 5} вопросов`}
-                      </p>
+                      <p className="text-xs text-text-muted">{mod.lessons} уроков</p>
                     </div>
                   </div>
-                  {pct > 0 && (
-                    <span className={`text-xs font-semibold ${pct === 100 ? colors.text : "text-text-muted"}`}>
-                      {pct}%
+                  {mod.progress > 0 && (
+                    <span className={`text-xs font-semibold ${mod.progress === 100 ? colorMap[branch.color].text : "text-text-muted"}`}>
+                      {mod.progress}%
                     </span>
                   )}
                 </div>
-                {pct > 0 && pct < 100 && (
-                  <ProgressBar progress={pct} colorClass={colors.progress} />
+                {mod.progress > 0 && mod.progress < 100 && (
+                  <ProgressBar progress={mod.progress} colorClass={colorMap[branch.color].progress} />
                 )}
               </Card>
             );
-
-            if (isLocked) return <div key={mod.id}>{cardContent}</div>;
-            return (
-              <Link key={mod.id} href={`/learn/${mod.id}`}>
-                {cardContent}
-              </Link>
-            );
           })}
         </div>
-        );
-      })}
-
-      {/* AI Dialogues link */}
-      <Link
-        href="/learn/dialogues"
-        className="block"
-      >
-        <Card padding="md" className="flex items-center gap-3 hover:border-accent/20 transition-colors">
-          <div className="w-8 h-8 rounded-full bg-accent/10 flex items-center justify-center flex-shrink-0">
-            <svg className="w-4 h-4 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
-            </svg>
-          </div>
-          <div>
-            <p className="text-sm font-medium text-text-primary">AI-диалоги</p>
-            <p className="text-xs text-text-muted">История бесед с наставником</p>
-          </div>
-        </Card>
-      </Link>
+      ))}
     </div>
   );
 }

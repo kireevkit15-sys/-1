@@ -1,4 +1,4 @@
-import { IsOptional, IsString, MinLength, MaxLength, IsUrl } from 'class-validator';
+import { IsOptional, IsString, IsBoolean, MinLength, MaxLength, IsUrl } from 'class-validator';
 
 export class UpdateUserDto {
   @IsOptional()
@@ -11,4 +11,8 @@ export class UpdateUserDto {
   @IsString()
   @IsUrl()
   avatar?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  onboardingCompleted?: boolean;
 }

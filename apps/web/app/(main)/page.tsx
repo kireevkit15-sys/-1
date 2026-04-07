@@ -1,13 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import Link from "next/link";
-import { usePushSubscription } from "@/hooks/usePushSubscription";
-import { useApiToken } from "@/hooks/useApiToken";
+import { useAuth } from "@/hooks/useAuth";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/v1";
+// ---------------------------------------------------------------------------
+// Types
+// ---------------------------------------------------------------------------
 
 interface UserStats {
   streak: number;
@@ -16,55 +17,115 @@ interface UserStats {
   rank: string;
   xp: number;
   level: number;
-  xpToNext: number;
+  xpToNextLevel: number;
 }
 
-const FALLBACK_STATS: UserStats = {
-  streak: 7,
-  battles: 42,
-  winRate: 68,
-  rank: "Стратег",
-  xp: 2450,
-  level: 12,
-  xpToNext: 3000,
+interface FactOfDay {
+  id: string;
+  text: string;
+  source: string;
+  category: string;
+}
+
+interface WarmupStatus {
+  completedToday: boolean;
+}
+
+// ---------------------------------------------------------------------------
+// API helpers
+// ---------------------------------------------------------------------------
+
+const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
+
+async function fetchJson<T>(
+  url: string,
+  token: string | null,
+): Promise<T | null> {
+  try {
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json",
+    };
+    if (token) headers["Authorization"] = `Bearer ${token}`;
+    const res = await fetch(url, { headers });
+    if (!res.ok) return null;
+    return (await res.json()) as T;
+  } catch {
+    return null;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Skeleton
+// ---------------------------------------------------------------------------
+
+function Skeleton({ className = "" }: { className?: string }) {
+  return (
+    <div
+      className={`animate-pulse rounded-lg bg-surface-light ${className}`}
+    />
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Defaults (shown when not logged in or API unavailable)
+// ---------------------------------------------------------------------------
+
+const defaultStats: UserStats = {
+  streak: 0,
+  battles: 0,
+  winRate: 0,
+  rank: "---",
+  xp: 0,
+  level: 1,
+  xpToNextLevel: 3000,
 };
 
 export default function HomePage() {
-  const { shouldPrompt, subscribe, dismiss } = usePushSubscription();
-  const token = useApiToken();
-  const [stats, setStats] = useState<UserStats>(FALLBACK_STATS);
+  const { accessToken, isAuthenticated, isLoading: authLoading } = useAuth();
+
+  const [stats, setStats] = useState<UserStats>(defaultStats);
+  const [fact, setFact] = useState<FactOfDay | null>(null);
+  const [warmupDone, setWarmupDone] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchStats() {
-      try {
-        if (!token) return;
-        const [summaryRes, battlesRes] = await Promise.allSettled([
-          fetch(`${API_BASE}/stats/me/summary`, { headers: { Authorization: `Bearer ${token}` } }),
-          fetch(`${API_BASE}/stats/me/battles`, { headers: { Authorization: `Bearer ${token}` } }),
-        ]);
+    if (authLoading) return;
 
-        const newStats = { ...FALLBACK_STATS };
+    async function load() {
+      setLoading(true);
 
-        if (summaryRes.status === "fulfilled" && summaryRes.value.ok) {
-          const data = await summaryRes.value.json();
-          newStats.level = data.level ?? newStats.level;
-          newStats.xp = data.totalXp ?? newStats.xp;
-          newStats.streak = data.streakDays ?? data.streak ?? newStats.streak;
-          newStats.rank = data.thinkerClass ?? newStats.rank;
-          newStats.xpToNext = data.xpToNext ?? newStats.xpToNext;
-        }
+      const [userData, factData, warmupData] = await Promise.all([
+        isAuthenticated
+          ? fetchJson<UserStats>(`${API_BASE}/v1/users/me`, accessToken)
+          : null,
+        fetchJson<FactOfDay>(`${API_BASE}/v1/facts/today`, accessToken),
+        isAuthenticated
+          ? fetchJson<WarmupStatus>(`${API_BASE}/v1/warmup/today`, accessToken)
+          : null,
+      ]);
 
-        if (battlesRes.status === "fulfilled" && battlesRes.value.ok) {
-          const data = await battlesRes.value.json();
-          newStats.battles = data.total ?? newStats.battles;
-          newStats.winRate = data.winRate ?? newStats.winRate;
-        }
+      if (userData) {
+        setStats({
+          streak: userData.streak ?? 0,
+          battles: userData.battles ?? 0,
+          winRate: userData.winRate ?? 0,
+          rank: userData.rank ?? "---",
+          xp: userData.xp ?? 0,
+          level: userData.level ?? 1,
+          xpToNextLevel: userData.xpToNextLevel ?? 3000,
+        });
+      }
 
-        setStats(newStats);
-      } catch {}
+      if (factData) setFact(factData);
+      if (warmupData) setWarmupDone(warmupData.completedToday);
+
+      setLoading(false);
     }
-    fetchStats();
-  }, [token]);
+
+    load();
+  }, [accessToken, isAuthenticated, authLoading]);
+
+  const xpMax = stats.xpToNextLevel || 3000;
 
   return (
     <div className="px-4 pt-12 pb-24 space-y-6">
@@ -81,11 +142,28 @@ export default function HomePage() {
           >
             <path d="M 7 0 C 7 0 10 4 10 4 C 12 6 14 8 14 11 C 14 15 11 18 7 18 C 3 18 0 15 0 11 C 0 8 2 6 4 4 C 4 4 4 7 5.5 8 C 5.5 8 7 0 7 0 Z" />
           </svg>
-          <span className="text-sm font-bold text-accent-gold">
-            {stats.streak}
-          </span>
+          {loading ? (
+            <Skeleton className="w-5 h-4" />
+          ) : (
+            <span className="text-sm font-bold text-accent-gold">
+              {stats.streak}
+            </span>
+          )}
         </div>
       </div>
+
+      {/* Fact of the Day */}
+      {fact && (
+        <Card className="relative overflow-hidden border-l-[3px] border-l-accent-gold">
+          <div className="space-y-2">
+            <p className="text-text-muted text-xs tracking-widest uppercase">Факт дня</p>
+            <p className="text-text-primary text-sm leading-relaxed">{fact.text}</p>
+            {fact.source && (
+              <p className="text-text-muted text-xs">Источник: {fact.source}</p>
+            )}
+          </div>
+        </Card>
+      )}
 
       {/* Daily Warmup — secondary style with red tag */}
       <Card className="relative overflow-hidden border-l-[3px] border-l-accent-red">
@@ -103,9 +181,20 @@ export default function HomePage() {
           <p className="text-text-secondary text-sm">
             5 вопросов на логику и мышление
           </p>
-          <Link href="/warmup" className="block w-full py-3 rounded-xl text-sm font-semibold bg-accent-warm/15 text-accent hover:bg-accent-warm/25 transition-all active:scale-95 border border-accent/15 text-center">
-            Начать разминку
-          </Link>
+          {warmupDone ? (
+            <div className="w-full py-3 rounded-xl text-sm font-semibold bg-green-500/15 text-green-400 border border-green-500/15 text-center flex items-center justify-center gap-2">
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+              </svg>
+              Выполнено сегодня
+            </div>
+          ) : (
+            <Link href="/warmup">
+              <button className="w-full py-3 rounded-xl text-sm font-semibold bg-accent-warm/15 text-accent hover:bg-accent-warm/25 transition-all active:scale-95 border border-accent/15">
+                Начать разминку
+              </button>
+            </Link>
+          )}
         </div>
       </Card>
 
@@ -126,95 +215,84 @@ export default function HomePage() {
         </Card>
       </Link>
 
-      {/* Push notification prompt */}
-      {shouldPrompt && (
-        <Card padding="md" className="border-accent/20">
-          <div className="flex items-start gap-3">
-            <div className="w-8 h-8 rounded-lg bg-accent-warm/20 flex items-center justify-center flex-shrink-0">
-              <svg className="w-5 h-5 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
-              </svg>
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-text-primary">
-                Включить уведомления?
-              </p>
-              <p className="text-xs text-text-muted mt-0.5">
-                Напомним о разминке и вызовах
-              </p>
-              <div className="flex gap-2 mt-2.5">
-                <button
-                  onClick={() => subscribe(token)}
-                  className="px-3 py-1.5 text-xs font-semibold bg-accent text-background rounded-lg active:scale-95 transition-all"
-                >
-                  Включить
-                </button>
-                <button
-                  onClick={dismiss}
-                  className="px-3 py-1.5 text-xs text-text-muted hover:text-text-secondary transition-colors"
-                >
-                  Не сейчас
-                </button>
-              </div>
-            </div>
+      {/* Stats */}
+      {isAuthenticated && (
+        <div>
+          <p className="text-text-muted text-xs tracking-widest mb-3">
+            Статистика
+          </p>
+          <div className="grid grid-cols-2 gap-2.5">
+            <Card padding="sm">
+              {loading ? (
+                <Skeleton className="w-12 h-8" />
+              ) : (
+                <p className="text-[26px] font-bold text-accent">
+                  {stats.battles}
+                </p>
+              )}
+              <p className="text-text-secondary text-xs mt-1">Баттлов</p>
+            </Card>
+            <Card padding="sm">
+              {loading ? (
+                <Skeleton className="w-12 h-8" />
+              ) : (
+                <p className="text-[26px] font-bold text-accent-gold">
+                  {stats.winRate}%
+                </p>
+              )}
+              <p className="text-text-secondary text-xs mt-1">Побед</p>
+            </Card>
+            <Card padding="sm">
+              {loading ? (
+                <Skeleton className="w-12 h-8" />
+              ) : (
+                <p className="text-[24px] font-bold text-accent">
+                  Lvl {stats.level}
+                </p>
+              )}
+              <p className="text-text-secondary text-xs mt-1">Уровень</p>
+              <div className="w-[60px] h-[3px] rounded-full bg-gradient-to-r from-accent to-transparent mt-1" />
+            </Card>
+            <Card padding="sm">
+              {loading ? (
+                <Skeleton className="w-16 h-8" />
+              ) : (
+                <p className="text-xl font-bold text-accent-gold">
+                  {stats.rank}
+                </p>
+              )}
+              <p className="text-text-secondary text-xs mt-1">Класс</p>
+            </Card>
           </div>
-        </Card>
+        </div>
       )}
 
-      {/* Stats */}
-      <div>
-        <p className="text-text-muted text-xs tracking-widest mb-3">
-          Статистика
-        </p>
-        <div className="grid grid-cols-2 gap-2.5">
+      {/* XP Progress */}
+      {isAuthenticated && (
+        <div>
+          <p className="text-text-muted text-xs tracking-widest mb-3">
+            Прогресс
+          </p>
           <Card padding="sm">
-            <p className="text-[26px] font-bold text-accent">
-              {stats.battles}
-            </p>
-            <p className="text-text-secondary text-xs mt-1">Баттлов</p>
-          </Card>
-          <Card padding="sm">
-            <p className="text-[26px] font-bold text-accent-gold">
-              {stats.winRate}%
-            </p>
-            <p className="text-text-secondary text-xs mt-1">Побед</p>
-          </Card>
-          <Card padding="sm">
-            <p className="text-[24px] font-bold text-accent">
-              Lvl {stats.level}
-            </p>
-            <p className="text-text-secondary text-xs mt-1">Уровень</p>
-            <div className="w-[60px] h-[3px] rounded-full bg-gradient-to-r from-accent to-transparent mt-1" />
-          </Card>
-          <Card padding="sm">
-            <p className="text-xl font-bold text-accent-gold">
-              {stats.rank}
-            </p>
-            <p className="text-text-secondary text-xs mt-1">Класс</p>
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm text-text-secondary">Опыт</span>
+              {loading ? (
+                <Skeleton className="w-20 h-4" />
+              ) : (
+                <span className="text-xs text-text-muted">
+                  {stats.xp} / {xpMax} XP
+                </span>
+              )}
+            </div>
+            <div className="h-2.5 bg-surface-light rounded-full overflow-hidden">
+              <div
+                className="h-full bg-gradient-to-r from-accent-warm via-accent to-accent-gold rounded-full transition-all shadow-[0_2px_8px_rgba(207,157,123,0.3)]"
+                style={{ width: `${(stats.xp / xpMax) * 100}%` }}
+              />
+            </div>
           </Card>
         </div>
-      </div>
-
-      {/* XP Progress */}
-      <div>
-        <p className="text-text-muted text-xs tracking-widest mb-3">
-          Прогресс
-        </p>
-        <Card padding="sm">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-sm text-text-secondary">Опыт</span>
-            <span className="text-xs text-text-muted">
-              {stats.xp} / {stats.xpToNext} XP
-            </span>
-          </div>
-          <div className="h-2.5 bg-surface-light rounded-full overflow-hidden">
-            <div
-              className="h-full bg-gradient-to-r from-accent-warm via-accent to-accent-gold rounded-full transition-all shadow-[0_2px_8px_rgba(207,157,123,0.3)]"
-              style={{ width: `${(stats.xp / stats.xpToNext) * 100}%` }}
-            />
-          </div>
-        </Card>
-      </div>
+      )}
     </div>
   );
 }

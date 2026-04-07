@@ -1,7 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { ConfigService } from '@nestjs/config';
-import OpenAI from 'openai';
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+let OpenAI: any;
+try { OpenAI = require('openai').default; } catch { OpenAI = null; }
 
 export interface SimilarChunk {
   id: string;
@@ -17,15 +19,21 @@ export interface SimilarChunk {
 @Injectable()
 export class KnowledgeService {
   private readonly logger = new Logger(KnowledgeService.name);
-  private readonly openai: OpenAI;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private readonly openai: any;
 
   constructor(
     private readonly prisma: PrismaService,
     private readonly config: ConfigService,
   ) {
-    this.openai = new OpenAI({
-      apiKey: this.config.get<string>('OPENAI_API_KEY'),
-    });
+    if (OpenAI) {
+      this.openai = new OpenAI({
+        apiKey: this.config.get<string>('OPENAI_API_KEY'),
+      });
+    } else {
+      this.logger.warn('OpenAI package not installed — knowledge search disabled');
+      this.openai = null;
+    }
   }
 
   /**

@@ -7,6 +7,7 @@ import {
 import { PrismaService } from '../prisma/prisma.service';
 import { RedisService } from '../redis/redis.service';
 import { StatsService } from '../stats/stats.service';
+import { Question } from '@prisma/client';
 import { QuestionService } from '../question/question.service';
 
 /** 5 вопросов, ещё не отвеченных */
@@ -132,7 +133,7 @@ export class WarmupService {
 
     const payload: WarmupQuestions = {
       type: 'questions',
-      questions: questions.map((q) => ({
+      questions: questions.map((q: Question) => ({
         id: q.id,
         text: q.text,
         options: q.options as string[],

@@ -1,10 +1,10 @@
 services:
   postgres:
-    image: pgvector/pgvector:pg16
+    image: postgres:16-alpine
     container_name: razum-postgres
     restart: unless-stopped
     ports:
-      - "5432:5432"
+      - "5434:5432"
     environment:
       POSTGRES_USER: razum
       POSTGRES_PASSWORD: razum_dev
@@ -25,7 +25,7 @@ services:
     container_name: razum-redis
     restart: unless-stopped
     ports:
-      - "6379:6379"
+      - "6381:6379"
     command: redis-server --appendonly yes
     volumes:
       - redisdata:/data

@@ -1,4 +1,4 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException, HttpException, HttpStatus } from '@nestjs/common';
 import { Question } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { AiService } from '../ai/ai.service';
@@ -154,7 +154,7 @@ export class QuestionService {
     category?: string;
     excludeIds?: string[];
     count?: number;
-  }) {
+  }): Promise<Question[]> {
     const count = params.count || 5;
 
     const conditions: string[] = ['"isActive" = true'];
@@ -188,6 +188,27 @@ export class QuestionService {
       `SELECT * FROM questions WHERE ${whereClause} ORDER BY RANDOM() LIMIT ${count}`,
       ...values,
     );
+
+    // Fallback: if no questions found and difficulty filter was used, retry without it
+    if (questions.length === 0 && params.difficulty) {
+      this.logger.warn(
+        `getRandomForBattle: 0 questions with difficulty=${params.difficulty}, retrying without difficulty filter`,
+      );
+      const fallback = await this.getRandomForBattle({
+        ...params,
+        difficulty: undefined,
+        count,
+      });
+
+      if (fallback.length === 0) {
+        throw new HttpException(
+          `No questions found for the requested filters (branch=${params.branch ?? 'any'}, category=${params.category ?? 'any'})`,
+          HttpStatus.NOT_FOUND,
+        );
+      }
+
+      return fallback;
+    }
 
     return questions;
   }
@@ -237,12 +258,12 @@ export class QuestionService {
         branch,
         3,
       );
-    } catch (err) {
+    } catch (_err: unknown) {
       this.logger.warn('getForBattle: KnowledgeService unavailable, proceeding without context');
     }
 
     // Step 3: Get existing question texts for anti-duplication
-    const existingTexts = dbQuestions.map((q) => q.text);
+    const existingTexts = dbQuestions.map((q: Question) => q.text);
 
     // Step 4: Generate via AI
     try {

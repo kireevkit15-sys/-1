@@ -47,6 +47,22 @@ export class EnvironmentVariables {
   @IsString()
   @IsOptional()
   NODE_ENV?: string;
+
+  @IsString()
+  @IsOptional()
+  AI_API_KEY?: string;
+
+  @IsString()
+  @IsOptional()
+  AI_BASE_URL?: string;
+
+  @IsString()
+  @IsOptional()
+  AI_MODEL_FAST?: string;
+
+  @IsString()
+  @IsOptional()
+  AI_MODEL_SMART?: string;
 }
 
 export function validate(config: Record<string, unknown>) {

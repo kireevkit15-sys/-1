@@ -51,6 +51,7 @@ export class UserService {
       data: {
         ...(dto.name !== undefined && { name: dto.name }),
         ...(dto.avatar !== undefined && { avatarUrl: dto.avatar }),
+        ...(dto.onboardingCompleted !== undefined && { onboardingCompleted: dto.onboardingCompleted }),
       },
     });
 

@@ -1,7 +1,4 @@
--- CreateExtension
-CREATE EXTENSION IF NOT EXISTS "vector";
-
--- CreateTable
+-- CreateTable (pgvector skipped for local dev)
 CREATE TABLE "knowledge_chunks" (
     "id" UUID NOT NULL,
     "content" TEXT NOT NULL,
@@ -11,7 +8,6 @@ CREATE TABLE "knowledge_chunks" (
     "topic" TEXT NOT NULL,
     "branch" "Branch" NOT NULL,
     "metadata" JSONB NOT NULL DEFAULT '{}',
-    "embedding" vector(1536),
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "knowledge_chunks_pkey" PRIMARY KEY ("id")

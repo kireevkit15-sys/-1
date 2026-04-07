@@ -1,6 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import Anthropic from '@anthropic-ai/sdk';
 import {
   buildQuestionGeneratorPrompt,
   QuestionGeneratorParams,
@@ -38,16 +37,92 @@ export interface ContentConcept {
   difficulty: 'BRONZE' | 'SILVER' | 'GOLD';
 }
 
+interface ChatMessage {
+  role: 'system' | 'user' | 'assistant';
+  content: string;
+}
+
+interface ChatChoice {
+  message: { content: string };
+}
+
+interface ChatResponse {
+  choices: ChatChoice[];
+  usage?: { prompt_tokens: number; completion_tokens: number };
+}
+
 @Injectable()
 export class AiService {
-  private client: Anthropic;
   private readonly logger = new Logger(AiService.name);
+  private readonly apiKey: string;
+  private readonly baseUrl: string;
+  private readonly modelFast: string;
+  private readonly modelSmart: string;
 
   constructor(private readonly configService: ConfigService) {
-    this.client = new Anthropic({
-      apiKey: this.configService.get<string>('ANTHROPIC_API_KEY', ''),
-    });
+    this.apiKey = this.configService.get<string>('AI_API_KEY', '');
+    this.baseUrl = this.configService.get<string>(
+      'AI_BASE_URL',
+      'https://api.polza.ai/v1',
+    );
+    this.modelFast = this.configService.get<string>(
+      'AI_MODEL_FAST',
+      'google/gemini-2.5-flash',
+    );
+    this.modelSmart = this.configService.get<string>(
+      'AI_MODEL_SMART',
+      'google/gemini-2.5-flash',
+    );
+
+    if (!this.apiKey) {
+      this.logger.warn('AI_API_KEY not set — AI features disabled');
+    } else {
+      this.logger.log(
+        `AI configured: base=${this.baseUrl} fast=${this.modelFast} smart=${this.modelSmart}`,
+      );
+    }
   }
+
+  // ── Core API call ──────────────────────────────────────────────────
+
+  private async chat(
+    messages: ChatMessage[],
+    options: { model?: string; maxTokens?: number } = {},
+  ): Promise<string> {
+    const model = options.model ?? this.modelFast;
+    const maxTokens = options.maxTokens ?? 1024;
+
+    const response = await fetch(`${this.baseUrl}/chat/completions`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${this.apiKey}`,
+      },
+      body: JSON.stringify({
+        model,
+        messages,
+        max_tokens: maxTokens,
+        temperature: 0.7,
+      }),
+    });
+
+    if (!response.ok) {
+      const text = await response.text();
+      throw new Error(`AI API error ${response.status}: ${text}`);
+    }
+
+    const data = (await response.json()) as ChatResponse;
+
+    if (data.usage) {
+      this.logger.log(
+        `AI usage: model=${model} in=${data.usage.prompt_tokens} out=${data.usage.completion_tokens}`,
+      );
+    }
+
+    return data.choices?.[0]?.message?.content ?? '';
+  }
+
+  // ── Public methods ─────────────────────────────────────────────────
 
   async generateExplanation(
     question: string,
@@ -55,19 +130,12 @@ export class AiService {
     userAnswer: string,
   ): Promise<string> {
     try {
-      const message = await this.client.messages.create({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 512,
-        messages: [
-          {
-            role: 'user',
-            content: `Вопрос: "${question}"\nПравильный ответ: "${correctAnswer}"\nОтвет пользователя: "${userAnswer}"\n\nОбъясни кратко и понятно, почему правильный ответ именно такой. Если пользователь ответил неправильно, объясни его ошибку. Отвечай на русском языке.`,
-          },
-        ],
-      });
-
-      const textBlock = message.content.find((block) => block.type === 'text');
-      return textBlock ? textBlock.text : 'Объяснение недоступно.';
+      return await this.chat([
+        {
+          role: 'user',
+          content: `Вопрос: "${question}"\nПравильный ответ: "${correctAnswer}"\nОтвет пользователя: "${userAnswer}"\n\nОбъясни кратко и понятно, почему правильный ответ именно такой. Если пользователь ответил неправильно, объясни его ошибку. Отвечай на русском языке.`,
+        },
+      ], { maxTokens: 512 });
     } catch (error) {
       this.logger.error('Failed to generate AI explanation', error);
       return 'Не удалось сгенерировать объяснение.';
@@ -76,19 +144,12 @@ export class AiService {
 
   async generateHint(question: string, options: string[]): Promise<string> {
     try {
-      const message = await this.client.messages.create({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 256,
-        messages: [
-          {
-            role: 'user',
-            content: `Вопрос: "${question}"\nВарианты: ${options.join(', ')}\n\nДай небольшую подсказку, не раскрывая правильный ответ напрямую. Отвечай на русском языке.`,
-          },
-        ],
-      });
-
-      const textBlock = message.content.find((block) => block.type === 'text');
-      return textBlock ? textBlock.text : 'Подсказка недоступна.';
+      return await this.chat([
+        {
+          role: 'user',
+          content: `Вопрос: "${question}"\nВарианты: ${options.join(', ')}\n\nДай небольшую подсказку, не раскрывая правильный ответ напрямую. Отвечай на русском языке.`,
+        },
+      ], { maxTokens: 256 });
     } catch (error) {
       this.logger.error('Failed to generate AI hint', error);
       return 'Не удалось сгенерировать подсказку.';
@@ -108,25 +169,12 @@ export class AiService {
     try {
       const prompt = buildQuestionGeneratorPrompt(params);
 
-      const message = await this.client.messages.create({
-        model: 'claude-haiku-4-5-20251001',
-        max_tokens: 4096,
-        messages: [{ role: 'user', content: prompt }],
-      });
-
-      const textBlock = message.content.find((block) => block.type === 'text');
-      if (!textBlock || textBlock.type !== 'text') {
-        this.logger.warn('generateQuestions: empty response from Claude');
-        return [];
-      }
-
-      this.logger.log(
-        `generateQuestions: usage input=${message.usage.input_tokens} output=${message.usage.output_tokens}`,
+      const raw = await this.chat(
+        [{ role: 'user', content: prompt }],
+        { maxTokens: 4096 },
       );
 
-      const raw = textBlock.text;
       const parsed = this.parseJsonArray<GeneratedQuestion>(raw);
-
       const validated = parsed.filter((q) => this.isValidQuestion(q));
 
       this.logger.log(
@@ -159,32 +207,15 @@ export class AiService {
         knowledgeContext: params.knowledgeContext,
       });
 
-      const anthropicMessages: Array<{
-        role: 'user' | 'assistant';
-        content: string;
-      }> = messages.map((m) => ({
-        role: m.role,
-        content: m.content,
-      }));
+      const chatMessages: ChatMessage[] = [
+        { role: 'system', content: systemPrompt },
+        ...messages.map((m) => ({
+          role: m.role as 'user' | 'assistant',
+          content: m.content,
+        })),
+      ];
 
-      const message = await this.client.messages.create({
-        model: 'claude-haiku-4-5-20251001',
-        max_tokens: 1024,
-        system: systemPrompt,
-        messages: anthropicMessages,
-      });
-
-      const textBlock = message.content.find((block) => block.type === 'text');
-
-      this.logger.log(
-        `socraticChat: usage input=${message.usage.input_tokens} output=${message.usage.output_tokens}`,
-      );
-
-      if (!textBlock || textBlock.type !== 'text') {
-        return 'Давай продолжим наш разговор. О чём ты хотел бы поразмышлять?';
-      }
-
-      return textBlock.text;
+      return await this.chat(chatMessages, { maxTokens: 1024 });
     } catch (error) {
       this.logger.error(
         `socraticChat failed: topic="${topic}"`,
@@ -237,25 +268,12 @@ ${text}
 
 Верни JSON-массив концептов:`;
 
-      const message = await this.client.messages.create({
-        model: 'claude-haiku-4-5-20251001',
-        max_tokens: 4096,
-        messages: [{ role: 'user', content: prompt }],
-      });
-
-      const textBlock = message.content.find((block) => block.type === 'text');
-      if (!textBlock || textBlock.type !== 'text') {
-        this.logger.warn('extractConcepts: empty response from Claude');
-        return [];
-      }
-
-      this.logger.log(
-        `extractConcepts: usage input=${message.usage.input_tokens} output=${message.usage.output_tokens}`,
+      const raw = await this.chat(
+        [{ role: 'user', content: prompt }],
+        { maxTokens: 4096 },
       );
 
-      const raw = textBlock.text;
       const parsed = this.parseJsonArray<ContentConcept>(raw);
-
       const validated = parsed.filter((c) => this.isValidConcept(c));
 
       this.logger.log(
@@ -275,7 +293,6 @@ ${text}
   // ── Private helpers ───────────────────────────────────────────────
 
   private parseJsonArray<T>(raw: string): T[] {
-    // Try direct JSON.parse first
     try {
       const trimmed = raw.trim();
       if (trimmed.startsWith('[')) {
@@ -285,7 +302,6 @@ ${text}
       // Fall through to regex fallback
     }
 
-    // Regex fallback: extract JSON array from response text
     const match = raw.match(/\[[\s\S]*\]/);
     if (!match) {
       this.logger.warn('parseJsonArray: no JSON array found in response');

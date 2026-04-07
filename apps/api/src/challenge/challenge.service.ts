@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { StatsService } from '../stats/stats.service';
+import { Question } from '@prisma/client';
 import { QuestionService } from '../question/question.service';
 import { Prisma, Difficulty, Branch } from '@prisma/client';
 
@@ -113,7 +114,7 @@ export class ChallengeService {
       questions.push(...fallback.slice(0, CHALLENGE_QUESTION_COUNT - questions.length));
     }
 
-    const questionIds = questions.map((q) => q.id);
+    const questionIds = questions.map((q: Question) => q.id);
     const category = questions[0]?.category ?? branch;
 
     const challenge = await this.prisma.dailyChallenge.create({
@@ -133,7 +134,7 @@ export class ChallengeService {
       branch: challenge.branch,
       category: challenge.category,
       date: challenge.date,
-      questions: questions.map((q) => ({
+      questions: questions.map((q: Question) => ({
         id: q.id,
         text: q.text,
         options: q.options,
