@@ -178,7 +178,7 @@
 | B12.5 | Оптимизировать random fact selection — один запрос вместо count + skip | done | `apps/api/src/facts/facts.service.ts` |
 | B12.6 | Настроить connection pooling + slow query logging | done | `apps/api/src/prisma/prisma.service.ts`, `.env.example` |
 | B12.7 | Edge cases: 0 вопросов в категории, удаление пользователя, JWT expiry в батле | done | `question.service.ts`, `user.service.ts`, `user.controller.ts`, `battle.gateway.ts`, `auth.service.ts`, `prisma/schema.prisma` |
-| B12.8 | Production seed: все 500+ вопросов и модули в production БД | todo | — |
+| B12.8 | Production seed: все 500+ вопросов и модули в production БД | done | `prisma/seed-production.ts` |
 
 ## Ядро контента — RAG-пайплайн и генерация (Backend)
 
