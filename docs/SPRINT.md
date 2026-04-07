@@ -114,6 +114,15 @@
 | B5.4 | DTO с class-validator: GetModulesQueryDto, SubmitProgressDto | done | `apps/api/src/learn/dto/` |
 | B5.5 | Seed 10 модулей (5 Стратегия + 5 Логика) по 5 вопросов | done | `prisma/seed.ts` |
 
+## Неделя 7 — Разминка (доработка: WarmupResult + БД-персистенция)
+
+| # | Задача | Статус | Файлы |
+|---|--------|--------|-------|
+| B7.1 | WarmupController (GET /warmup/today, POST /warmup/submit) — уже реализован Lead'ом | done | `apps/api/src/warmup/warmup.controller.ts` |
+| B7.2 | Логика стрика (streakDays/streakDate, 409 при повторе) — уже реализована Lead'ом | done | `apps/api/src/warmup/warmup.service.ts` |
+| B7.3 | Таблица WarmupResult в Prisma + миграция | done | `prisma/schema.prisma`, `prisma/migrations/` |
+| B7.4 | Сохранение WarmupResult в БД при submit + fallback hasCompletedToday через БД | done | `apps/api/src/warmup/warmup.service.ts` |
+
 ## Неделя 6 — AI-диалог (контроллер + БД)
 
 | # | Задача | Статус | Файлы |

@@ -220,7 +220,18 @@ export class WarmupService {
     // Запомнить виденные вопросы
     await this.markQuestionsSeen(userId, questionIds);
 
-    // Сохранить результат в Redis
+    // Сохранить результат в БД (для аналитики)
+    await this.prisma.warmupResult.create({
+      data: {
+        userId,
+        date,
+        correctCount: correct,
+        totalCount: total,
+        xpEarned,
+      },
+    });
+
+    // Сохранить результат в Redis (кеш на 24ч)
     const result: WarmupResult = {
       type: 'result',
       correct,
@@ -244,8 +255,17 @@ export class WarmupService {
    */
   async hasCompletedToday(userId: string): Promise<boolean> {
     const date = this.todayUTC();
+
+    // Check Redis cache first
     const cached = await this.redis.get(this.redisKeyResult(userId, date));
-    return cached !== null;
+    if (cached !== null) return true;
+
+    // Fallback to DB (in case Redis was restarted)
+    const dbResult = await this.prisma.warmupResult.findUnique({
+      where: { userId_date: { userId, date } },
+      select: { id: true },
+    });
+    return dbResult !== null;
   }
 
   // ──────────────────────────────────────────────
