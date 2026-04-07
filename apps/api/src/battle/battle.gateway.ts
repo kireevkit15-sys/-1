@@ -225,6 +225,36 @@ export class BattleGateway
   }
 
   // ---------------------------------------------------------------------------
+  // battle:refresh_token — Refresh JWT without disconnecting
+  // ---------------------------------------------------------------------------
+
+  @SubscribeMessage('battle:refresh_token')
+  async handleRefreshToken(
+    @ConnectedSocket() client: AuthenticatedSocket,
+    @MessageBody() data: { token: string },
+  ) {
+    try {
+      const payload = await this.jwtService.verifyAsync(data.token);
+      const oldUserId = client.data.userId;
+      client.data.userId = payload.sub;
+
+      // Update socket mapping if userId changed (shouldn't, but safety)
+      if (oldUserId && oldUserId !== payload.sub) {
+        this.userSockets.delete(oldUserId);
+      }
+      this.userSockets.set(payload.sub, client.id);
+
+      client.emit('battle:token_refreshed', { success: true });
+      this.logger.log(`Token refreshed for user ${payload.sub}`);
+    } catch (err: any) {
+      client.emit('battle:auth_error', {
+        reason: 'invalid_token',
+        message: 'Token refresh failed. Please re-authenticate.',
+      });
+    }
+  }
+
+  // ---------------------------------------------------------------------------
   // battle:create_bot — Start a battle against the bot
   // ---------------------------------------------------------------------------
 
@@ -236,6 +266,16 @@ export class BattleGateway
     if (!userId) return;
 
     try {
+      // Validate that there are categories with questions before starting
+      const availableCategories = await this.questionService.getAvailableCategories();
+      if (availableCategories.length === 0) {
+        client.emit('battle:error', { message: 'No questions available. Cannot start a battle.' });
+        return;
+      }
+      const categories = availableCategories.length >= 3
+        ? availableCategories.slice(0, 6)
+        : availableCategories;
+
       // Persist the battle shell in the database
       const dbBattle = await this.battleService.createBotBattle(userId);
 
@@ -248,7 +288,7 @@ export class BattleGateway
         { id: player1.id, name: player1.name, avatarUrl: player1.avatarUrl ?? undefined },
         BOT_PLAYER,
         BattleMode.SIEGE,
-        DEFAULT_CATEGORIES,
+        categories,
         { idGenerator: () => dbBattle.id },
       );
 

@@ -154,6 +154,7 @@ export class QuestionService {
     category?: string;
     excludeIds?: string[];
     count?: number;
+    throwOnEmpty?: boolean;
   }): Promise<Question[]> {
     const count = params.count || 5;
 
@@ -201,10 +202,13 @@ export class QuestionService {
       });
 
       if (fallback.length === 0) {
-        throw new HttpException(
-          `No questions found for the requested filters (branch=${params.branch ?? 'any'}, category=${params.category ?? 'any'})`,
-          HttpStatus.NOT_FOUND,
-        );
+        if (params.throwOnEmpty !== false) {
+          throw new HttpException(
+            `No questions found for the requested filters (branch=${params.branch ?? 'any'}, category=${params.category ?? 'any'})`,
+            HttpStatus.NOT_FOUND,
+          );
+        }
+        return [];
       }
 
       return fallback;
@@ -230,10 +234,11 @@ export class QuestionService {
   }) {
     const count = params.count || 5;
 
-    // Step 1: Try DB first
+    // Step 1: Try DB first (don't throw on empty — AI fallback below)
     const dbQuestions = await this.getRandomForBattle({
       ...params,
       count,
+      throwOnEmpty: false,
     });
 
     if (dbQuestions.length >= count) {
@@ -573,6 +578,20 @@ export class QuestionService {
       }),
       difficultyBreakdown: breakdown,
     };
+  }
+
+  /**
+   * Returns categories that have at least `minCount` active questions.
+   */
+  async getAvailableCategories(minCount = 1): Promise<string[]> {
+    const groups = await this.prisma.question.groupBy({
+      by: ['category'],
+      where: { isActive: true },
+      _count: { id: true },
+      having: { id: { _count: { gte: minCount } } },
+    });
+
+    return groups.map((g: { category: string }) => g.category);
   }
 
   async update(id: string, dto: UpdateQuestionDto) {

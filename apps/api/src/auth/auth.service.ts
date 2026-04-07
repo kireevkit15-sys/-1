@@ -48,6 +48,10 @@ export class AuthService {
       where: { telegramId },
     });
 
+    if (user?.deletedAt) {
+      throw new UnauthorizedException('Account has been deleted');
+    }
+
     if (!user) {
       const displayName =
         [dto.first_name, dto.last_name].filter(Boolean).join(' ') ||
@@ -102,6 +106,10 @@ export class AuthService {
       throw new UnauthorizedException('Invalid email or password');
     }
 
+    if (user.deletedAt) {
+      throw new UnauthorizedException('Account has been deleted');
+    }
+
     const isPasswordValid = await bcrypt.compare(
       dto.password,
       user.passwordHash,
@@ -118,7 +126,7 @@ export class AuthService {
       where: { id: payload.sub },
     });
 
-    if (!user) {
+    if (!user || user.deletedAt) {
       throw new UnauthorizedException('User not found');
     }
 

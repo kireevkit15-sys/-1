@@ -2,6 +2,7 @@ import {
   Controller,
   Get,
   Patch,
+  Delete,
   Param,
   Body,
   Query,
@@ -59,6 +60,19 @@ export class UserController {
   @Patch('me')
   async updateMe(@Request() req: any, @Body() dto: UpdateUserDto) {
     return this.userService.updateMe(req.user.sub, dto);
+  }
+
+  @ApiOperation({
+    summary: 'Удалить аккаунт',
+    description: 'Soft-delete: анонимизирует PII и помечает аккаунт как удалённый',
+  })
+  @ApiBearerAuth()
+  @ApiResponse({ status: 200, description: 'Аккаунт удалён' })
+  @ApiResponse({ status: 401, description: 'Не авторизован' })
+  @UseGuards(JwtAuthGuard)
+  @Delete('me')
+  async deleteMe(@Request() req: any) {
+    return this.userService.deleteMe(req.user.sub);
   }
 
   @ApiOperation({

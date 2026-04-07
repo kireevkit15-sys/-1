@@ -114,7 +114,34 @@ export class UserService {
     };
   }
 
-  // ── XP / Level helpers ────────��───────────────────
+  async deleteMe(userId: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { id: true, deletedAt: true },
+    });
+
+    if (!user || user.deletedAt) {
+      throw new NotFoundException('User not found');
+    }
+
+    // Soft-delete: mark as deleted, anonymize PII
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        deletedAt: new Date(),
+        name: 'Удалённый пользователь',
+        email: null,
+        telegramId: null,
+        telegramChatId: null,
+        passwordHash: null,
+        avatarUrl: null,
+      },
+    });
+
+    return { message: 'Account deleted successfully' };
+  }
+
+  // ── XP / Level helpers ──────────────────────────
 
   private calculateTotalXp(stats: XpFields): number {
     return (

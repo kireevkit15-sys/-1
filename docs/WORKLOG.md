@@ -402,6 +402,27 @@
 **Коммиты:**
 - `1aa9272` — docs(sprint): add Яшкин weeks 8-11 tasks — all verified as done
 
+### 2026-04-08 — Сессия 5: B12.7 — Edge cases (0 вопросов, удаление пользователя, JWT expiry)
+
+**Время:** ~1 час
+**Статус:** Завершена
+
+**Что сделано:**
+- **0 вопросов в категории:** добавлен `getAvailableCategories()` в QuestionService, батл-гейтвей теперь проверяет наличие вопросов перед стартом и использует реальные категории из БД вместо захардкоженных. `getForBattle()` больше не бросает исключение при пустой БД — корректно переходит к AI-генерации.
+- **Удаление пользователя:** добавлено поле `deletedAt` в User (Prisma миграция), реализован soft-delete `DELETE /users/me` с анонимизацией PII (имя, email, telegramId, passwordHash, avatarUrl). Заблокирован логин/refresh для удалённых аккаунтов в AuthService.
+- **JWT expiry в батле:** добавлено WS-событие `battle:refresh_token` — клиент может обновить токен без дисконнекта. При истечении JWT клиент отправляет новый токен, гейтвей верифицирует и обновляет сессию.
+
+**Файлы созданы/изменены:**
+- `apps/api/src/question/question.service.ts` — `getAvailableCategories()`, `throwOnEmpty` параметр
+- `apps/api/src/battle/battle.gateway.ts` — валидация категорий при старте, `battle:refresh_token` событие
+- `apps/api/src/user/user.service.ts` — `deleteMe()` soft-delete
+- `apps/api/src/user/user.controller.ts` — `DELETE /users/me` эндпоинт
+- `apps/api/src/auth/auth.service.ts` — проверка `deletedAt` в login/telegram/refresh
+- `prisma/schema.prisma` — поле `deletedAt` в User
+- `prisma/migrations/20260408000000_add_user_soft_delete/migration.sql` — миграция
+
+**Задачи из SPRINT.md закрыты:** B12.7
+
 ---
 
 ## Сводка по неделям
@@ -417,3 +438,4 @@
 | 04-07 | Бонди | Анимации баттла, профиль RadarChart, поиск соперника | F4.1, F4.2, F4.3 |
 | 04-07 | Яшкин | Модули обучения API: list, detail, progress, seed 10 модулей | B5.1-B5.5 (все 5) |
 | 04-07 | Яшкин | Аудит задач: подтверждены недели 8-11, обновлён SPRINT.md | B8.1-B11.4 (15 задач) |
+| 04-08 | Яшкин | Edge cases: 0 вопросов, soft-delete пользователя, JWT refresh в батле | B12.7 |

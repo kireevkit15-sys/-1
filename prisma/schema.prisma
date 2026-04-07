@@ -75,6 +75,7 @@ model User {
   role         Role     @default(USER)
   onboardingCompleted Boolean @default(false)
   referralCode   String   @unique @default(uuid())
+  deletedAt      DateTime?
   createdAt    DateTime @default(now())
 
   stats          UserStats?
