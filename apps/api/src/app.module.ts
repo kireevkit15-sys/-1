@@ -19,6 +19,7 @@ import { WarmupModule } from './warmup/warmup.module';
 import { KnowledgeModule } from './knowledge/knowledge.module';
 import { AchievementsModule } from './achievements/achievements.module';
 import { TelegramModule } from './telegram/telegram.module';
+import { ReferralModule } from './referral/referral.module';
 import { AppController } from './app.controller';
 
 @Module({
@@ -87,6 +88,7 @@ import { AppController } from './app.controller';
     KnowledgeModule,
     AchievementsModule,
     TelegramModule,
+    ReferralModule,
   ],
   providers: [
     {

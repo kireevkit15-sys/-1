@@ -73,6 +73,7 @@ model User {
   name         String
   avatarUrl    String?
   role         Role     @default(USER)
+  referralCode   String   @unique @default(uuid())
   createdAt    DateTime @default(now())
 
   stats          UserStats?
@@ -84,6 +85,8 @@ model User {
   aiDialogues       AiDialogue[]
   questionFeedbacks QuestionFeedback[]
   achievements      UserAchievement[]
+  referralsMade     Referral[]           @relation("referrer")
+  referralsReceived Referral[]           @relation("invitee")
 
   @@map("users")
 }
@@ -309,4 +312,20 @@ model UserAchievement {
   @@index([userId])
   @@index([achievementId])
   @@map("user_achievements")
+}
+
+// ── Referral ────────────────────────────────
+
+model Referral {
+  id         String   @id @default(uuid()) @db.Uuid
+  referrerId String   @db.Uuid
+  inviteeId  String   @unique @db.Uuid // One user can only be invited once
+  xpRewarded Boolean  @default(false)
+  createdAt  DateTime @default(now())
+
+  referrer User @relation("referrer", fields: [referrerId], references: [id], onDelete: Cascade)
+  invitee  User @relation("invitee", fields: [inviteeId], references: [id], onDelete: Cascade)
+
+  @@index([referrerId])
+  @@map("referrals")
 }
