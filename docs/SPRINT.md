@@ -132,6 +132,41 @@
 | B6.3 | AiController: POST /ai/dialogue, POST /ai/dialogue/:id/message, GET /ai/dialogue/:id, GET /ai/dialogues | done | `apps/api/src/ai/ai.controller.ts` |
 | B6.4 | Обновить AiModule — подключить контроллер, PrismaModule, RedisModule | done | `apps/api/src/ai/ai.module.ts` |
 
+## Неделя 8 — Уведомления и статы
+
+| # | Задача | Статус | Файлы |
+|---|--------|--------|-------|
+| B8.1 | NotificationModule — POST/DELETE /notifications/subscribe | done | `apps/api/src/notification/` |
+| B8.2 | Таблица PushSubscription в Prisma + миграция | done | `prisma/schema.prisma` |
+| B8.3 | StatsService.getSummary() — уровень, рейтинг, стрик, класс мыслителя | done | `apps/api/src/stats/stats.service.ts`, `apps/api/src/stats/stats.controller.ts` |
+| B8.4 | Калькулятор класса мыслителя в shared (5 классов) | done | `packages/shared/src/stats/` |
+
+## Неделя 9 — Админка контента (500+ вопросов)
+
+| # | Задача | Статус | Файлы |
+|---|--------|--------|-------|
+| B9.1 | QuestionModule для админки — фильтры (branch/status/difficulty), пагинация | done | `apps/api/src/question/question.controller.ts` |
+| B9.2 | GET /questions/stats — количество по категориям/сложностям | done | `apps/api/src/question/question.controller.ts` |
+| B9.3 | POST /questions/:id/report + GET /questions/reported | done | `apps/api/src/question/question.controller.ts` |
+| B9.4 | POST /questions/bulk — загрузка вопросов | done | `apps/api/src/question/question.controller.ts` |
+
+## Неделя 10 — Тесты и оптимизация
+
+| # | Задача | Статус | Файлы |
+|---|--------|--------|-------|
+| B10.1 | E2E тесты: auth, learn, warmup, battle | done | `apps/api/test/*.e2e-spec.ts` |
+| B10.2 | Composite indexes (questions, battles, userStats) | done | `prisma/migrations/20260407260000_add_composite_indexes/` |
+| B10.3 | Пагинация во всех list-эндпоинтах | done | контроллеры |
+
+## Неделя 11 — Лидерборд и социальные фичи
+
+| # | Задача | Статус | Файлы |
+|---|--------|--------|-------|
+| B11.1 | LeaderboardService — топ-20, Redis-кеш 5 мин TTL | done | `apps/api/src/stats/leaderboard.service.ts` |
+| B11.2 | GET /leaderboard/me — позиция пользователя | done | `apps/api/src/stats/stats.controller.ts` |
+| B11.3 | thinkerClass в UserStats + миграция | done | `prisma/schema.prisma` |
+| B11.4 | Расширить GET /users/:id/profile — thinkerClass, позиция в лидерборде | done | `apps/api/src/user/user.controller.ts` |
+
 ## Неделя 12 — Финальная оптимизация БД
 
 | # | Задача | Статус | Файлы |
