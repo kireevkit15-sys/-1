@@ -111,6 +111,7 @@ model UserStats {
 
   user User @relation(fields: [userId], references: [id])
 
+  @@index([rating(sort: Desc)])
   @@map("user_stats")
 }
 
@@ -143,6 +144,7 @@ model Question {
   @@index([difficulty])
   @@index([category])
   @@index([isActive])
+  @@index([branch, difficulty, isActive])
   @@map("questions")
 }
 
@@ -189,6 +191,10 @@ model Battle {
 
   rounds BattleRound[]
 
+  @@index([player1Id, status])
+  @@index([player2Id, status])
+  @@index([status])
+  @@index([createdAt])
   @@map("battles")
 }
 

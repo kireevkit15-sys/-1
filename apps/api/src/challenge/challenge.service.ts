@@ -241,23 +241,40 @@ export class ChallengeService {
   /**
    * History of past challenges.
    */
-  async getHistory(userId: string, limit = 30) {
-    const challenges = await this.prisma.dailyChallenge.findMany({
-      where: { userId, completedAt: { not: null } },
-      orderBy: { date: 'desc' },
-      take: limit,
-      select: {
-        date: true,
-        difficulty: true,
-        branch: true,
-        category: true,
-        correct: true,
-        total: true,
-        xpEarned: true,
-        completedAt: true,
-      },
-    });
+  async getHistory(userId: string, limit = 30, page = 1) {
+    const safeLimit = Math.min(limit, 100);
+    const skip = (page - 1) * safeLimit;
 
-    return { challenges };
+    const [challenges, total] = await Promise.all([
+      this.prisma.dailyChallenge.findMany({
+        where: { userId, completedAt: { not: null } },
+        orderBy: { date: 'desc' },
+        take: safeLimit,
+        skip,
+        select: {
+          date: true,
+          difficulty: true,
+          branch: true,
+          category: true,
+          correct: true,
+          total: true,
+          xpEarned: true,
+          completedAt: true,
+        },
+      }),
+      this.prisma.dailyChallenge.count({
+        where: { userId, completedAt: { not: null } },
+      }),
+    ]);
+
+    return {
+      challenges,
+      pagination: {
+        page,
+        limit: safeLimit,
+        total,
+        totalPages: Math.ceil(total / safeLimit),
+      },
+    };
   }
 }

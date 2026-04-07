@@ -52,15 +52,17 @@ export class ChallengeController {
   }
 
   @ApiOperation({ summary: 'История выполненных челленджей' })
-  @ApiOkResponse({ description: 'Список прошлых челленджей' })
+  @ApiOkResponse({ description: 'Список прошлых челленджей с пагинацией' })
   @Get('history')
   async getHistory(
     @Request() req: { user: { sub: string } },
     @Query('limit') limit?: string,
+    @Query('page') page?: string,
   ) {
     return this.challengeService.getHistory(
       req.user.sub,
       limit ? parseInt(limit, 10) : undefined,
+      page ? parseInt(page, 10) : undefined,
     );
   }
 }
