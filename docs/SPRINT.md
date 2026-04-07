@@ -104,6 +104,16 @@
 | B4.5 | Сгенерировать и проверить 200 вопросов (Стратегия + Логика) | done | `scripts/output/` |
 | B4.6 | Обновить prisma/seed.ts для загрузки 200 вопросов | done | `prisma/seed.ts` |
 
+## Неделя 5 — Модули обучения
+
+| # | Задача | Статус | Файлы |
+|---|--------|--------|-------|
+| B5.1 | Проверить таблицы Module, UserModuleProgress в схеме | done | `prisma/schema.prisma` |
+| B5.2 | Переписать LearnService — CRUD модулей, прогресс, разблокировка | done | `apps/api/src/learn/learn.service.ts` |
+| B5.3 | Переписать LearnController — GET /modules, GET /modules/:id, POST /modules/:id/progress | done | `apps/api/src/learn/learn.controller.ts` |
+| B5.4 | DTO с class-validator: GetModulesQueryDto, SubmitProgressDto | done | `apps/api/src/learn/dto/` |
+| B5.5 | Seed 10 модулей (5 Стратегия + 5 Логика) по 5 вопросов | done | `prisma/seed.ts` |
+
 ## Ядро контента — RAG-пайплайн и генерация (Backend)
 
 | # | Задача | Статус | Файлы | Блокер |

@@ -284,6 +284,34 @@
 
 ---
 
+### 2026-04-07 — Сессия 3: Неделя 5 — Модули обучения (Backend API)
+
+**Время:** ~1.5 часа
+**Статус:** Завершена
+
+**Что сделано:**
+- Переписан LearnService: getModules (с прогрессом и разблокировкой), getModuleById (с вопросами), submitProgress (отметка вопроса + автозавершение модуля)
+- Переписан LearnController: GET /modules?branch=, GET /modules/:id, POST /modules/:id/progress
+- Созданы DTO с class-validator и Swagger: GetModulesQueryDto, SubmitProgressDto
+- Расширен seed: +6 вопросов (вероятностное мышление, принятие решений), +4 модуля до 10 всего (5 Стратегия + 5 Логика)
+- Обновлён SPRINT.md: N11 → done, N19 → первоочередная для Lead
+
+**Файлы созданы/изменены:**
+- `apps/api/src/learn/learn.service.ts` — полная переработка
+- `apps/api/src/learn/learn.controller.ts` — полная переработка
+- `apps/api/src/learn/learn.module.ts` — упрощён
+- `apps/api/src/learn/dto/get-modules-query.dto.ts` — новый
+- `apps/api/src/learn/dto/submit-progress.dto.ts` — новый
+- `prisma/seed.ts` — +6 вопросов, +4 модуля
+- `docs/SPRINT.md` — обновлены статусы
+
+**Задачи из SPRINT.md закрыты:** B5.1, B5.2, B5.3, B5.4, B5.5
+
+**Коммиты:**
+- `715675d` — feat(api): learning modules API — list, detail, progress tracking (Week 5)
+
+---
+
 ## Сводка по неделям
 
 ### Неделя 1 (2026-04-05 — 2026-04-11)
@@ -295,3 +323,4 @@
 | 04-06 | Яшкин | Миграция, ConfigModule, exception filter, NestJS запуск | B1.3, B1.6, B1.9, B1.10 |
 | 04-06 | Яшкин | Auth module, JWT strategies, refresh tokens, Swagger | B2.1-B2.7 (все 7) |
 | 04-07 | Бонди | Анимации баттла, профиль RadarChart, поиск соперника | F4.1, F4.2, F4.3 |
+| 04-07 | Яшкин | Модули обучения API: list, detail, progress, seed 10 модулей | B5.1-B5.5 (все 5) |
