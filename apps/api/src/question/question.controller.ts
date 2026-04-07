@@ -132,6 +132,26 @@ export class QuestionController {
 
   // ─── Admin only ───────────────────────────────────────────
 
+  @ApiOperation({ summary: 'Рекалибровка сложности вопросов (админ)' })
+  @ApiBearerAuth()
+  @ApiResponse({ status: 200, description: 'Результат рекалибровки' })
+  @ApiResponse({ status: 403, description: 'Нет прав администратора' })
+  @UseGuards(JwtAuthGuard, AdminGuard)
+  @Post('recalibrate')
+  async recalibrateDifficulty() {
+    return this.questionService.recalibrateDifficulty();
+  }
+
+  @ApiOperation({ summary: 'Статистика ответов по вопросам (админ)' })
+  @ApiBearerAuth()
+  @ApiResponse({ status: 200, description: 'Обзор статистики ответов' })
+  @ApiResponse({ status: 403, description: 'Нет прав администратора' })
+  @UseGuards(JwtAuthGuard, AdminGuard)
+  @Get('answer-stats')
+  async getAnswerStats() {
+    return this.questionService.getAnswerStatsOverview();
+  }
+
   @ApiOperation({ summary: 'Список вопросов (админ)' })
   @ApiBearerAuth()
   @ApiQuery({ name: 'category', required: false, description: 'Фильтр по категории' })

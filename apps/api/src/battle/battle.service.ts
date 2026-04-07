@@ -2,6 +2,7 @@ import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { BotService } from './bot.service';
+import { QuestionService } from '../question/question.service';
 import {
   createBattle,
   selectCategory,
@@ -25,6 +26,7 @@ export class BattleService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly botService: BotService,
+    private readonly questionService: QuestionService,
   ) {}
 
   // ── Create ────────────────────────────────────
@@ -241,6 +243,11 @@ export class BattleService {
           points: currentRound.pointsAwarded,
         },
       });
+
+      // BC9: Update question answer statistics (fire-and-forget)
+      this.questionService
+        .updateAnswerStats(questionId, isCorrect)
+        .catch(() => {});
     }
 
     await this.saveState(battleId, state);

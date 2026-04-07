@@ -7,9 +7,10 @@ import { BotService } from './bot.service';
 import { AuthModule } from '../auth/auth.module';
 import { PrismaModule } from '../prisma/prisma.module';
 import { RedisModule } from '../redis/redis.module';
+import { QuestionModule } from '../question/question.module';
 
 @Module({
-  imports: [AuthModule, PrismaModule, RedisModule],
+  imports: [AuthModule, PrismaModule, RedisModule, QuestionModule],
   controllers: [BattleController],
   providers: [BattleService, BattleGateway, MatchmakingService, BotService],
   exports: [BattleService],

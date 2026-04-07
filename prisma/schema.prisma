@@ -114,6 +114,12 @@ model Question {
   isActive       Boolean    @default(true)
   createdAt      DateTime   @default(now())
 
+  // BC9: Answer statistics for adaptive difficulty
+  totalAnswers   Int        @default(0)
+  correctAnswers Int        @default(0)
+  avgTimeTakenMs Int?       // Average time to answer in ms
+  lastCalibratedAt DateTime? // When difficulty was last auto-adjusted
+
   battleRounds BattleRound[]
   feedbacks    QuestionFeedback[]
 

@@ -309,6 +309,196 @@ export class QuestionService {
     }));
   }
 
+  // ── BC9: Adaptive difficulty calibration ──────────────────────
+
+  private static readonly MIN_ANSWERS_FOR_CALIBRATION = 20;
+  private static readonly TOO_EASY_THRESHOLD = 0.85; // >85% correct → harder
+  private static readonly TOO_HARD_THRESHOLD = 0.25; // <25% correct → easier
+
+  private static readonly DIFFICULTY_UP: Record<string, string | null> = {
+    BRONZE: 'SILVER',
+    SILVER: 'GOLD',
+    GOLD: null, // already max
+  };
+
+  private static readonly DIFFICULTY_DOWN: Record<string, string | null> = {
+    GOLD: 'SILVER',
+    SILVER: 'BRONZE',
+    BRONZE: null, // already min
+  };
+
+  /**
+   * Update answer statistics for a question after a battle round.
+   * Called from BattleService.processAttack().
+   */
+  async updateAnswerStats(
+    questionId: string,
+    isCorrect: boolean,
+    timeTakenMs?: number,
+  ) {
+    const question = await this.prisma.question.findUnique({
+      where: { id: questionId },
+      select: { totalAnswers: true, correctAnswers: true, avgTimeTakenMs: true },
+    });
+
+    if (!question) return;
+
+    const newTotal = question.totalAnswers + 1;
+    const newCorrect = question.correctAnswers + (isCorrect ? 1 : 0);
+
+    // Incremental average for time
+    let newAvgTime: number | null = question.avgTimeTakenMs;
+    if (timeTakenMs != null) {
+      if (question.avgTimeTakenMs == null) {
+        newAvgTime = timeTakenMs;
+      } else {
+        // Running average: avg = old_avg + (new_value - old_avg) / count
+        newAvgTime = Math.round(
+          question.avgTimeTakenMs +
+            (timeTakenMs - question.avgTimeTakenMs) / newTotal,
+        );
+      }
+    }
+
+    await this.prisma.question.update({
+      where: { id: questionId },
+      data: {
+        totalAnswers: newTotal,
+        correctAnswers: newCorrect,
+        avgTimeTakenMs: newAvgTime,
+      },
+    });
+  }
+
+  /**
+   * Recalibrate difficulty for all questions with enough answer data.
+   * Returns summary of changes made.
+   */
+  async recalibrateDifficulty(): Promise<{
+    analyzed: number;
+    adjusted: number;
+    changes: Array<{
+      questionId: string;
+      oldDifficulty: string;
+      newDifficulty: string;
+      correctRate: number;
+      totalAnswers: number;
+    }>;
+  }> {
+    const questions = await this.prisma.question.findMany({
+      where: {
+        isActive: true,
+        totalAnswers: { gte: QuestionService.MIN_ANSWERS_FOR_CALIBRATION },
+      },
+      select: {
+        id: true,
+        difficulty: true,
+        totalAnswers: true,
+        correctAnswers: true,
+      },
+    });
+
+    const changes: Array<{
+      questionId: string;
+      oldDifficulty: string;
+      newDifficulty: string;
+      correctRate: number;
+      totalAnswers: number;
+    }> = [];
+
+    for (const q of questions) {
+      const correctRate = q.correctAnswers / q.totalAnswers;
+      let newDifficulty: string | null = null;
+
+      if (correctRate > QuestionService.TOO_EASY_THRESHOLD) {
+        newDifficulty = QuestionService.DIFFICULTY_UP[q.difficulty] ?? null;
+      } else if (correctRate < QuestionService.TOO_HARD_THRESHOLD) {
+        newDifficulty = QuestionService.DIFFICULTY_DOWN[q.difficulty] ?? null;
+      }
+
+      if (newDifficulty) {
+        await this.prisma.question.update({
+          where: { id: q.id },
+          data: {
+            difficulty: newDifficulty as any,
+            lastCalibratedAt: new Date(),
+            // Reset counters after calibration to re-evaluate at new level
+            totalAnswers: 0,
+            correctAnswers: 0,
+          },
+        });
+
+        changes.push({
+          questionId: q.id,
+          oldDifficulty: q.difficulty,
+          newDifficulty,
+          correctRate: Math.round(correctRate * 100) / 100,
+          totalAnswers: q.totalAnswers,
+        });
+
+        this.logger.log(
+          `BC9: Question ${q.id} recalibrated ${q.difficulty} → ${newDifficulty} (${Math.round(correctRate * 100)}% correct, ${q.totalAnswers} answers)`,
+        );
+      }
+    }
+
+    this.logger.log(
+      `BC9: Recalibration complete — ${questions.length} analyzed, ${changes.length} adjusted`,
+    );
+
+    return {
+      analyzed: questions.length,
+      adjusted: changes.length,
+      changes,
+    };
+  }
+
+  /**
+   * Get answer statistics overview for admin dashboard.
+   */
+  async getAnswerStatsOverview() {
+    const [totalQuestions, withStats, difficultyBreakdown] = await Promise.all([
+      this.prisma.question.count({ where: { isActive: true } }),
+      this.prisma.question.count({
+        where: { isActive: true, totalAnswers: { gt: 0 } },
+      }),
+      this.prisma.question.groupBy({
+        by: ['difficulty'],
+        where: { isActive: true },
+        _count: { id: true },
+        _avg: { totalAnswers: true, correctAnswers: true },
+      }),
+    ]);
+
+    const breakdown = difficultyBreakdown.map(
+      (d: {
+        difficulty: string;
+        _count: { id: number };
+        _avg: { totalAnswers: number | null; correctAnswers: number | null };
+      }) => ({
+        difficulty: d.difficulty,
+        count: d._count.id,
+        avgTotalAnswers: Math.round(d._avg.totalAnswers ?? 0),
+        avgCorrectRate:
+          d._avg.totalAnswers && d._avg.correctAnswers
+            ? Math.round((d._avg.correctAnswers / d._avg.totalAnswers) * 100)
+            : 0,
+      }),
+    );
+
+    return {
+      totalQuestions,
+      withAnswerData: withStats,
+      readyForCalibration: await this.prisma.question.count({
+        where: {
+          isActive: true,
+          totalAnswers: { gte: QuestionService.MIN_ANSWERS_FOR_CALIBRATION },
+        },
+      }),
+      difficultyBreakdown: breakdown,
+    };
+  }
+
   async update(id: string, dto: UpdateQuestionDto) {
     const existing = await this.prisma.question.findUnique({
       where: { id },

@@ -116,7 +116,7 @@
 | BC6 | Обновить `generate-questions.ts` — батч-генерация по таксономии с антидубль-проверкой | done | `scripts/generate-questions.ts` | LC1 ✅, LC3 ✅ |
 | BC7 | Адаптивная генерация — QuestionService.getForBattle() с fallback на AI | done | `apps/api/src/question/question.service.ts` | BC5 ✅, LC4 ✅ |
 | BC8 | Система обратной связи — лайк/дизлайк/репорт на вопросы + авто-ревью | done | `apps/api/src/question/` | — |
-| BC9 | Автоматическая адаптация сложности по статистике ответов | todo | `apps/api/src/question/`, `apps/api/src/stats/` | BC8 |
+| BC9 | Автоматическая адаптация сложности по статистике ответов | done | `apps/api/src/question/`, `apps/api/src/battle/` | BC8 ✅ |
 
 ---
 
