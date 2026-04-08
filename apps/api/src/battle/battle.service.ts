@@ -1,6 +1,7 @@
 import { Injectable, HttpException, HttpStatus, Logger } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
+import { RedisService } from '../redis/redis.service';
 import { BotService } from './bot.service';
 import { QuestionService } from '../question/question.service';
 import {
@@ -27,8 +28,11 @@ import type { BattleState, BattleResult } from '@razum/shared';
 export class BattleService {
   private readonly logger = new Logger(BattleService.name);
 
+  private static readonly INVITE_TTL = 600; // 10 minutes
+
   constructor(
     private readonly prisma: PrismaService,
+    private readonly redis: RedisService,
     private readonly botService: BotService,
     private readonly questionService: QuestionService,
   ) {}
@@ -93,6 +97,59 @@ export class BattleService {
     });
 
     return battle;
+  }
+
+  /**
+   * Create a SPARRING battle (friendly, no rating impact).
+   * Returns the battle + a short invite code stored in Redis.
+   */
+  async createSparringBattle(userId: string): Promise<{ battle: any; inviteCode: string }> {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+
+    const battle = await this.prisma.battle.create({
+      data: {
+        player1Id: userId,
+        mode: 'SPARRING',
+        status: 'WAITING',
+        state: {},
+      },
+    });
+
+    // Generate a short 6-char invite code
+    const inviteCode = this.generateInviteCode();
+    await this.redis.set(
+      `sparring:invite:${inviteCode}`,
+      JSON.stringify({ battleId: battle.id, hostId: userId }),
+      BattleService.INVITE_TTL,
+    );
+
+    return { battle, inviteCode };
+  }
+
+  /**
+   * Resolve an invite code to the pending sparring battle info.
+   * Returns null if expired or invalid.
+   */
+  async resolveInviteCode(code: string): Promise<{ battleId: string; hostId: string } | null> {
+    const raw = await this.redis.get(`sparring:invite:${code}`);
+    if (!raw) return null;
+    // Remove the code so it can't be reused
+    await this.redis.del(`sparring:invite:${code}`);
+    return JSON.parse(raw);
+  }
+
+  private generateInviteCode(): string {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // no ambiguous chars
+    let code = '';
+    for (let i = 0; i < 6; i++) {
+      code += chars[Math.floor(Math.random() * chars.length)];
+    }
+    return code;
   }
 
   // ── Read ──────────────────────────────────────
@@ -469,6 +526,7 @@ export class BattleService {
     xpGained: Record<string, number>,
     won: boolean,
     opponentId: string | null,
+    skipRating = false,
   ) {
     // Fetch player and opponent stats for rating calculations
     const [playerStats, opponentStats] = await Promise.all([
@@ -478,9 +536,9 @@ export class BattleService {
         : null,
     ]);
 
-    // Calculate overall rating change
+    // Calculate overall rating change (skip for sparring)
     let ratingDelta = 0;
-    if (opponentId) {
+    if (opponentId && !skipRating) {
       const playerRating = playerStats?.rating ?? ELO_DEFAULT_RATING;
       const opponentRating = opponentStats?.rating ?? ELO_DEFAULT_RATING;
       ratingDelta = calculateRatingChange(playerRating, opponentRating, won);
@@ -496,8 +554,8 @@ export class BattleService {
         const xpField = this.branchToXpField(branch);
         branchIncrements[xpField] = (branchIncrements[xpField] ?? 0) + xp;
 
-        // Calculate per-branch ELO change (only for PvP)
-        if (opponentId) {
+        // Calculate per-branch ELO change (only for rated PvP)
+        if (opponentId && !skipRating) {
           const ratingField = this.branchToRatingField(branch);
           const playerBranchRating = (playerStats as any)?.[ratingField] ?? ELO_DEFAULT_RATING;
           const opponentBranchRating = (opponentStats as any)?.[ratingField] ?? ELO_DEFAULT_RATING;

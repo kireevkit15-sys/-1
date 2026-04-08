@@ -611,6 +611,88 @@ export class BattleGateway
     client.emit('battle:matchmaking_cancelled');
   }
 
+  // ---------------------------------------------------------------------------
+  // battle:create_sparring — Create a friendly match and get an invite code
+  // ---------------------------------------------------------------------------
+
+  @SubscribeMessage('battle:create_sparring')
+  async handleCreateSparring(@ConnectedSocket() client: AuthenticatedSocket) {
+    const userId = client.data.userId;
+    if (!userId) return;
+
+    try {
+      const { battle, inviteCode } = await this.battleService.createSparringBattle(userId);
+
+      // Track the host in userBattles so reconnect logic works
+      this.userBattles.set(userId, battle.id);
+      await client.join(`battle:${battle.id}`);
+
+      client.emit('battle:sparring_created', {
+        battleId: battle.id,
+        inviteCode,
+      });
+
+      this.logger.log(`Sparring created: ${battle.id}, invite: ${inviteCode}, host: ${userId}`);
+    } catch (error: any) {
+      client.emit('battle:error', { message: error.message ?? 'Failed to create sparring' });
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // battle:join_sparring — Join a friend's sparring match via invite code
+  // ---------------------------------------------------------------------------
+
+  @SubscribeMessage('battle:join_sparring')
+  async handleJoinSparring(
+    @ConnectedSocket() client: AuthenticatedSocket,
+    @MessageBody() data: { inviteCode: string },
+  ) {
+    const userId = client.data.userId;
+    if (!userId) return;
+
+    try {
+      const invite = await this.battleService.resolveInviteCode(data.inviteCode);
+      if (!invite) {
+        client.emit('battle:error', { message: 'Invalid or expired invite code' });
+        return;
+      }
+
+      if (invite.hostId === userId) {
+        client.emit('battle:error', { message: 'Cannot join your own sparring match' });
+        return;
+      }
+
+      // Fetch both players
+      const fullBattle = await this.battleService.getBattle(invite.battleId);
+      const host = fullBattle?.player1 ?? { id: invite.hostId, name: 'Host' };
+
+      const availableCategories = await this.questionService.getAvailableCategories();
+      const categories = availableCategories.length >= 3
+        ? availableCategories.slice(0, 6)
+        : availableCategories;
+
+      // Create the in-memory state as SPARRING
+      const state = createBattle(
+        { id: host.id, name: host.name, avatarUrl: host.avatarUrl ?? undefined },
+        { id: userId, name: 'Opponent' },
+        BattleMode.SPARRING,
+        categories,
+        { idGenerator: () => invite.battleId },
+      );
+
+      this.battles.set(invite.battleId, state);
+      this.userBattles.set(userId, invite.battleId);
+      await client.join(`battle:${invite.battleId}`);
+
+      // Notify both players
+      this.server.to(`battle:${invite.battleId}`).emit('battle:started', state);
+
+      this.logger.log(`Sparring ${invite.battleId}: ${userId} joined via code ${data.inviteCode}`);
+    } catch (error: any) {
+      client.emit('battle:error', { message: error.message ?? 'Failed to join sparring' });
+    }
+  }
+
   private startMatchmakingTimer(userId: string, rating: number, client: AuthenticatedSocket, branch?: Branch) {
     this.clearMatchmakingTimer(userId);
 
@@ -912,10 +994,10 @@ export class BattleGateway
       // during gameplay.
       const battle = await this.battleService.getBattle(battleId);
       if (battle) {
-        // The service will be extended to support this; for now log it.
+        const isSparring = state.mode === BattleMode.SPARRING;
         this.logger.log(
-          `Battle ${battleId} completed. Winner: ${result.winnerId ?? 'draw'}. ` +
-          `Score: ${result.player1Score}-${result.player2Score}`,
+          `Battle ${battleId} completed${isSparring ? ' (sparring, no rating change)' : ''}. ` +
+          `Winner: ${result.winnerId ?? 'draw'}. Score: ${result.player1Score}-${result.player2Score}`,
         );
       }
     } catch (err: any) {
