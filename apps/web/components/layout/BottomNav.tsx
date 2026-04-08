@@ -51,7 +51,7 @@ export default function BottomNav() {
   const isProfileActive = isActiveTab(profileTab.href);
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden">
       <div className="flex items-center justify-center gap-3 px-5 pb-[max(12px,env(safe-area-inset-bottom))] max-w-lg mx-auto">
         {/* Main 3 tabs — oval glass capsule */}
         <div className="liquid-glass-capsule flex items-center rounded-[40px] p-1.5">
