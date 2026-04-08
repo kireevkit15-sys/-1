@@ -89,6 +89,111 @@
 | F4.2 | Страница профиля: RadarChart 5 статов, XP прогресс-бар, статистика баттлов, стрик, 10 последних баттлов | done | `apps/web/app/(main)/profile/page.tsx` |
 | F4.3 | Кнопка «Найти соперника»: пульсирующие кольца поиска, экран VS перед стартом, ошибка без авторизации | done | `apps/web/app/(main)/battle/new/page.tsx`, `apps/web/hooks/useBattle.ts` |
 
+## Неделя 5 — Адаптив + Визуальный стиль "маскулинная агрессия"
+
+| # | Задача | Статус | Файлы |
+|---|--------|--------|-------|
+| F5.1 | Адаптивный layout: SideNav (md:+) вместо BottomNav, контент max-w-3xl по центру, sidebar справа (статы, стрик, факт дня) | todo | `apps/web/components/layout/`, `apps/web/app/(main)/layout.tsx` |
+| F5.2 | Keyboard shortcuts в батле: 1-2-3-4 для ответов, Enter подтверждение, Esc выход | todo | `apps/web/app/(main)/battle/[id]/page.tsx` |
+| F5.3 | Визуальный стиль: агрессивные accent-цвета (красный/оранжевый glow), sharp edges, micro-анимации при hover, металлический gradient на заголовках | todo | `apps/web/app/globals.css`, `tailwind.config.ts` |
+| F5.4 | Батл-экран: shake-эффект при неправильном ответе, pulse при критическом HP, particle explosion при победе, звук удара | todo | `apps/web/app/(main)/battle/[id]/page.tsx`, `apps/web/lib/sounds.ts` |
+| F5.5 | 5 веток — визуальная идентичность: каждая ветка свой цвет + иконка + glow-эффект (STRATEGY=cyan, LOGIC=green, ERUDITION=purple, RHETORIC=orange, INTUITION=pink) | todo | `apps/web/components/`, `apps/web/app/globals.css` |
+| F5.6 | Профиль: RadarChart обновить на 5 статов, animated counter при прокачке, rank badge с glow | todo | `apps/web/app/(main)/profile/page.tsx` |
+| F5.7 | Главный экран: hero-секция с аватаром + статами, daily challenge карточка с countdown таймером, aggressive CTA "В бой" | todo | `apps/web/app/(main)/page.tsx` |
+| F5.8 | Тёмная тема v2: глубокий чёрный (#050505), subtle noise texture, неоновые акценты, glassmorphism на карточках | todo | `apps/web/app/globals.css`, `tailwind.config.ts` |
+| F5.9 | Двухколоночный layout для модулей обучения (desktop), карточки с progress bar и иконкой ветки | todo | `apps/web/app/(main)/learn/page.tsx` |
+| F5.10 | Hover-эффекты: все интерактивные элементы — scale + glow при наведении, smooth transitions 200ms | todo | `apps/web/components/ui/` |
+
+## Блок 6 — Баттл UX
+
+| # | Задача | Статус | Файлы |
+|---|--------|--------|-------|
+| F6.1 | Keyboard shortcuts: 1-2-3-4 ответы, Enter подтверждение, Esc выход | todo | `apps/web/app/(main)/battle/[id]/page.tsx` |
+| F6.2 | Shake-эффект при неправильном ответе, pulse при критическом HP | todo | `apps/web/app/(main)/battle/[id]/page.tsx`, `apps/web/app/globals.css` |
+| F6.3 | Particle explosion при победе (canvas или CSS) | todo | `apps/web/app/(main)/battle/[id]/page.tsx` |
+| F6.4 | Экран выбора ветки атаки: 5 карточек с иконками + glow активной ветки | todo | `apps/web/app/(main)/battle/[id]/page.tsx` |
+| F6.5 | Анимация получения XP: floating numbers +15 XP, прогресс-бар заполняется | todo | `apps/web/components/` |
+| F6.6 | Экран VS: аватары с рангами, 5 статов каждого игрока, countdown 3-2-1 | todo | `apps/web/app/(main)/battle/new/page.tsx` |
+| F6.7 | Результат раунда: анимированная разница очков, подсветка правильного ответа | todo | `apps/web/app/(main)/battle/[id]/page.tsx` |
+
+## Блок 7 — Профиль и прогресс
+
+| # | Задача | Статус | Файлы |
+|---|--------|--------|-------|
+| F7.1 | RadarChart обновить на 5 осей (5 веток), animated counter при прокачке | todo | `apps/web/app/(main)/profile/page.tsx` |
+| F7.2 | Rank badge с glow эффектом (Стратег/Философ/Учёный/Командир/Мудрец/Визионер) | todo | `apps/web/components/` |
+| F7.3 | История баттлов: карточки с результатом, ветками, изменением рейтинга | todo | `apps/web/app/(main)/profile/page.tsx` |
+| F7.4 | Страница достижений: сетка бейджей, locked/unlocked, progress к следующему | todo | `apps/web/app/(main)/achievements/page.tsx` |
+| F7.5 | Публичный профиль другого игрока (по ссылке) | todo | `apps/web/app/(main)/profile/[id]/page.tsx` |
+
+## Блок 8 — Обучение
+
+| # | Задача | Статус | Файлы |
+|---|--------|--------|-------|
+| F8.1 | Дерево знаний: визуальная карта 5 веток → 25 категорий, прогресс по каждой | todo | `apps/web/app/(main)/learn/page.tsx` |
+| F8.2 | Двухколоночный layout модулей на desktop, карточки с progress bar и иконкой ветки | todo | `apps/web/app/(main)/learn/page.tsx` |
+| F8.3 | Экран модуля: вопросы с анимацией перехода, прогресс сверху, результат в конце | todo | `apps/web/app/(main)/learn/[moduleId]/page.tsx` |
+| F8.4 | AI-чат: расширенный layout на desktop, markdown рендер, code blocks | todo | `apps/web/app/(main)/chat/page.tsx` |
+| F8.5 | Страница разминки: 5 вопросов, streak counter, мотивационное сообщение | todo | `apps/web/app/(main)/warmup/page.tsx` |
+
+## Блок 9 — Главная и навигация
+
+| # | Задача | Статус | Файлы |
+|---|--------|--------|-------|
+| F9.1 | Hero-секция: аватар + 5 статов мини-баром, уровень, класс мыслителя | todo | `apps/web/app/(main)/page.tsx` |
+| F9.2 | Daily challenge карточка с countdown таймером | todo | `apps/web/app/(main)/page.tsx` |
+| F9.3 | Факт дня: карточка с swipe to dismiss | todo | `apps/web/components/` |
+| F9.4 | CTA кнопка "В бой" — aggressive стиль, пульсация, glow | todo | `apps/web/app/(main)/page.tsx` |
+| F9.5 | Лидерборд: топ-20 с аватарами, позиция текущего игрока подсвечена | todo | `apps/web/app/(main)/leaderboard/page.tsx` |
+| F9.6 | Онбординг v2: выбор 3 любимых веток, интро-баттл с ботом | todo | `apps/web/app/(main)/onboarding/page.tsx` |
+
+## Блок 10 — PWA и мобайл
+
+| # | Задача | Статус | Файлы |
+|---|--------|--------|-------|
+| F10.1 | Push-уведомления: подписка, UI разрешения, значок на иконке | todo | `apps/web/components/`, `apps/web/lib/push.ts` |
+| F10.2 | Offline-режим: cached страницы, offline fallback с кешированными вопросами | todo | `apps/web/app/sw.ts` |
+| F10.3 | Install prompt: кастомный баннер "Установи РАЗУМ" | todo | `apps/web/components/` |
+| F10.4 | Splash screen при запуске PWA | todo | `apps/web/public/` |
+| F10.5 | Swipe-жесты: свайп между вкладками, pull-to-refresh | todo | `apps/web/components/layout/` |
+
+## Блок 11 — Полировка и допфичи
+
+| # | Задача | Статус | Файлы |
+|---|--------|--------|-------|
+| F11.1 | Анимация перехода между страницами: slide/fade transitions (Framer Motion / View Transitions API) | todo | `apps/web/app/` |
+| F11.2 | Skeleton loading: shimmer-эффект на все карточки, профиль, лидерборд | todo | `apps/web/components/ui/Skeleton.tsx` |
+| F11.3 | Toast-уведомления: XP получен, ачивка разблокирована, стрик продлён | todo | `apps/web/components/ui/Toast.tsx` |
+| F11.4 | Confetti / particles при level up, новый ранг, разблокировке ачивки | todo | `apps/web/lib/confetti.ts` |
+| F11.5 | Настройки пользователя: звук вкл/выкл, уведомления | todo | `apps/web/app/(main)/settings/page.tsx` |
+| F11.6 | Share-кнопка: поделиться результатом баттла (OG-image) в Telegram/VK | todo | `apps/web/app/api/og/` |
+| F11.7 | Реферальная страница: ввод кода, бонус, список приглашённых | todo | `apps/web/app/(main)/referral/page.tsx` |
+| F11.8 | Страница ошибки сети: красивый UI при потере соединения с retry-кнопкой | todo | `apps/web/components/` |
+| F11.9 | Дизайн empty states: нет баттлов, нет достижений, нет истории — мотивационные экраны | todo | `apps/web/components/` |
+| F11.10 | Micro-interactions: иконка батла вибрирует при новом challenge, бейдж bounce | todo | `apps/web/components/` |
+| F11.11 | Тёмный/светлый toggle (подготовка к светлой теме) | todo | `apps/web/app/` |
+| F11.12 | Страница "О проекте": миссия, команда, контакты | todo | `apps/web/app/(main)/about/page.tsx` |
+
+## Тестирование Бонди
+
+| # | Задача | Статус | Файлы |
+|---|--------|--------|-------|
+| FT.1 | Визуальное регрессионное тестирование: Playwright screenshots на 375/390/414/768/1024/1440px | todo | `apps/web/tests/visual/` |
+| FT.2 | E2E тест: полный флоу баттла — В бой → поиск → VS → 5 раундов → результат → профиль | todo | `apps/web/tests/e2e/battle.spec.ts` |
+| FT.3 | E2E тест: онбординг → регистрация → первый баттл с ботом | todo | `apps/web/tests/e2e/onboarding.spec.ts` |
+| FT.4 | E2E тест: обучение → модуль → 5 вопросов → прогресс обновился | todo | `apps/web/tests/e2e/learn.spec.ts` |
+| FT.5 | E2E тест: разминка → 5 вопросов → стрик +1 → повторная попытка = 409 | todo | `apps/web/tests/e2e/warmup.spec.ts` |
+| FT.6 | E2E тест: AI-чат → сообщение → ответ → история → новый диалог | todo | `apps/web/tests/e2e/ai-chat.spec.ts` |
+| FT.7 | Accessibility audit: axe-core на все страницы, контрасты, aria-labels, keyboard navigation | todo | `apps/web/tests/a11y/` |
+| FT.8 | Performance: Lighthouse CI на каждый PR (>90 perf, >95 a11y) | todo | `.github/workflows/lighthouse.yml` |
+| FT.9 | Unit-тесты хуков: useBattle, useAuth — все состояния и edge cases | todo | `apps/web/hooks/__tests__/` |
+| FT.10 | Unit-тесты компонентов: Button, Card, BottomNav, SideNav, RadarChart (vitest + testing-library) | todo | `apps/web/components/__tests__/` |
+| FT.11 | Тест offline-режима: отключить сеть → кеш → fallback → восстановление | todo | `apps/web/tests/e2e/offline.spec.ts` |
+| FT.12 | Тест push-уведомлений: подписка → получение → клик → переход | todo | `apps/web/tests/e2e/push.spec.ts` |
+| FT.13 | Cross-browser: Chrome, Safari, Firefox — анимации, glassmorphism, blur | todo | `apps/web/tests/cross-browser/` |
+| FT.14 | Memory leak тест: 10 баттлов подряд без перезагрузки, мониторинг JS heap | todo | `apps/web/tests/performance/` |
+| FT.15 | Тест звуковых эффектов: вкл/выкл, корректное воспроизведение, не блокирует UI | todo | `apps/web/tests/` |
+
 ---
 
 # Текущие задачи Яшкина (Backend)
@@ -180,6 +285,110 @@
 | B12.7 | Edge cases: 0 вопросов в категории, удаление пользователя, JWT expiry в батле | done | `question.service.ts`, `user.service.ts`, `user.controller.ts`, `battle.gateway.ts`, `auth.service.ts`, `prisma/schema.prisma` |
 | B12.8 | Production seed: все 500+ вопросов и модули в production БД | done | `prisma/seed-production.ts` |
 
+## Блок 13 — Миграция на 5 веток
+
+| # | Задача | Статус | Файлы |
+|---|--------|--------|-------|
+| B13.1 | Prisma миграция: Branch enum + ERUDITION, RHETORIC, INTUITION | todo | `prisma/schema.prisma`, `prisma/migrations/` |
+| B13.2 | Обновить seed.ts: вопросы и модули для всех 5 веток (минимум по 10 на ветку) | todo | `prisma/seed.ts` |
+| B13.3 | Обновить все E2E тесты под 5 веток | todo | `apps/api/test/*.e2e-spec.ts` |
+
+## Блок 14 — Контент и вопросы
+
+| # | Задача | Статус | Файлы |
+|---|--------|--------|-------|
+| B14.1 | POST /questions/generate — эндпоинт для AI-генерации вопросов по категории/ветке | todo | `apps/api/src/question/` |
+| B14.2 | GET /questions/gaps — анализ покрытия: вопросы по категории/сложности, пробелы | todo | `apps/api/src/question/` |
+| B14.3 | POST /questions/bulk-validate — пакетная валидация вопросов перед загрузкой | todo | `apps/api/src/question/` |
+| B14.4 | GET /questions/export — экспорт вопросов в JSON для бэкапа | todo | `apps/api/src/question/` |
+| B14.5 | Автоматическая ротация: деактивировать вопросы с >50% skip или <20% правильных после 100 ответов | todo | `apps/api/src/question/question.service.ts` |
+| B14.6 | Система тегов на вопросы: поиск и фильтрация по тегам | todo | `prisma/schema.prisma`, `apps/api/src/question/` |
+
+## Блок 15 — Баттл-система v2
+
+| # | Задача | Статус | Файлы |
+|---|--------|--------|-------|
+| B15.1 | Баттл с выбором ветки атаки: атакующий выбирает из 5 веток, защищающийся отвечает | todo | `apps/api/src/battle/`, `packages/shared/src/battle/` |
+| B15.2 | Рейтинг по веткам: отдельный ELO по каждой из 5 веток + общий | todo | `apps/api/src/stats/`, `prisma/schema.prisma` |
+| B15.3 | Matchmaking v2: учитывать рейтинг конкретной ветки, не только общий | todo | `apps/api/src/battle/matchmaking.service.ts` |
+| B15.4 | Режим "Спарринг": дружеский матч без влияния на рейтинг (по инвайт-ссылке) | todo | `apps/api/src/battle/` |
+| B15.5 | Реванш: после баттла предложить противнику повторный матч | todo | `apps/api/src/battle/battle.gateway.ts` |
+| B15.6 | Бот v2: 3 уровня сложности (Новичок 40%, Стандарт 60%, Эксперт 85%) | todo | `apps/api/src/battle/bot.service.ts` |
+
+## Блок 16 — Пользовательская система v2
+
+| # | Задача | Статус | Файлы |
+|---|--------|--------|-------|
+| B16.1 | UserStats: отдельные поля XP по каждой из 5 веток | todo | `prisma/schema.prisma`, `apps/api/src/stats/` |
+| B16.2 | Система уровней по веткам: уровень ветки = f(xp), общий уровень = среднее | todo | `packages/shared/src/stats/`, `apps/api/src/stats/` |
+| B16.3 | Класс мыслителя v2: определяется по доминирующей ветке (5+ классов) | todo | `packages/shared/src/stats/` |
+| B16.4 | Достижения v2: ачивки за прокачку каждой ветки (25 новых) | todo | `apps/api/src/achievements/` |
+| B16.5 | GET /users/:id/compare — сравнение двух профилей для экрана VS | todo | `apps/api/src/user/` |
+
+## Блок 17 — Аналитика и умные фичи
+
+| # | Задача | Статус | Файлы |
+|---|--------|--------|-------|
+| B17.1 | GET /stats/me/weaknesses — слабые ветки и категории (по % правильных) | todo | `apps/api/src/stats/` |
+| B17.2 | GET /stats/me/recommendations — рекомендации модулей для прокачки слабых веток | todo | `apps/api/src/stats/` |
+| B17.3 | Адаптивный подбор: сложность вопросов по рейтингу игрока в конкретной ветке | todo | `apps/api/src/question/question.service.ts` |
+| B17.4 | Token usage tracking: расход токенов AI по дням, лимиты, алерты | todo | `apps/api/src/ai/`, `prisma/schema.prisma` |
+| B17.5 | Rate limiting v2: per-user daily AI quota (диалоги + генерация) | todo | `apps/api/src/ai/ai.controller.ts` |
+
+## Блок 18 — Инфраструктура
+
+| # | Задача | Статус | Файлы |
+|---|--------|--------|-------|
+| B18.1 | WebSocket reconnect: корректный rejoin баттла после дисконнекта | todo | `apps/api/src/battle/battle.gateway.ts` |
+| B18.2 | DB connection pool tuning: production конфиг для 100+ concurrent users | todo | `apps/api/src/prisma/prisma.service.ts` |
+| B18.3 | Redis caching strategy: кеш вопросов, статов, лидерборда с TTL | todo | `apps/api/src/redis/` |
+| B18.4 | Cron jobs: ежедневный пересчёт лидерборда, ротация challenge, очистка sessions | todo | `apps/api/src/` |
+| B18.5 | Production seed v2: все 25 категорий, минимум 500 вопросов для запуска | todo | `prisma/seed.ts` |
+| B18.6 | Database backup automation: pg_dump cron + upload to S3 | todo | `scripts/backup.sh` |
+| B18.7 | Graceful shutdown: корректное завершение активных баттлов при рестарте | todo | `apps/api/src/main.ts` |
+
+## Блок 19 — Дополнительные фичи
+
+| # | Задача | Статус | Файлы |
+|---|--------|--------|-------|
+| B19.1 | WebSocket rooms по веткам: зрители могут смотреть баттлы по ветке | todo | `apps/api/src/battle/battle.gateway.ts` |
+| B19.2 | Сезонный рейтинг: ежемесячный reset с наградами для топ-10 | todo | `apps/api/src/stats/` |
+| B19.3 | Streak protection: 1 бесплатный пропуск разминки в неделю без потери стрика | todo | `apps/api/src/warmup/warmup.service.ts` |
+| B19.4 | Daily/weekly/monthly stats digest (Telegram бот) | todo | `apps/api/src/telegram/` |
+| B19.5 | Content moderation queue: пользовательские репорты → очередь для админа | todo | `apps/api/src/question/` |
+| B19.6 | A/B тестирование вопросов: 2 формулировки, сравнение % правильных | todo | `apps/api/src/question/` |
+| B19.7 | Import/export профиля: JSON dump всей истории пользователя (GDPR) | todo | `apps/api/src/user/` |
+| B19.8 | Турниры: 8/16 игроков, bracket, расписание, призовой фонд XP | todo | `apps/api/src/tournament/` |
+| B19.9 | Система банов: временный/перманентный, причина, апелляция | todo | `apps/api/src/user/`, `prisma/schema.prisma` |
+| B19.10 | Webhook интеграция: оповещения о событиях для внешних сервисов | todo | `apps/api/src/webhook/` |
+| B19.11 | API versioning v2: подготовка второй версии без слома v1 | todo | `apps/api/src/` |
+| B19.12 | Healthcheck dashboard: status всех сервисов (DB, Redis, AI, WS) | todo | `apps/api/src/health/` |
+
+## Тестирование Яшкин
+
+| # | Задача | Статус | Файлы |
+|---|--------|--------|-------|
+| BT.1 | E2E: полный цикл баттла с 5 ветками — создание, 5 раундов, скоринг, XP | todo | `apps/api/test/battle-v2.e2e-spec.ts` |
+| BT.2 | E2E: auth полный цикл — register → login → refresh → expired → refresh → ok | todo | `apps/api/test/auth.e2e-spec.ts` |
+| BT.3 | E2E: вопросы — CRUD, фильтры по 5 веткам, bulk, report, auto-deactivate | todo | `apps/api/test/questions.e2e-spec.ts` |
+| BT.4 | E2E: обучение — modules 5 веток, progress, unlock, completion | todo | `apps/api/test/learn.e2e-spec.ts` |
+| BT.5 | E2E: стат-система — XP по 5 веткам, level up, thinkerClass пересчёт | todo | `apps/api/test/stats.e2e-spec.ts` |
+| BT.6 | E2E: лидерборд — топ-20, позиция юзера, кеш-инвалидация | todo | `apps/api/test/leaderboard.e2e-spec.ts` |
+| BT.7 | E2E: AI — диалог, сообщения, daily limit, token counting | todo | `apps/api/test/ai.e2e-spec.ts` |
+| BT.8 | E2E: разминка — today, submit, streak, duplicate prevention | todo | `apps/api/test/warmup.e2e-spec.ts` |
+| BT.9 | E2E: достижения — unlock, список, прогресс, ачивки за 5 веток | todo | `apps/api/test/achievements.e2e-spec.ts` |
+| BT.10 | E2E: уведомления — subscribe, unsubscribe, push | todo | `apps/api/test/notifications.e2e-spec.ts` |
+| BT.11 | Unit: QuestionService.recalibrateDifficulty — граничные случаи, <20 ответов | todo | `apps/api/src/question/__tests__/` |
+| BT.12 | Unit: MatchmakingService — расширение диапазона, таймаут → бот, concurrent | todo | `apps/api/src/battle/__tests__/` |
+| BT.13 | Unit: BattleStateMachine — все переходы, невалидные, таймауты, disconnect | todo | `packages/shared/__tests__/battle/` |
+| BT.14 | Unit: scoring — ELO для 5 веток, edge cases, новичок vs ветеран | todo | `packages/shared/__tests__/battle/` |
+| BT.15 | Unit: KnowledgeService — vector search, similarity threshold, empty, fallback | todo | `apps/api/src/knowledge/__tests__/` |
+| BT.16 | Load: k6 скрипт на 100 concurrent баттлов, response time, error rate | todo | `scripts/load-tests/` |
+| BT.17 | Load: WebSocket — 200 одновременных подключений, broadcast latency | todo | `scripts/load-tests/` |
+| BT.18 | Security: SQL injection, XSS в вопросах, JWT подделка, rate limit bypass | todo | `apps/api/test/security/` |
+| BT.19 | Security: RBAC — USER vs ADMIN endpoints, невалидный JWT, expired refresh | todo | `apps/api/test/security/` |
+| BT.20 | Database: EXPLAIN ANALYZE всех индексов под нагрузкой, slow query detection | todo | `scripts/db-audit/` |
+
 ## Ядро контента — RAG-пайплайн и генерация (Backend)
 
 | # | Задача | Статус | Файлы | Блокер |
@@ -228,7 +437,9 @@
 | LC5 | AI сократический промпт для обучения (L6.1) | done | `apps/api/src/ai/prompts/socratic-tutor.ts` |
 | LC6 | Обработать транскрипты Маркаряна → structured JSON (первый блогерский источник) | done | `content/sources/bloggers/markaryan/concepts.json` |
 | LC7 | Ревью и валидация первого батча 2000 вопросов | todo | — |
+| LC9 | Генерация вопросов из академических концептов (Дёрнер и др.) → JSON для seed/bulk загрузки | todo | `content/sources/academic/`, `content/processed/` |
 | LC8 | Система контроля качества вопросов (автопроверки, правила валидации) | done | `packages/shared/src/content/validation.ts` |
+| LC10 | 🧠 LLM-машина — автономный AI-движок: очередь генерации, gap-анализ, роутинг моделей, бюджет токенов, feedback loop, авторотация вопросов | todo | `apps/api/src/ai/`, `apps/api/src/knowledge/` |
 
 ## Новые задачи — Инфраструктура и безопасность
 
@@ -239,7 +450,7 @@
 | N3 | Rate limiting (глобальный + per-endpoint) | done | `apps/api/src/common/decorators/throttle.decorator.ts` |
 | N4 | Security headers (CSP, HSTS, X-Frame-Options) | done | `apps/api/src/main.ts`, `nginx/nginx.conf` |
 | N5 | API versioning (/v1/) | done | `apps/api/src/main.ts`, `apps/api/src/app.controller.ts` |
-| N19 | ⚡ **ПЕРВООЧЕРЕДНАЯ для Lead** — Подключить ANTHROPIC_API_KEY и OPENAI_API_KEY в `.env` (невалидные, блокируют BC3/BC4/BC6) | todo | `.env` |
+| N19 | Скрипты BC3/BC6 переведены на Polza.ai (OpenAI-совместимый). Эмбеддинги (BC4) ещё требуют OPENAI_API_KEY | done | `scripts/extract-concepts.ts`, `scripts/generate-questions.ts` |
 
 ## Новые задачи — Пользовательский опыт
 
