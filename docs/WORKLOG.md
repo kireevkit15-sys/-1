@@ -479,6 +479,38 @@
 
 ---
 
+### 2026-04-09 — Сессия 7: Блок 15 — Баттл-система v2 (B15.3–B15.6)
+
+**Время:** ~2 часа
+**Статус:** Завершена
+
+**Что сделано:**
+- **B15.3 — Matchmaking v2:** matchmaking теперь использует per-branch ELO рейтинг. Очереди в Redis разделены по веткам (`matchmaking:queue:STRATEGY` и т.д.). StatsService получил метод `getBranchRating()`. Gateway автоматически подтягивает рейтинг ветки при входе в очередь.
+- **B15.4 — Спарринг:** режим дружеского матча без влияния на рейтинг. 6-символьные инвайт-коды через Redis (TTL 10 мин, одноразовые). WS-события `battle:create_sparring` и `battle:join_sparring`. Флаг `skipRating` в `updateUserStatsByBranch`.
+- **B15.5 — Реванш:** после завершения баттла любой игрок может предложить реванш (30 сек на принятие). WS-события `battle:request_rematch`, `battle:accept_rematch`, `battle:decline_rematch`. Метаданные завершённых баттлов хранятся 60 сек. При реванше роли меняются.
+- **B15.6 — Бот v2:** 3 уровня сложности бота — Новичок (40% точность), Стандарт (60%), Эксперт (85%). Enum `BotLevel` в shared. Профили бота: разные веса сложности вопросов, защиты, скорости ответа. `battle:create_bot` принимает `botLevel`.
+
+**Файлы созданы/изменены:**
+- `apps/api/src/battle/matchmaking.service.ts` — per-branch очереди, `queueKey()`, `joinedKey()`
+- `apps/api/src/battle/battle.gateway.ts` — `getBranchRating`, реванш (3 обработчика), botLevel per battle
+- `apps/api/src/battle/battle.service.ts` — `createSparringBattle`, `resolveInviteCode`, `skipRating`
+- `apps/api/src/battle/bot.service.ts` — полная переработка: BotProfile, 3 уровня, `getBotName()`
+- `apps/api/src/stats/stats.service.ts` — `getBranchRating()`
+- `apps/api/src/battle/battle.module.ts` — добавлен StatsModule в imports
+- `packages/shared/src/battle/types.ts` — enum `BotLevel`
+- `packages/shared/src/index.ts` — экспорт `BotLevel`
+- `docs/SPRINT.md` — B15.3–B15.6 → done
+
+**Задачи из SPRINT.md закрыты:** B15.3, B15.4, B15.5, B15.6
+
+**Коммиты:**
+- `23c1aee` — feat(battle): branch-based attacks + per-branch ELO ratings (B15.1, B15.2)
+- `279ba37` — feat(battle): sparring mode — friendly match via invite code, no rating impact (B15.4)
+- `dc8b581` — feat(battle): rematch system — request/accept/decline after battle ends (B15.5)
+- `e9eb7c5` — feat(battle): bot v2 — 3 difficulty levels: Novice 40%, Standard 60%, Expert 85% (B15.6)
+
+---
+
 ## Сводка по неделям
 
 ### Неделя 1 (2026-04-05 — 2026-04-11)
@@ -495,3 +527,4 @@
 | 04-08 | Яшкин | Edge cases: 0 вопросов, soft-delete пользователя, JWT refresh в батле | B12.7 |
 | 04-08 | Яшкин | Production seed: 499 вопросов, 13 модулей, bulk-загрузка | B12.8 |
 | 04-08 | Бонди | Адаптивный layout (SideNav, RightSidebar), keyboard shortcuts в батле | F5.1, F5.2 |
+| 04-09 | Яшкин | Matchmaking v2, спарринг, реванш, бот v2 (3 уровня) | B15.3–B15.6 (4 задачи) |
