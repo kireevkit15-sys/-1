@@ -1,0 +1,359 @@
+[
+  {
+    "concept": "Линейное мышление в комплексных системах",
+    "source": "dorner/logic-of-failure",
+    "claim": "Люди склонны мыслить линейными цепочками причин и следствий, игнорируя побочные эффекты и отдалённые последствия своих решений в сложных системах с множеством взаимосвязей",
+    "example": "В эксперименте Таналанд участники улучшали медицину и продовольствие, не задумываясь о росте населения. Результат — катастрофический голод из-за экспоненциального роста людей при линейном росте ресурсов",
+    "trust_level": "validated",
+    "academic_sources": [
+      {
+        "title": "Die Logik des Misslingens: Strategisches Denken in komplexen Situationen",
+        "doi": null,
+        "source": "Rowohlt Verlag, Dietrich Dörner, 1989/2003"
+      }
+    ],
+    "tags": ["decision-making", "cognitive-bias", "systems-thinking", "complexity"],
+    "branch": "LOGIC",
+    "difficulty": "SILVER"
+  },
+  {
+    "concept": "Ремонтное поведение вместо системного анализа",
+    "source": "dorner/logic-of-failure",
+    "claim": "Без чёткой конкретизации целей люди переходят к устранению случайно обнаруженных проблем, а не к решению действительно важных задач. Это приводит к игнорированию долгосрочных и скрытых проблем",
+    "example": "Бургомистр Лоххаузена вместо анализа экономики города опрашивал домохозяек у супермаркета и занимался собачьим помётом на улицах и нехваткой журналов в библиотеке",
+    "trust_level": "validated",
+    "academic_sources": [
+      {
+        "title": "Lohhausen: Vom Umgang mit Unbestimmtheit und Komplexität",
+        "doi": null,
+        "source": "Dörner, Kreuzig, Reither & Stäudel, Huber, 1983"
+      }
+    ],
+    "tags": ["decision-making", "goal-setting", "strategic-thinking", "prioritization"],
+    "branch": "STRATEGY",
+    "difficulty": "BRONZE"
+  },
+  {
+    "concept": "Переоценка актуального мотива",
+    "source": "dorner/logic-of-failure",
+    "claim": "Людей заботят имеющиеся проблемы, а не те, которые ещё не возникли. Это приводит к тому, что решение проблемы в области А создаёт новые проблемы в области B, о которых не задумывались заранее",
+    "example": "Пестицид ДДТ решил проблему голода в странах третьего мира, но создал экологическую катастрофу, которую никто не предвидел — потому что экологии как проблемы в тот момент не существовало",
+    "trust_level": "validated",
+    "academic_sources": [
+      {
+        "title": "Die Logik des Misslingens",
+        "doi": null,
+        "source": "Dörner, Rowohlt Verlag, 2003"
+      }
+    ],
+    "tags": ["cognitive-bias", "decision-making", "side-effects", "foresight"],
+    "branch": "STRATEGY",
+    "difficulty": "BRONZE"
+  },
+  {
+    "concept": "Редуктивные гипотезы и центральная переменная",
+    "source": "dorner/logic-of-failure",
+    "claim": "Люди склонны сводить все события в сложной системе к одной центральной причине, что экономит когнитивные ресурсы, но опасно неполно отражает реальность и блокирует анализ обратных связей",
+    "example": "Испытуемый в Лоххаузене свёл всё к 'удовлетворённости жителей': довольные люди меньше болеют, больше работают, производство растёт — и проигнорировал состояние станков как реальную причину низкой производительности",
+    "trust_level": "validated",
+    "academic_sources": [
+      {
+        "title": "Die Logik des Misslingens",
+        "doi": null,
+        "source": "Dörner, Rowohlt Verlag, 2003"
+      }
+    ],
+    "tags": ["critical-thinking", "cognitive-bias", "reductionism", "systems-thinking"],
+    "branch": "LOGIC",
+    "difficulty": "SILVER"
+  },
+  {
+    "concept": "Недооценка экспоненциальных процессов",
+    "source": "dorner/logic-of-failure",
+    "claim": "Люди систематически недооценивают скорость экспоненциально развивающихся процессов, мысля линейно. Это приводит к запоздалым реакциям на быстро растущие угрозы",
+    "example": "Задача о кувшинке: если она покрывает пруд наполовину за 16 недель, многие считают, что для второй половины нужно ещё 16 недель. Правильный ответ — 1 неделя, ведь площадь удваивается каждую неделю",
+    "trust_level": "validated",
+    "academic_sources": [
+      {
+        "title": "Die Logik des Misslingens",
+        "doi": null,
+        "source": "Dörner, Rowohlt Verlag, 2003"
+      }
+    ],
+    "tags": ["probability-statistics", "cognitive-bias", "exponential-growth", "risk-assessment"],
+    "branch": "LOGIC",
+    "difficulty": "BRONZE"
+  },
+  {
+    "concept": "Методизм Клаузевица — ловушка проверенных методов",
+    "source": "dorner/logic-of-failure",
+    "claim": "Когда определённая последовательность действий многократно приносила успех, люди превращают её в автоматический ритуал и перестают анализировать, подходит ли этот метод к текущей ситуации",
+    "example": "В эксперименте с кувшинами воды (Лачинс) испытуемые, привыкшие к сложной формуле B-2C-A, не замечали простого решения A-C даже когда оно было очевидным",
+    "trust_level": "validated",
+    "academic_sources": [
+      {
+        "title": "Vom Kriege",
+        "doi": null,
+        "source": "Carl von Clausewitz, 1832"
+      }
+    ],
+    "tags": ["decision-making", "cognitive-bias", "methodology", "flexibility"],
+    "branch": "STRATEGY",
+    "difficulty": "SILVER"
+  },
+  {
+    "concept": "Баллистическое поведение при принятии решений",
+    "source": "dorner/logic-of-failure",
+    "claim": "Люди склонны к 'баллистическим' решениям — принимают решение и не проверяют его последствия, чтобы сохранить иллюзию собственной компетентности и избежать неуверенности",
+    "example": "В эксперименте Райтера с помощью развивающейся стране только 30% решений проверялись на эффективность. После кризиса контроль упал до 10% — люди отказывались видеть последствия",
+    "trust_level": "validated",
+    "academic_sources": [
+      {
+        "title": "Die Logik des Misslingens",
+        "doi": null,
+        "source": "Dörner, Rowohlt Verlag, 2003"
+      }
+    ],
+    "tags": ["decision-making", "self-deception", "feedback", "accountability"],
+    "branch": "STRATEGY",
+    "difficulty": "SILVER"
+  },
+  {
+    "concept": "Инверсия целей при неудаче",
+    "source": "dorner/logic-of-failure",
+    "claim": "Когда человек не может достичь цели, он может инвертировать её — объявить нежелательный результат желаемым, чтобы сохранить чувство компетентности",
+    "example": "Участник эксперимента с Таналандом, вызвавший голод среди населения, заявил: 'Умрут в основном старые и больные — это хорошо для демографической структуры!'",
+    "trust_level": "validated",
+    "academic_sources": [
+      {
+        "title": "Die Logik des Misslingens",
+        "doi": null,
+        "source": "Dörner, Rowohlt Verlag, 2003"
+      }
+    ],
+    "tags": ["cognitive-bias", "self-deception", "goal-management", "rationalization"],
+    "branch": "LOGIC",
+    "difficulty": "BRONZE"
+  },
+  {
+    "concept": "Теория заговора как защита компетентности",
+    "source": "dorner/logic-of-failure",
+    "claim": "Когда собственные решения приводят к негативным последствиям, люди склонны искать внешнего виновника — создавать 'теорию заговора', вместо того чтобы анализировать свои ошибки",
+    "example": "Испытуемый ввёл самоуправление рабочих на заводе в Лоххаузене, это привело к краху. Вместо анализа он обвинил рабочих в 'саботаже' и предложил расстреливать каждого десятого",
+    "trust_level": "validated",
+    "academic_sources": [
+      {
+        "title": "Die Logik des Misslingens",
+        "doi": null,
+        "source": "Dörner, Rowohlt Verlag, 2003"
+      }
+    ],
+    "tags": ["cognitive-bias", "attribution-error", "conspiracy-thinking", "self-protection"],
+    "branch": "LOGIC",
+    "difficulty": "BRONZE"
+  },
+  {
+    "concept": "Положительная обратная связь между информацией и неуверенностью",
+    "source": "dorner/logic-of-failure",
+    "claim": "Сбор информации может усиливать неуверенность вместо того чтобы её снижать. Чем больше человек узнаёт, тем больше понимает, что не знает — это может привести либо к параличу, либо к слепому акционизму",
+    "example": "Неуспешные испытуемые в эксперименте с литумным механизмом реагировали на давление времени слепым акционизмом без сбора информации. В Лоххаузене без давления — бесконечным сбором информации без действий",
+    "trust_level": "validated",
+    "academic_sources": [
+      {
+        "title": "Die Logik des Misslingens",
+        "doi": null,
+        "source": "Dörner, Rowohlt Verlag, 2003"
+      }
+    ],
+    "tags": ["decision-making", "information-overload", "uncertainty", "analysis-paralysis"],
+    "branch": "STRATEGY",
+    "difficulty": "SILVER"
+  },
+  {
+    "concept": "Групповое мышление (Groupthink) и стратегическая негибкость",
+    "source": "dorner/logic-of-failure",
+    "claim": "Потребность в групповой солидарности после конфликта приводит к тому, что группа отказывается от критического обсуждения стратегий, закрепляя однажды выбранный курс даже когда он перестаёт работать",
+    "example": "Группа 'Музыкальная комната' в SchokoFin после ссоры дала 'клятву на Рютли' о единстве и перестала обсуждать стратегию. Результат — худший результат среди всех команд при максимальных затратах времени",
+    "trust_level": "validated",
+    "academic_sources": [
+      {
+        "title": "The Victims of Groupthink",
+        "doi": null,
+        "source": "Irving Janis, Houghton Mifflin, 1972"
+      }
+    ],
+    "tags": ["leadership", "group-dynamics", "decision-making", "conformity"],
+    "branch": "STRATEGY",
+    "difficulty": "GOLD"
+  },
+  {
+    "concept": "Круг лояльности — глупость как карьерный актив",
+    "source": "dorner/logic-of-failure",
+    "claim": "При неуверенном руководстве менее компетентные сотрудники продвигаются выше, потому что демонстрируют безусловную лояльность. Умные люди опасны для группового духа, так как способны сомневаться",
+    "example": "В группе 'Трофейная комната' Антон, чьё предложение отверг Рольф, стал его самым горячим сторонником. Умного Ханнеса, предлагавшего альтернативы, вытеснили из группы",
+    "trust_level": "validated",
+    "academic_sources": [
+      {
+        "title": "Die Logik des Misslingens",
+        "doi": null,
+        "source": "Dörner, Rowohlt Verlag, 2003"
+      }
+    ],
+    "tags": ["leadership", "organizational-behavior", "loyalty", "competence"],
+    "branch": "STRATEGY",
+    "difficulty": "GOLD"
+  },
+  {
+    "concept": "Структурная экстраполяция будущего",
+    "source": "dorner/logic-of-failure",
+    "claim": "Люди представляют будущее как актуализированное настоящее — те же компоненты в тех же отношениях. Это мешает предвидеть структурные разрывы и качественно новые ситуации",
+    "example": "В начале Первой мировой войны кавалеристы атаковали пулемёты — потому что в представлении о войне конная атака была обязательным компонентом. Первые автомобили были 'повозками без лошадей'",
+    "trust_level": "validated",
+    "academic_sources": [
+      {
+        "title": "Die Logik des Misslingens",
+        "doi": null,
+        "source": "Dörner, Rowohlt Verlag, 2003"
+      }
+    ],
+    "tags": ["critical-thinking", "forecasting", "cognitive-bias", "innovation"],
+    "branch": "LOGIC",
+    "difficulty": "SILVER"
+  },
+  {
+    "concept": "Оперативный интеллект vs академический интеллект",
+    "source": "dorner/logic-of-failure",
+    "claim": "Успех в сложных ситуациях определяется не уровнем IQ, а 'оперативным интеллектом' — умением применять правильный подход в правильный момент. Нет единого рецепта: иногда нужен анализ, иногда действие",
+    "example": "Менеджеры справились с симуляцией 'Моро' значительно лучше студентов — не за счёт интеллекта, а за счёт опыта применения разных стратегий в разных ситуациях",
+    "trust_level": "validated",
+    "academic_sources": [
+      {
+        "title": "Die Logik des Misslingens",
+        "doi": null,
+        "source": "Dörner, Rowohlt Verlag, 2003"
+      }
+    ],
+    "tags": ["emotional-intelligence", "decision-making", "expertise", "adaptability"],
+    "branch": "STRATEGY",
+    "difficulty": "GOLD"
+  },
+  {
+    "concept": "Эрозия моральных стандартов под давлением кризиса",
+    "source": "dorner/logic-of-failure",
+    "claim": "В кризисных ситуациях люди начинают действовать по принципу 'цель оправдывает средства', отклоняясь от собственных моральных стандартов. Это статистически значимый эффект даже в безопасной игровой ситуации",
+    "example": "После кризиса в эксперименте Райтера испытуемые вводили воинскую повинность, продуктовые пайки и повышенную эксплуатацию — меры, которые сами оценивали как аморальные",
+    "trust_level": "validated",
+    "academic_sources": [
+      {
+        "title": "Die Logik des Misslingens",
+        "doi": null,
+        "source": "Dörner, Rowohlt Verlag, 2003"
+      }
+    ],
+    "tags": ["decision-making", "ethics", "crisis-management", "moral-reasoning"],
+    "branch": "STRATEGY",
+    "difficulty": "GOLD"
+  },
+  {
+    "concept": "Саморефлексия как инструмент улучшения мышления",
+    "source": "dorner/logic-of-failure",
+    "claim": "Простое указание размышлять о собственном мышлении значительно улучшает результаты решения сложных задач. Не нужно 'нового мышления' — достаточно осознанного применения здорового разума",
+    "example": "В эксперименте Райтера группа саморефлексии (обдумывала свой ход мыслей) решала задачи значительно лучше контрольной группы, которая просто описывала свои гипотезы",
+    "trust_level": "validated",
+    "academic_sources": [
+      {
+        "title": "Über die Selbstreflexion beim Problemlösen",
+        "doi": null,
+        "source": "Reither, E., Universität Gießen, 1979"
+      }
+    ],
+    "tags": ["critical-thinking", "metacognition", "self-improvement", "problem-solving"],
+    "branch": "LOGIC",
+    "difficulty": "BRONZE"
+  },
+  {
+    "concept": "Чернобыль — психология техногенной катастрофы",
+    "source": "dorner/logic-of-failure",
+    "claim": "Чернобыльская катастрофа на 100% объясняется психологическими факторами: привычка нарушать технику безопасности, неспособность мыслить нелинейно, недооценка экспоненциальных процессов, групповая самоуверенность",
+    "example": "Операторы отключили 6 систем безопасности, продолжили эксперимент при 7% мощности вместо 25%, проигнорировали критически низкое число стержней — всё 'осознанно и с убеждением в правильности'",
+    "trust_level": "validated",
+    "academic_sources": [
+      {
+        "title": "The Chernobyl Errors",
+        "doi": null,
+        "source": "Reason, J.T., Bulletin of the British Psychological Society, 1987"
+      }
+    ],
+    "tags": ["decision-making", "risk-assessment", "safety", "overconfidence"],
+    "branch": "LOGIC",
+    "difficulty": "SILVER"
+  },
+  {
+    "concept": "Конфликт целей: свобода vs равенство",
+    "source": "dorner/logic-of-failure",
+    "claim": "В комплексных системах цели часто противоречат друг другу. Нераспознанные противоречия приводят к маятниковому поведению — решение одной проблемы неизбежно создаёт другую",
+    "example": "Свобода ведёт к неравенству (способные получают больше), а равенство требует ограничений свободы. Французская революция провозгласила оба идеала — и столкнулась с их несовместимостью",
+    "trust_level": "validated",
+    "academic_sources": [
+      {
+        "title": "Die Logik des Misslingens",
+        "doi": null,
+        "source": "Dörner, Rowohlt Verlag, 2003"
+      }
+    ],
+    "tags": ["decision-making", "goal-conflict", "trade-offs", "political-thinking"],
+    "branch": "STRATEGY",
+    "difficulty": "SILVER"
+  },
+  {
+    "concept": "Иммунизирующее обусловливание гипотез",
+    "source": "dorner/logic-of-failure",
+    "claim": "Когда факты опровергают гипотезу, люди не отказываются от неё, а добавляют исключение: 'В целом правило работает, просто сейчас особый случай'. Так гипотезу можно поддерживать бесконечно",
+    "example": "В эксперименте с холодильником испытуемый считал, что нечётные числа повышают температуру. Когда она упала — решил, что нечётные работают иначе только после числа 100",
+    "trust_level": "validated",
+    "academic_sources": [
+      {
+        "title": "Die Logik des Misslingens",
+        "doi": null,
+        "source": "Dörner, Rowohlt Verlag, 2003"
+      }
+    ],
+    "tags": ["critical-thinking", "confirmation-bias", "hypothesis-testing", "self-deception"],
+    "branch": "LOGIC",
+    "difficulty": "SILVER"
+  },
+  {
+    "concept": "Магическое мышление при работе с неизвестными системами",
+    "source": "dorner/logic-of-failure",
+    "claim": "Сталкиваясь с непонятной системой, люди приписывают магические свойства отдельным числам и действиям, создавая ритуалы вместо поиска закономерностей",
+    "example": "В эксперименте с холодильной камерой испытуемые говорили '23 — хорошее число', '97 — хорошее значение', 'нечётные числа лучше'. Случайное совпадение обобщалось в магическое правило",
+    "trust_level": "validated",
+    "academic_sources": [
+      {
+        "title": "Heurismen beim Umgang mit einem einfachen dynamischen System",
+        "doi": null,
+        "source": "Reichert & Dörner, Sprache und Kognition, 1988"
+      }
+    ],
+    "tags": ["critical-thinking", "superstition", "pattern-recognition", "cognitive-bias"],
+    "branch": "LOGIC",
+    "difficulty": "BRONZE"
+  },
+  {
+    "concept": "Стратегия Мольтке vs методизм",
+    "source": "dorner/logic-of-failure",
+    "claim": "Стратегия — не система общих правил, а 'усовершенствование идеи в соответствии с постоянно меняющимися обстоятельствами'. В комплексных ситуациях каждое дерево нужно рубить индивидуально, а не косить поле одной косой",
+    "example": "Командующий пожарными бригадами: иногда нужно концентрировать силы, иногда распределять; иногда тушить фронт огня, иногда отступить — всё зависит от конкретных обстоятельств",
+    "trust_level": "validated",
+    "academic_sources": [
+      {
+        "title": "Graf von Moltke. Ausgewählte Werke",
+        "doi": null,
+        "source": "Schmerfeld (Hg.), Berlin, 1925"
+      }
+    ],
+    "tags": ["strategic-thinking", "leadership", "adaptability", "decision-making"],
+    "branch": "STRATEGY",
+    "difficulty": "GOLD"
+  }
+]
