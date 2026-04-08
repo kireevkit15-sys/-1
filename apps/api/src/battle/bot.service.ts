@@ -1,10 +1,27 @@
 import { Injectable } from '@nestjs/common';
-import { Difficulty, DefenseType } from '@razum/shared';
+import { Difficulty, DefenseType, Branch } from '@razum/shared';
 
 const BOT_ACCURACY = 0.6;
 
+const ALL_BRANCHES: Branch[] = [
+  Branch.STRATEGY,
+  Branch.LOGIC,
+  Branch.ERUDITION,
+  Branch.RHETORIC,
+  Branch.INTUITION,
+];
+
 @Injectable()
 export class BotService {
+  /**
+   * Choose a branch for the bot's attack turn.
+   * Uniform random across all available branches.
+   */
+  chooseBranch(availableBranches?: Branch[]): Branch {
+    const branches = availableBranches && availableBranches.length > 0 ? availableBranches : ALL_BRANCHES;
+    return branches[Math.floor(Math.random() * branches.length)]!;
+  }
+
   /**
    * Choose a difficulty for the bot's attack turn.
    * Weighted random: 70% BRONZE, 20% SILVER, 10% GOLD.

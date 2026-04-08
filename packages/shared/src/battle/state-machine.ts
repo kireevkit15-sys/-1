@@ -8,6 +8,7 @@ import {
   BattleConfig,
   Difficulty,
   DefenseType,
+  Branch,
 } from './types';
 import { calculateDamage, calculateDefenseResult, calculateXpGained, calculateRatingChange } from './scoring';
 import { MAX_HP, ROUNDS_PER_BATTLE, SPARRING_ROUNDS, ROUND_TIME_LIMIT, ELO_DEFAULT_RATING } from '../constants';
@@ -20,15 +21,26 @@ const defaultConfig: Required<BattleConfig> = {
 /**
  * Create a new battle between two players.
  */
+const ALL_BRANCHES: Branch[] = [
+  Branch.STRATEGY,
+  Branch.LOGIC,
+  Branch.ERUDITION,
+  Branch.RHETORIC,
+  Branch.INTUITION,
+];
+
 export function createBattle(
   player1: Pick<BattlePlayer, 'id' | 'name' | 'avatarUrl'>,
   player2: Pick<BattlePlayer, 'id' | 'name' | 'avatarUrl'>,
   mode: BattleMode,
   categories: string[],
   config?: BattleConfig,
+  branches?: Branch[],
 ): BattleState {
-  if (categories.length === 0) {
-    throw new Error('At least one category is required');
+  const effectiveBranches = branches !== undefined ? branches : ALL_BRANCHES;
+
+  if (categories.length === 0 && effectiveBranches.length === 0) {
+    throw new Error('At least one category or branch is required');
   }
 
   const cfg = { ...defaultConfig, ...config };
@@ -36,7 +48,7 @@ export function createBattle(
 
   return {
     id: cfg.idGenerator(),
-    phase: BattlePhase.CATEGORY_SELECT,
+    phase: BattlePhase.BRANCH_SELECT,
     mode,
     player1: {
       id: player1.id,
@@ -56,6 +68,7 @@ export function createBattle(
     totalRounds,
     rounds: [],
     categories,
+    branches: effectiveBranches,
     currentAttackerId: player1.id,
     currentDefenderId: player2.id,
     timeLimit: ROUND_TIME_LIMIT,
@@ -77,6 +90,7 @@ export function handleTimeout(state: BattleState): BattleState {
       roundNumber: state.currentRound,
       attackerId: state.currentAttackerId!,
       defenderId: state.currentDefenderId!,
+      branch: state.selectedBranch,
       difficulty: Difficulty.BRONZE,
       attackerAnswer: -1,
       attackerCorrect: false,
@@ -122,11 +136,38 @@ export function handleDisconnect(state: BattleState, disconnectedPlayerId: strin
 }
 
 /**
+ * Select a branch for the current round (attacker chooses which branch to attack in).
+ */
+export function selectBranch(state: BattleState, branch: Branch): BattleState {
+  if (state.phase !== BattlePhase.BRANCH_SELECT && state.phase !== BattlePhase.CATEGORY_SELECT) {
+    throw new Error(`Cannot select branch in phase ${state.phase}`);
+  }
+
+  if (!state.branches.includes(branch)) {
+    throw new Error(`Invalid branch: ${branch}`);
+  }
+
+  return {
+    ...state,
+    selectedBranch: branch,
+    selectedCategory: branch, // backward compat
+    phase: BattlePhase.ROUND_ATTACK,
+  };
+}
+
+/**
  * Select a category for the current round.
+ * @deprecated Use selectBranch instead.
  */
 export function selectCategory(state: BattleState, category: string): BattleState {
-  if (state.phase !== BattlePhase.CATEGORY_SELECT) {
+  if (state.phase !== BattlePhase.CATEGORY_SELECT && state.phase !== BattlePhase.BRANCH_SELECT) {
     throw new Error(`Cannot select category in phase ${state.phase}`);
+  }
+
+  // Try to match as branch first
+  const branchValues = Object.values(Branch) as string[];
+  if (branchValues.includes(category)) {
+    return selectBranch(state, category as Branch);
   }
 
   if (!state.categories.includes(category)) {
@@ -157,6 +198,7 @@ export function chooseDifficulty(state: BattleState, playerId: string, difficult
     roundNumber: state.currentRound,
     attackerId: state.currentAttackerId!,
     defenderId: state.currentDefenderId!,
+    branch: state.selectedBranch,
     difficulty,
     damageDealt: 0,
     pointsAwarded: 0,
@@ -356,7 +398,7 @@ export function nextPhase(state: BattleState): BattleState {
         };
       }
 
-      // No swap needed, determine roles for next round and go to category select
+      // No swap needed, determine roles for next round and go to branch select
       const { attackerId, defenderId } = getAttackerForRound(
         nextRound,
         state.totalRounds,
@@ -366,19 +408,21 @@ export function nextPhase(state: BattleState): BattleState {
 
       return {
         ...state,
-        phase: BattlePhase.CATEGORY_SELECT,
+        phase: BattlePhase.BRANCH_SELECT,
         currentRound: nextRound,
         currentAttackerId: attackerId,
         currentDefenderId: defenderId,
         selectedCategory: undefined,
+        selectedBranch: undefined,
       };
     }
 
     case BattlePhase.SWAP_ROLES: {
       return {
         ...state,
-        phase: BattlePhase.CATEGORY_SELECT,
+        phase: BattlePhase.BRANCH_SELECT,
         selectedCategory: undefined,
+        selectedBranch: undefined,
       };
     }
 

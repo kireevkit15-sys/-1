@@ -234,6 +234,13 @@ export class StatsService {
       totalXp,
       xpProgress: progress,
       rating: stats.rating,
+      branchRatings: {
+        logic: (stats as any).logicRating ?? 1000,
+        erudition: (stats as any).eruditionRating ?? 1000,
+        strategy: (stats as any).strategyRating ?? 1000,
+        rhetoric: (stats as any).rhetoricRating ?? 1000,
+        intuition: (stats as any).intuitionRating ?? 1000,
+      },
       streakDays: stats.streakDays,
       streakDate: stats.streakDate,
       thinkerClass,

@@ -6,6 +6,7 @@ import { QuestionService } from '../question/question.service';
 import {
   createBattle,
   selectCategory,
+  selectBranch,
   chooseDifficulty,
   submitAnswer,
   submitDefense,
@@ -17,6 +18,7 @@ import {
   calculateRatingChange,
   BattleMode,
   BattlePhase,
+  Branch,
   ELO_DEFAULT_RATING,
 } from '@razum/shared';
 import type { BattleState, BattleResult } from '@razum/shared';
@@ -239,6 +241,7 @@ export class BattleService {
           roundNumber: currentRound.roundNumber,
           attackerId: userId,
           questionId,
+          branch: currentRound.branch ?? (state.selectedBranch as any) ?? null,
           difficulty: difficulty as any,
           answerIndex,
           isCorrect,
@@ -359,25 +362,29 @@ export class BattleService {
       },
     });
 
-    // Update player 1 stats (XP + rating)
-    const p1Xp = result.xpGained[state.player1.id] ?? 0;
+    // Collect XP per branch from rounds
+    const branchXpMap: Partial<Record<Branch, number>> = {};
+    for (const round of state.rounds) {
+      if (round.branch && round.difficulty) {
+        branchXpMap[round.branch] = (branchXpMap[round.branch] ?? 0);
+      }
+    }
+
+    // Update player 1 stats (XP per branch + rating)
     const p1Won = result.winnerId === state.player1.id;
-    await this.updateUserStats(
+    await this.updateUserStatsByBranch(
       state.player1.id,
-      p1Xp,
-      state.selectedCategory,
+      result.xpGained,
       p1Won,
       state.player2.id !== 'bot' ? state.player2.id : null,
     );
 
     // Update player 2 stats only if not a bot
     if (state.player2.id !== 'bot') {
-      const p2Xp = result.xpGained[state.player2.id] ?? 0;
       const p2Won = result.winnerId === state.player2.id;
-      await this.updateUserStats(
+      await this.updateUserStatsByBranch(
         state.player2.id,
-        p2Xp,
-        state.selectedCategory,
+        result.xpGained,
         p2Won,
         state.player1.id,
       );
@@ -455,62 +462,125 @@ export class BattleService {
   }
 
   /**
-   * Update a user's stats after battle completion (XP + ELO rating).
+   * Update a user's stats after battle completion — distributes XP per branch + ELO per branch.
    */
-  private async updateUserStats(
+  private async updateUserStatsByBranch(
     userId: string,
-    xpGained: number,
-    category: string | undefined,
+    xpGained: Record<string, number>,
     won: boolean,
     opponentId: string | null,
   ) {
-    // Determine which XP stat to increment based on category
-    const xpField = this.categoryToXpField(category);
+    // Fetch player and opponent stats for rating calculations
+    const [playerStats, opponentStats] = await Promise.all([
+      this.prisma.userStats.findUnique({ where: { userId } }),
+      opponentId
+        ? this.prisma.userStats.findUnique({ where: { userId: opponentId } })
+        : null,
+    ]);
 
-    // Calculate rating change if PvP
+    // Calculate overall rating change
     let ratingDelta = 0;
     if (opponentId) {
-      const [playerStats, opponentStats] = await Promise.all([
-        this.prisma.userStats.findUnique({ where: { userId } }),
-        this.prisma.userStats.findUnique({ where: { userId: opponentId } }),
-      ]);
-
       const playerRating = playerStats?.rating ?? ELO_DEFAULT_RATING;
       const opponentRating = opponentStats?.rating ?? ELO_DEFAULT_RATING;
       ratingDelta = calculateRatingChange(playerRating, opponentRating, won);
     }
 
+    // Build per-branch XP increments
+    const branchIncrements: Record<string, number> = {};
+    const branchRatingDeltas: Record<string, number> = {};
+
+    for (const branch of Object.values(Branch)) {
+      const xp = xpGained[branch];
+      if (xp && xp > 0) {
+        const xpField = this.branchToXpField(branch);
+        branchIncrements[xpField] = (branchIncrements[xpField] ?? 0) + xp;
+
+        // Calculate per-branch ELO change (only for PvP)
+        if (opponentId) {
+          const ratingField = this.branchToRatingField(branch);
+          const playerBranchRating = (playerStats as any)?.[ratingField] ?? ELO_DEFAULT_RATING;
+          const opponentBranchRating = (opponentStats as any)?.[ratingField] ?? ELO_DEFAULT_RATING;
+          branchRatingDeltas[ratingField] = calculateRatingChange(playerBranchRating, opponentBranchRating, won);
+        }
+      }
+    }
+
+    // If no branch-specific XP found, fall back to eruditionXp with total battle XP
+    if (Object.keys(branchIncrements).length === 0) {
+      const totalXp = xpGained['battle'] ?? 0;
+      if (totalXp > 0) {
+        branchIncrements['eruditionXp'] = totalXp;
+      }
+    }
+
+    // Build update payload
+    const updateData: Record<string, unknown> = {
+      rating: { increment: ratingDelta },
+    };
+    const createData: Record<string, unknown> = {
+      userId,
+      rating: ELO_DEFAULT_RATING + ratingDelta,
+    };
+
+    for (const [field, amount] of Object.entries(branchIncrements)) {
+      updateData[field] = { increment: amount };
+      createData[field] = amount;
+    }
+
+    for (const [field, delta] of Object.entries(branchRatingDeltas)) {
+      updateData[field] = { increment: delta };
+      createData[field] = ELO_DEFAULT_RATING + delta;
+    }
+
     await this.prisma.userStats.upsert({
       where: { userId },
-      create: {
-        userId,
-        [xpField]: xpGained,
-        rating: ELO_DEFAULT_RATING + ratingDelta,
-      },
-      update: {
-        [xpField]: { increment: xpGained },
-        rating: { increment: ratingDelta },
-      },
+      create: createData as any,
+      update: updateData as any,
     });
   }
 
   /**
-   * Map a category string to the corresponding XP field on UserStats.
+   * Map a Branch enum value to the corresponding XP field on UserStats.
    */
-  private categoryToXpField(
-    category: string | undefined,
+  private branchToXpField(
+    branch: Branch,
   ): 'logicXp' | 'eruditionXp' | 'strategyXp' | 'rhetoricXp' | 'intuitionXp' {
-    switch (category?.toLowerCase()) {
-      case 'logic':
+    switch (branch) {
+      case Branch.LOGIC:
         return 'logicXp';
-      case 'strategy':
+      case Branch.STRATEGY:
         return 'strategyXp';
-      case 'rhetoric':
+      case Branch.RHETORIC:
         return 'rhetoricXp';
-      case 'intuition':
+      case Branch.INTUITION:
         return 'intuitionXp';
+      case Branch.ERUDITION:
+        return 'eruditionXp';
       default:
         return 'eruditionXp';
+    }
+  }
+
+  /**
+   * Map a Branch enum value to the corresponding rating field on UserStats.
+   */
+  private branchToRatingField(
+    branch: Branch,
+  ): 'logicRating' | 'eruditionRating' | 'strategyRating' | 'rhetoricRating' | 'intuitionRating' {
+    switch (branch) {
+      case Branch.LOGIC:
+        return 'logicRating';
+      case Branch.STRATEGY:
+        return 'strategyRating';
+      case Branch.RHETORIC:
+        return 'rhetoricRating';
+      case Branch.INTUITION:
+        return 'intuitionRating';
+      case Branch.ERUDITION:
+        return 'eruditionRating';
+      default:
+        return 'eruditionRating';
     }
   }
 

@@ -5,6 +5,7 @@ export {
   DefenseType,
   BattleMode,
   PlayerRole,
+  Branch,
 } from './battle/types';
 export type {
   BattlePlayer,
@@ -17,6 +18,7 @@ export type {
 export {
   createBattle,
   selectCategory,
+  selectBranch,
   chooseDifficulty,
   submitAnswer,
   submitDefense,
@@ -44,8 +46,7 @@ export {
   getStatsRadar,
 } from './stats/calculator';
 
-// Questions
-export { Branch } from './questions/types';
+// Questions (Branch is re-exported from battle/types)
 export type { QuestionData } from './questions/types';
 
 // Content validation

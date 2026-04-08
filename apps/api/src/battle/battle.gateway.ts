@@ -18,11 +18,13 @@ import {
   BattleState,
   BattlePhase,
   BattleMode,
+  Branch,
   Difficulty,
   DefenseType,
   BattleResult,
   createBattle,
   selectCategory,
+  selectBranch,
   chooseDifficulty,
   submitAnswer,
   submitDefense,
@@ -328,7 +330,43 @@ export class BattleGateway
   }
 
   // ---------------------------------------------------------------------------
-  // battle:category — Select a category for the current round
+  // battle:branch — Select a branch for the current round (attacker chooses)
+  // ---------------------------------------------------------------------------
+
+  @SubscribeMessage('battle:branch')
+  async handleBranchSelect(
+    @ConnectedSocket() client: AuthenticatedSocket,
+    @MessageBody() data: { battleId: string; branch: Branch },
+  ) {
+    const userId = client.data.userId;
+    if (!userId) return;
+
+    const state = this.battles.get(data.battleId);
+    if (!state) {
+      client.emit('battle:error', { message: 'Battle not found' });
+      return;
+    }
+
+    try {
+      const updated = selectBranch(state, data.branch);
+      this.battles.set(data.battleId, updated);
+
+      this.server.to(`battle:${data.battleId}`).emit('battle:phase_changed', updated);
+
+      // Start round timer for the attack phase
+      this.startRoundTimer(data.battleId);
+
+      // If this is a bot battle and the bot is the attacker, auto-attack
+      if (this.isBotBattle(updated) && updated.currentAttackerId === BOT_PLAYER.id) {
+        this.scheduleBotAttack(data.battleId);
+      }
+    } catch (error: any) {
+      client.emit('battle:error', { message: error.message ?? 'Failed to select branch' });
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // battle:category — Select a category for the current round (backward compat)
   // ---------------------------------------------------------------------------
 
   @SubscribeMessage('battle:category')
@@ -478,11 +516,11 @@ export class BattleGateway
         this.server.to(`battle:${data.battleId}`).emit('battle:phase_changed', state);
       }
 
-      // If bot battle and bot needs to pick category, schedule it
-      if (this.isBotBattle(state) && state.phase === BattlePhase.CATEGORY_SELECT) {
-        // The attacker picks category. If bot is attacker, auto-select.
+      // If bot battle and bot needs to pick branch, schedule it
+      if (this.isBotBattle(state) && (state.phase === BattlePhase.BRANCH_SELECT || state.phase === BattlePhase.CATEGORY_SELECT)) {
+        // The attacker picks branch. If bot is attacker, auto-select.
         if (state.currentAttackerId === BOT_PLAYER.id) {
-          this.scheduleBotCategorySelect(data.battleId);
+          this.scheduleBotBranchSelect(data.battleId);
         }
       }
     } catch (error: any) {
@@ -645,17 +683,17 @@ export class BattleGateway
     return state.player2.id === BOT_PLAYER.id;
   }
 
-  private scheduleBotCategorySelect(battleId: string) {
+  private scheduleBotBranchSelect(battleId: string) {
     const delay = this.botService.getThinkingDelay();
     const timer = setTimeout(() => {
       const state = this.battles.get(battleId);
-      if (!state || state.phase !== BattlePhase.CATEGORY_SELECT) return;
+      if (!state || (state.phase !== BattlePhase.BRANCH_SELECT && state.phase !== BattlePhase.CATEGORY_SELECT)) return;
 
-      const category =
-        state.categories[Math.floor(Math.random() * state.categories.length)]!;
+      // Bot picks a random branch
+      const branch = state.branches[Math.floor(Math.random() * state.branches.length)]!;
 
       try {
-        const updated = selectCategory(state, category);
+        const updated = selectBranch(state, branch);
         this.battles.set(battleId, updated);
         this.server.to(`battle:${battleId}`).emit('battle:phase_changed', updated);
         this.startRoundTimer(battleId);
@@ -663,7 +701,7 @@ export class BattleGateway
         // Bot is attacker, so schedule the attack
         this.scheduleBotAttack(battleId);
       } catch (err: any) {
-        this.logger.error(`Bot category select failed: ${err.message}`);
+        this.logger.error(`Bot branch select failed: ${err.message}`);
       }
     }, delay);
     this.botTimers.set(battleId, timer);
@@ -758,9 +796,9 @@ export class BattleGateway
           this.server.to(`battle:${battleId}`).emit('battle:phase_changed', state);
         }
 
-        // If bot is the attacker for the new round, schedule category + attack
-        if (state.phase === BattlePhase.CATEGORY_SELECT && state.currentAttackerId === BOT_PLAYER.id) {
-          this.scheduleBotCategorySelect(battleId);
+        // If bot is the attacker for the new round, schedule branch select + attack
+        if ((state.phase === BattlePhase.BRANCH_SELECT || state.phase === BattlePhase.CATEGORY_SELECT) && state.currentAttackerId === BOT_PLAYER.id) {
+          this.scheduleBotBranchSelect(battleId);
         }
       } catch (err: any) {
         this.logger.error(`Bot advance round failed: ${err.message}`);

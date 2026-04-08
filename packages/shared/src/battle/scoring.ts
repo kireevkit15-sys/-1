@@ -63,22 +63,31 @@ export function calculateDefenseResult(
 
 /**
  * Calculate XP gained from a battle based on rounds played and whether the player won.
+ * Returns total XP and per-branch XP breakdown.
  */
 export function calculateXpGained(rounds: BattleRound[], won: boolean): Record<string, number> {
   let totalXp = 0;
+  const branchXp: Record<string, number> = {};
 
   for (const round of rounds) {
     if (round.difficulty) {
+      let roundXp = 0;
       switch (round.difficulty) {
         case Difficulty.BRONZE:
-          totalXp += XP.BRONZE;
+          roundXp = XP.BRONZE;
           break;
         case Difficulty.SILVER:
-          totalXp += XP.SILVER;
+          roundXp = XP.SILVER;
           break;
         case Difficulty.GOLD:
-          totalXp += XP.GOLD;
+          roundXp = XP.GOLD;
           break;
+      }
+      totalXp += roundXp;
+
+      // Track XP per branch
+      if (round.branch) {
+        branchXp[round.branch] = (branchXp[round.branch] ?? 0) + roundXp;
       }
     }
   }
@@ -87,7 +96,7 @@ export function calculateXpGained(rounds: BattleRound[], won: boolean): Record<s
     totalXp += XP.WIN_BONUS;
   }
 
-  return { battle: totalXp };
+  return { battle: totalXp, ...branchXp };
 }
 
 /**

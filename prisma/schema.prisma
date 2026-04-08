@@ -103,17 +103,23 @@ model User {
 // ── UserStats ────────────────────────────────
 
 model UserStats {
-  userId       String   @id @db.Uuid
-  logicXp      Int      @default(0)
-  eruditionXp  Int      @default(0)
-  strategyXp   Int      @default(0)
-  rhetoricXp   Int      @default(0)
-  intuitionXp  Int      @default(0)
-  rating       Int      @default(1000)
-  streakDays   Int      @default(0)
-  streakDate   DateTime? @db.Date
-  thinkerClass String?  // STRATEGIST, PHILOSOPHER, SCHOLAR, COMMANDER, VISIONARY, SAGE
-  updatedAt    DateTime @updatedAt
+  userId         String   @id @db.Uuid
+  logicXp        Int      @default(0)
+  eruditionXp    Int      @default(0)
+  strategyXp     Int      @default(0)
+  rhetoricXp     Int      @default(0)
+  intuitionXp    Int      @default(0)
+  rating         Int      @default(1000)
+  // Per-branch ELO ratings
+  logicRating    Int      @default(1000)
+  eruditionRating Int     @default(1000)
+  strategyRating Int      @default(1000)
+  rhetoricRating Int      @default(1000)
+  intuitionRating Int     @default(1000)
+  streakDays     Int      @default(0)
+  streakDate     DateTime? @db.Date
+  thinkerClass   String?  // STRATEGIST, PHILOSOPHER, SCHOLAR, COMMANDER, VISIONARY, SAGE
+  updatedAt      DateTime @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -220,6 +226,7 @@ model BattleRound {
   roundNumber  Int         @db.SmallInt
   attackerId   String      @db.Uuid
   questionId   String      @db.Uuid
+  branch       Branch?
   difficulty   Difficulty
   answerIndex  Int?        @db.SmallInt
   isCorrect    Boolean?
@@ -233,6 +240,7 @@ model BattleRound {
 
   @@index([battleId])
   @@index([attackerId])
+  @@index([branch])
   @@map("battle_rounds")
 }
 

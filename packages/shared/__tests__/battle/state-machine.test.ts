@@ -1,6 +1,7 @@
 import {
   createBattle,
   selectCategory,
+  selectBranch,
   chooseDifficulty,
   submitAnswer,
   submitDefense,
@@ -13,6 +14,7 @@ import {
 import {
   BattlePhase,
   BattleMode,
+  Branch,
   Difficulty,
   DefenseType,
   BattleState,
@@ -31,7 +33,7 @@ describe('createBattle', () => {
   it('should create a battle with correct initial state', () => {
     const state = makeBattle();
 
-    expect(state.phase).toBe(BattlePhase.CATEGORY_SELECT);
+    expect(state.phase).toBe(BattlePhase.BRANCH_SELECT);
     expect(state.mode).toBe(BattleMode.SIEGE);
     expect(state.player1.id).toBe('p1');
     expect(state.player2.id).toBe('p2');
@@ -48,9 +50,19 @@ describe('createBattle', () => {
     expect(state.startedAt).toBeDefined();
   });
 
-  it('should throw if no categories provided', () => {
-    expect(() => createBattle(player1, player2, BattleMode.SIEGE, [])).toThrow(
-      'At least one category is required',
+  it('should have all 5 branches by default', () => {
+    const state = makeBattle();
+    expect(state.branches).toHaveLength(5);
+    expect(state.branches).toContain(Branch.STRATEGY);
+    expect(state.branches).toContain(Branch.LOGIC);
+    expect(state.branches).toContain(Branch.ERUDITION);
+    expect(state.branches).toContain(Branch.RHETORIC);
+    expect(state.branches).toContain(Branch.INTUITION);
+  });
+
+  it('should throw if no categories or branches provided', () => {
+    expect(() => createBattle(player1, player2, BattleMode.SIEGE, [], undefined, [])).toThrow(
+      'At least one category or branch is required',
     );
   });
 
@@ -60,7 +72,35 @@ describe('createBattle', () => {
   });
 });
 
-describe('selectCategory', () => {
+describe('selectBranch', () => {
+  it('should select a valid branch and advance to ROUND_ATTACK', () => {
+    const state = makeBattle();
+    const next = selectBranch(state, Branch.LOGIC);
+
+    expect(next.selectedBranch).toBe(Branch.LOGIC);
+    expect(next.selectedCategory).toBe(Branch.LOGIC); // backward compat
+    expect(next.phase).toBe(BattlePhase.ROUND_ATTACK);
+  });
+
+  it('should throw on invalid branch', () => {
+    const state = makeBattle();
+    expect(() => selectBranch(state, 'INVALID' as Branch)).toThrow('Invalid branch');
+  });
+
+  it('should throw if not in BRANCH_SELECT phase', () => {
+    const state = { ...makeBattle(), phase: BattlePhase.ROUND_ATTACK };
+    expect(() => selectBranch(state, Branch.LOGIC)).toThrow('Cannot select branch');
+  });
+
+  it('should record branch in round after chooseDifficulty', () => {
+    let state = makeBattle();
+    state = selectBranch(state, Branch.STRATEGY);
+    state = chooseDifficulty(state, 'p1', Difficulty.BRONZE);
+    expect(state.rounds[0]!.branch).toBe(Branch.STRATEGY);
+  });
+});
+
+describe('selectCategory (backward compat)', () => {
   it('should select a valid category and advance to ROUND_ATTACK', () => {
     const state = makeBattle();
     const next = selectCategory(state, 'Logic');
@@ -69,12 +109,20 @@ describe('selectCategory', () => {
     expect(next.phase).toBe(BattlePhase.ROUND_ATTACK);
   });
 
+  it('should auto-detect Branch enum values', () => {
+    const state = makeBattle();
+    const next = selectCategory(state, 'LOGIC');
+
+    expect(next.selectedBranch).toBe(Branch.LOGIC);
+    expect(next.phase).toBe(BattlePhase.ROUND_ATTACK);
+  });
+
   it('should throw on invalid category', () => {
     const state = makeBattle();
     expect(() => selectCategory(state, 'InvalidCategory')).toThrow('Invalid category');
   });
 
-  it('should throw if not in CATEGORY_SELECT phase', () => {
+  it('should throw if not in BRANCH_SELECT phase', () => {
     const state = { ...makeBattle(), phase: BattlePhase.ROUND_ATTACK };
     expect(() => selectCategory(state, 'Logic')).toThrow('Cannot select category');
   });
@@ -225,7 +273,7 @@ describe('role swapping', () => {
     expect(state.currentAttackerId).toBe('p1');
     state = completeRound(state, 'p1', 'p2');
     state = nextPhase(state); // R1 -> R2 (no swap)
-    expect(state.phase).toBe(BattlePhase.CATEGORY_SELECT);
+    expect(state.phase).toBe(BattlePhase.BRANCH_SELECT);
     expect(state.currentAttackerId).toBe('p1'); // still p1
     expect(state.currentRound).toBe(2);
 
@@ -239,7 +287,7 @@ describe('role swapping', () => {
 
     // Advance past swap
     state = nextPhase(state);
-    expect(state.phase).toBe(BattlePhase.CATEGORY_SELECT);
+    expect(state.phase).toBe(BattlePhase.BRANCH_SELECT);
   });
 
   it('should swap roles again after round 4', () => {
@@ -369,12 +417,12 @@ describe('illegal transitions', () => {
   });
 
   it('should throw when choosing difficulty in wrong phase', () => {
-    const state = { ...makeBattle(), phase: BattlePhase.CATEGORY_SELECT };
+    const state = { ...makeBattle(), phase: BattlePhase.BRANCH_SELECT };
     expect(() => chooseDifficulty(state, 'p1', Difficulty.BRONZE)).toThrow();
   });
 
   it('should throw when submitting answer in wrong phase', () => {
-    const state = { ...makeBattle(), phase: BattlePhase.CATEGORY_SELECT };
+    const state = { ...makeBattle(), phase: BattlePhase.BRANCH_SELECT };
     expect(() => submitAnswer(state, 'p1', 0, true)).toThrow();
   });
 
@@ -417,7 +465,7 @@ describe('handleTimeout', () => {
   });
 
   it('should throw if timeout called in wrong phase', () => {
-    const state = makeBattle(); // CATEGORY_SELECT
+    const state = makeBattle(); // BRANCH_SELECT
     expect(() => handleTimeout(state)).toThrow('Cannot timeout in phase');
   });
 });

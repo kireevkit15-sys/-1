@@ -1,7 +1,12 @@
+import { Branch } from '../questions/types';
+
+export { Branch };
+
 export enum BattlePhase {
   WAITING = 'WAITING',
   MATCHED = 'MATCHED',
   CATEGORY_SELECT = 'CATEGORY_SELECT',
+  BRANCH_SELECT = 'BRANCH_SELECT',
   ROUND_ATTACK = 'ROUND_ATTACK',
   ROUND_DEFENSE = 'ROUND_DEFENSE',
   ROUND_RESULT = 'ROUND_RESULT',
@@ -43,6 +48,7 @@ export interface BattleRound {
   roundNumber: number;
   attackerId: string;
   defenderId: string;
+  branch?: Branch;
   questionId?: string;
   difficulty?: Difficulty;
   attackerAnswer?: number;
@@ -62,8 +68,13 @@ export interface BattleState {
   currentRound: number;
   totalRounds: number;
   rounds: BattleRound[];
+  /** @deprecated Use branches instead */
   categories: string[];
+  /** Available branches for this battle (all 5 by default) */
+  branches: Branch[];
   selectedCategory?: string;
+  /** Branch selected by attacker for current round */
+  selectedBranch?: Branch;
   currentAttackerId?: string;
   currentDefenderId?: string;
   timeLimit: number;
