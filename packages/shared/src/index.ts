@@ -6,6 +6,7 @@ export {
   BattleMode,
   PlayerRole,
   Branch,
+  BotLevel,
 } from './battle/types';
 export type {
   BattlePlayer,

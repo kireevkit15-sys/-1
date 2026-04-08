@@ -36,6 +36,12 @@ export enum PlayerRole {
   DEFENDER = 'DEFENDER',
 }
 
+export enum BotLevel {
+  NOVICE = 'NOVICE',
+  STANDARD = 'STANDARD',
+  EXPERT = 'EXPERT',
+}
+
 export interface BattlePlayer {
   id: string;
   name: string;

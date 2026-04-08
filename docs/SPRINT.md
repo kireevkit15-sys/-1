@@ -313,7 +313,7 @@
 | B15.3 | Matchmaking v2: учитывать рейтинг конкретной ветки, не только общий | done | `apps/api/src/battle/matchmaking.service.ts` |
 | B15.4 | Режим "Спарринг": дружеский матч без влияния на рейтинг (по инвайт-ссылке) | done | `apps/api/src/battle/` |
 | B15.5 | Реванш: после баттла предложить противнику повторный матч | done | `apps/api/src/battle/battle.gateway.ts` |
-| B15.6 | Бот v2: 3 уровня сложности (Новичок 40%, Стандарт 60%, Эксперт 85%) | todo | `apps/api/src/battle/bot.service.ts` |
+| B15.6 | Бот v2: 3 уровня сложности (Новичок 40%, Стандарт 60%, Эксперт 85%) | done | `apps/api/src/battle/bot.service.ts` |
 
 ## Блок 16 — Пользовательская система v2
 

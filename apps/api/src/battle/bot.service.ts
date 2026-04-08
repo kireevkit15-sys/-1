@@ -1,7 +1,34 @@
 import { Injectable } from '@nestjs/common';
-import { Difficulty, DefenseType, Branch } from '@razum/shared';
+import { Difficulty, DefenseType, Branch, BotLevel } from '@razum/shared';
 
-const BOT_ACCURACY = 0.6;
+/** Per-level bot configuration */
+interface BotProfile {
+  accuracy: number;
+  difficultyWeights: [number, number, number]; // [bronze, silver, gold] thresholds
+  defenseWeights: [number, number, number]; // [accept, dispute, counter] thresholds
+  thinkingDelayMs: [number, number]; // [min, max]
+}
+
+const BOT_PROFILES: Record<BotLevel, BotProfile> = {
+  [BotLevel.NOVICE]: {
+    accuracy: 0.4,
+    difficultyWeights: [0.85, 0.97, 1.0], // 85% bronze, 12% silver, 3% gold
+    defenseWeights: [0.6, 0.85, 1.0], // 60% accept, 25% dispute, 15% counter
+    thinkingDelayMs: [3000, 6000],
+  },
+  [BotLevel.STANDARD]: {
+    accuracy: 0.6,
+    difficultyWeights: [0.7, 0.9, 1.0], // 70% bronze, 20% silver, 10% gold
+    defenseWeights: [0.5, 0.8, 1.0], // 50% accept, 30% dispute, 20% counter
+    thinkingDelayMs: [2000, 5000],
+  },
+  [BotLevel.EXPERT]: {
+    accuracy: 0.85,
+    difficultyWeights: [0.3, 0.65, 1.0], // 30% bronze, 35% silver, 35% gold
+    defenseWeights: [0.3, 0.6, 1.0], // 30% accept, 30% dispute, 40% counter
+    thinkingDelayMs: [1000, 3000],
+  },
+};
 
 const ALL_BRANCHES: Branch[] = [
   Branch.STRATEGY,
@@ -13,9 +40,12 @@ const ALL_BRANCHES: Branch[] = [
 
 @Injectable()
 export class BotService {
+  private getProfile(level?: BotLevel): BotProfile {
+    return BOT_PROFILES[level ?? BotLevel.STANDARD];
+  }
+
   /**
    * Choose a branch for the bot's attack turn.
-   * Uniform random across all available branches.
    */
   chooseBranch(availableBranches?: Branch[]): Branch {
     const branches = availableBranches && availableBranches.length > 0 ? availableBranches : ALL_BRANCHES;
@@ -24,30 +54,32 @@ export class BotService {
 
   /**
    * Choose a difficulty for the bot's attack turn.
-   * Weighted random: 70% BRONZE, 20% SILVER, 10% GOLD.
+   * Weights depend on bot level.
    */
-  chooseDifficulty(): Difficulty {
+  chooseDifficulty(level?: BotLevel): Difficulty {
+    const profile = this.getProfile(level);
     const roll = Math.random();
-    if (roll < 0.7) return Difficulty.BRONZE;
-    if (roll < 0.9) return Difficulty.SILVER;
+    if (roll < profile.difficultyWeights[0]) return Difficulty.BRONZE;
+    if (roll < profile.difficultyWeights[1]) return Difficulty.SILVER;
     return Difficulty.GOLD;
   }
 
   /**
    * Choose an answer for the bot.
-   * Returns the correct answer 60% of the time, otherwise a random wrong answer.
+   * Accuracy depends on bot level.
    */
   chooseAnswer(
     correctIndex: number,
     optionsCount: number,
+    level?: BotLevel,
   ): { answerIndex: number; isCorrect: boolean } {
-    const isCorrect = Math.random() < BOT_ACCURACY;
+    const profile = this.getProfile(level);
+    const isCorrect = Math.random() < profile.accuracy;
 
     if (isCorrect) {
       return { answerIndex: correctIndex, isCorrect: true };
     }
 
-    // Pick a random wrong index
     let wrongIndex: number;
     do {
       wrongIndex = Math.floor(Math.random() * optionsCount);
@@ -58,27 +90,45 @@ export class BotService {
 
   /**
    * Choose a defense type for the bot.
-   * 50% ACCEPT, 30% DISPUTE, 20% COUNTER.
+   * Weights depend on bot level (expert counters more aggressively).
    */
-  chooseDefense(): DefenseType {
+  chooseDefense(level?: BotLevel): DefenseType {
+    const profile = this.getProfile(level);
     const roll = Math.random();
-    if (roll < 0.5) return DefenseType.ACCEPT;
-    if (roll < 0.8) return DefenseType.DISPUTE;
+    if (roll < profile.defenseWeights[0]) return DefenseType.ACCEPT;
+    if (roll < profile.defenseWeights[1]) return DefenseType.DISPUTE;
     return DefenseType.COUNTER;
   }
 
   /**
-   * Get a random thinking delay in milliseconds (2000-5000ms).
+   * Get a random thinking delay in milliseconds.
+   * Expert bots respond faster, novice bots are slower.
    */
-  getThinkingDelay(): number {
-    return 2000 + Math.floor(Math.random() * 3000);
+  getThinkingDelay(level?: BotLevel): number {
+    const profile = this.getProfile(level);
+    const [min, max] = profile.thinkingDelayMs;
+    return min + Math.floor(Math.random() * (max - min));
   }
 
   /**
    * Wait for a simulated thinking delay.
    */
-  async simulateThinking(): Promise<void> {
-    const delay = this.getThinkingDelay();
+  async simulateThinking(level?: BotLevel): Promise<void> {
+    const delay = this.getThinkingDelay(level);
     return new Promise((resolve) => setTimeout(resolve, delay));
+  }
+
+  /**
+   * Bot display name based on level.
+   */
+  getBotName(level?: BotLevel): string {
+    switch (level) {
+      case BotLevel.NOVICE:
+        return 'РАЗУМ-бот (Новичок)';
+      case BotLevel.EXPERT:
+        return 'РАЗУМ-бот (Эксперт)';
+      default:
+        return 'РАЗУМ-бот';
+    }
   }
 }

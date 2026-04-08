@@ -19,6 +19,7 @@ import {
   BattleState,
   BattlePhase,
   BattleMode,
+  BotLevel,
   Branch,
   Difficulty,
   DefenseType,
@@ -37,11 +38,7 @@ import {
   ROUND_TIME_LIMIT,
 } from '@razum/shared';
 
-const BOT_PLAYER = {
-  id: 'bot',
-  name: 'РАЗУМ-бот',
-  avatarUrl: undefined,
-};
+const BOT_PLAYER_ID = 'bot';
 
 const DEFAULT_CATEGORIES = [
   'Математика',
@@ -91,6 +88,9 @@ export class BattleGateway
 
   /** userId -> disconnect timer (30 sec reconnect window) */
   private disconnectTimers = new Map<string, ReturnType<typeof setTimeout>>();
+
+  /** battleId -> bot difficulty level for this battle */
+  private botLevels = new Map<string, BotLevel>();
 
   /** userId -> matchmaking timeout timer (30 sec → offer bot) */
   private matchmakingTimers = new Map<string, ReturnType<typeof setTimeout>>();
@@ -282,9 +282,12 @@ export class BattleGateway
   @SubscribeMessage('battle:create_bot')
   async handleCreateBotBattle(
     @ConnectedSocket() client: AuthenticatedSocket,
+    @MessageBody() data: { botLevel?: BotLevel },
   ) {
     const userId = client.data.userId;
     if (!userId) return;
+
+    const botLevel = data?.botLevel ?? BotLevel.STANDARD;
 
     try {
       // Validate that there are categories with questions before starting
@@ -304,22 +307,25 @@ export class BattleGateway
       const fullBattle = await this.battleService.getBattle(dbBattle.id);
       const player1 = fullBattle?.player1 ?? { id: userId, name: 'Player' };
 
+      const botName = this.botService.getBotName(botLevel);
+
       // Create in-memory state via shared state machine
       const state = createBattle(
         { id: player1.id, name: player1.name, avatarUrl: player1.avatarUrl ?? undefined },
-        BOT_PLAYER,
+        { id: BOT_PLAYER_ID, name: botName, avatarUrl: undefined },
         BattleMode.SIEGE,
         categories,
         { idGenerator: () => dbBattle.id },
       );
 
       this.battles.set(dbBattle.id, state);
+      this.botLevels.set(dbBattle.id, botLevel);
       this.userBattles.set(userId, dbBattle.id);
 
       await client.join(`battle:${dbBattle.id}`);
 
       client.emit('battle:started', state);
-      this.logger.log(`Bot battle created: ${dbBattle.id} for user ${userId}`);
+      this.logger.log(`Bot battle created: ${dbBattle.id} for user ${userId}, level: ${botLevel}`);
     } catch (error: any) {
       client.emit('battle:error', { message: error.message ?? 'Failed to create bot battle' });
     }
@@ -376,7 +382,7 @@ export class BattleGateway
       this.startRoundTimer(data.battleId);
 
       // If this is a bot battle and the bot is the attacker, auto-attack
-      if (this.isBotBattle(updated) && updated.currentAttackerId === BOT_PLAYER.id) {
+      if (this.isBotBattle(updated) && updated.currentAttackerId === BOT_PLAYER_ID) {
         this.scheduleBotAttack(data.battleId);
       }
     } catch (error: any) {
@@ -412,7 +418,7 @@ export class BattleGateway
       this.startRoundTimer(data.battleId);
 
       // If this is a bot battle and the bot is the attacker, auto-attack
-      if (this.isBotBattle(updated) && updated.currentAttackerId === BOT_PLAYER.id) {
+      if (this.isBotBattle(updated) && updated.currentAttackerId === BOT_PLAYER_ID) {
         this.scheduleBotAttack(data.battleId);
       }
     } catch (error: any) {
@@ -538,7 +544,7 @@ export class BattleGateway
       // If bot battle and bot needs to pick branch, schedule it
       if (this.isBotBattle(state) && (state.phase === BattlePhase.BRANCH_SELECT || state.phase === BattlePhase.CATEGORY_SELECT)) {
         // The attacker picks branch. If bot is attacker, auto-select.
-        if (state.currentAttackerId === BOT_PLAYER.id) {
+        if (state.currentAttackerId === BOT_PLAYER_ID) {
           this.scheduleBotBranchSelect(data.battleId);
         }
       }
@@ -944,11 +950,16 @@ export class BattleGateway
   // ---------------------------------------------------------------------------
 
   private isBotBattle(state: BattleState): boolean {
-    return state.player2.id === BOT_PLAYER.id;
+    return state.player2.id === BOT_PLAYER_ID;
+  }
+
+  private getBotLevel(battleId: string): BotLevel {
+    return this.botLevels.get(battleId) ?? BotLevel.STANDARD;
   }
 
   private scheduleBotBranchSelect(battleId: string) {
-    const delay = this.botService.getThinkingDelay();
+    const level = this.getBotLevel(battleId);
+    const delay = this.botService.getThinkingDelay(level);
     const timer = setTimeout(() => {
       const state = this.battles.get(battleId);
       if (!state || (state.phase !== BattlePhase.BRANCH_SELECT && state.phase !== BattlePhase.CATEGORY_SELECT)) return;
@@ -972,23 +983,24 @@ export class BattleGateway
   }
 
   private scheduleBotAttack(battleId: string) {
-    const delay = this.botService.getThinkingDelay();
+    const level = this.getBotLevel(battleId);
+    const delay = this.botService.getThinkingDelay(level);
     const timer = setTimeout(() => {
       let state = this.battles.get(battleId);
       if (!state || state.phase !== BattlePhase.ROUND_ATTACK) return;
-      if (state.currentAttackerId !== BOT_PLAYER.id) return;
+      if (state.currentAttackerId !== BOT_PLAYER_ID) return;
 
       try {
         this.clearRoundTimer(battleId);
 
-        const difficulty = this.botService.chooseDifficulty();
-        state = chooseDifficulty(state, BOT_PLAYER.id, difficulty);
+        const difficulty = this.botService.chooseDifficulty(level);
+        state = chooseDifficulty(state, BOT_PLAYER_ID, difficulty);
 
         // Bot "answers" — use bot accuracy logic
-        const botAnswer = this.botService.chooseAnswer(0, 4);
+        const botAnswer = this.botService.chooseAnswer(0, 4, level);
         const answerIndex = botAnswer.answerIndex;
 
-        state = submitAnswer(state, BOT_PLAYER.id, answerIndex, botAnswer.isCorrect);
+        state = submitAnswer(state, BOT_PLAYER_ID, answerIndex, botAnswer.isCorrect);
         this.battles.set(battleId, state);
 
         this.server.to(`battle:${battleId}`).emit('battle:round_update', state);
@@ -1008,17 +1020,18 @@ export class BattleGateway
   }
 
   private scheduleBotDefense(battleId: string) {
-    const delay = this.botService.getThinkingDelay();
+    const level = this.getBotLevel(battleId);
+    const delay = this.botService.getThinkingDelay(level);
     const timer = setTimeout(() => {
       let state = this.battles.get(battleId);
       if (!state || state.phase !== BattlePhase.ROUND_DEFENSE) return;
-      if (state.currentDefenderId !== BOT_PLAYER.id) return;
+      if (state.currentDefenderId !== BOT_PLAYER_ID) return;
 
       try {
-        const defenseType: DefenseType = this.botService.chooseDefense();
+        const defenseType: DefenseType = this.botService.chooseDefense(level);
 
         const success = this.resolveDefenseSuccess(defenseType);
-        state = submitDefense(state, BOT_PLAYER.id, defenseType, success);
+        state = submitDefense(state, BOT_PLAYER_ID, defenseType, success);
         this.battles.set(battleId, state);
 
         this.server.to(`battle:${battleId}`).emit('battle:round_update', state);
@@ -1061,7 +1074,7 @@ export class BattleGateway
         }
 
         // If bot is the attacker for the new round, schedule branch select + attack
-        if ((state.phase === BattlePhase.BRANCH_SELECT || state.phase === BattlePhase.CATEGORY_SELECT) && state.currentAttackerId === BOT_PLAYER.id) {
+        if ((state.phase === BattlePhase.BRANCH_SELECT || state.phase === BattlePhase.CATEGORY_SELECT) && state.currentAttackerId === BOT_PLAYER_ID) {
           this.scheduleBotBranchSelect(battleId);
         }
       } catch (err: any) {
@@ -1207,6 +1220,7 @@ export class BattleGateway
 
   private cleanupBattle(battleId: string) {
     this.battles.delete(battleId);
+    this.botLevels.delete(battleId);
 
     // Remove user-battle associations
     for (const [uid, bid] of this.userBattles) {
