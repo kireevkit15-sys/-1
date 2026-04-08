@@ -14,6 +14,7 @@ import { BattleService } from './battle.service';
 import { MatchmakingService } from './matchmaking.service';
 import { BotService } from './bot.service';
 import { QuestionService } from '../question/question.service';
+import { StatsService } from '../stats/stats.service';
 import {
   BattleState,
   BattlePhase,
@@ -104,6 +105,7 @@ export class BattleGateway
     private readonly matchmakingService: MatchmakingService,
     private readonly botService: BotService,
     private readonly questionService: QuestionService,
+    private readonly statsService: StatsService,
   ) {}
 
   // ---------------------------------------------------------------------------
@@ -535,15 +537,18 @@ export class BattleGateway
   @SubscribeMessage('battle:matchmake')
   async handleMatchmaking(
     @ConnectedSocket() client: AuthenticatedSocket,
-    @MessageBody() data: { rating?: number },
+    @MessageBody() data: { rating?: number; branch?: Branch },
   ) {
     const userId = client.data.userId;
     if (!userId) return;
 
-    const rating = data.rating ?? 1000;
+    const branch = data.branch;
+
+    // Use branch-specific ELO when a branch is provided, otherwise overall rating
+    const rating = data.rating ?? await this.statsService.getBranchRating(userId, branch);
 
     try {
-      const match = await this.matchmakingService.findMatch(userId, rating);
+      const match = await this.matchmakingService.findMatch(userId, rating, branch);
 
       if (match) {
         // Create a PvP battle
@@ -583,12 +588,12 @@ export class BattleGateway
         }
       } else {
         // No immediate match — add to queue and start polling + timeout
-        await this.matchmakingService.addToQueue(userId, rating);
+        await this.matchmakingService.addToQueue(userId, rating, branch);
         this.matchmakingUsers.add(userId);
-        client.emit('battle:queued', { message: 'Searching for opponent...' });
+        client.emit('battle:queued', { message: 'Searching for opponent...', branch });
 
         // Start matchmaking timeout — after 30 sec offer bot
-        this.startMatchmakingTimer(userId, rating, client);
+        this.startMatchmakingTimer(userId, rating, client, branch);
       }
     } catch (error: any) {
       client.emit('battle:error', { message: error.message ?? 'Matchmaking failed' });
@@ -606,7 +611,7 @@ export class BattleGateway
     client.emit('battle:matchmaking_cancelled');
   }
 
-  private startMatchmakingTimer(userId: string, rating: number, client: AuthenticatedSocket) {
+  private startMatchmakingTimer(userId: string, rating: number, client: AuthenticatedSocket, branch?: Branch) {
     this.clearMatchmakingTimer(userId);
 
     // Poll every 5 seconds with expanding range
@@ -621,8 +626,8 @@ export class BattleGateway
         return;
       }
 
-      // Try to find a match with expanding range
-      const match = await this.matchmakingService.findMatch(userId, rating);
+      // Try to find a match with expanding range (branch-aware)
+      const match = await this.matchmakingService.findMatch(userId, rating, branch);
       if (match) {
         clearInterval(interval);
         this.matchmakingTimers.delete(userId);

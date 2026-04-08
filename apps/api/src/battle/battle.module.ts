@@ -8,9 +8,10 @@ import { AuthModule } from '../auth/auth.module';
 import { PrismaModule } from '../prisma/prisma.module';
 import { RedisModule } from '../redis/redis.module';
 import { QuestionModule } from '../question/question.module';
+import { StatsModule } from '../stats/stats.module';
 
 @Module({
-  imports: [AuthModule, PrismaModule, RedisModule, QuestionModule],
+  imports: [AuthModule, PrismaModule, RedisModule, QuestionModule, StatsModule],
   controllers: [BattleController],
   providers: [BattleService, BattleGateway, MatchmakingService, BotService],
   exports: [BattleService],

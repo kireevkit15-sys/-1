@@ -1,5 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { RedisService } from '../redis/redis.service';
+import { Branch } from '@razum/shared';
 
 const MATCHMAKING_QUEUE_KEY = 'matchmaking:queue';
 const INITIAL_RATING_RANGE = 100;
@@ -16,6 +17,7 @@ export interface MatchResult {
 export interface QueueEntry {
   userId: string;
   rating: number;
+  branch?: Branch;
   joinedAt: number;
 }
 
@@ -25,23 +27,47 @@ export class MatchmakingService {
 
   constructor(private readonly redis: RedisService) {}
 
-  async addToQueue(userId: string, rating: number): Promise<void> {
-    await this.redis.zadd(MATCHMAKING_QUEUE_KEY, rating, userId);
+  /**
+   * Build the Redis sorted-set key for matchmaking.
+   * When a branch is specified, players are queued per-branch so that
+   * the rating used for matching corresponds to that specific branch.
+   * Fallback: the generic queue uses overall rating.
+   */
+  private queueKey(branch?: Branch): string {
+    return branch ? `${MATCHMAKING_QUEUE_KEY}:${branch}` : MATCHMAKING_QUEUE_KEY;
+  }
+
+  private joinedKey(userId: string): string {
+    return `matchmaking:joined:${userId}`;
+  }
+
+  async addToQueue(userId: string, rating: number, branch?: Branch): Promise<void> {
+    const key = this.queueKey(branch);
+    await this.redis.zadd(key, rating, userId);
     await this.redis.set(
-      `matchmaking:joined:${userId}`,
-      JSON.stringify({ rating, joinedAt: Date.now() }),
+      this.joinedKey(userId),
+      JSON.stringify({ rating, branch, joinedAt: Date.now() }),
       120,
     );
-    this.logger.log(`User ${userId} added to queue (rating: ${rating})`);
+    const branchLabel = branch ?? 'overall';
+    this.logger.log(`User ${userId} added to queue [${branchLabel}] (rating: ${rating})`);
   }
 
   async removeFromQueue(userId: string): Promise<void> {
+    // Read the stored entry to know which branch queue to clean up
+    const raw = await this.redis.get(this.joinedKey(userId));
+    if (raw) {
+      const entry = JSON.parse(raw) as QueueEntry;
+      const key = this.queueKey(entry.branch);
+      await this.redis.zrem(key, userId);
+    }
+    // Also remove from the generic queue (safety fallback)
     await this.redis.zrem(MATCHMAKING_QUEUE_KEY, userId);
-    await this.redis.del(`matchmaking:joined:${userId}`);
+    await this.redis.del(this.joinedKey(userId));
   }
 
   async isInQueue(userId: string): Promise<boolean> {
-    const entry = await this.redis.get(`matchmaking:joined:${userId}`);
+    const entry = await this.redis.get(this.joinedKey(userId));
     return entry !== null;
   }
 
@@ -59,7 +85,7 @@ export class MatchmakingService {
    * If so, they should be offered a bot match instead.
    */
   async hasTimedOut(userId: string): Promise<boolean> {
-    const raw = await this.redis.get(`matchmaking:joined:${userId}`);
+    const raw = await this.redis.get(this.joinedKey(userId));
     if (!raw) return false;
 
     const entry = JSON.parse(raw) as QueueEntry;
@@ -68,21 +94,20 @@ export class MatchmakingService {
 
   /**
    * Find a match for the given user.
+   * When branch is provided, searches the branch-specific queue using
+   * branch ELO ratings. Falls back to the generic queue otherwise.
    * Returns opponent info if found, null if no match yet.
    */
-  async findMatch(userId: string, rating: number): Promise<MatchResult | null> {
-    const raw = await this.redis.get(`matchmaking:joined:${userId}`);
+  async findMatch(userId: string, rating: number, branch?: Branch): Promise<MatchResult | null> {
+    const raw = await this.redis.get(this.joinedKey(userId));
     const waitTime = raw ? Date.now() - (JSON.parse(raw) as QueueEntry).joinedAt : 0;
 
     const ratingRange = this.calculateRatingRange(waitTime);
     const minRating = rating - ratingRange;
     const maxRating = rating + ratingRange;
 
-    const candidates = await this.redis.zrangebyscore(
-      MATCHMAKING_QUEUE_KEY,
-      minRating,
-      maxRating,
-    );
+    const key = this.queueKey(branch);
+    const candidates = await this.redis.zrangebyscore(key, minRating, maxRating);
 
     const opponents = candidates.filter((id) => id !== userId);
 
@@ -94,23 +119,25 @@ export class MatchmakingService {
     const opponentId = opponents[0]!;
 
     // Get opponent rating from their queue entry
-    const opponentRaw = await this.redis.get(`matchmaking:joined:${opponentId}`);
+    const opponentRaw = await this.redis.get(this.joinedKey(opponentId));
     const opponentRating = opponentRaw ? (JSON.parse(opponentRaw) as QueueEntry).rating : 1000;
 
     // Remove both from queue
     await this.removeFromQueue(userId);
     await this.removeFromQueue(opponentId);
 
-    this.logger.log(`Match found: ${userId} vs ${opponentId} (range: ±${ratingRange})`);
+    const branchLabel = branch ?? 'overall';
+    this.logger.log(`Match found [${branchLabel}]: ${userId} vs ${opponentId} (range: ±${ratingRange})`);
 
     return { opponentId, opponentRating };
   }
 
   /**
-   * Get queue size for monitoring.
+   * Get queue size for monitoring (optionally per branch).
    */
-  async getQueueSize(): Promise<number> {
-    const all = await this.redis.zrangebyscore(MATCHMAKING_QUEUE_KEY, -Infinity, Infinity);
+  async getQueueSize(branch?: Branch): Promise<number> {
+    const key = this.queueKey(branch);
+    const all = await this.redis.zrangebyscore(key, -Infinity, Infinity);
     return all.length;
   }
 }

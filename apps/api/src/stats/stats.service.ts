@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { determineThinkerClass, ThinkerClass } from '@razum/shared';
+import { determineThinkerClass, ThinkerClass, Branch } from '@razum/shared';
 
 @Injectable()
 export class StatsService {
@@ -90,6 +90,28 @@ export class StatsService {
     }
 
     return this.enrichStats(stats);
+  }
+
+  /**
+   * Get the ELO rating for a specific branch (or overall if no branch).
+   */
+  async getBranchRating(userId: string, branch?: Branch): Promise<number> {
+    const stats = await this.prisma.userStats.findUnique({
+      where: { userId },
+    });
+    if (!stats) return 1000;
+
+    if (!branch) return stats.rating;
+
+    const fieldMap: Record<Branch, string> = {
+      [Branch.LOGIC]: 'logicRating',
+      [Branch.ERUDITION]: 'eruditionRating',
+      [Branch.STRATEGY]: 'strategyRating',
+      [Branch.RHETORIC]: 'rhetoricRating',
+      [Branch.INTUITION]: 'intuitionRating',
+    };
+
+    return ((stats as any)[fieldMap[branch]] as number) ?? 1000;
   }
 
   /**
