@@ -82,10 +82,20 @@ describe('Battle E2E', () => {
   let authToken: string;
   let userId: string;
   let testQuestionId: string;
+  let testQuestionIds: string[] = [];
 
   const TEST_EMAIL = `e2e-battle-${Date.now()}@test.razum.dev`;
   const TEST_NAME = 'E2E Battle Tester';
   const TEST_CATEGORY = 'Математика';
+
+  const ALL_BRANCHES = ['STRATEGY', 'LOGIC', 'ERUDITION', 'RHETORIC', 'INTUITION'] as const;
+  const BRANCH_XP_MAP: Record<string, string> = {
+    STRATEGY: 'strategyXp',
+    LOGIC: 'logicXp',
+    ERUDITION: 'eruditionXp',
+    RHETORIC: 'rhetoricXp',
+    INTUITION: 'intuitionXp',
+  };
 
   // ---------------------------------------------------------------------------
   // Setup & Teardown
@@ -130,21 +140,24 @@ describe('Battle E2E', () => {
       type: 'access',
     });
 
-    // ---- Seed at least one question for the test category ----
-    const question = await prisma.question.create({
-      data: {
-        category: TEST_CATEGORY,
-        branch: 'LOGIC',
-        difficulty: 'BRONZE',
-        text: 'E2E Test: What is 2 + 2?',
-        options: ['4', '3', '5', '6'],
-        correctIndex: 0,
-        explanation: 'Basic arithmetic.',
-        statPrimary: 'logicXp',
-        isActive: true,
-      },
-    });
-    testQuestionId = question.id;
+    // ---- Seed at least one question per branch for battle tests ----
+    for (const branch of ALL_BRANCHES) {
+      const q = await prisma.question.create({
+        data: {
+          category: `E2E-${branch}`,
+          branch,
+          difficulty: 'BRONZE',
+          text: `E2E Test question for ${branch}`,
+          options: ['Correct', 'Wrong 1', 'Wrong 2', 'Wrong 3'],
+          correctIndex: 0,
+          explanation: `E2E test — ${branch} branch.`,
+          statPrimary: BRANCH_XP_MAP[branch] ?? 'logicXp',
+          isActive: true,
+        },
+      });
+      testQuestionIds.push(q.id);
+    }
+    testQuestionId = testQuestionIds[0]!;
   }, 30_000);
 
   afterAll(async () => {
@@ -162,7 +175,9 @@ describe('Battle E2E', () => {
           OR: [{ player1Id: userId }, { player2Id: userId }],
         },
       });
-      await prisma.question.delete({ where: { id: testQuestionId } });
+      for (const qId of testQuestionIds) {
+        await prisma.question.delete({ where: { id: qId } }).catch(() => {});
+      }
       await prisma.userStats.deleteMany({ where: { userId } });
       await prisma.user.delete({ where: { id: userId } });
     } catch {

@@ -289,9 +289,9 @@
 
 | # | Задача | Статус | Файлы |
 |---|--------|--------|-------|
-| B13.1 | Prisma миграция: Branch enum + ERUDITION, RHETORIC, INTUITION | todo | `prisma/schema.prisma`, `prisma/migrations/` |
-| B13.2 | Обновить seed.ts: вопросы и модули для всех 5 веток (минимум по 10 на ветку) | todo | `prisma/seed.ts` |
-| B13.3 | Обновить все E2E тесты под 5 веток | todo | `apps/api/test/*.e2e-spec.ts` |
+| B13.1 | Prisma миграция: Branch enum + ERUDITION, RHETORIC, INTUITION | done | `prisma/schema.prisma` — enum уже содержал все 5 значений |
+| B13.2 | Обновить seed.ts: вопросы и модули для всех 5 веток (минимум по 10 на ветку) | done | `prisma/seed.ts` — 40 новых вопросов, 9 модулей для 3 новых веток |
+| B13.3 | Обновить все E2E тесты под 5 веток | done | `apps/api/test/learn.e2e-spec.ts`, `apps/api/test/battle.e2e-spec.ts` |
 
 ## Блок 14 — Контент и вопросы
 

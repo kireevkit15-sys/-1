@@ -64,17 +64,20 @@ describe('Learn (e2e)', () => {
     expect(Array.isArray(res.body)).toBe(true);
   });
 
-  it('GET /modules?branch=STRATEGY — should filter by branch', async () => {
-    const res = await request(app.getHttpServer())
-      .get('/modules?branch=STRATEGY')
-      .set('Authorization', `Bearer ${accessToken}`)
-      .expect(200);
+  it.each(['STRATEGY', 'LOGIC', 'ERUDITION', 'RHETORIC', 'INTUITION'])(
+    'GET /modules?branch=%s — should filter by branch',
+    async (branch) => {
+      const res = await request(app.getHttpServer())
+        .get(`/modules?branch=${branch}`)
+        .set('Authorization', `Bearer ${accessToken}`)
+        .expect(200);
 
-    expect(Array.isArray(res.body)).toBe(true);
-    for (const m of res.body) {
-      expect(m.branch).toBe('STRATEGY');
-    }
-  });
+      expect(Array.isArray(res.body)).toBe(true);
+      for (const m of res.body) {
+        expect(m.branch).toBe(branch);
+      }
+    },
+  );
 
   it('GET /modules — should reject without auth', async () => {
     await request(app.getHttpServer())
