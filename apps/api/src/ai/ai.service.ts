@@ -33,7 +33,7 @@ export interface ContentConcept {
   example: string;
   trust_level: 'needs_validation' | 'validated' | 'opinion';
   tags: string[];
-  branch: 'STRATEGY' | 'LOGIC';
+  branch: 'STRATEGY' | 'LOGIC' | 'ERUDITION' | 'RHETORIC' | 'INTUITION';
   difficulty: 'BRONZE' | 'SILVER' | 'GOLD';
 }
 
@@ -254,13 +254,13 @@ ${text}
   "example": "Пример или иллюстрация из текста",
   "trust_level": "needs_validation | validated | opinion",
   "tags": ["тег1", "тег2"],
-  "branch": "STRATEGY | LOGIC",
+  "branch": "STRATEGY | LOGIC | ERUDITION | RHETORIC | INTUITION",
   "difficulty": "BRONZE | SILVER | GOLD"
 }
 
 ## Правила
 1. trust_level: "validated" — общеизвестные факты; "needs_validation" — спорные утверждения, требующие проверки; "opinion" — субъективное мнение автора
-2. branch: "STRATEGY" — бизнес, управление, решения, переговоры; "LOGIC" — наука, логика, аналитика, технологии
+2. branch: "STRATEGY" — бизнес, управление, решения, переговоры; "LOGIC" — наука, логика, аналитика, технологии; "ERUDITION" — знания о мире, история, философия, психология, экономика, культура; "RHETORIC" — коммуникация, аргументация, переговоры, сторителлинг, убеждение; "INTUITION" — распознавание паттернов, вероятности, когнитивные искажения, эмоциональный интеллект
 3. difficulty: "BRONZE" — базовый концепт; "SILVER" — требует понимания контекста; "GOLD" — сложный, многоуровневый
 4. tags — 2-5 коротких тегов для категоризации
 5. Извлекай только значимые концепты, не мелкие детали
@@ -336,7 +336,7 @@ ${text}
   private isValidConcept(c: unknown): c is ContentConcept {
     if (typeof c !== 'object' || c === null) return false;
     const obj = c as Record<string, unknown>;
-    const validBranches = ['STRATEGY', 'LOGIC'];
+    const validBranches = ['STRATEGY', 'LOGIC', 'ERUDITION', 'RHETORIC', 'INTUITION'];
     const validDifficulties = ['BRONZE', 'SILVER', 'GOLD'];
     const validTrustLevels = ['needs_validation', 'validated', 'opinion'];
     return (

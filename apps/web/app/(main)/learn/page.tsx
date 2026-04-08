@@ -78,11 +78,17 @@ function ModuleSkeleton() {
 const colorMap: Record<string, { bg: string; text: string; progress: string }> = {
   "accent-red": { bg: "bg-accent-red/20", text: "text-accent-red", progress: "bg-accent-red" },
   "accent-gold": { bg: "bg-accent-gold/20", text: "text-accent-gold", progress: "bg-accent-gold" },
+  "branch-erudition": { bg: "bg-[#a855f7]/20", text: "text-[#a855f7]", progress: "bg-[#a855f7]" },
+  "branch-rhetoric": { bg: "bg-[#f97316]/20", text: "text-[#f97316]", progress: "bg-[#f97316]" },
+  "branch-intuition": { bg: "bg-[#ec4899]/20", text: "text-[#ec4899]", progress: "bg-[#ec4899]" },
 };
 
 const branchConfig: { key: string; title: string; color: string }[] = [
   { key: "STRATEGY", title: "Стратегическое мышление", color: "accent-red" },
   { key: "LOGIC", title: "Логика и аргументация", color: "accent-gold" },
+  { key: "ERUDITION", title: "Эрудиция", color: "branch-erudition" },
+  { key: "RHETORIC", title: "Риторика", color: "branch-rhetoric" },
+  { key: "INTUITION", title: "Интуиция", color: "branch-intuition" },
 ];
 
 function ProgressBar({ progress, colorClass }: { progress: number; colorClass: string }) {

@@ -1,0 +1,99 @@
+{
+  "branch": "LOGIC",
+  "category": "data-literacy",
+  "categoryRu": "Грамотность работы с данными",
+  "subcategories": [
+    {
+      "id": "data-interpretation",
+      "nameRu": "Интерпретация данных",
+      "topics": [
+        { "id": "reading-charts-graphs", "nameRu": "Чтение графиков и диаграмм", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "descriptive-statistics", "nameRu": "Описательная статистика: среднее, медиана, мода", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "distributions-basics", "nameRu": "Основы распределений", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "outliers-and-anomalies", "nameRu": "Выбросы и аномалии", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "trend-analysis", "nameRu": "Анализ трендов", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "base-rates", "nameRu": "Базовые ставки и их значение", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "percentages-proportions", "nameRu": "Проценты и пропорции в контексте", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "absolute-vs-relative-numbers", "nameRu": "Абсолютные vs относительные числа", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "data-context-importance", "nameRu": "Важность контекста в данных", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "simpsons-paradox", "nameRu": "Парадокс Симпсона", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "correlation-causation",
+      "nameRu": "Корреляция и причинность",
+      "topics": [
+        { "id": "correlation-definition", "nameRu": "Определение корреляции", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "causation-criteria", "nameRu": "Критерии причинности", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "spurious-correlations", "nameRu": "Ложные корреляции", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "confounding-variables", "nameRu": "Смешивающие переменные", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "reverse-causation", "nameRu": "Обратная причинность", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "natural-experiments", "nameRu": "Естественные эксперименты", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "randomized-controlled-trials", "nameRu": "Рандомизированные контролируемые исследования", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "bradford-hill-criteria", "nameRu": "Критерии Брэдфорда Хилла", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "causal-inference-basics", "nameRu": "Основы каузального вывода", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "sampling-bias",
+      "nameRu": "Ошибки выборки",
+      "topics": [
+        { "id": "sampling-basics", "nameRu": "Основы формирования выборки", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "selection-bias-data", "nameRu": "Ошибка отбора в данных", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "survivorship-bias-data", "nameRu": "Ошибка выжившего в данных", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "response-bias", "nameRu": "Ошибка ответа в опросах", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "sample-size-matters", "nameRu": "Размер выборки имеет значение", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "representativeness", "nameRu": "Репрезентативность выборки", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "convenience-sampling", "nameRu": "Выборка удобства", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "self-selection-bias", "nameRu": "Самоотбор респондентов", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "ecological-fallacy", "nameRu": "Экологическая ошибка", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "cherry-picking-data", "nameRu": "Избирательный подбор данных", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "visualization-literacy",
+      "nameRu": "Грамотность визуализации",
+      "topics": [
+        { "id": "misleading-axes", "nameRu": "Обманчивые оси графиков", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "truncated-graphs", "nameRu": "Усечённые графики", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "pie-chart-problems", "nameRu": "Проблемы круговых диаграмм", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "scale-manipulation", "nameRu": "Манипуляция масштабом", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "cherry-picked-timeframes", "nameRu": "Избирательный выбор временных периодов", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "tufte-principles", "nameRu": "Принципы Тафти для честной визуализации", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "data-ink-ratio", "nameRu": "Соотношение данных и чернил", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "choosing-right-chart", "nameRu": "Выбор правильного типа графика", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "statistical-significance",
+      "nameRu": "Статистическая значимость",
+      "topics": [
+        { "id": "p-value-meaning", "nameRu": "Что означает p-значение", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "confidence-intervals", "nameRu": "Доверительные интервалы", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "type-i-type-ii-errors", "nameRu": "Ошибки первого и второго рода", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "effect-size", "nameRu": "Размер эффекта", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "statistical-vs-practical", "nameRu": "Статистическая vs практическая значимость", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "p-hacking", "nameRu": "P-хакинг и манипуляции со значимостью", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "replication-crisis", "nameRu": "Кризис репликации", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "bayesian-vs-frequentist", "nameRu": "Байесовский vs частотный подход", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "multiple-comparisons", "nameRu": "Проблема множественных сравнений", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "power-of-study", "nameRu": "Статистическая мощность исследования", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "big-data-basics",
+      "nameRu": "Основы больших данных",
+      "topics": [
+        { "id": "what-is-big-data", "nameRu": "Что такое большие данные", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "data-driven-decisions", "nameRu": "Принятие решений на основе данных", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "algorithmic-bias", "nameRu": "Алгоритмическая предвзятость", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "privacy-data-ethics", "nameRu": "Приватность и этика данных", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "data-vs-information-vs-knowledge", "nameRu": "Данные vs информация vs знание", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "ab-testing-basics", "nameRu": "Основы A/B-тестирования", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "overfitting-underfitting", "nameRu": "Переобучение и недообучение", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "prediction-vs-explanation", "nameRu": "Предсказание vs объяснение", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "garbage-in-garbage-out", "nameRu": "Мусор на входе — мусор на выходе", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    }
+  ]
+}

@@ -4,6 +4,9 @@ import { StatName } from '../stats/types';
 export enum Branch {
   STRATEGY = 'STRATEGY',
   LOGIC = 'LOGIC',
+  ERUDITION = 'ERUDITION',
+  RHETORIC = 'RHETORIC',
+  INTUITION = 'INTUITION',
 }
 
 export interface QuestionData {

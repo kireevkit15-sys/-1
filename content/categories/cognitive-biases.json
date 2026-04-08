@@ -1,0 +1,104 @@
+{
+  "branch": "INTUITION",
+  "category": "cognitive-biases",
+  "categoryRu": "Когнитивные искажения",
+  "subcategories": [
+    {
+      "id": "attention-biases",
+      "nameRu": "Искажения внимания",
+      "topics": [
+        { "id": "attentional-bias", "nameRu": "Предвзятость внимания", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "inattentional-blindness", "nameRu": "Слепота невнимания", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "change-blindness", "nameRu": "Слепота к изменениям", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "framing-effect", "nameRu": "Эффект фрейминга", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "salience-bias", "nameRu": "Искажение заметности", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "availability-heuristic", "nameRu": "Эвристика доступности", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "selective-attention", "nameRu": "Избирательное внимание", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "spotlight-effect", "nameRu": "Эффект прожектора", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "negativity-bias", "nameRu": "Искажение негативности", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "frequency-illusion", "nameRu": "Иллюзия частотности (Баадер-Майнхоф)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "memory-biases",
+      "nameRu": "Искажения памяти",
+      "topics": [
+        { "id": "hindsight-bias", "nameRu": "Искажение ретроспекции", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "false-memory", "nameRu": "Ложные воспоминания", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "rosy-retrospection", "nameRu": "Розовая ретроспекция", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "peak-end-rule", "nameRu": "Правило пика и конца", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "misinformation-effect", "nameRu": "Эффект дезинформации", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "source-confusion", "nameRu": "Путаница источников", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "consistency-bias", "nameRu": "Искажение последовательности", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "primacy-recency-effect", "nameRu": "Эффект первичности и новизны", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "cryptomnesia", "nameRu": "Криптомнезия (скрытые воспоминания)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "telescoping-effect", "nameRu": "Эффект телескопирования", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "judgment-biases",
+      "nameRu": "Искажения суждения",
+      "topics": [
+        { "id": "anchoring-effect", "nameRu": "Эффект якоря", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "representativeness-heuristic", "nameRu": "Эвристика репрезентативности", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "conjunction-fallacy", "nameRu": "Ошибка конъюнкции (проблема Линды)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "halo-effect", "nameRu": "Эффект ореола", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "just-world-hypothesis", "nameRu": "Гипотеза справедливого мира", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "fundamental-attribution-error", "nameRu": "Фундаментальная ошибка атрибуции", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "narrative-fallacy", "nameRu": "Нарративная ошибка", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "proportionality-bias", "nameRu": "Искажение пропорциональности", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "affect-heuristic", "nameRu": "Аффективная эвристика", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "neglect-of-probability", "nameRu": "Пренебрежение вероятностью", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "social-biases",
+      "nameRu": "Социальные искажения",
+      "topics": [
+        { "id": "ingroup-bias", "nameRu": "Искажение внутренней группы", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "bandwagon-effect", "nameRu": "Эффект присоединения к большинству", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "authority-bias", "nameRu": "Искажение авторитета", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "bystander-effect", "nameRu": "Эффект свидетеля", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "groupthink", "nameRu": "Групповое мышление", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "social-desirability-bias", "nameRu": "Искажение социальной желательности", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "outgroup-homogeneity", "nameRu": "Однородность внешней группы", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "stereotyping", "nameRu": "Стереотипизация", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "moral-licensing", "nameRu": "Моральное лицензирование", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "false-consensus-effect", "nameRu": "Эффект ложного консенсуса", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "decision-biases",
+      "nameRu": "Искажения в принятии решений",
+      "topics": [
+        { "id": "sunk-cost-fallacy", "nameRu": "Ошибка невозвратных затрат", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "loss-aversion", "nameRu": "Неприятие потерь", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "status-quo-bias", "nameRu": "Искажение статус-кво", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "choice-overload", "nameRu": "Перегрузка выбором", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "confirmation-bias", "nameRu": "Предвзятость подтверждения", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "endowment-effect", "nameRu": "Эффект владения", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "default-effect", "nameRu": "Эффект по умолчанию", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "zero-risk-bias", "nameRu": "Искажение нулевого риска", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "hyperbolic-discounting", "nameRu": "Гиперболическое дисконтирование", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "omission-bias", "nameRu": "Искажение бездействия", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "escalation-of-commitment", "nameRu": "Эскалация обязательств", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "self-assessment-biases",
+      "nameRu": "Искажения самооценки",
+      "topics": [
+        { "id": "dunning-kruger-effect", "nameRu": "Эффект Даннинга-Крюгера", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "impostor-syndrome", "nameRu": "Синдром самозванца", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "overconfidence-bias", "nameRu": "Искажение чрезмерной уверенности", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "self-serving-bias", "nameRu": "Искажение в свою пользу", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "illusion-of-control", "nameRu": "Иллюзия контроля", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "optimism-bias", "nameRu": "Оптимистическое искажение", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "planning-fallacy", "nameRu": "Ошибка планирования", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "better-than-average-effect", "nameRu": "Эффект выше среднего", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "blind-spot-bias", "nameRu": "Слепое пятно предвзятости", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "illusion-of-transparency", "nameRu": "Иллюзия прозрачности", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    }
+  ]
+}

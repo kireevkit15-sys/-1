@@ -1,0 +1,103 @@
+{
+  "branch": "ERUDITION",
+  "category": "history-patterns",
+  "categoryRu": "Исторические паттерны",
+  "subcategories": [
+    {
+      "id": "rise-and-fall",
+      "nameRu": "Взлёт и падение цивилизаций",
+      "topics": [
+        { "id": "roman-empire-decline", "nameRu": "Падение Римской империи", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "ottoman-empire", "nameRu": "Османская империя", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "british-empire", "nameRu": "Британская империя", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "mongol-empire", "nameRu": "Монгольская империя", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "ancient-greece-golden-age", "nameRu": "Золотой век Древней Греции", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "soviet-union-collapse", "nameRu": "Распад Советского Союза", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "chinese-dynasties", "nameRu": "Циклы китайских династий", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "spanish-empire", "nameRu": "Испанская империя", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "collapse-patterns", "nameRu": "Общие паттерны коллапса цивилизаций", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "american-hegemony", "nameRu": "Американская гегемония", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "war-strategy",
+      "nameRu": "Военная стратегия",
+      "topics": [
+        { "id": "clausewitz-on-war", "nameRu": "Клаузевиц «О войне»", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "blitzkrieg-strategy", "nameRu": "Стратегия блицкрига", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "guerrilla-warfare", "nameRu": "Партизанская война", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "naval-warfare-evolution", "nameRu": "Эволюция морской войны", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "cold-war-deterrence", "nameRu": "Холодная война и сдерживание", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "information-warfare", "nameRu": "Информационная война", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "decisive-battles-history", "nameRu": "Решающие битвы в истории", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "siege-warfare", "nameRu": "Осадная война", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "military-intelligence", "nameRu": "Военная разведка", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "hybrid-warfare-modern", "nameRu": "Гибридная война XXI века", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "economic-cycles",
+      "nameRu": "Экономические циклы",
+      "topics": [
+        { "id": "great-depression", "nameRu": "Великая депрессия", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "tulip-mania", "nameRu": "Тюльпаномания", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "2008-financial-crisis", "nameRu": "Финансовый кризис 2008", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "kondratieff-waves", "nameRu": "Волны Кондратьева", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "hyperinflation-cases", "nameRu": "Случаи гиперинфляции", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "dot-com-bubble", "nameRu": "Пузырь доткомов", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "bretton-woods-system", "nameRu": "Бреттон-Вудская система", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "debt-cycles-dalio", "nameRu": "Долговые циклы по Далио", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "oil-crises", "nameRu": "Нефтяные кризисы", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "south-sea-bubble", "nameRu": "Пузырь Южных морей", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "technological-revolutions",
+      "nameRu": "Технологические революции",
+      "topics": [
+        { "id": "industrial-revolution", "nameRu": "Промышленная революция", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "printing-press-impact", "nameRu": "Изобретение книгопечатания", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "internet-revolution", "nameRu": "Интернет-революция", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "agricultural-revolution", "nameRu": "Аграрная революция", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "electricity-age", "nameRu": "Эпоха электричества", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "nuclear-age", "nameRu": "Ядерная эпоха", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "space-race", "nameRu": "Космическая гонка", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "ai-revolution", "nameRu": "Революция искусственного интеллекта", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "mobile-revolution", "nameRu": "Мобильная революция", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "steam-engine-impact", "nameRu": "Паровой двигатель и его влияние", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "great-leaders",
+      "nameRu": "Великие лидеры",
+      "topics": [
+        { "id": "alexander-the-great", "nameRu": "Александр Македонский", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "julius-caesar", "nameRu": "Юлий Цезарь", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "napoleon-bonaparte", "nameRu": "Наполеон Бонапарт", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "genghis-khan", "nameRu": "Чингисхан", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "peter-the-great", "nameRu": "Пётр I Великий", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "churchill-leadership", "nameRu": "Черчилль и лидерство в кризис", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "lincoln-leadership", "nameRu": "Линкольн и единство нации", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "bismarck-realpolitik", "nameRu": "Бисмарк и реальполитика", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "lee-kuan-yew", "nameRu": "Ли Куан Ю и Сингапур", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "machiavelli-prince", "nameRu": "Макиавелли и «Государь»", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "geopolitics",
+      "nameRu": "Геополитика",
+      "topics": [
+        { "id": "heartland-theory", "nameRu": "Теория хартленда Маккиндера", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "thucydides-trap", "nameRu": "Ловушка Фукидида", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "balance-of-power", "nameRu": "Баланс сил", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "resource-wars", "nameRu": "Войны за ресурсы", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "soft-power", "nameRu": "Мягкая сила", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "us-china-rivalry", "nameRu": "Противостояние США и Китая", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "middle-east-conflict", "nameRu": "Ближневосточный конфликт", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "nato-expansion", "nameRu": "Расширение НАТО", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "brics-multipolar-world", "nameRu": "БРИКС и многополярный мир", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "arctic-geopolitics", "nameRu": "Геополитика Арктики", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    }
+  ]
+}

@@ -34,7 +34,7 @@ const DEMO_QUESTIONS: Question[] = [
   { id: "5", text: "SWOT-анализ оценивает:", options: ["Финансы", "S/W/O/T", "Конкурентов", "Рынок"], correctIndex: 1, explanation: "...", branch: "STRATEGY", category: "decision_making", difficulty: "GOLD" },
 ];
 
-const branchLabels: Record<string, string> = { STRATEGY: "Стратегия", LOGIC: "Логика" };
+const branchLabels: Record<string, string> = { STRATEGY: "Стратегия", LOGIC: "Логика", ERUDITION: "Эрудиция", RHETORIC: "Риторика", INTUITION: "Интуиция" };
 const difficultyLabels: Record<string, string> = { BRONZE: "Бронза", SILVER: "Серебро", GOLD: "Золото" };
 
 export default function AdminQuestionsPage() {
@@ -114,6 +114,9 @@ export default function AdminQuestionsPage() {
           <option value="">Все ветки</option>
           <option value="STRATEGY">Стратегия</option>
           <option value="LOGIC">Логика</option>
+          <option value="ERUDITION">Эрудиция</option>
+          <option value="RHETORIC">Риторика</option>
+          <option value="INTUITION">Интуиция</option>
         </select>
         <select
           value={filters.difficulty}

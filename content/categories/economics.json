@@ -1,0 +1,103 @@
+{
+  "branch": "ERUDITION",
+  "category": "economics",
+  "categoryRu": "Экономика",
+  "subcategories": [
+    {
+      "id": "microeconomics",
+      "nameRu": "Микроэкономика",
+      "topics": [
+        { "id": "supply-demand", "nameRu": "Спрос и предложение", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "price-elasticity", "nameRu": "Эластичность цен", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "market-structures", "nameRu": "Рыночные структуры", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "monopoly-competition", "nameRu": "Монополия и конкуренция", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "consumer-surplus", "nameRu": "Потребительский излишек", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "marginal-utility", "nameRu": "Предельная полезность", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "externalities", "nameRu": "Экстерналии", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "public-goods", "nameRu": "Общественные блага", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "opportunity-cost", "nameRu": "Альтернативные издержки", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "market-failures", "nameRu": "Провалы рынка", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "macroeconomics",
+      "nameRu": "Макроэкономика",
+      "topics": [
+        { "id": "gdp-measurement", "nameRu": "ВВП и его измерение", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "inflation-deflation", "nameRu": "Инфляция и дефляция", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "central-banks-policy", "nameRu": "Центробанки и денежная политика", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "fiscal-policy", "nameRu": "Фискальная политика", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "unemployment-types", "nameRu": "Виды безработицы", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "keynesian-economics", "nameRu": "Кейнсианская экономика", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "monetarism-friedman", "nameRu": "Монетаризм Фридмана", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "trade-balance", "nameRu": "Торговый баланс", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "national-debt", "nameRu": "Государственный долг", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "exchange-rates", "nameRu": "Валютные курсы", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "behavioral-economics",
+      "nameRu": "Поведенческая экономика",
+      "topics": [
+        { "id": "kahneman-tversky", "nameRu": "Канеман и Тверски", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "nudge-architecture", "nameRu": "Архитектура выбора и наджи", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "irrational-consumer", "nameRu": "Иррациональный потребитель", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "anchoring-pricing", "nameRu": "Якорение в ценообразовании", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "loss-aversion-economics", "nameRu": "Неприятие потерь в экономике", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "mental-accounting-spending", "nameRu": "Ментальный учёт расходов", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "herding-behavior", "nameRu": "Стадное поведение на рынках", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "present-bias", "nameRu": "Смещение к настоящему", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "sunk-cost-in-business", "nameRu": "Невозвратные затраты в бизнесе", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "overconfidence-markets", "nameRu": "Самоуверенность на рынках", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "investment-basics",
+      "nameRu": "Основы инвестирования",
+      "topics": [
+        { "id": "compound-interest", "nameRu": "Сложный процент", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "diversification", "nameRu": "Диверсификация портфеля", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "stocks-vs-bonds", "nameRu": "Акции vs облигации", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "index-funds", "nameRu": "Индексные фонды", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "risk-return-tradeoff", "nameRu": "Соотношение риска и доходности", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "value-investing", "nameRu": "Стоимостное инвестирование", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "real-estate-investing", "nameRu": "Инвестиции в недвижимость", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "dollar-cost-averaging", "nameRu": "Стратегия усреднения", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "market-cycles", "nameRu": "Рыночные циклы", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "fundamental-analysis", "nameRu": "Фундаментальный анализ", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "crypto-fintech",
+      "nameRu": "Крипто и финтех",
+      "topics": [
+        { "id": "blockchain-basics", "nameRu": "Основы блокчейна", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "bitcoin-philosophy", "nameRu": "Философия биткоина", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "smart-contracts", "nameRu": "Смарт-контракты", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "defi-basics", "nameRu": "Основы DeFi", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "cbdc-digital-currencies", "nameRu": "CBDC и цифровые валюты", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "neobanks-fintech", "nameRu": "Необанки и финтех-революция", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "tokenization-assets", "nameRu": "Токенизация активов", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "crypto-regulation", "nameRu": "Регулирование криптовалют", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "stablecoins", "nameRu": "Стейблкоины", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "web3-economy", "nameRu": "Экономика Web3", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "economic-history",
+      "nameRu": "История экономических кризисов",
+      "topics": [
+        { "id": "great-depression-lessons", "nameRu": "Уроки Великой депрессии", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "asian-crisis-1997", "nameRu": "Азиатский кризис 1997", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "subprime-mortgage-crisis", "nameRu": "Ипотечный кризис subprime", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "weimar-hyperinflation", "nameRu": "Гиперинфляция Веймарской республики", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "russian-default-1998", "nameRu": "Дефолт России 1998", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "covid-economic-impact", "nameRu": "Экономический удар COVID-19", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "japan-lost-decades", "nameRu": "Потерянные десятилетия Японии", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "argentina-crises", "nameRu": "Кризисы Аргентины", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "black-monday-1987", "nameRu": "Чёрный понедельник 1987", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "eurozone-crisis", "nameRu": "Кризис еврозоны", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    }
+  ]
+}

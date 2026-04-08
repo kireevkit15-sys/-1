@@ -100,22 +100,6 @@
         { "id": "inoculation-theory", "nameRu": "Теория прививки (против манипуляций)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
         { "id": "doublespeak", "nameRu": "Двоемыслие и двоеречие (Оруэлл)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
       ]
-    },
-    {
-      "id": "cognitive-biases",
-      "nameRu": "Когнитивные искажения в мышлении",
-      "topics": [
-        { "id": "anchoring-bias-thinking", "nameRu": "Якорение в мышлении", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
-        { "id": "availability-cascade", "nameRu": "Каскад доступности", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
-        { "id": "blind-spot-bias", "nameRu": "Слепое пятно предвзятости", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
-        { "id": "clustering-illusion", "nameRu": "Иллюзия кластеризации", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
-        { "id": "conjunction-fallacy", "nameRu": "Ошибка конъюнкции", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
-        { "id": "curse-of-knowledge", "nameRu": "Проклятие знания", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
-        { "id": "fundamental-attribution-error", "nameRu": "Фундаментальная ошибка атрибуции", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
-        { "id": "narrative-fallacy", "nameRu": "Нарративная ошибка (Талеб)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
-        { "id": "selection-bias", "nameRu": "Ошибка отбора", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
-        { "id": "debiasing-techniques", "nameRu": "Техники преодоления искажений", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
-      ]
     }
   ]
 }

@@ -12,9 +12,9 @@ export class CreateFactDto {
   @IsString()
   source?: string;
 
-  @ApiProperty({ description: 'Ветка знаний', example: 'STRATEGY', enum: ['STRATEGY', 'LOGIC'] })
+  @ApiProperty({ description: 'Ветка знаний', example: 'STRATEGY', enum: ['STRATEGY', 'LOGIC', 'ERUDITION', 'RHETORIC', 'INTUITION'] })
   @IsString()
-  @IsIn(['STRATEGY', 'LOGIC'])
+  @IsIn(['STRATEGY', 'LOGIC', 'ERUDITION', 'RHETORIC', 'INTUITION'])
   branch!: string;
 
   @ApiProperty({ description: 'Категория', example: 'Стратегическое мышление' })

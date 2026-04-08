@@ -23,6 +23,9 @@ enum Role {
 enum Branch {
   STRATEGY
   LOGIC
+  ERUDITION
+  RHETORIC
+  INTUITION
 }
 
 enum Difficulty {

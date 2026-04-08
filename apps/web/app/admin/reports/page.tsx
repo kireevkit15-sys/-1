@@ -110,7 +110,7 @@ export default function AdminReportsPage() {
 
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="text-xs px-2 py-0.5 rounded-md bg-accent-warm/15 text-accent">
-                    {r.branch === "STRATEGY" ? "Стратегия" : "Логика"}
+                    {{ STRATEGY: "Стратегия", LOGIC: "Логика", ERUDITION: "Эрудиция", RHETORIC: "Риторика", INTUITION: "Интуиция" }[r.branch] || r.branch}
                   </span>
                   <span className={`text-xs px-2 py-0.5 rounded-md ${difficultyColors[r.difficulty] || ""}`}>
                     {r.difficulty === "GOLD" ? "Золото" : r.difficulty === "SILVER" ? "Серебро" : "Бронза"}

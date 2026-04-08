@@ -166,15 +166,21 @@ export class StatsService {
       correct: number;
       total: number;
       won: boolean;
-      branch: 'STRATEGY' | 'LOGIC';
+      branch: 'STRATEGY' | 'LOGIC' | 'ERUDITION' | 'RHETORIC' | 'INTUITION';
     },
   ) {
     const XP_PER_CORRECT = 10;
     const XP_WIN_BONUS = 25;
     const XP_SECONDARY_PER_CORRECT = 5;
 
-    const primaryStat: 'strategyXp' | 'logicXp' =
-      results.branch === 'STRATEGY' ? 'strategyXp' : 'logicXp';
+    const branchToStat: Record<string, 'strategyXp' | 'logicXp' | 'eruditionXp' | 'rhetoricXp' | 'intuitionXp'> = {
+      STRATEGY: 'strategyXp',
+      LOGIC: 'logicXp',
+      ERUDITION: 'eruditionXp',
+      RHETORIC: 'rhetoricXp',
+      INTUITION: 'intuitionXp',
+    };
+    const primaryStat = branchToStat[results.branch] ?? 'eruditionXp';
 
     const primaryXp =
       results.correct * XP_PER_CORRECT + (results.won ? XP_WIN_BONUS : 0);

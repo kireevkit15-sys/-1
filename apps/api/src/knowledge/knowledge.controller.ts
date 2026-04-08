@@ -17,7 +17,7 @@ export class KnowledgeController {
   @ApiOperation({ summary: 'Search similar knowledge chunks by text query' })
   @ApiQuery({ name: 'q', required: true, description: 'Search query text' })
   @ApiQuery({ name: 'limit', required: false, description: 'Max results (default 5)' })
-  @ApiQuery({ name: 'branch', required: false, enum: ['STRATEGY', 'LOGIC'] })
+  @ApiQuery({ name: 'branch', required: false, enum: ['STRATEGY', 'LOGIC', 'ERUDITION', 'RHETORIC', 'INTUITION'] })
   @ApiQuery({ name: 'category', required: false })
   @ApiQuery({ name: 'minSimilarity', required: false, description: 'Min similarity threshold (default 0.3)' })
   @ApiResponse({ status: 200, description: 'Similar knowledge chunks' })
@@ -27,7 +27,7 @@ export class KnowledgeController {
   async search(
     @Query('q') query: string,
     @Query('limit') limit?: string,
-    @Query('branch') branch?: 'STRATEGY' | 'LOGIC',
+    @Query('branch') branch?: 'STRATEGY' | 'LOGIC' | 'ERUDITION' | 'RHETORIC' | 'INTUITION',
     @Query('category') category?: string,
     @Query('minSimilarity') minSimilarity?: string,
   ) {

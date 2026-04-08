@@ -226,7 +226,7 @@ export class QuestionService {
    * 4. Save generated questions to DB for future use
    */
   async getForBattle(params: {
-    branch?: 'STRATEGY' | 'LOGIC';
+    branch?: 'STRATEGY' | 'LOGIC' | 'ERUDITION' | 'RHETORIC' | 'INTUITION';
     difficulty?: 'BRONZE' | 'SILVER' | 'GOLD';
     category?: string;
     excludeIds?: string[];
@@ -251,7 +251,7 @@ export class QuestionService {
     );
 
     const needed = count - dbQuestions.length;
-    const branch = params.branch ?? 'STRATEGY';
+    const branch = params.branch ?? 'ERUDITION';
     const difficulty = params.difficulty ?? 'BRONZE';
     const category = params.category ?? 'Общие знания';
 
@@ -296,7 +296,11 @@ export class QuestionService {
               category,
               branch,
               difficulty,
-              statPrimary: branch === 'STRATEGY' ? 'strategyXp' : 'logicXp',
+              statPrimary: branch === 'STRATEGY' ? 'strategyXp'
+              : branch === 'LOGIC' ? 'logicXp'
+              : branch === 'ERUDITION' ? 'eruditionXp'
+              : branch === 'RHETORIC' ? 'rhetoricXp'
+              : 'intuitionXp',
             },
           });
           saved.push(created);

@@ -1,0 +1,102 @@
+{
+  "branch": "STRATEGY",
+  "category": "entrepreneurship",
+  "categoryRu": "Предпринимательство",
+  "subcategories": [
+    {
+      "id": "startup-thinking",
+      "nameRu": "Стартап-мышление",
+      "topics": [
+        { "id": "lean-startup", "nameRu": "Lean Startup методология", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "mvp-concept", "nameRu": "Минимально жизнеспособный продукт (MVP)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "build-measure-learn", "nameRu": "Цикл «Создать — Измерить — Научиться»", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "pivot-persevere", "nameRu": "Пивот или упорство", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "customer-development", "nameRu": "Развитие клиента (Blank)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "zero-to-one", "nameRu": "От нуля к единице (Тиль)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "founder-mindset", "nameRu": "Мышление основателя", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "startup-vs-corporation", "nameRu": "Стартап vs корпорация: образ мышления", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "innovation-dilemma", "nameRu": "Дилемма инноватора (Кристенсен)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "risk-appetite-entrepreneurs", "nameRu": "Аппетит к риску у предпринимателей", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "business-models",
+      "nameRu": "Бизнес-модели",
+      "topics": [
+        { "id": "business-model-canvas", "nameRu": "Бизнес-модель Canvas (Остервальдер)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "subscription-models", "nameRu": "Подписочные модели", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "marketplace-models", "nameRu": "Маркетплейс-модели", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "freemium-model", "nameRu": "Freemium-модель", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "platform-business", "nameRu": "Платформенный бизнес", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "value-proposition-design", "nameRu": "Дизайн ценностного предложения", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "unit-economics", "nameRu": "Юнит-экономика", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "revenue-streams", "nameRu": "Потоки доходов", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "competitive-moats", "nameRu": "Конкурентные рвы (Баффетт)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "business-model-innovation", "nameRu": "Инновации бизнес-модели", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "product-market-fit",
+      "nameRu": "Продукт-рынок",
+      "topics": [
+        { "id": "pmf-definition", "nameRu": "Определение Product-Market Fit", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "sean-ellis-test", "nameRu": "Тест Шона Эллиса", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "market-research", "nameRu": "Исследование рынка", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "customer-personas", "nameRu": "Портреты клиентов", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "jobs-to-be-done", "nameRu": "Jobs To Be Done (Кристенсен)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "problem-solution-fit", "nameRu": "Problem-Solution Fit", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "tam-sam-som", "nameRu": "TAM, SAM, SOM: оценка рынка", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "early-adopters", "nameRu": "Ранние последователи", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "iteration-to-pmf", "nameRu": "Итерации к Product-Market Fit", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "scaling",
+      "nameRu": "Масштабирование",
+      "topics": [
+        { "id": "blitzscaling", "nameRu": "Блицмасштабирование (Хоффман)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "growth-hacking", "nameRu": "Growth-хакинг", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "viral-loops", "nameRu": "Вирусные петли роста", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "network-effects-business", "nameRu": "Сетевые эффекты в бизнесе", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "scaling-team", "nameRu": "Масштабирование команды", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "premature-scaling", "nameRu": "Преждевременное масштабирование", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "international-expansion", "nameRu": "Международная экспансия", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "operational-excellence", "nameRu": "Операционное совершенство при масштабе", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "crossing-the-chasm", "nameRu": "Преодоление пропасти (Мур)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "economies-of-scale", "nameRu": "Экономия от масштаба", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "fundraising",
+      "nameRu": "Привлечение инвестиций",
+      "topics": [
+        { "id": "bootstrapping", "nameRu": "Бутстрэппинг: рост без инвестиций", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "seed-round", "nameRu": "Посевной раунд", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "series-a-b-c", "nameRu": "Раунды Series A, B, C", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "venture-capital-logic", "nameRu": "Логика венчурного капитала", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "angel-investing", "nameRu": "Ангельское инвестирование", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "pitch-deck-structure", "nameRu": "Структура питч-дека", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "valuation-basics", "nameRu": "Основы оценки стартапа", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "term-sheet-essentials", "nameRu": "Ключевые пункты Term Sheet", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "dilution-cap-table", "nameRu": "Размытие долей и Cap Table", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "revenue-based-financing", "nameRu": "Финансирование на основе выручки", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "failure-analysis",
+      "nameRu": "Анализ провалов",
+      "topics": [
+        { "id": "startup-failure-reasons", "nameRu": "Топ причин провала стартапов", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "post-mortem-analysis", "nameRu": "Посмертный анализ проектов", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "founder-burnout", "nameRu": "Выгорание основателя", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "market-timing-failure", "nameRu": "Провал из-за неправильного тайминга", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "cofounder-conflicts", "nameRu": "Конфликты сооснователей", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "running-out-of-cash", "nameRu": "Истощение денежных средств", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "ignoring-customer-feedback", "nameRu": "Игнорирование обратной связи клиентов", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "lessons-from-failures", "nameRu": "Уроки из провалов известных компаний", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "fail-fast-philosophy", "nameRu": "Философия «быстрого провала»", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "resilience-after-failure", "nameRu": "Устойчивость после провала", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    }
+  ]
+}

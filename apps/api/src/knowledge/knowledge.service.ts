@@ -43,7 +43,7 @@ export class KnowledgeService {
     query: string,
     options: {
       limit?: number;
-      branch?: 'STRATEGY' | 'LOGIC';
+      branch?: 'STRATEGY' | 'LOGIC' | 'ERUDITION' | 'RHETORIC' | 'INTUITION';
       category?: string;
       minSimilarity?: number;
     } = {},
@@ -118,7 +118,7 @@ export class KnowledgeService {
    */
   async findByTopic(
     topic: string,
-    options: { branch?: 'STRATEGY' | 'LOGIC'; limit?: number } = {},
+    options: { branch?: 'STRATEGY' | 'LOGIC' | 'ERUDITION' | 'RHETORIC' | 'INTUITION'; limit?: number } = {},
   ): Promise<SimilarChunk[]> {
     return this.searchSimilar(topic, {
       limit: options.limit ?? 10,
@@ -133,7 +133,7 @@ export class KnowledgeService {
    */
   async getContextForQuestion(
     topic: string,
-    branch: 'STRATEGY' | 'LOGIC',
+    branch: 'STRATEGY' | 'LOGIC' | 'ERUDITION' | 'RHETORIC' | 'INTUITION',
     count: number = 3,
   ): Promise<string> {
     const chunks = await this.searchSimilar(topic, {

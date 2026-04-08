@@ -1,0 +1,101 @@
+{
+  "branch": "RHETORIC",
+  "category": "storytelling",
+  "categoryRu": "Сторителлинг",
+  "subcategories": [
+    {
+      "id": "narrative-structures",
+      "nameRu": "Структуры нарративов",
+      "topics": [
+        { "id": "three-act-structure", "nameRu": "Трёхактная структура", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "heros-journey", "nameRu": "Путешествие героя (Кэмпбелл)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "story-spine", "nameRu": "Позвоночник истории (Pixar)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "in-medias-res", "nameRu": "In medias res: начало с середины", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "freytag-pyramid", "nameRu": "Пирамида Фрейтага", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "nonlinear-narratives", "nameRu": "Нелинейные нарративы", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "vonnegut-story-shapes", "nameRu": "Формы историй (Воннегут)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "story-arc-types", "nameRu": "Типы сюжетных арок", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "climax-and-resolution", "nameRu": "Кульминация и развязка", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "nested-stories", "nameRu": "Вложенные истории (рамочный нарратив)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "business-storytelling",
+      "nameRu": "Бизнес-сторителлинг",
+      "topics": [
+        { "id": "origin-story", "nameRu": "История основания компании", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "vision-story", "nameRu": "История видения будущего", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "customer-success-story", "nameRu": "История успеха клиента", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "case-study-storytelling", "nameRu": "Кейсы как истории", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "investor-pitch-narrative", "nameRu": "Нарратив для инвесторов", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "change-management-stories", "nameRu": "Истории для управления изменениями", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "leadership-storytelling", "nameRu": "Лидерский сторителлинг", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "sales-storytelling", "nameRu": "Сторителлинг в продажах", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "brand-narrative", "nameRu": "Нарратив бренда", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "failure-story-framework", "nameRu": "Фреймворк истории провала", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "personal-branding",
+      "nameRu": "Личный бренд через истории",
+      "topics": [
+        { "id": "signature-story", "nameRu": "Фирменная история", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "transformation-arc", "nameRu": "Арка трансформации", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "vulnerability-in-stories", "nameRu": "Уязвимость в историях (Браун)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "professional-narrative", "nameRu": "Профессиональный нарратив", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "networking-story-toolkit", "nameRu": "Набор историй для нетворкинга", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "social-media-storytelling", "nameRu": "Сторителлинг в соцсетях", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "interview-stories", "nameRu": "Истории для собеседований (STAR)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "mentor-mentee-stories", "nameRu": "Истории наставничества", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "legacy-narrative", "nameRu": "Нарратив наследия", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "emotional-hooks",
+      "nameRu": "Эмоциональные крючки",
+      "topics": [
+        { "id": "opening-hooks-techniques", "nameRu": "Техники вступительных крючков", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "tension-and-suspense", "nameRu": "Напряжение и саспенс", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "surprise-and-twist", "nameRu": "Неожиданность и поворот", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "empathy-triggers", "nameRu": "Триггеры эмпатии", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "sensory-details", "nameRu": "Сенсорные детали", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "humor-in-stories", "nameRu": "Юмор в историях", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "stakes-and-consequences", "nameRu": "Ставки и последствия", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "universal-themes", "nameRu": "Универсальные темы", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "character-relatability", "nameRu": "Узнаваемость персонажа", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "cliffhanger-technique", "nameRu": "Техника клиффхэнгера", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "data-storytelling",
+      "nameRu": "Сторителлинг данных",
+      "topics": [
+        { "id": "data-narrative-framework", "nameRu": "Фреймворк нарратива данных", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "visualization-principles", "nameRu": "Принципы визуализации (Тафти)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "insight-to-story", "nameRu": "От инсайта к истории", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "dashboard-storytelling", "nameRu": "Сторителлинг через дашборды", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "before-after-data", "nameRu": "До и после: данные как доказательство", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "simplifying-complexity", "nameRu": "Упрощение сложности", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "misleading-charts", "nameRu": "Обманчивые графики: критический взгляд", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "infographic-design", "nameRu": "Дизайн инфографики", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "annotation-and-context", "nameRu": "Аннотации и контекст в графиках", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "mythological-patterns",
+      "nameRu": "Мифологические паттерны",
+      "topics": [
+        { "id": "campbell-monomyth", "nameRu": "Мономиф Кэмпбелла", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "jungian-archetypes", "nameRu": "Архетипы Юнга", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "trickster-archetype", "nameRu": "Архетип трикстера", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "mentor-archetype", "nameRu": "Архетип наставника", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "shadow-archetype", "nameRu": "Архетип тени", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "creation-myths-patterns", "nameRu": "Паттерны мифов о сотворении", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "modern-mythology", "nameRu": "Современная мифология (Звёздные войны, Marvel)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "masculine-initiation-myths", "nameRu": "Мифы мужской инициации", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "mythological-thinking-business", "nameRu": "Мифологическое мышление в бизнесе", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "death-rebirth-motif", "nameRu": "Мотив смерти и перерождения", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    }
+  ]
+}

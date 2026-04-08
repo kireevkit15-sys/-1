@@ -1,0 +1,98 @@
+{
+  "branch": "LOGIC",
+  "category": "mental-models",
+  "categoryRu": "Ментальные модели",
+  "subcategories": [
+    {
+      "id": "thinking-frameworks",
+      "nameRu": "Фреймворки мышления",
+      "topics": [
+        { "id": "munger-latticework", "nameRu": "Решётка ментальных моделей Мангера", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "pareto-principle", "nameRu": "Принцип Парето (80/20)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "occams-razor-model", "nameRu": "Бритва Оккама как модель мышления", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "hanlons-razor", "nameRu": "Бритва Хэнлона", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "regret-minimization", "nameRu": "Минимизация сожалений (Безос)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "eisenhower-matrix", "nameRu": "Матрица Эйзенхауэра", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "opportunity-cost", "nameRu": "Альтернативные издержки", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "margin-of-safety", "nameRu": "Запас прочности", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "thought-experiment", "nameRu": "Мысленный эксперимент как инструмент", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "via-negativa", "nameRu": "Via Negativa: мышление через вычитание", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "inversion",
+      "nameRu": "Инверсия",
+      "topics": [
+        { "id": "inversion-principle", "nameRu": "Принцип инверсии", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "jacobi-invert-always-invert", "nameRu": "Якоби: «Инвертируй, всегда инвертируй»", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "avoiding-stupidity", "nameRu": "Избегание глупости вместо поиска гениальности", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "pre-mortem-technique", "nameRu": "Техника пре-мортем", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "kill-criteria", "nameRu": "Критерии отмены проекта", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "red-team-thinking", "nameRu": "Мышление красной команды", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "failure-mode-analysis", "nameRu": "Анализ режимов отказа", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "inversion-in-career", "nameRu": "Инверсия в карьерных решениях", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "first-principles",
+      "nameRu": "Мышление от первых принципов",
+      "topics": [
+        { "id": "first-principles-definition", "nameRu": "Определение мышления от первых принципов", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "aristotle-first-principles", "nameRu": "Аристотель и первые принципы", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "musk-first-principles", "nameRu": "Подход Маска к первым принципам", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "analogy-vs-first-principles", "nameRu": "Мышление по аналогии vs от основ", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "decomposition-technique", "nameRu": "Техника декомпозиции проблем", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "questioning-assumptions", "nameRu": "Подвергание сомнению допущений", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "first-principles-in-business", "nameRu": "Первые принципы в бизнесе", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "socratic-questioning", "nameRu": "Сократический метод вопрошания", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "constraint-removal", "nameRu": "Снятие ограничений для поиска решений", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "five-whys", "nameRu": "Метод пяти почему", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "second-order-thinking",
+      "nameRu": "Мышление второго порядка",
+      "topics": [
+        { "id": "second-order-effects", "nameRu": "Эффекты второго порядка", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "unintended-consequences", "nameRu": "Непредвиденные последствия", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "chesterton-fence", "nameRu": "Забор Честертона", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "cobra-effect", "nameRu": "Эффект кобры", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "nth-order-thinking", "nameRu": "Мышление n-го порядка", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "incentive-cascades", "nameRu": "Каскады стимулов", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "second-order-in-policy", "nameRu": "Второй порядок в политике и регулировании", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "goodharts-law", "nameRu": "Закон Гудхарта", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "campbell-law", "nameRu": "Закон Кэмпбелла", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "map-territory",
+      "nameRu": "Карта и территория",
+      "topics": [
+        { "id": "map-territory-principle", "nameRu": "Принцип «карта не территория»", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "korzybski-semantics", "nameRu": "Общая семантика Коржибски", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "models-are-wrong-useful", "nameRu": "Все модели неверны, но некоторые полезны", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "abstraction-levels", "nameRu": "Уровни абстракции", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "menu-is-not-meal", "nameRu": "Меню это не еда: практические аналогии", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "proxy-metrics-trap", "nameRu": "Ловушка метрик-заместителей", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "simulation-vs-reality", "nameRu": "Симуляция и реальность", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "narrative-as-map", "nameRu": "Нарратив как карта реальности", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "updating-mental-maps", "nameRu": "Обновление ментальных карт", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "streetlight-effect", "nameRu": "Эффект фонарного столба", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "circle-of-competence",
+      "nameRu": "Круг компетенций",
+      "topics": [
+        { "id": "circle-definition", "nameRu": "Определение круга компетенций", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "buffett-munger-circle", "nameRu": "Подход Баффетта и Мангера", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "knowing-boundaries", "nameRu": "Знание своих границ", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "expanding-circle", "nameRu": "Расширение круга компетенций", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "operating-outside-circle", "nameRu": "Действия за пределами круга", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "expert-generalist-balance", "nameRu": "Баланс эксперта и генералиста", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "delegation-and-trust", "nameRu": "Делегирование и доверие экспертам", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "t-shaped-skills", "nameRu": "T-образные навыки", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    }
+  ]
+}

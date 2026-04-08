@@ -1,0 +1,102 @@
+{
+  "branch": "ERUDITION",
+  "category": "philosophy-ethics",
+  "categoryRu": "Философия и этика",
+  "subcategories": [
+    {
+      "id": "stoicism",
+      "nameRu": "Стоицизм",
+      "topics": [
+        { "id": "marcus-aurelius-meditations", "nameRu": "Марк Аврелий и «Размышления»", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "epictetus-dichotomy-of-control", "nameRu": "Эпиктет и дихотомия контроля", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "seneca-on-time", "nameRu": "Сенека о краткости жизни", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "stoic-emotions", "nameRu": "Стоическое отношение к эмоциям", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "amor-fati", "nameRu": "Amor fati — любовь к судьбе", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "memento-mori", "nameRu": "Memento mori — помни о смерти", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "stoic-virtues", "nameRu": "Четыре стоические добродетели", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "modern-stoicism", "nameRu": "Современный стоицизм", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "premeditatio-malorum", "nameRu": "Premeditatio malorum — визуализация невзгод", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "stoic-resilience", "nameRu": "Стоическая устойчивость к стрессу", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "utilitarianism",
+      "nameRu": "Утилитаризм",
+      "topics": [
+        { "id": "bentham-greatest-happiness", "nameRu": "Бентам и принцип наибольшего счастья", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "mill-quality-pleasures", "nameRu": "Милль и качество удовольствий", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "act-vs-rule-utilitarianism", "nameRu": "Утилитаризм действия vs правила", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "trolley-problem", "nameRu": "Проблема вагонетки", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "effective-altruism", "nameRu": "Эффективный альтруизм", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "utilitarian-calculus", "nameRu": "Утилитарное исчисление", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "critique-of-utilitarianism", "nameRu": "Критика утилитаризма", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "preference-utilitarianism", "nameRu": "Утилитаризм предпочтений", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "peter-singer-ethics", "nameRu": "Этика Питера Сингера", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "existentialism",
+      "nameRu": "Экзистенциализм",
+      "topics": [
+        { "id": "sartre-freedom-responsibility", "nameRu": "Сартр: свобода и ответственность", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "camus-absurd", "nameRu": "Камю и абсурд", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "kierkegaard-leap-of-faith", "nameRu": "Кьеркегор и прыжок веры", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "nietzsche-will-to-power", "nameRu": "Ницше и воля к власти", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "heidegger-being-time", "nameRu": "Хайдеггер: бытие и время", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "existential-anxiety", "nameRu": "Экзистенциальная тревога", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "authenticity-concept", "nameRu": "Концепция аутентичности", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "nietzsche-ubermensch", "nameRu": "Ницше и сверхчеловек", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "meaning-of-life", "nameRu": "Смысл жизни в экзистенциализме", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "bad-faith-sartre", "nameRu": "Самообман по Сартру", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "moral-dilemmas",
+      "nameRu": "Моральные дилеммы",
+      "topics": [
+        { "id": "deontology-vs-consequentialism", "nameRu": "Деонтология vs консеквенциализм", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "kantian-categorical-imperative", "nameRu": "Категорический императив Канта", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "justice-rawls-veil", "nameRu": "Справедливость: завеса неведения Ролза", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "whistleblowing-ethics", "nameRu": "Этика разоблачительства", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "lying-for-good", "nameRu": "Допустима ли ложь во благо?", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "moral-luck", "nameRu": "Моральная удача", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "business-ethics-dilemmas", "nameRu": "Этические дилеммы в бизнесе", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "virtue-ethics-aristotle", "nameRu": "Этика добродетелей Аристотеля", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "moral-relativism", "nameRu": "Моральный релятивизм", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "self-defense-ethics", "nameRu": "Этика самообороны", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "eastern-philosophy",
+      "nameRu": "Восточная философия",
+      "topics": [
+        { "id": "buddhism-four-noble-truths", "nameRu": "Буддизм: четыре благородные истины", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "taoism-wu-wei", "nameRu": "Даосизм и у-вэй", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "confucius-ethics", "nameRu": "Этика Конфуция", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "zen-meditation", "nameRu": "Дзен и медитация", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "sun-tzu-art-of-war", "nameRu": "Сунь-Цзы: искусство войны", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "bushido-code", "nameRu": "Кодекс бусидо", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "karma-dharma", "nameRu": "Карма и дхарма", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "yoga-philosophy", "nameRu": "Философия йоги", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "mindfulness-origins", "nameRu": "Осознанность: корни в восточной мысли", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "lao-tzu-tao-te-ching", "nameRu": "Лао-цзы и «Дао Дэ Цзин»", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "ethics-of-technology",
+      "nameRu": "Этика технологий",
+      "topics": [
+        { "id": "ai-ethics-alignment", "nameRu": "Этика ИИ и проблема выравнивания", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "privacy-surveillance", "nameRu": "Приватность vs наблюдение", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "algorithmic-bias", "nameRu": "Предвзятость алгоритмов", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "digital-rights", "nameRu": "Цифровые права человека", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "autonomous-weapons", "nameRu": "Автономное оружие и этика", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "genetic-engineering-ethics", "nameRu": "Этика генной инженерии", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "social-media-manipulation", "nameRu": "Манипуляции в социальных сетях", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "transhumanism", "nameRu": "Трансгуманизм", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "data-ownership", "nameRu": "Кому принадлежат данные?", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "deepfakes-disinformation", "nameRu": "Дипфейки и дезинформация", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    }
+  ]
+}

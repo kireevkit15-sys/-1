@@ -43,6 +43,9 @@ const FALLBACK_QUESTION_STATS: QuestionStats = {
   byBranch: [
     { branch: "STRATEGY", count: 267 },
     { branch: "LOGIC", count: 256 },
+    { branch: "ERUDITION", count: 0 },
+    { branch: "RHETORIC", count: 0 },
+    { branch: "INTUITION", count: 0 },
   ],
   byDifficulty: [
     { difficulty: "BRONZE", count: 210 },
@@ -96,6 +99,9 @@ const difficultyLabels: Record<string, string> = {
 const branchLabels: Record<string, string> = {
   STRATEGY: "Стратегия",
   LOGIC: "Логика",
+  ERUDITION: "Эрудиция",
+  RHETORIC: "Риторика",
+  INTUITION: "Интуиция",
 };
 
 const eventLabels: Record<string, string> = {

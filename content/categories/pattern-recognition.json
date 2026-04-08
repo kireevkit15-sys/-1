@@ -1,0 +1,103 @@
+{
+  "branch": "INTUITION",
+  "category": "pattern-recognition",
+  "categoryRu": "Распознавание паттернов",
+  "subcategories": [
+    {
+      "id": "visual-patterns",
+      "nameRu": "Визуальные паттерны",
+      "topics": [
+        { "id": "gestalt-principles", "nameRu": "Принципы гештальта", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "optical-illusions-science", "nameRu": "Наука оптических иллюзий", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "data-visualization-patterns", "nameRu": "Паттерны в визуализации данных", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "facial-expression-reading", "nameRu": "Считывание мимики (Экман)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "body-language-patterns", "nameRu": "Паттерны языка тела", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "spatial-reasoning", "nameRu": "Пространственное мышление", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "chart-pattern-analysis", "nameRu": "Анализ паттернов на графиках", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "environmental-awareness", "nameRu": "Осознание окружающей среды", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "signal-vs-noise-visual", "nameRu": "Сигнал vs шум в визуальных данных", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "perceptual-learning", "nameRu": "Перцептивное обучение", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "numerical-patterns",
+      "nameRu": "Числовые паттерны",
+      "topics": [
+        { "id": "statistical-outliers", "nameRu": "Статистические выбросы", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "trend-identification", "nameRu": "Идентификация трендов", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "benfords-law", "nameRu": "Закон Бенфорда", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "pareto-principle", "nameRu": "Принцип Парето (80/20)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "exponential-growth-recognition", "nameRu": "Распознавание экспоненциального роста", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "mean-reversion", "nameRu": "Возврат к среднему", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "correlation-vs-causation", "nameRu": "Корреляция vs причинность", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "cyclical-patterns", "nameRu": "Циклические паттерны", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "power-law-distributions", "nameRu": "Степенные распределения", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "base-rate-estimation", "nameRu": "Оценка базовой частоты", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "behavioral-patterns",
+      "nameRu": "Поведенческие паттерны",
+      "topics": [
+        { "id": "habit-loop-recognition", "nameRu": "Распознавание петли привычки", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "manipulation-tactics", "nameRu": "Тактики манипуляции", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "deception-cues", "nameRu": "Признаки обмана", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "personality-archetypes", "nameRu": "Архетипы личности", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "negotiation-patterns", "nameRu": "Паттерны в переговорах", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "power-dynamics", "nameRu": "Динамика власти в группах", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "conflict-escalation-patterns", "nameRu": "Паттерны эскалации конфликтов", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "trust-signals", "nameRu": "Сигналы доверия и недоверия", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "motivation-indicators", "nameRu": "Индикаторы мотивации людей", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "leadership-styles-recognition", "nameRu": "Распознавание стилей лидерства", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "market-patterns",
+      "nameRu": "Рыночные паттерны",
+      "topics": [
+        { "id": "market-cycles", "nameRu": "Рыночные циклы", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "bubble-identification", "nameRu": "Идентификация пузырей", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "supply-demand-signals", "nameRu": "Сигналы спроса и предложения", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "innovation-adoption-curve", "nameRu": "Кривая принятия инноваций", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "herd-behavior-markets", "nameRu": "Стадное поведение на рынках", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "leading-lagging-indicators", "nameRu": "Опережающие и запаздывающие индикаторы", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "disruption-patterns", "nameRu": "Паттерны дизрупции", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "network-effects", "nameRu": "Сетевые эффекты", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "competitive-dynamics", "nameRu": "Конкурентная динамика", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "value-chain-analysis", "nameRu": "Анализ цепочки ценности", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "strategic-patterns",
+      "nameRu": "Стратегические паттерны",
+      "topics": [
+        { "id": "second-order-thinking", "nameRu": "Мышление второго порядка", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "systems-thinking-patterns", "nameRu": "Паттерны системного мышления", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "feedback-loops-recognition", "nameRu": "Распознавание обратных связей", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "unintended-consequences", "nameRu": "Непредвиденные последствия", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "leverage-points", "nameRu": "Точки рычага (Медоуз)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "bottleneck-identification", "nameRu": "Идентификация узких мест", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "asymmetric-opportunities", "nameRu": "Ассиметричные возможности", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "pattern-of-failure", "nameRu": "Паттерны провалов", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "optionality-recognition", "nameRu": "Распознавание опциональности", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "historical-analogies", "nameRu": "Исторические аналогии", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "intuitive-judgment",
+      "nameRu": "Интуитивное суждение",
+      "topics": [
+        { "id": "expert-intuition", "nameRu": "Экспертная интуиция (Кляйн)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "recognition-primed-decision", "nameRu": "Решения на основе распознавания", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "thin-slicing", "nameRu": "Тонкие срезы (Гладуэлл)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "gut-feeling-science", "nameRu": "Наука чутья (Гигеренцер)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "fast-frugal-heuristics", "nameRu": "Быстрые и экономные эвристики", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "situation-awareness", "nameRu": "Ситуационная осведомлённость", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "adaptive-unconscious", "nameRu": "Адаптивное бессознательное", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "intuition-vs-analysis", "nameRu": "Интуиция vs анализ: когда что", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "calibration-of-intuition", "nameRu": "Калибровка интуиции", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "tacit-knowledge", "nameRu": "Неявное знание (Полани)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    }
+  ]
+}

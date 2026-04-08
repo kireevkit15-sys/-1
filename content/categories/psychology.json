@@ -1,0 +1,103 @@
+{
+  "branch": "ERUDITION",
+  "category": "psychology",
+  "categoryRu": "Психология",
+  "subcategories": [
+    {
+      "id": "behavioral-psychology",
+      "nameRu": "Поведенческая психология",
+      "topics": [
+        { "id": "classical-conditioning", "nameRu": "Классическое обусловливание Павлова", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "operant-conditioning", "nameRu": "Оперантное обусловливание Скиннера", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "habit-formation", "nameRu": "Формирование привычек", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "reward-punishment", "nameRu": "Награда и наказание", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "learned-helplessness", "nameRu": "Выученная беспомощность", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "behavioral-addiction", "nameRu": "Поведенческие зависимости", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "motivation-theories", "nameRu": "Теории мотивации", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "procrastination-psychology", "nameRu": "Психология прокрастинации", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "willpower-depletion", "nameRu": "Истощение силы воли", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "behavioral-change-models", "nameRu": "Модели изменения поведения", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "developmental-psychology",
+      "nameRu": "Возрастная психология",
+      "topics": [
+        { "id": "piaget-stages", "nameRu": "Стадии развития по Пиаже", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "erikson-psychosocial", "nameRu": "Психосоциальные стадии Эриксона", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "attachment-theory", "nameRu": "Теория привязанности", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "midlife-crisis", "nameRu": "Кризис среднего возраста", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "adolescent-brain", "nameRu": "Мозг подростка", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "adult-development", "nameRu": "Развитие во взрослом возрасте", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "parenting-styles", "nameRu": "Стили воспитания", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "emotional-intelligence-dev", "nameRu": "Развитие эмоционального интеллекта", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "kohlberg-moral-dev", "nameRu": "Нравственное развитие по Кольбергу", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "neuroplasticity-aging", "nameRu": "Нейропластичность и старение", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "social-psychology",
+      "nameRu": "Социальная психология",
+      "topics": [
+        { "id": "milgram-obedience", "nameRu": "Эксперимент Милгрэма о подчинении", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "stanford-prison", "nameRu": "Стэнфордский тюремный эксперимент", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "groupthink", "nameRu": "Групповое мышление", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "bystander-effect", "nameRu": "Эффект свидетеля", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "cognitive-dissonance", "nameRu": "Когнитивный диссонанс", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "conformity-asch", "nameRu": "Конформизм: эксперимент Аша", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "social-identity-theory", "nameRu": "Теория социальной идентичности", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "stereotypes-prejudice", "nameRu": "Стереотипы и предубеждения", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "crowd-psychology", "nameRu": "Психология толпы", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "persuasion-techniques", "nameRu": "Техники убеждения", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "clinical-basics",
+      "nameRu": "Клиническая психология — основы",
+      "topics": [
+        { "id": "anxiety-disorders", "nameRu": "Тревожные расстройства", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "depression-understanding", "nameRu": "Депрессия: понимание и механизмы", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "ptsd-trauma", "nameRu": "ПТСР и травма", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "narcissism-spectrum", "nameRu": "Нарциссизм: спектр и признаки", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "burnout-syndrome", "nameRu": "Синдром выгорания", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "cbt-basics", "nameRu": "Основы когнитивно-поведенческой терапии", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "psychotherapy-types", "nameRu": "Виды психотерапии", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "addiction-mechanisms", "nameRu": "Механизмы зависимости", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "stress-response", "nameRu": "Стрессовая реакция организма", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "sleep-psychology", "nameRu": "Психология сна", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "personality-theories",
+      "nameRu": "Теории личности",
+      "topics": [
+        { "id": "big-five-traits", "nameRu": "Большая пятёрка черт личности", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "jung-archetypes", "nameRu": "Архетипы Юнга", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "freud-psychoanalysis", "nameRu": "Фрейд и психоанализ", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "maslow-hierarchy", "nameRu": "Пирамида потребностей Маслоу", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "mbti-criticism", "nameRu": "MBTI: польза и критика", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "dark-triad", "nameRu": "Тёмная триада личности", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "locus-of-control", "nameRu": "Локус контроля", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "temperament-types", "nameRu": "Типы темперамента", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "self-actualization", "nameRu": "Самоактуализация", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "introversion-extraversion", "nameRu": "Интроверсия и экстраверсия", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "positive-psychology",
+      "nameRu": "Позитивная психология",
+      "topics": [
+        { "id": "flow-state", "nameRu": "Состояние потока", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "growth-mindset", "nameRu": "Установка на рост", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "grit-perseverance", "nameRu": "Стойкость и настойчивость", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "gratitude-practice", "nameRu": "Практика благодарности", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "resilience-psychology", "nameRu": "Психологическая устойчивость", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "seligman-perma", "nameRu": "Модель PERMA Селигмана", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "ikigai-purpose", "nameRu": "Икигай — смысл жизни", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "post-traumatic-growth", "nameRu": "Посттравматический рост", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "character-strengths", "nameRu": "Сильные стороны характера", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "happiness-science", "nameRu": "Наука о счастье", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    }
+  ]
+}

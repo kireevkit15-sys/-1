@@ -1,0 +1,102 @@
+{
+  "branch": "RHETORIC",
+  "category": "argumentation",
+  "categoryRu": "Аргументация",
+  "subcategories": [
+    {
+      "id": "logical-arguments",
+      "nameRu": "Логические аргументы",
+      "topics": [
+        { "id": "deductive-reasoning", "nameRu": "Дедуктивное рассуждение", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "inductive-reasoning", "nameRu": "Индуктивное рассуждение", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "abductive-reasoning", "nameRu": "Абдуктивное рассуждение", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "syllogisms", "nameRu": "Силлогизмы", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "validity-vs-soundness", "nameRu": "Валидность vs обоснованность", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "toulmin-model", "nameRu": "Модель Тулмина", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "argument-mapping", "nameRu": "Картирование аргументов", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "conditional-reasoning", "nameRu": "Условные рассуждения", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "analogical-arguments", "nameRu": "Аргументы по аналогии", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "causal-arguments", "nameRu": "Каузальные аргументы", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "debate-techniques",
+      "nameRu": "Техники дебатов",
+      "topics": [
+        { "id": "parliamentary-debate", "nameRu": "Парламентские дебаты", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "lincoln-douglas-format", "nameRu": "Формат Линкольна-Дугласа", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "karl-popper-format", "nameRu": "Формат Карла Поппера", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "cross-examination-debate", "nameRu": "Перекрёстный допрос в дебатах", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "flowing-note-taking", "nameRu": "Ведение записей в дебатах (flowing)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "impact-calculus", "nameRu": "Оценка значимости аргументов", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "time-management-debate", "nameRu": "Управление временем в дебатах", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "rebuttal-strategies", "nameRu": "Стратегии опровержения", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "judge-adaptation", "nameRu": "Адаптация к судьям и аудитории", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "constructive-speech-building", "nameRu": "Построение конструктивной речи", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "persuasion-models",
+      "nameRu": "Модели убеждения",
+      "topics": [
+        { "id": "elaboration-likelihood-model", "nameRu": "Модель вероятности обработки (ELM)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "cialdini-six-principles", "nameRu": "Шесть принципов Чалдини", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "aida-model", "nameRu": "Модель AIDA", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "cognitive-dissonance-persuasion", "nameRu": "Когнитивный диссонанс в убеждении", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "social-judgment-theory", "nameRu": "Теория социального суждения", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "nudge-theory", "nameRu": "Теория подталкивания (Талер и Санстейн)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "framing-effects", "nameRu": "Эффекты фрейминга", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "inoculation-theory", "nameRu": "Теория прививки (инокуляции)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "sleeper-effect", "nameRu": "Эффект спящего", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "narrative-transportation", "nameRu": "Нарративная транспортация", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "counter-arguments",
+      "nameRu": "Контраргументы",
+      "topics": [
+        { "id": "steelmanning-technique", "nameRu": "Техника стилменнинга", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "strawman-recognition", "nameRu": "Распознавание подмены тезиса", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "counterexample-method", "nameRu": "Метод контрпримера", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "reductio-ad-absurdum", "nameRu": "Приведение к абсурду", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "turning-arguments", "nameRu": "Переворачивание аргументов", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "preemptive-rebuttal", "nameRu": "Упреждающее опровержение", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "concede-and-counter", "nameRu": "Согласиться и возразить", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "challenging-premises", "nameRu": "Оспаривание предпосылок", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "exposing-hidden-assumptions", "nameRu": "Выявление скрытых допущений", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "evidence-based-reasoning",
+      "nameRu": "Доказательное рассуждение",
+      "topics": [
+        { "id": "source-evaluation", "nameRu": "Оценка источников", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "statistical-literacy", "nameRu": "Статистическая грамотность", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "anecdotal-vs-empirical", "nameRu": "Анекдотические vs эмпирические данные", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "correlation-vs-causation", "nameRu": "Корреляция vs причинность", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "evidence-hierarchy", "nameRu": "Иерархия доказательств", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "base-rate-neglect", "nameRu": "Игнорирование базовой частоты", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "cherry-picking-detection", "nameRu": "Обнаружение выборочного цитирования", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "scientific-method-basics", "nameRu": "Основы научного метода", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "fact-checking-techniques", "nameRu": "Техники проверки фактов", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "data-interpretation", "nameRu": "Интерпретация данных", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "sophistry-detection",
+      "nameRu": "Распознавание софистики",
+      "topics": [
+        { "id": "ad-hominem-variants", "nameRu": "Варианты ad hominem", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "red-herring", "nameRu": "Красная сельдь (отвлечение)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "slippery-slope", "nameRu": "Скользкий склон", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "false-dilemma", "nameRu": "Ложная дилемма", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "appeal-to-authority-fallacy", "nameRu": "Некорректная апелляция к авторитету", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "circular-reasoning", "nameRu": "Порочный круг", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "bandwagon-fallacy", "nameRu": "Аргумент к большинству", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "tu-quoque", "nameRu": "Tu quoque (сам такой)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "equivocation", "nameRu": "Эквивокация (подмена понятий)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "fallacy-detection-practice", "nameRu": "Практика распознавания ошибок в реальных текстах", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    }
+  ]
+}

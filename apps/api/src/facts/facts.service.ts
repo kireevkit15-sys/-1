@@ -145,7 +145,7 @@ export class FactsService {
       data: {
         text: data.text,
         source: data.source,
-        branch: data.branch as 'STRATEGY' | 'LOGIC',
+        branch: data.branch as 'STRATEGY' | 'LOGIC' | 'ERUDITION' | 'RHETORIC' | 'INTUITION',
         category: data.category,
       },
     });
@@ -155,7 +155,7 @@ export class FactsService {
    * Admin: list all facts with pagination.
    */
   async findAll(params: { limit?: number; offset?: number; branch?: string }) {
-    const where = params.branch ? { branch: params.branch as 'STRATEGY' | 'LOGIC' } : {};
+    const where = params.branch ? { branch: params.branch as 'STRATEGY' | 'LOGIC' | 'ERUDITION' | 'RHETORIC' | 'INTUITION' } : {};
 
     const [facts, total] = await Promise.all([
       this.prisma.dailyFact.findMany({

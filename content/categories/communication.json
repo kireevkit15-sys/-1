@@ -1,0 +1,98 @@
+{
+  "branch": "RHETORIC",
+  "category": "communication",
+  "categoryRu": "Коммуникация",
+  "subcategories": [
+    {
+      "id": "public-speaking",
+      "nameRu": "Публичные выступления",
+      "topics": [
+        { "id": "speech-preparation-framework", "nameRu": "Фреймворк подготовки речи", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "audience-engagement-techniques", "nameRu": "Техники вовлечения аудитории", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "stage-presence", "nameRu": "Сценическое присутствие", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "voice-modulation", "nameRu": "Модуляция голоса", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "ted-talk-format", "nameRu": "Формат TED-выступлений", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "pitch-deck-delivery", "nameRu": "Презентация питч-дека", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "handling-hecklers", "nameRu": "Работа с провокаторами", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "storytelling-in-speeches", "nameRu": "Сторителлинг в выступлениях", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "speaking-under-pressure", "nameRu": "Речь под давлением", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "toast-and-ceremony-speeches", "nameRu": "Тосты и церемониальные речи", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "active-listening",
+      "nameRu": "Активное слушание",
+      "topics": [
+        { "id": "reflective-listening", "nameRu": "Рефлексивное слушание", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "paraphrasing-techniques", "nameRu": "Техники перефразирования", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "empathic-listening", "nameRu": "Эмпатическое слушание", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "listening-barriers", "nameRu": "Барьеры слушания", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "questioning-skills", "nameRu": "Навыки задавания вопросов", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "summarizing-skills", "nameRu": "Навыки резюмирования", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "silence-as-tool", "nameRu": "Молчание как инструмент", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "listening-in-negotiations", "nameRu": "Слушание в переговорах", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "deep-listening-levels", "nameRu": "Уровни глубокого слушания", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "nonverbal-communication",
+      "nameRu": "Невербальная коммуникация",
+      "topics": [
+        { "id": "body-language-basics", "nameRu": "Основы языка тела", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "microexpressions", "nameRu": "Микровыражения (Экман)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "power-poses", "nameRu": "Позы силы и доминирования", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "eye-contact-rules", "nameRu": "Правила зрительного контакта", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "proxemics", "nameRu": "Проксемика: дистанция общения", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "handshake-psychology", "nameRu": "Психология рукопожатия", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "deception-detection", "nameRu": "Распознавание обмана", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "mirroring-rapport", "nameRu": "Зеркалирование и раппорт", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "gestures-cultural-context", "nameRu": "Жесты в культурном контексте", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "vocal-nonverbals", "nameRu": "Паравербалика: тон, темп, паузы", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "conflict-resolution",
+      "nameRu": "Разрешение конфликтов",
+      "topics": [
+        { "id": "thomas-kilmann-model", "nameRu": "Модель Томаса-Килманна", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "nonviolent-communication", "nameRu": "Ненасильственное общение (Розенберг)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "de-escalation-tactics", "nameRu": "Тактики деэскалации", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "difficult-conversations", "nameRu": "Трудные разговоры (Стоун, Патон, Хин)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "managing-anger-in-dialogue", "nameRu": "Управление гневом в диалоге", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "workplace-conflict", "nameRu": "Конфликты на рабочем месте", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "family-conflict-resolution", "nameRu": "Разрешение семейных конфликтов", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "apology-and-repair", "nameRu": "Извинение и восстановление", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "feedback-skills",
+      "nameRu": "Навыки обратной связи",
+      "topics": [
+        { "id": "sbi-feedback-model", "nameRu": "Модель SBI (ситуация-поведение-влияние)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "radical-candor", "nameRu": "Радикальная откровенность (Скотт)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "receiving-feedback", "nameRu": "Принятие обратной связи", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "feedforward-technique", "nameRu": "Техника feedforward (Голдсмит)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "constructive-criticism", "nameRu": "Конструктивная критика", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "feedback-in-leadership", "nameRu": "Обратная связь в лидерстве", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "praise-and-recognition", "nameRu": "Похвала и признание", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "one-on-one-conversations", "nameRu": "Разговоры один на один", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "360-feedback-process", "nameRu": "Процесс 360-градусной обратной связи", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "feedback-culture", "nameRu": "Культура обратной связи в команде", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "cross-cultural",
+      "nameRu": "Межкультурная коммуникация",
+      "topics": [
+        { "id": "hofstede-dimensions", "nameRu": "Измерения Хофстеде", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "high-low-context-cultures", "nameRu": "Высококонтекстные и низкоконтекстные культуры", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "culture-map-meyer", "nameRu": "Карта культур (Мейер)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "communication-styles-global", "nameRu": "Стили коммуникации в разных культурах", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "negotiation-across-cultures", "nameRu": "Переговоры между культурами", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "cultural-intelligence-cq", "nameRu": "Культурный интеллект (CQ)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "face-saving-concept", "nameRu": "Концепция «сохранения лица»", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "global-team-communication", "nameRu": "Коммуникация в глобальных командах", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    }
+  ]
+}

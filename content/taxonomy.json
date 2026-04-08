@@ -1,17 +1,16 @@
 {
-  "version": "1.0.0",
-  "createdAt": "2026-04-07",
+  "version": "2.0.0",
+  "createdAt": "2026-04-08",
   "branches": [
     {
       "id": "STRATEGY",
       "nameRu": "Стратегия",
       "categories": [
         "decision-making",
-        "emotional-intelligence",
-        "financial-literacy",
         "leadership",
-        "health-performance",
-        "negotiation-relationships"
+        "entrepreneurship",
+        "time-management",
+        "financial-literacy"
       ]
     },
     {
@@ -20,21 +19,55 @@
       "categories": [
         "formal-logic",
         "critical-thinking",
+        "systems-thinking",
+        "mental-models",
+        "data-literacy"
+      ]
+    },
+    {
+      "id": "ERUDITION",
+      "nameRu": "Эрудиция",
+      "categories": [
+        "philosophy-ethics",
+        "science-literacy",
+        "history-patterns",
+        "psychology",
+        "economics"
+      ]
+    },
+    {
+      "id": "RHETORIC",
+      "nameRu": "Риторика",
+      "categories": [
         "rhetoric",
-        "probability-statistics"
+        "communication",
+        "negotiation-relationships",
+        "argumentation",
+        "storytelling"
+      ]
+    },
+    {
+      "id": "INTUITION",
+      "nameRu": "Интуиция",
+      "categories": [
+        "probability-statistics",
+        "emotional-intelligence",
+        "health-performance",
+        "cognitive-biases",
+        "pattern-recognition"
       ]
     }
   ],
   "summary": {
-    "totalCategories": 10,
-    "totalSubcategories": 67,
-    "totalTopics": 660,
+    "totalBranches": 5,
+    "totalCategories": 25,
+    "totalSubcategories": 120,
+    "totalTopics": 1200,
     "estimatedQuestions": {
-      "BRONZE": 3300,
-      "SILVER": 3200,
-      "GOLD": 2100,
-      "total": 8600
+      "BRONZE": 6000,
+      "SILVER": 6000,
+      "GOLD": 3600,
+      "total": 15600
     }
-  },
-  "note": "Full category JSONs are in content/categories/ directory"
+  }
 }

@@ -1,0 +1,100 @@
+{
+  "branch": "LOGIC",
+  "category": "systems-thinking",
+  "categoryRu": "Системное мышление",
+  "subcategories": [
+    {
+      "id": "feedback-loops",
+      "nameRu": "Обратные связи",
+      "topics": [
+        { "id": "positive-feedback-loops", "nameRu": "Положительные обратные связи", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "negative-feedback-loops", "nameRu": "Отрицательные обратные связи", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "balancing-reinforcing-loops", "nameRu": "Балансирующие и усиливающие циклы", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "delay-in-feedback", "nameRu": "Задержки в обратной связи", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "homeostasis", "nameRu": "Гомеостаз в системах", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "feedback-in-business", "nameRu": "Обратная связь в бизнесе и управлении", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "vicious-virtuous-cycles", "nameRu": "Порочные и благотворные циклы", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "cybernetics-basics", "nameRu": "Основы кибернетики", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "feedback-in-personal-growth", "nameRu": "Обратная связь в личном развитии", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "oscillation-in-systems", "nameRu": "Осцилляции в системах", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "emergence",
+      "nameRu": "Эмерджентность",
+      "topics": [
+        { "id": "emergence-definition", "nameRu": "Определение эмерджентности", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "weak-strong-emergence", "nameRu": "Слабая и сильная эмерджентность", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "self-organization", "nameRu": "Самоорганизация", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "swarm-intelligence", "nameRu": "Роевой интеллект", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "emergent-properties-in-teams", "nameRu": "Эмерджентные свойства в командах", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "whole-greater-than-parts", "nameRu": "Целое больше суммы частей", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "emergent-behavior-markets", "nameRu": "Эмерджентное поведение рынков", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "phase-transitions", "nameRu": "Фазовые переходы в системах", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "reductionism-vs-holism", "nameRu": "Редукционизм vs холизм", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "nonlinear-dynamics",
+      "nameRu": "Нелинейная динамика",
+      "topics": [
+        { "id": "butterfly-effect", "nameRu": "Эффект бабочки", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "tipping-points", "nameRu": "Точки невозврата", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "exponential-growth", "nameRu": "Экспоненциальный рост и его ловушки", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "chaos-theory-basics", "nameRu": "Основы теории хаоса", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "sensitivity-initial-conditions", "nameRu": "Чувствительность к начальным условиям", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "power-laws", "nameRu": "Степенные законы", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "nonlinear-thinking-decisions", "nameRu": "Нелинейное мышление в решениях", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "s-curves", "nameRu": "S-кривые развития", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "attractors-in-systems", "nameRu": "Аттракторы в системах", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "limits-to-growth", "nameRu": "Пределы роста", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "system-archetypes",
+      "nameRu": "Системные архетипы",
+      "topics": [
+        { "id": "fixes-that-fail", "nameRu": "Исправления, которые ухудшают", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "shifting-the-burden", "nameRu": "Перекладывание бремени", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "limits-to-success", "nameRu": "Пределы успеха", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "tragedy-of-commons", "nameRu": "Трагедия общин", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "escalation-archetype", "nameRu": "Эскалация", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "success-to-successful", "nameRu": "Успех к успешному", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "eroding-goals", "nameRu": "Размывание целей", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "growth-underinvestment", "nameRu": "Рост и недоинвестирование", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "accidental-adversaries", "nameRu": "Случайные противники", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "senge-fifth-discipline", "nameRu": "Пятая дисциплина Сенге", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "modeling-simulation",
+      "nameRu": "Моделирование",
+      "topics": [
+        { "id": "causal-loop-diagrams", "nameRu": "Диаграммы причинно-следственных связей", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "stock-flow-diagrams", "nameRu": "Диаграммы запасов и потоков", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "mental-models-in-systems", "nameRu": "Ментальные модели в системном анализе", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "monte-carlo-basics", "nameRu": "Основы метода Монте-Карло", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "agent-based-modeling", "nameRu": "Агентное моделирование", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "system-boundaries", "nameRu": "Границы системы и их определение", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "leverage-points-meadows", "nameRu": "Точки воздействия (Медоуз)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "scenario-modeling", "nameRu": "Сценарное моделирование", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "complex-adaptive-systems",
+      "nameRu": "Сложные адаптивные системы",
+      "topics": [
+        { "id": "cas-definition", "nameRu": "Определение сложных адаптивных систем", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "adaptation-evolution", "nameRu": "Адаптация и эволюция систем", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "edge-of-chaos", "nameRu": "Грань хаоса", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "resilience-robustness", "nameRu": "Устойчивость и робастность", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "fitness-landscapes", "nameRu": "Ландшафты приспособленности", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "network-effects", "nameRu": "Сетевые эффекты", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "coevolution", "nameRu": "Коэволюция", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "organizations-as-cas", "nameRu": "Организации как сложные системы", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "cities-as-systems", "nameRu": "Города как сложные системы", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "cynefin-framework", "nameRu": "Фреймворк Кеневин", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    }
+  ]
+}

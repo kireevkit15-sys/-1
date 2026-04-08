@@ -18,7 +18,7 @@ const XP_BY_DIFFICULTY: Record<string, { correct: number; participation: number 
 };
 
 const DIFFICULTIES = ['BRONZE', 'SILVER', 'GOLD'] as const;
-const BRANCHES = ['STRATEGY', 'LOGIC'] as const;
+const BRANCHES = ['STRATEGY', 'LOGIC', 'ERUDITION', 'RHETORIC', 'INTUITION'] as const;
 
 @Injectable()
 export class ChallengeService {

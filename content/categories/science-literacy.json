@@ -1,0 +1,102 @@
+{
+  "branch": "ERUDITION",
+  "category": "science-literacy",
+  "categoryRu": "Научная грамотность",
+  "subcategories": [
+    {
+      "id": "scientific-method",
+      "nameRu": "Научный метод",
+      "topics": [
+        { "id": "hypothesis-testing", "nameRu": "Формулирование и проверка гипотез", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "falsifiability-popper", "nameRu": "Фальсифицируемость по Попперу", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "scientific-paradigms-kuhn", "nameRu": "Научные парадигмы Куна", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "peer-review-process", "nameRu": "Рецензирование и публикация", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "statistical-significance", "nameRu": "Статистическая значимость", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "replication-crisis", "nameRu": "Кризис воспроизводимости", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "correlation-vs-causation", "nameRu": "Корреляция vs причинность", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "scientific-skepticism", "nameRu": "Научный скептицизм", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "occams-razor", "nameRu": "Бритва Оккама", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "pseudoscience-detection", "nameRu": "Как отличить науку от лженауки", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "physics-basics",
+      "nameRu": "Основы физики",
+      "topics": [
+        { "id": "newtons-laws", "nameRu": "Законы Ньютона", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "thermodynamics-laws", "nameRu": "Законы термодинамики", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "relativity-basics", "nameRu": "Основы теории относительности", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "quantum-mechanics-intro", "nameRu": "Введение в квантовую механику", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "electromagnetism", "nameRu": "Электромагнетизм", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "entropy-concept", "nameRu": "Энтропия и хаос", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "wave-particle-duality", "nameRu": "Корпускулярно-волновой дуализм", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "nuclear-physics", "nameRu": "Ядерная физика и энергия", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "standard-model", "nameRu": "Стандартная модель частиц", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "energy-conservation", "nameRu": "Закон сохранения энергии", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "biology-evolution",
+      "nameRu": "Биология и эволюция",
+      "topics": [
+        { "id": "natural-selection", "nameRu": "Естественный отбор Дарвина", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "genetics-dna", "nameRu": "Генетика и ДНК", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "cell-biology", "nameRu": "Клеточная биология", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "human-evolution", "nameRu": "Эволюция человека", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "microbiome", "nameRu": "Микробиом человека", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "epigenetics", "nameRu": "Эпигенетика", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "immune-system", "nameRu": "Иммунная система", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "neuroscience-basics", "nameRu": "Основы нейронауки", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "evolutionary-psychology", "nameRu": "Эволюционная психология", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "crispr-gene-editing", "nameRu": "CRISPR и редактирование генов", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "chemistry-materials",
+      "nameRu": "Химия и материалы",
+      "topics": [
+        { "id": "periodic-table-logic", "nameRu": "Логика периодической таблицы", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "chemical-bonds", "nameRu": "Химические связи", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "organic-chemistry-basics", "nameRu": "Основы органической химии", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "biochemistry-life", "nameRu": "Биохимия жизни", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "materials-science", "nameRu": "Наука о материалах", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "nanotechnology", "nameRu": "Нанотехнологии", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "polymers-plastics", "nameRu": "Полимеры и пластики", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "catalysis-reactions", "nameRu": "Катализ и химические реакции", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "rare-earth-elements", "nameRu": "Редкоземельные элементы", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "astronomy-cosmology",
+      "nameRu": "Астрономия и космология",
+      "topics": [
+        { "id": "big-bang-theory", "nameRu": "Теория Большого взрыва", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "solar-system", "nameRu": "Солнечная система", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "black-holes", "nameRu": "Чёрные дыры", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "dark-matter-energy", "nameRu": "Тёмная материя и тёмная энергия", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "exoplanets-habitable", "nameRu": "Экзопланеты и зоны обитаемости", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "stellar-evolution", "nameRu": "Эволюция звёзд", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "fermi-paradox", "nameRu": "Парадокс Ферми", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "space-exploration", "nameRu": "Освоение космоса", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "multiverse-hypothesis", "nameRu": "Гипотеза мультивселенной", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "cosmic-microwave-background", "nameRu": "Реликтовое излучение", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "ecology-climate",
+      "nameRu": "Экология и климат",
+      "topics": [
+        { "id": "climate-change-science", "nameRu": "Наука об изменении климата", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "greenhouse-effect", "nameRu": "Парниковый эффект", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "biodiversity-loss", "nameRu": "Утрата биоразнообразия", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "ecosystem-services", "nameRu": "Экосистемные услуги", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "renewable-energy", "nameRu": "Возобновляемая энергетика", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "water-crisis", "nameRu": "Водный кризис", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "circular-economy", "nameRu": "Циркулярная экономика", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "ocean-acidification", "nameRu": "Закисление океана", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "carbon-footprint", "nameRu": "Углеродный след", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "tipping-points-climate", "nameRu": "Точки невозврата в климате", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    }
+  ]
+}

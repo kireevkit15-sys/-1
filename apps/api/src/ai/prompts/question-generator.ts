@@ -35,6 +35,12 @@ const BRANCH_DESC: Record<string, string> = {
     'Стратегия — принятие решений, планирование, управление ресурсами, целеполагание, переговоры, лидерство, финансовое мышление.',
   LOGIC:
     'Логика — критическое мышление, когнитивные искажения, аргументация, формальная и неформальная логика, анализ данных, научный метод.',
+  ERUDITION:
+    'Эрудиция — знания о мире, наука, история, философия, психология, экономика, культура.',
+  RHETORIC:
+    'Риторика — коммуникация, аргументация, переговоры, публичные выступления, сторителлинг, убеждение.',
+  INTUITION:
+    'Интуиция — распознавание паттернов, вероятности, когнитивные искажения, эмоциональный интеллект, быстрое мышление.',
 };
 
 // ── Stat mapping guide ─────────────────────────────────────────────────
@@ -59,7 +65,7 @@ export interface QuestionGeneratorParams {
   /** Конкретная тема из таксономии (рус.), e.g. "Эффект ложной памяти" */
   topicRu: string;
   /** Ветка дерева знаний */
-  branch: 'STRATEGY' | 'LOGIC';
+  branch: 'STRATEGY' | 'LOGIC' | 'ERUDITION' | 'RHETORIC' | 'INTUITION';
   /** Уровень сложности */
   difficulty: 'BRONZE' | 'SILVER' | 'GOLD';
   /** Количество вопросов для генерации (рекомендуется 5-20) */
@@ -84,7 +90,14 @@ export function buildQuestionGeneratorPrompt(params: QuestionGeneratorParams): s
     bloggerContext,
   } = params;
 
-  const branchRu = branch === 'STRATEGY' ? 'Стратегия' : 'Логика';
+  const branchRuMap: Record<string, string> = {
+    STRATEGY: 'Стратегия',
+    LOGIC: 'Логика',
+    ERUDITION: 'Эрудиция',
+    RHETORIC: 'Риторика',
+    INTUITION: 'Интуиция',
+  };
+  const branchRu = branchRuMap[branch] ?? branch;
 
   // ── Anti-duplication block ──
 

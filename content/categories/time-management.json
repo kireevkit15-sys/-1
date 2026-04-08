@@ -1,0 +1,101 @@
+{
+  "branch": "STRATEGY",
+  "category": "time-management",
+  "categoryRu": "Управление временем",
+  "subcategories": [
+    {
+      "id": "prioritization",
+      "nameRu": "Приоритизация",
+      "topics": [
+        { "id": "eisenhower-matrix-practice", "nameRu": "Матрица Эйзенхауэра на практике", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "pareto-in-time", "nameRu": "Принцип Парето в управлении временем", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "ivy-lee-method", "nameRu": "Метод Айви Ли", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "most-important-task", "nameRu": "Самая важная задача дня (MIT)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "warren-buffett-25-5", "nameRu": "Правило 25/5 Уоррена Баффетта", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "opportunity-cost-of-time", "nameRu": "Альтернативная стоимость времени", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "saying-no", "nameRu": "Искусство говорить «нет»", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "urgency-vs-importance", "nameRu": "Срочность vs важность", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "decision-fatigue-time", "nameRu": "Усталость от решений и время", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "leverage-activities", "nameRu": "Рычаговые действия", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "deep-work",
+      "nameRu": "Глубокая работа",
+      "topics": [
+        { "id": "deep-work-definition", "nameRu": "Глубокая работа (Ньюпорт): определение", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "shallow-vs-deep-work", "nameRu": "Поверхностная vs глубокая работа", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "flow-state", "nameRu": "Состояние потока (Чиксентмихайи)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "attention-residue", "nameRu": "Остаточное внимание", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "digital-minimalism", "nameRu": "Цифровой минимализм", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "focus-blocks", "nameRu": "Блоки фокусированной работы", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "environment-design-focus", "nameRu": "Дизайн среды для концентрации", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "monotasking", "nameRu": "Однозадачность vs многозадачность", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "rituals-routines", "nameRu": "Ритуалы и рутины для глубокой работы", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "productivity-systems",
+      "nameRu": "Системы продуктивности",
+      "topics": [
+        { "id": "gtd-allen", "nameRu": "Getting Things Done (Аллен)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "pomodoro-technique", "nameRu": "Техника Помодоро", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "time-blocking", "nameRu": "Тайм-блокинг", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "kanban-personal", "nameRu": "Персональный Канбан", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "second-brain", "nameRu": "Второй мозг (Форте)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "weekly-review", "nameRu": "Еженедельный обзор", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "batching-tasks", "nameRu": "Группировка однотипных задач", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "two-minute-rule", "nameRu": "Правило двух минут", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "inbox-zero", "nameRu": "Inbox Zero", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "automation-delegation", "nameRu": "Автоматизация и делегирование", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "procrastination",
+      "nameRu": "Прокрастинация",
+      "topics": [
+        { "id": "procrastination-psychology", "nameRu": "Психология прокрастинации", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "temporal-discounting", "nameRu": "Временное дисконтирование", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "akrasia-problem", "nameRu": "Проблема акразии (слабоволия)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "resistance-pressfield", "nameRu": "Сопротивление (Прессфилд)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "commitment-devices", "nameRu": "Механизмы обязательств", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "perfectionism-trap", "nameRu": "Ловушка перфекционизма", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "starting-vs-finishing", "nameRu": "Проблема начала vs завершения", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "structured-procrastination", "nameRu": "Структурированная прокрастинация", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "implementation-intentions", "nameRu": "Намерения реализации (если-то планы)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "five-second-rule-robbins", "nameRu": "Правило пяти секунд (Роббинс)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "energy-management",
+      "nameRu": "Управление энергией",
+      "topics": [
+        { "id": "chronotype-awareness", "nameRu": "Понимание хронотипа", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "ultradian-rhythms", "nameRu": "Ультрадианные ритмы", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "sleep-and-performance", "nameRu": "Сон и продуктивность", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "exercise-cognitive-function", "nameRu": "Физическая нагрузка и когнитивные функции", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "nutrition-brain-function", "nameRu": "Питание и работа мозга", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "strategic-rest", "nameRu": "Стратегический отдых", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "stress-recovery-balance", "nameRu": "Баланс стресса и восстановления", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "willpower-depletion", "nameRu": "Истощение силы воли", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "peak-performance-windows", "nameRu": "Окна пиковой производительности", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    },
+    {
+      "id": "goal-setting",
+      "nameRu": "Постановка целей",
+      "topics": [
+        { "id": "smart-goals", "nameRu": "SMART-цели", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "okr-framework", "nameRu": "Фреймворк OKR", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "process-vs-outcome-goals", "nameRu": "Процессные vs результатные цели", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "goal-gradient-effect", "nameRu": "Эффект приближения к цели", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "backcasting", "nameRu": "Обратное планирование (бэккастинг)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "identity-based-goals", "nameRu": "Цели на основе идентичности", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "quarterly-planning", "nameRu": "Квартальное планирование", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "stretch-goals", "nameRu": "Амбициозные цели (stretch goals)", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "anti-goals", "nameRu": "Анти-цели: чего избегать", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } },
+        { "id": "tracking-and-accountability", "nameRu": "Отслеживание и подотчётность", "questionsTarget": { "BRONZE": 5, "SILVER": 5, "GOLD": 3 } }
+      ]
+    }
+  ]
+}
