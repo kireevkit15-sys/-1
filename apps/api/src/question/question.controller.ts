@@ -27,6 +27,8 @@ import {
   UpdateQuestionDto,
 } from './dto/create-question.dto';
 import { CreateFeedbackDto } from './dto/question-feedback.dto';
+import { GenerateQuestionsDto } from './dto/generate-questions.dto';
+import { BulkValidateQuestionsDto } from './dto/bulk-validate.dto';
 
 @ApiTags('Questions')
 @Controller('questions')
@@ -131,6 +133,88 @@ export class QuestionController {
   }
 
   // ─── Admin only ───────────────────────────────────────────
+
+  // ─── B14.1: AI Question Generation ─────────────────────────────
+
+  @ApiOperation({ summary: 'AI-генерация вопросов по категории/ветке (админ)' })
+  @ApiBearerAuth()
+  @ApiResponse({ status: 201, description: 'Вопросы сгенерированы' })
+  @ApiResponse({ status: 403, description: 'Нет прав администратора' })
+  @UseGuards(JwtAuthGuard, AdminGuard)
+  @Post('generate')
+  async generateQuestions(@Body() dto: GenerateQuestionsDto) {
+    return this.questionService.generateQuestions({
+      category: dto.category,
+      branch: dto.branch,
+      difficulty: dto.difficulty,
+      count: dto.count || 5,
+      subcategory: dto.subcategory,
+      topic: dto.topic,
+      saveToDB: dto.saveToDB,
+    });
+  }
+
+  // ─── B14.2: Coverage Gaps ─────────────────────────────────────
+
+  @ApiOperation({ summary: 'Анализ покрытия вопросов по ветке/сложности (админ)' })
+  @ApiBearerAuth()
+  @ApiResponse({ status: 200, description: 'Матрица покрытия и пробелы' })
+  @ApiResponse({ status: 403, description: 'Нет прав администратора' })
+  @UseGuards(JwtAuthGuard, AdminGuard)
+  @Get('gaps')
+  async getCoverageGaps() {
+    return this.questionService.getCoverageGaps();
+  }
+
+  // ─── B14.3: Bulk Validate ─────────────────────────────────────
+
+  @ApiOperation({ summary: 'Пакетная валидация вопросов перед загрузкой (админ)' })
+  @ApiBearerAuth()
+  @ApiResponse({ status: 200, description: 'Результат валидации' })
+  @ApiResponse({ status: 403, description: 'Нет прав администратора' })
+  @UseGuards(JwtAuthGuard, AdminGuard)
+  @Post('bulk-validate')
+  async bulkValidate(@Body() dto: BulkValidateQuestionsDto) {
+    return this.questionService.bulkValidate(dto.questions);
+  }
+
+  // ─── B14.4: Export ────────────────────────────────────────────
+
+  @ApiOperation({ summary: 'Экспорт вопросов в JSON (админ)' })
+  @ApiBearerAuth()
+  @ApiQuery({ name: 'branch', required: false, enum: ['STRATEGY', 'LOGIC', 'ERUDITION', 'RHETORIC', 'INTUITION'] })
+  @ApiQuery({ name: 'difficulty', required: false, enum: ['BRONZE', 'SILVER', 'GOLD'] })
+  @ApiQuery({ name: 'category', required: false })
+  @ApiQuery({ name: 'includeInactive', required: false, type: Boolean })
+  @ApiResponse({ status: 200, description: 'JSON с вопросами' })
+  @ApiResponse({ status: 403, description: 'Нет прав администратора' })
+  @UseGuards(JwtAuthGuard, AdminGuard)
+  @Get('export')
+  async exportQuestions(
+    @Query('branch') branch?: string,
+    @Query('difficulty') difficulty?: string,
+    @Query('category') category?: string,
+    @Query('includeInactive') includeInactive?: string,
+  ) {
+    return this.questionService.exportQuestions({
+      branch,
+      difficulty,
+      category,
+      isActive: includeInactive === 'true' ? undefined : true,
+    });
+  }
+
+  // ─── B14.5: Auto-rotation ────────────────────────────────────
+
+  @ApiOperation({ summary: 'Автоматическая ротация плохих вопросов (админ)' })
+  @ApiBearerAuth()
+  @ApiResponse({ status: 200, description: 'Результат ротации' })
+  @ApiResponse({ status: 403, description: 'Нет прав администратора' })
+  @UseGuards(JwtAuthGuard, AdminGuard)
+  @Post('auto-rotate')
+  async autoRotateQuestions() {
+    return this.questionService.autoRotateQuestions();
+  }
 
   @ApiOperation({ summary: 'Рекалибровка сложности вопросов (админ)' })
   @ApiBearerAuth()
@@ -238,6 +322,45 @@ export class QuestionController {
     return this.questionService.getReportedQuestions(
       limit ? parseInt(limit, 10) : undefined,
     );
+  }
+
+  // ─── B14.6: Tags ───────────────────────────────────────────
+
+  @ApiOperation({ summary: 'Все теги с количеством вопросов (админ)' })
+  @ApiBearerAuth()
+  @ApiResponse({ status: 200, description: 'Список тегов' })
+  @UseGuards(JwtAuthGuard, AdminGuard)
+  @Get('tags')
+  async getAllTags() {
+    return this.questionService.getAllTags();
+  }
+
+  @ApiOperation({ summary: 'Поиск вопросов по тегам (админ)' })
+  @ApiBearerAuth()
+  @ApiQuery({ name: 'tags', required: true, description: 'Теги через запятую' })
+  @ApiQuery({ name: 'matchAll', required: false, type: Boolean, description: 'Все теги должны совпасть' })
+  @ApiResponse({ status: 200, description: 'Список вопросов' })
+  @UseGuards(JwtAuthGuard, AdminGuard)
+  @Get('by-tags')
+  async findByTags(
+    @Query('tags') tags: string,
+    @Query('matchAll') matchAll?: string,
+  ) {
+    const tagList = tags.split(',').map((t) => t.trim()).filter(Boolean);
+    return this.questionService.findByTags(tagList, matchAll === 'true');
+  }
+
+  @ApiOperation({ summary: 'Установить теги на вопрос (админ)' })
+  @ApiBearerAuth()
+  @ApiParam({ name: 'id', description: 'UUID вопроса' })
+  @ApiResponse({ status: 200, description: 'Теги обновлены' })
+  @UseGuards(JwtAuthGuard, AdminGuard)
+  @Patch(':id/tags')
+  async setTags(
+    @Param('id') id: string,
+    @Body() body: { tags: string[] },
+  ) {
+    return this.questionService.setTags(id, body.tags);
   }
 
   @ApiOperation({ summary: 'Мягкое удаление вопроса (админ)' })

@@ -598,6 +598,420 @@ export class QuestionService {
     return groups.map((g: { category: string }) => g.category);
   }
 
+  // ── B14.1: AI Question Generation ────────────────────────────────
+
+  private static readonly BRANCH_STAT_MAP: Record<string, string> = {
+    STRATEGY: 'strategyXp',
+    LOGIC: 'logicXp',
+    ERUDITION: 'eruditionXp',
+    RHETORIC: 'rhetoricXp',
+    INTUITION: 'intuitionXp',
+  };
+
+  async generateQuestions(params: {
+    category: string;
+    branch: 'STRATEGY' | 'LOGIC' | 'ERUDITION' | 'RHETORIC' | 'INTUITION';
+    difficulty: 'BRONZE' | 'SILVER' | 'GOLD';
+    count: number;
+    subcategory?: string;
+    topic?: string;
+    saveToDB?: boolean;
+  }) {
+    const count = Math.min(params.count, 20);
+    const saveToDB = params.saveToDB !== false;
+
+    // Get existing questions for anti-duplication
+    const existing = await this.prisma.question.findMany({
+      where: {
+        branch: params.branch,
+        category: params.category,
+        isActive: true,
+      },
+      select: { text: true },
+      take: 50,
+    });
+    const existingTexts = existing.map((q) => q.text);
+
+    // Get RAG context
+    let bloggerContext = '';
+    try {
+      bloggerContext = await this.knowledgeService.getContextForQuestion(
+        params.category,
+        params.branch,
+        3,
+      );
+    } catch {
+      this.logger.warn('generateQuestions: KnowledgeService unavailable');
+    }
+
+    // Generate via AI
+    const generated = await this.aiService.generateQuestions({
+      categoryRu: params.category,
+      subcategoryRu: params.subcategory || params.category,
+      topicRu: params.topic || params.category,
+      branch: params.branch,
+      difficulty: params.difficulty,
+      count,
+      existingQuestions: existingTexts,
+      bloggerContext: bloggerContext || undefined,
+    });
+
+    if (!saveToDB) {
+      return {
+        generated: generated.length,
+        saved: 0,
+        questions: generated,
+      };
+    }
+
+    // Save to DB
+    const saved = [];
+    for (const q of generated) {
+      try {
+        const created = await this.prisma.question.create({
+          data: {
+            text: q.text,
+            options: q.options,
+            correctIndex: q.correctIndex,
+            explanation: q.explanation,
+            category: params.category,
+            branch: params.branch,
+            difficulty: params.difficulty,
+            statPrimary: QuestionService.BRANCH_STAT_MAP[params.branch] || 'strategyXp',
+          },
+        });
+        saved.push(created);
+      } catch (err) {
+        this.logger.warn(`generateQuestions: failed to save: ${(err as Error).message}`);
+      }
+    }
+
+    this.logger.log(`B14.1: Generated ${generated.length}, saved ${saved.length} (${params.branch}/${params.category}/${params.difficulty})`);
+
+    return {
+      generated: generated.length,
+      saved: saved.length,
+      questions: saved,
+    };
+  }
+
+  // ── B14.2: Coverage Gaps Analysis ───────────────────────────────
+
+  async getCoverageGaps() {
+    const allBranches = ['STRATEGY', 'LOGIC', 'ERUDITION', 'RHETORIC', 'INTUITION'];
+    const allDifficulties = ['BRONZE', 'SILVER', 'GOLD'];
+
+    // Get counts per branch × difficulty
+    const counts = await this.prisma.question.groupBy({
+      by: ['branch', 'difficulty'],
+      where: { isActive: true },
+      _count: { id: true },
+    });
+
+    // Get counts per branch × category
+    const categoryCounts = await this.prisma.question.groupBy({
+      by: ['branch', 'category'],
+      where: { isActive: true },
+      _count: { id: true },
+    });
+
+    // Build matrix
+    const matrix: Array<{
+      branch: string;
+      difficulty: string;
+      count: number;
+      status: 'critical' | 'low' | 'ok' | 'good';
+    }> = [];
+
+    for (const branch of allBranches) {
+      for (const difficulty of allDifficulties) {
+        const found = counts.find(
+          (c: { branch: string; difficulty: string }) => c.branch === branch && c.difficulty === difficulty,
+        );
+        const count = found ? found._count.id : 0;
+        const status = count === 0 ? 'critical' : count < 5 ? 'low' : count < 15 ? 'ok' : 'good';
+        matrix.push({ branch, difficulty, count, status });
+      }
+    }
+
+    // Gaps: branch × difficulty combos with < 5 questions
+    const gaps = matrix.filter((m) => m.count < 5);
+
+    // Categories per branch
+    const categoryMap: Record<string, Array<{ category: string; count: number }>> = {};
+    for (const branch of allBranches) {
+      categoryMap[branch] = categoryCounts
+        .filter((c: { branch: string }) => c.branch === branch)
+        .map((c: { category: string; _count: { id: number } }) => ({
+          category: c.category,
+          count: c._count.id,
+        }))
+        .sort((a: { count: number }, b: { count: number }) => b.count - a.count);
+    }
+
+    const total = await this.prisma.question.count({ where: { isActive: true } });
+
+    return {
+      total,
+      matrix,
+      gaps,
+      gapCount: gaps.length,
+      categoriesByBranch: categoryMap,
+    };
+  }
+
+  // ── B14.3: Bulk Validation ──────────────────────────────────────
+
+  async bulkValidate(questions: CreateQuestionDto[]) {
+    const results: Array<{
+      index: number;
+      valid: boolean;
+      errors: string[];
+      duplicate: boolean;
+    }> = [];
+
+    // Load existing texts for duplicate detection
+    const existingTexts = await this.prisma.question.findMany({
+      where: { isActive: true },
+      select: { text: true },
+    });
+    const existingSet = new Set(existingTexts.map((q) => q.text.toLowerCase().trim()));
+
+    for (let i = 0; i < questions.length; i++) {
+      const q = questions[i]!;
+      const errors: string[] = [];
+
+      // Validate structure
+      if (!q.text || q.text.trim().length < 10) {
+        errors.push('Текст вопроса слишком короткий (минимум 10 символов)');
+      }
+      if (!Array.isArray(q.options) || q.options.length < 2) {
+        errors.push('Минимум 2 варианта ответа');
+      }
+      if (q.options && q.options.length !== 4) {
+        errors.push('Рекомендуется 4 варианта ответа');
+      }
+      if (q.correctIndex == null || q.correctIndex < 0 || (q.options && q.correctIndex >= q.options.length)) {
+        errors.push('correctIndex вне диапазона');
+      }
+      if (!q.category || q.category.trim().length === 0) {
+        errors.push('Категория обязательна');
+      }
+      if (!q.branch) {
+        errors.push('Ветка (branch) обязательна');
+      }
+      if (!q.difficulty) {
+        errors.push('Сложность (difficulty) обязательна');
+      }
+      if (!q.statPrimary) {
+        errors.push('statPrimary обязателен');
+      }
+
+      // Check for duplicate options
+      if (q.options) {
+        const uniqueOpts = new Set(q.options.map((o) => o.toLowerCase().trim()));
+        if (uniqueOpts.size !== q.options.length) {
+          errors.push('Есть дублирующиеся варианты ответа');
+        }
+      }
+
+      // Check for duplicate in DB
+      const duplicate = q.text ? existingSet.has(q.text.toLowerCase().trim()) : false;
+      if (duplicate) {
+        errors.push('Дубликат: такой вопрос уже есть в БД');
+      }
+
+      results.push({
+        index: i,
+        valid: errors.length === 0,
+        errors,
+        duplicate,
+      });
+    }
+
+    const validCount = results.filter((r) => r.valid).length;
+
+    return {
+      total: questions.length,
+      valid: validCount,
+      invalid: questions.length - validCount,
+      duplicates: results.filter((r) => r.duplicate).length,
+      results,
+    };
+  }
+
+  // ── B14.4: Export Questions ─────────────────────────────────────
+
+  async exportQuestions(filters?: {
+    branch?: string;
+    difficulty?: string;
+    category?: string;
+    isActive?: boolean;
+  }) {
+    const where: Record<string, unknown> = {};
+    if (filters?.branch) where.branch = filters.branch;
+    if (filters?.difficulty) where.difficulty = filters.difficulty;
+    if (filters?.category) where.category = filters.category;
+    if (filters?.isActive !== undefined) where.isActive = filters.isActive;
+    else where.isActive = true;
+
+    const questions = await this.prisma.question.findMany({
+      where,
+      orderBy: [{ branch: 'asc' }, { category: 'asc' }, { difficulty: 'asc' }],
+    });
+
+    return {
+      exportedAt: new Date().toISOString(),
+      count: questions.length,
+      filters: filters || {},
+      questions: questions.map((q) => ({
+        text: q.text,
+        options: q.options,
+        correctIndex: q.correctIndex,
+        category: q.category,
+        branch: q.branch,
+        difficulty: q.difficulty,
+        statPrimary: q.statPrimary,
+        statSecondary: q.statSecondary,
+        explanation: q.explanation,
+        totalAnswers: q.totalAnswers,
+        correctAnswers: q.correctAnswers,
+        avgTimeTakenMs: q.avgTimeTakenMs,
+        createdAt: q.createdAt,
+      })),
+    };
+  }
+
+  // ── B14.5: Auto-rotation of bad questions ──────────────────────
+
+  private static readonly MIN_ANSWERS_FOR_ROTATION = 100;
+  private static readonly SKIP_RATE_THRESHOLD = 0.5;   // >50% dislike → rotate
+  private static readonly LOW_CORRECT_THRESHOLD = 0.2;  // <20% correct → rotate
+
+  async autoRotateQuestions() {
+    // Find questions with enough answers and poor performance
+    const candidates = await this.prisma.question.findMany({
+      where: {
+        isActive: true,
+        totalAnswers: { gte: QuestionService.MIN_ANSWERS_FOR_ROTATION },
+      },
+      select: {
+        id: true,
+        text: true,
+        branch: true,
+        category: true,
+        difficulty: true,
+        totalAnswers: true,
+        correctAnswers: true,
+        _count: {
+          select: {
+            feedbacks: true,
+          },
+        },
+      },
+    });
+
+    const rotated: Array<{
+      questionId: string;
+      reason: string;
+      correctRate: number;
+      totalAnswers: number;
+    }> = [];
+
+    for (const q of candidates) {
+      const correctRate = q.correctAnswers / q.totalAnswers;
+
+      // Check feedback: count dislikes
+      const dislikeCount = await this.prisma.questionFeedback.count({
+        where: { questionId: q.id, type: 'DISLIKE' },
+      });
+      const totalFeedback = q._count.feedbacks;
+      const dislikeRate = totalFeedback > 0 ? dislikeCount / totalFeedback : 0;
+
+      let reason = '';
+      if (correctRate < QuestionService.LOW_CORRECT_THRESHOLD) {
+        reason = `Низкий % правильных: ${Math.round(correctRate * 100)}% (порог: ${QuestionService.LOW_CORRECT_THRESHOLD * 100}%)`;
+      } else if (dislikeRate > QuestionService.SKIP_RATE_THRESHOLD && totalFeedback >= 10) {
+        reason = `Высокий % дизлайков: ${Math.round(dislikeRate * 100)}% (${dislikeCount}/${totalFeedback})`;
+      }
+
+      if (reason) {
+        await this.prisma.question.update({
+          where: { id: q.id },
+          data: { isActive: false },
+        });
+        rotated.push({
+          questionId: q.id,
+          reason,
+          correctRate: Math.round(correctRate * 100) / 100,
+          totalAnswers: q.totalAnswers,
+        });
+        this.logger.log(`B14.5: Deactivated question ${q.id}: ${reason}`);
+      }
+    }
+
+    return {
+      analyzed: candidates.length,
+      deactivated: rotated.length,
+      rotated,
+    };
+  }
+
+  // ── B14.6: Tags System ───────────────────────────────────────
+
+  async setTags(questionId: string, tags: string[]) {
+    await this.findOne(questionId);
+    const normalized = tags.map((t) => t.toLowerCase().trim()).filter(Boolean);
+    const unique = [...new Set(normalized)];
+
+    return this.prisma.question.update({
+      where: { id: questionId },
+      data: { tags: unique },
+    });
+  }
+
+  async findByTags(tags: string[], matchAll = false) {
+    const normalized = tags.map((t) => t.toLowerCase().trim());
+
+    if (matchAll) {
+      return this.prisma.question.findMany({
+        where: {
+          isActive: true,
+          tags: { hasEvery: normalized },
+        },
+        orderBy: { createdAt: 'desc' },
+        take: 100,
+      });
+    }
+
+    return this.prisma.question.findMany({
+      where: {
+        isActive: true,
+        tags: { hasSome: normalized },
+      },
+      orderBy: { createdAt: 'desc' },
+      take: 100,
+    });
+  }
+
+  async getAllTags() {
+    const questions = await this.prisma.question.findMany({
+      where: { isActive: true, tags: { isEmpty: false } },
+      select: { tags: true },
+    });
+
+    const tagCounts: Record<string, number> = {};
+    for (const q of questions) {
+      for (const tag of q.tags) {
+        tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+      }
+    }
+
+    return Object.entries(tagCounts)
+      .map(([tag, count]) => ({ tag, count }))
+      .sort((a, b) => b.count - a.count);
+  }
+
   async update(id: string, dto: UpdateQuestionDto) {
     const existing = await this.prisma.question.findUnique({
       where: { id },

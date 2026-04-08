@@ -144,6 +144,9 @@ model Question {
   avgTimeTakenMs Int?       // Average time to answer in ms
   lastCalibratedAt DateTime? // When difficulty was last auto-adjusted
 
+  // B14.6: Tags
+  tags         String[]   @default([])
+
   battleRounds BattleRound[]
   feedbacks    QuestionFeedback[]
 
@@ -153,6 +156,7 @@ model Question {
   @@index([isActive])
   @@index([branch, difficulty, isActive])
   @@index([branch, difficulty, category, isActive])
+  @@index([tags], type: Gin)
   @@map("questions")
 }
 

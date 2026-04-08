@@ -297,12 +297,12 @@
 
 | # | Задача | Статус | Файлы |
 |---|--------|--------|-------|
-| B14.1 | POST /questions/generate — эндпоинт для AI-генерации вопросов по категории/ветке | todo | `apps/api/src/question/` |
-| B14.2 | GET /questions/gaps — анализ покрытия: вопросы по категории/сложности, пробелы | todo | `apps/api/src/question/` |
-| B14.3 | POST /questions/bulk-validate — пакетная валидация вопросов перед загрузкой | todo | `apps/api/src/question/` |
-| B14.4 | GET /questions/export — экспорт вопросов в JSON для бэкапа | todo | `apps/api/src/question/` |
-| B14.5 | Автоматическая ротация: деактивировать вопросы с >50% skip или <20% правильных после 100 ответов | todo | `apps/api/src/question/question.service.ts` |
-| B14.6 | Система тегов на вопросы: поиск и фильтрация по тегам | todo | `prisma/schema.prisma`, `apps/api/src/question/` |
+| B14.1 | POST /questions/generate — эндпоинт для AI-генерации вопросов по категории/ветке | done | `apps/api/src/question/question.controller.ts`, `apps/api/src/question/question.service.ts`, `apps/api/src/question/dto/generate-questions.dto.ts` |
+| B14.2 | GET /questions/gaps — анализ покрытия: вопросы по категории/сложности, пробелы | done | `apps/api/src/question/question.controller.ts`, `apps/api/src/question/question.service.ts` |
+| B14.3 | POST /questions/bulk-validate — пакетная валидация вопросов перед загрузкой | done | `apps/api/src/question/question.controller.ts`, `apps/api/src/question/question.service.ts`, `apps/api/src/question/dto/bulk-validate.dto.ts` |
+| B14.4 | GET /questions/export — экспорт вопросов в JSON для бэкапа | done | `apps/api/src/question/question.controller.ts`, `apps/api/src/question/question.service.ts` |
+| B14.5 | Автоматическая ротация: деактивировать вопросы с >50% skip или <20% правильных после 100 ответов | done | `apps/api/src/question/question.service.ts` |
+| B14.6 | Система тегов на вопросы: поиск и фильтрация по тегам | done | `prisma/schema.prisma`, `apps/api/src/question/question.service.ts`, `apps/api/src/question/question.controller.ts`, `prisma/migrations/20260409000000_add_question_tags/` |
 
 ## Блок 15 — Баттл-система v2
 
