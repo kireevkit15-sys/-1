@@ -93,8 +93,8 @@
 
 | # | Задача | Статус | Файлы |
 |---|--------|--------|-------|
-| F5.1 | Адаптивный layout: SideNav (md:+) вместо BottomNav, контент max-w-3xl по центру, sidebar справа (статы, стрик, факт дня) | todo | `apps/web/components/layout/`, `apps/web/app/(main)/layout.tsx` |
-| F5.2 | Keyboard shortcuts в батле: 1-2-3-4 для ответов, Enter подтверждение, Esc выход | todo | `apps/web/app/(main)/battle/[id]/page.tsx` |
+| F5.1 | Адаптивный layout: SideNav (md:+) вместо BottomNav, контент max-w-3xl по центру, sidebar справа (статы, стрик, факт дня) | done | `apps/web/components/layout/SideNav.tsx`, `apps/web/components/layout/RightSidebar.tsx`, `apps/web/app/(main)/layout.tsx`, `apps/web/components/layout/BottomNav.tsx` |
+| F5.2 | Keyboard shortcuts в батле: 1-2-3-4 для ответов, Enter подтверждение, Esc выход | done | `apps/web/app/(main)/battle/[id]/page.tsx` |
 | F5.3 | Визуальный стиль: агрессивные accent-цвета (красный/оранжевый glow), sharp edges, micro-анимации при hover, металлический gradient на заголовках | todo | `apps/web/app/globals.css`, `tailwind.config.ts` |
 | F5.4 | Батл-экран: shake-эффект при неправильном ответе, pulse при критическом HP, particle explosion при победе, звук удара | todo | `apps/web/app/(main)/battle/[id]/page.tsx`, `apps/web/lib/sounds.ts` |
 | F5.5 | 5 веток — визуальная идентичность: каждая ветка свой цвет + иконка + glow-эффект (STRATEGY=cyan, LOGIC=green, ERUDITION=purple, RHETORIC=orange, INTUITION=pink) | todo | `apps/web/components/`, `apps/web/app/globals.css` |

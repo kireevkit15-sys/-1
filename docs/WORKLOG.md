@@ -268,6 +268,35 @@
 - `12504d9` — feat(web): AI knowledge base, book recommendations
 - `243f27d` — fix(web): playSelect sound, TS errors after Lead merge
 
+### 2026-04-08 — Сессия 6: Адаптивный layout + keyboard shortcuts
+
+**Время:** ~1 час
+**Статус:** Завершена
+
+**Что сделано:**
+- F5.1: Создан SideNav — левая навигация для md+ экранов (5 пунктов + разминка), liquid glass стиль
+- F5.1: Создан RightSidebar — правая панель для lg+ (стрик, XP, винрейт, факт дня, быстрые действия)
+- F5.1: Обновлён MainLayout — двухколоночная сетка, контент сдвигается через ml/mr, max-w-md→max-w-3xl на desktop
+- F5.1: BottomNav скрыт на md+ через md:hidden
+- F5.2: Keyboard shortcuts в батле — 1-4 ответы, 1-3 сложность/защита, Esc выход, Enter новый баттл
+- F5.2: Визуальные подсказки клавиш (md+ only) на кнопках категорий, ответов и защиты
+- Исправлены TS-ошибки: undefined guard'ы для массивных индексов
+
+**Файлы созданы:**
+- `apps/web/components/layout/SideNav.tsx` — боковая навигация
+- `apps/web/components/layout/RightSidebar.tsx` — правый sidebar
+
+**Файлы изменены:**
+- `apps/web/app/(main)/layout.tsx` — адаптивная сетка
+- `apps/web/components/layout/BottomNav.tsx` — md:hidden
+- `apps/web/app/(main)/battle/[id]/page.tsx` — keyboard shortcuts + key hints
+
+**Задачи из SPRINT.md закрыты:** F5.1, F5.2
+
+**Коммиты:**
+- `2016e87` — feat(web): adaptive layout — SideNav, RightSidebar, responsive content area (F5.1)
+- `492a24f` — feat(web): keyboard shortcuts in battle (F5.2)
+
 ---
 
 ## Яшкин (Backend)
@@ -465,3 +494,4 @@
 | 04-07 | Яшкин | Аудит задач: подтверждены недели 8-11, обновлён SPRINT.md | B8.1-B11.4 (15 задач) |
 | 04-08 | Яшкин | Edge cases: 0 вопросов, soft-delete пользователя, JWT refresh в батле | B12.7 |
 | 04-08 | Яшкин | Production seed: 499 вопросов, 13 модулей, bulk-загрузка | B12.8 |
+| 04-08 | Бонди | Адаптивный layout (SideNav, RightSidebar), keyboard shortcuts в батле | F5.1, F5.2 |
