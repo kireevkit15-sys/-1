@@ -95,9 +95,26 @@ export class BattleGateway
   /** userId -> matchmaking timeout timer (30 sec → offer bot) */
   private matchmakingTimers = new Map<string, ReturnType<typeof setTimeout>>();
 
+  /** battleId -> metadata of completed battles (kept 60s for rematch) */
+  private completedBattleMeta = new Map<string, {
+    player1: { id: string; name: string; avatarUrl?: string };
+    player2: { id: string; name: string; avatarUrl?: string };
+    mode: BattleMode;
+    branch?: Branch;
+  }>();
+
+  /** battleId -> pending rematch request { requesterId, opponentId, timer } */
+  private rematchRequests = new Map<string, {
+    requesterId: string;
+    opponentId: string;
+    timer: ReturnType<typeof setTimeout>;
+  }>();
+
   private readonly DISCONNECT_TIMEOUT_MS = 30_000;
   private readonly MATCHMAKING_TIMEOUT_MS = 30_000;
   private readonly MATCHMAKING_POLL_MS = 5_000;
+  private readonly REMATCH_TIMEOUT_MS = 30_000;
+  private readonly COMPLETED_META_TTL_MS = 60_000;
 
   constructor(
     private readonly jwtService: JwtService,
@@ -693,6 +710,166 @@ export class BattleGateway
     }
   }
 
+  // ---------------------------------------------------------------------------
+  // battle:request_rematch — Propose a rematch after battle ends
+  // ---------------------------------------------------------------------------
+
+  @SubscribeMessage('battle:request_rematch')
+  async handleRequestRematch(
+    @ConnectedSocket() client: AuthenticatedSocket,
+    @MessageBody() data: { battleId: string },
+  ) {
+    const userId = client.data.userId;
+    if (!userId) return;
+
+    const meta = this.completedBattleMeta.get(data.battleId);
+    if (!meta) {
+      client.emit('battle:error', { message: 'Battle not found or rematch window expired' });
+      return;
+    }
+
+    // Determine opponent
+    const opponentId = meta.player1.id === userId ? meta.player2.id : meta.player2.id === userId ? meta.player1.id : null;
+    if (!opponentId || opponentId === 'bot') {
+      client.emit('battle:error', { message: 'Cannot request rematch for this battle' });
+      return;
+    }
+
+    // Check if a request already exists
+    if (this.rematchRequests.has(data.battleId)) {
+      client.emit('battle:error', { message: 'Rematch already requested' });
+      return;
+    }
+
+    // Start 30s timeout
+    const timer = setTimeout(() => {
+      this.rematchRequests.delete(data.battleId);
+      const requesterSocketId = this.userSockets.get(userId);
+      if (requesterSocketId) {
+        this.server.to(requesterSocketId).emit('battle:rematch_expired', { battleId: data.battleId });
+      }
+      this.logger.log(`Rematch request expired for battle ${data.battleId}`);
+    }, this.REMATCH_TIMEOUT_MS);
+
+    this.rematchRequests.set(data.battleId, { requesterId: userId, opponentId, timer });
+
+    // Notify opponent
+    const opponentSocketId = this.userSockets.get(opponentId);
+    if (opponentSocketId) {
+      this.server.to(opponentSocketId).emit('battle:rematch_offered', {
+        battleId: data.battleId,
+        requesterId: userId,
+        timeoutMs: this.REMATCH_TIMEOUT_MS,
+      });
+    }
+
+    client.emit('battle:rematch_pending', { battleId: data.battleId, timeoutMs: this.REMATCH_TIMEOUT_MS });
+    this.logger.log(`Rematch requested: battle ${data.battleId}, by ${userId} → ${opponentId}`);
+  }
+
+  // ---------------------------------------------------------------------------
+  // battle:accept_rematch — Accept the rematch proposal
+  // ---------------------------------------------------------------------------
+
+  @SubscribeMessage('battle:accept_rematch')
+  async handleAcceptRematch(
+    @ConnectedSocket() client: AuthenticatedSocket,
+    @MessageBody() data: { battleId: string },
+  ) {
+    const userId = client.data.userId;
+    if (!userId) return;
+
+    const request = this.rematchRequests.get(data.battleId);
+    if (!request || request.opponentId !== userId) {
+      client.emit('battle:error', { message: 'No pending rematch request' });
+      return;
+    }
+
+    clearTimeout(request.timer);
+    this.rematchRequests.delete(data.battleId);
+
+    const meta = this.completedBattleMeta.get(data.battleId);
+    if (!meta) {
+      client.emit('battle:error', { message: 'Rematch window expired' });
+      return;
+    }
+
+    try {
+      // Create a new PvP battle
+      const dbBattle = await this.battleService.createPvpBattle(request.requesterId);
+
+      const availableCategories = await this.questionService.getAvailableCategories();
+      const categories = availableCategories.length >= 3
+        ? availableCategories.slice(0, 6)
+        : availableCategories;
+
+      // Swap roles — previous player2 becomes player1 in rematch
+      const state = createBattle(
+        { id: meta.player2.id, name: meta.player2.name, avatarUrl: meta.player2.avatarUrl },
+        { id: meta.player1.id, name: meta.player1.name, avatarUrl: meta.player1.avatarUrl },
+        meta.mode === BattleMode.SPARRING ? BattleMode.SPARRING : BattleMode.SIEGE,
+        categories,
+        { idGenerator: () => dbBattle.id },
+      );
+
+      this.battles.set(dbBattle.id, state);
+      this.userBattles.set(request.requesterId, dbBattle.id);
+      this.userBattles.set(userId, dbBattle.id);
+
+      // Join both players to the new room
+      const requesterSocketId = this.userSockets.get(request.requesterId);
+      if (requesterSocketId) {
+        this.server.in(requesterSocketId).socketsJoin(`battle:${dbBattle.id}`);
+      }
+      await client.join(`battle:${dbBattle.id}`);
+
+      // Notify both
+      this.server.to(`battle:${dbBattle.id}`).emit('battle:rematch_started', {
+        battleId: dbBattle.id,
+        originalBattleId: data.battleId,
+      });
+      this.server.to(`battle:${dbBattle.id}`).emit('battle:started', state);
+
+      this.logger.log(`Rematch accepted: new battle ${dbBattle.id} from ${data.battleId}`);
+    } catch (error: any) {
+      client.emit('battle:error', { message: error.message ?? 'Failed to create rematch' });
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // battle:decline_rematch — Decline the rematch proposal
+  // ---------------------------------------------------------------------------
+
+  @SubscribeMessage('battle:decline_rematch')
+  async handleDeclineRematch(
+    @ConnectedSocket() client: AuthenticatedSocket,
+    @MessageBody() data: { battleId: string },
+  ) {
+    const userId = client.data.userId;
+    if (!userId) return;
+
+    const request = this.rematchRequests.get(data.battleId);
+    if (!request || request.opponentId !== userId) {
+      client.emit('battle:error', { message: 'No pending rematch request' });
+      return;
+    }
+
+    clearTimeout(request.timer);
+    this.rematchRequests.delete(data.battleId);
+
+    // Notify requester
+    const requesterSocketId = this.userSockets.get(request.requesterId);
+    if (requesterSocketId) {
+      this.server.to(requesterSocketId).emit('battle:rematch_declined', {
+        battleId: data.battleId,
+        declinedBy: userId,
+      });
+    }
+
+    client.emit('battle:rematch_declined_ack', { battleId: data.battleId });
+    this.logger.log(`Rematch declined: battle ${data.battleId}, by ${userId}`);
+  }
+
   private startMatchmakingTimer(userId: string, rating: number, client: AuthenticatedSocket, branch?: Branch) {
     this.clearMatchmakingTimer(userId);
 
@@ -971,6 +1148,16 @@ export class BattleGateway
 
     try {
       const result = getResult(state);
+
+      // Store completed battle metadata for rematch (60s TTL)
+      this.completedBattleMeta.set(battleId, {
+        player1: { ...state.player1 },
+        player2: { ...state.player2 },
+        mode: state.mode,
+        branch: state.selectedBranch as Branch | undefined,
+      });
+      setTimeout(() => this.completedBattleMeta.delete(battleId), this.COMPLETED_META_TTL_MS);
+
       this.server.to(`battle:${battleId}`).emit('battle:complete', result);
 
       await this.persistBattleResult(battleId, state, result);
