@@ -321,6 +321,88 @@ export default function BattlePage() {
     [selectedDifficulty, attack],
   );
 
+  // ---------------------------------------------------------------------------
+  // Keyboard shortcuts: 1-4 answers, 1-3 defense, Esc exit
+  // ---------------------------------------------------------------------------
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if (
+        e.target instanceof HTMLInputElement ||
+        e.target instanceof HTMLTextAreaElement
+      )
+        return;
+
+      // Esc — exit battle
+      if (e.key === "Escape") {
+        e.preventDefault();
+        disconnect();
+        router.push("/");
+        return;
+      }
+
+      if (!battle) return;
+
+      const numKey = parseInt(e.key, 10);
+      const isNum = numKey >= 1 && numKey <= 9;
+
+      // CATEGORY_SELECT — 1..N selects category
+      if (battle.phase === BattlePhase.CATEGORY_SELECT) {
+        const isMyTurn = battle.currentAttackerId === battle.player1.id;
+        const cat = battle.categories[numKey - 1];
+        if (isMyTurn && isNum && numKey <= battle.categories.length && cat) {
+          e.preventDefault();
+          playSelect();
+          selectCategory(cat);
+        }
+        return;
+      }
+
+      // ROUND_ATTACK — select difficulty with 1-3, then answer with 1-4
+      if (battle.phase === BattlePhase.ROUND_ATTACK) {
+        const isMyTurn = battle.currentAttackerId === battle.player1.id;
+        if (!isMyTurn) return;
+
+        if (!selectedDifficulty) {
+          const diff = difficultyConfig[numKey - 1];
+          if (isNum && numKey >= 1 && numKey <= 3 && diff) {
+            e.preventDefault();
+            playSelect();
+            setSelectedDifficulty(diff.value);
+          }
+        } else {
+          if (isNum && numKey >= 1 && numKey <= 4) {
+            e.preventDefault();
+            playSelect();
+            handleAttack(numKey - 1);
+          }
+        }
+        return;
+      }
+
+      // ROUND_DEFENSE — 1-3 selects defense type
+      if (battle.phase === BattlePhase.ROUND_DEFENSE) {
+        const isMyTurn = battle.currentDefenderId === battle.player1.id;
+        const def = defenseConfig[numKey - 1];
+        if (isMyTurn && isNum && numKey >= 1 && numKey <= 3 && def) {
+          e.preventDefault();
+          playSelect();
+          defend(def.value);
+        }
+        return;
+      }
+
+      // FINISHED — Enter for new battle
+      if (status === "finished" && e.key === "Enter") {
+        e.preventDefault();
+        disconnect();
+        router.push("/battle/new");
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [battle, selectedDifficulty, status, disconnect, router, selectCategory, defend, handleAttack]);
+
   // -- No battle state yet --------------------------------------------------
 
   if (!battle && status !== "finished") {
@@ -511,7 +593,10 @@ export default function BattlePage() {
                   onClick={() => { playSelect(); selectCategory(cat); }}
                   className={`w-full flex items-center gap-4 p-4 rounded-2xl border transition-all active:scale-[0.98] ${styles[idx % styles.length]}`}
                 >
-                  <span className="text-lg font-serif font-bold">
+                  <span className="hidden md:inline-flex w-6 h-6 items-center justify-center rounded-md bg-surface-light/60 text-xs font-mono text-text-muted">
+                    {idx + 1}
+                  </span>
+                  <span className="text-lg font-serif font-bold md:hidden">
                     {cat.charAt(0)}
                   </span>
                   <span className="font-semibold">{cat}</span>
@@ -582,8 +667,11 @@ export default function BattlePage() {
                     <button
                       key={idx}
                       onClick={() => { playSelect(); handleAttack(idx); }}
-                      className="w-full text-left p-3 rounded-xl border border-accent/15 bg-surface-light hover:border-accent/40 transition-all text-sm text-text-primary"
+                      className="w-full text-left p-3 rounded-xl border border-accent/15 bg-surface-light hover:border-accent/40 transition-all text-sm text-text-primary flex items-center gap-3"
                     >
+                      <span className="hidden md:inline-flex w-6 h-6 flex-shrink-0 items-center justify-center rounded-md bg-surface/60 text-xs font-mono text-text-muted border border-accent/10">
+                        {idx + 1}
+                      </span>
                       Вариант {idx + 1}
                     </button>
                   ))}
@@ -657,6 +745,9 @@ export default function BattlePage() {
                 onClick={() => { playSelect(); defend(d.value); }}
                 className={`w-full flex items-center gap-4 p-4 rounded-2xl border transition-all active:scale-[0.98] battle-fade-up battle-stagger-${i + 1} ${d.bg} ${d.border}`}
               >
+                <span className="hidden md:inline-flex w-6 h-6 flex-shrink-0 items-center justify-center rounded-md bg-surface-light/40 text-xs font-mono text-text-muted">
+                  {i + 1}
+                </span>
                 <div className={`flex-shrink-0 ${d.text}`}>
                   {d.icon}
                 </div>
