@@ -4,14 +4,14 @@ import * as path from 'path';
 export interface SourceFile {
   filePath: string;      // absolute path
   relativePath: string;  // relative to inputDir
-  format: 'pdf' | 'txt';
+  format: 'pdf' | 'txt' | 'fb2';
   fileName: string;      // without extension
   dirName: string;       // parent directory name
   sourceName: string;    // derived: "dirName/fileName" e.g. "markaryan/lecture-01"
   fileSize: number;
 }
 
-const SUPPORTED_EXTENSIONS = new Set(['.pdf', '.txt']);
+const SUPPORTED_EXTENSIONS = new Set(['.pdf', '.txt', '.fb2']);
 const MIN_FILE_SIZE = 100;
 
 /**
@@ -121,7 +121,7 @@ function scanDirectory(
       continue;
     }
 
-    const format = ext.slice(1) as 'pdf' | 'txt';
+    const format = ext.slice(1) as 'pdf' | 'txt' | 'fb2';
     const fileName = path.parse(name).name;
     const dirName = path.basename(currentDir);
     const relativePath = path.relative(baseDir, filePath);

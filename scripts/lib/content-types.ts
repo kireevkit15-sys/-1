@@ -1,5 +1,5 @@
 /** Supported source file formats */
-export type SourceFormat = 'pdf' | 'txt';
+export type SourceFormat = 'pdf' | 'txt' | 'fb2';
 
 /** Raw parsed document before cleaning */
 export interface RawDocument {
@@ -40,7 +40,7 @@ export interface TextSegment {
   overlapWithPrev: number;
   category?: string;
   topic?: string;
-  branch?: 'STRATEGY' | 'LOGIC';
+  branch?: 'STRATEGY' | 'LOGIC' | 'ERUDITION' | 'RHETORIC' | 'INTUITION';
 }
 
 /** Output of the full pipeline for one file */
@@ -63,7 +63,7 @@ export interface ProcessOptions {
   overlap: number;
   category?: string;
   topic?: string;
-  branch?: 'STRATEGY' | 'LOGIC';
+  branch?: 'STRATEGY' | 'LOGIC' | 'ERUDITION' | 'RHETORIC' | 'INTUITION';
   verbose: boolean;
   dryRun: boolean;
 }

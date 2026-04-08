@@ -8,7 +8,7 @@ export interface SegmentOptions {
   sourceFile: string;
   category?: string;
   topic?: string;
-  branch?: 'STRATEGY' | 'LOGIC';
+  branch?: 'STRATEGY' | 'LOGIC' | 'ERUDITION' | 'RHETORIC' | 'INTUITION';
 }
 
 const DEFAULT_OPTIONS: Pick<SegmentOptions, 'minWords' | 'maxWords' | 'overlapPercent'> = {

@@ -11,6 +11,7 @@ import {
 } from './lib/content-types';
 import { parsePdf } from './lib/pdf-parser';
 import { parseTxt } from './lib/txt-parser';
+import { parseFb2 } from './lib/fb2-parser';
 import { cleanText } from './lib/text-cleaner';
 import { normalizeText } from './lib/text-normalizer';
 import { segmentText } from './lib/semantic-segmenter';
@@ -118,7 +119,9 @@ async function main(): Promise<void> {
       // 2a. Parse raw text from file
       const rawDoc: RawDocument = sf.format === 'pdf'
         ? await parsePdf(sf.filePath)
-        : await parseTxt(sf.filePath);
+        : sf.format === 'fb2'
+          ? await parseFb2(sf.filePath)
+          : await parseTxt(sf.filePath);
 
       if (options.verbose) {
         console.log(`  Parsed: ${rawDoc.text.length} chars, ${rawDoc.metadata.pageCount ?? '?'} pages`);

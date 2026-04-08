@@ -14,7 +14,7 @@
  *   npx tsx scripts/generate-questions.ts --category decision-making --dry-run
  */
 
-import Anthropic from '@anthropic-ai/sdk';
+import OpenAI from 'openai';
 import { PrismaClient } from '@prisma/client';
 import { writeFileSync, mkdirSync, existsSync, readFileSync, readdirSync } from 'fs';
 import { join, resolve } from 'path';
@@ -84,6 +84,9 @@ const DIFFICULTY_RULES: Record<string, string> = {
 const BRANCH_DESC: Record<string, string> = {
   STRATEGY: 'Стратегия — принятие решений, планирование, управление ресурсами, целеполагание, переговоры, лидерство.',
   LOGIC: 'Логика — критическое мышление, когнитивные искажения, аргументация, формальная и неформальная логика, анализ данных.',
+  ERUDITION: 'Эрудиция — знания о мире, наука, история, философия, психология, экономика, культура.',
+  RHETORIC: 'Риторика — коммуникация, аргументация, переговоры, публичные выступления, сторителлинг, убеждение.',
+  INTUITION: 'Интуиция — распознавание паттернов, вероятности, когнитивные искажения, эмоциональный интеллект, быстрое мышление.',
 };
 
 function buildPrompt(params: {
@@ -96,7 +99,14 @@ function buildPrompt(params: {
   existingQuestions: string[];
 }): string {
   const { categoryRu, subcategoryRu, topicRu, branch, difficulty, count, existingQuestions } = params;
-  const branchRu = branch === 'STRATEGY' ? 'Стратегия' : 'Логика';
+  const branchRuMap: Record<string, string> = {
+    STRATEGY: 'Стратегия',
+    LOGIC: 'Логика',
+    ERUDITION: 'Эрудиция',
+    RHETORIC: 'Риторика',
+    INTUITION: 'Интуиция',
+  };
+  const branchRu = branchRuMap[branch] ?? branch;
 
   let dedupBlock = '';
   if (existingQuestions.length > 0) {
@@ -314,8 +324,12 @@ async function main(): Promise<void> {
     return;
   }
 
-  // Initialize clients
-  const client = new Anthropic();
+  // Initialize clients (OpenAI-compatible via Polza.ai → Gemini)
+  const client = new OpenAI({
+    apiKey: process.env.AI_API_KEY,
+    baseURL: process.env.AI_BASE_URL || 'https://api.polza.ai/v1',
+  });
+  const model = process.env.AI_MODEL_SMART || 'google/gemini-2.5-flash';
   const prisma = new PrismaClient();
 
   const startTime = Date.now();
@@ -353,18 +367,18 @@ async function main(): Promise<void> {
             existingQuestions: existing,
           });
 
-          const response = await client.messages.create({
-            model: 'claude-sonnet-4-20250514',
+          const response = await client.chat.completions.create({
+            model,
             max_tokens: 8000,
             messages: [{ role: 'user', content: prompt }],
           });
 
           apiCalls++;
 
-          const text = response.content[0].type === 'text' ? response.content[0].text : '';
+          const text = response.choices?.[0]?.message?.content ?? '';
 
-          if (verbose) {
-            console.log(`  Tokens: in=${response.usage.input_tokens} out=${response.usage.output_tokens}`);
+          if (verbose && response.usage) {
+            console.log(`  Tokens: in=${response.usage.prompt_tokens} out=${response.usage.completion_tokens}`);
           }
 
           // Parse JSON

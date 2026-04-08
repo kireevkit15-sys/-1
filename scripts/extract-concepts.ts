@@ -13,10 +13,14 @@
  *   npx ts-node scripts/extract-concepts.ts --input content/processed --batch-size 3 --verbose
  */
 
-import Anthropic from '@anthropic-ai/sdk';
+import OpenAI from 'openai';
 import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync, statSync } from 'fs';
 import { join, resolve } from 'path';
 import { Command } from 'commander';
+import { config } from 'dotenv';
+
+// Load .env from project root
+config({ path: resolve(__dirname, '..', '.env') });
 
 // ── Types ───────────────────────────────────────────────────────────
 
@@ -52,7 +56,7 @@ interface ExtractedConcept {
   trust_level: 'needs_validation' | 'validated' | 'opinion';
   academic_sources: string[];
   tags: string[];
-  branch: 'STRATEGY' | 'LOGIC';
+  branch: 'STRATEGY' | 'LOGIC' | 'ERUDITION' | 'RHETORIC' | 'INTUITION';
   difficulty: 'BRONZE' | 'SILVER' | 'GOLD';
   potential_questions: string[];
 }
@@ -93,7 +97,7 @@ ${text}
   "trust_level": "validated | needs_validation | opinion",
   "academic_sources": ["Ссылка на научный источник, подтверждающий claim (автор, год, название)"],
   "tags": ["тег1", "тег2", "тег3"],
-  "branch": "STRATEGY | LOGIC",
+  "branch": "STRATEGY | LOGIC | ERUDITION | RHETORIC | INTUITION",
   "difficulty": "BRONZE | SILVER | GOLD",
   "potential_questions": ["Вопрос 1 для викторины", "Вопрос 2"]
 }
@@ -104,8 +108,11 @@ ${text}
    - "needs_validation" — интересное утверждение, но нужна проверка
    - "opinion" — субъективное мнение автора, личный опыт
 2. branch:
-   - "STRATEGY" — решения, управление, эмоц. интеллект, финансы, здоровье, переговоры, лидерство
-   - "LOGIC" — формальная логика, критическое мышление, риторика, вероятности, когнитивные ошибки
+   - "STRATEGY" — решения, управление, лидерство, финансы, предпринимательство, управление временем
+   - "LOGIC" — формальная логика, критическое мышление, системное мышление, ментальные модели, данные
+   - "ERUDITION" — наука, история, философия, психология, экономика
+   - "RHETORIC" — коммуникация, аргументация, переговоры, сторителлинг, убеждение
+   - "INTUITION" — вероятности, когнитивные искажения, эмоциональный интеллект, паттерны, здоровье
 3. difficulty:
    - "BRONZE" — базовый концепт, определения, простые факты
    - "SILVER" — требует понимания контекста и анализа
@@ -122,7 +129,7 @@ ${text}
 
 // ── Validation ──────────────────────────────────────────────────────
 
-const VALID_BRANCHES = ['STRATEGY', 'LOGIC'];
+const VALID_BRANCHES = ['STRATEGY', 'LOGIC', 'ERUDITION', 'RHETORIC', 'INTUITION'];
 const VALID_DIFFICULTIES = ['BRONZE', 'SILVER', 'GOLD'];
 const VALID_TRUST_LEVELS = ['needs_validation', 'validated', 'opinion'];
 
@@ -284,8 +291,12 @@ async function main(): Promise<void> {
     return;
   }
 
-  // Initialize Anthropic client
-  const client = new Anthropic();
+  // Initialize OpenAI-compatible client (Polza.ai → Gemini)
+  const client = new OpenAI({
+    apiKey: process.env.AI_API_KEY,
+    baseURL: process.env.AI_BASE_URL || 'https://api.polza.ai/v1',
+  });
+  const model = process.env.AI_MODEL_FAST || 'google/gemini-2.5-flash';
   const startTime = Date.now();
   const allConcepts: ExtractedConcept[] = [];
   const errors: Array<{ segment: string; error: string }> = [];
@@ -309,25 +320,25 @@ async function main(): Promise<void> {
       try {
         const prompt = buildPrompt(text, sourceName);
 
-        const response = await client.messages.create({
-          model: 'claude-haiku-4-5-20251001',
+        const response = await client.chat.completions.create({
+          model,
           max_tokens: 4096,
           messages: [{ role: 'user', content: prompt }],
         });
 
-        const textBlock = response.content.find((b: { type: string }) => b.type === 'text');
-        if (!textBlock || textBlock.type !== 'text') {
+        const content = response.choices?.[0]?.message?.content;
+        if (!content) {
           console.warn(`${label} Empty response for ${segId}`);
-          errors.push({ segment: segId, error: 'Empty response from Claude' });
+          errors.push({ segment: segId, error: 'Empty response from API' });
           processedCount++;
           continue;
         }
 
-        if (verbose) {
-          console.log(`${label} Tokens: in=${response.usage.input_tokens} out=${response.usage.output_tokens}`);
+        if (verbose && response.usage) {
+          console.log(`${label} Tokens: in=${response.usage.prompt_tokens} out=${response.usage.completion_tokens}`);
         }
 
-        const parsed = parseJsonArray<Record<string, unknown>>(textBlock.text);
+        const parsed = parseJsonArray<Record<string, unknown>>(content);
         const valid = parsed.filter(isValidConcept);
 
         // Add id and source, build ExtractedConcept
