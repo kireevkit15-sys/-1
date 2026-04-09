@@ -512,6 +512,60 @@
 - `0fdb7c6` — feat(web): knowledge tree, module animations, warmup UX, leaderboard, onboarding v2
 - `6dc4ea1` — feat(web): PWA offline + polish — toast, confetti, settings, referral, about
 
+### 2026-04-10 — Сессия 11: Тестирование — полная инфраструктура + 61 unit-тест (FT.1-FT.15)
+
+**Время:** ~1.5 часа
+**Статус:** Завершена
+
+**Что сделано:**
+
+*Инфраструктура тестирования:*
+- Установлен vitest + @testing-library/react + jsdom для unit-тестов
+- Установлен @playwright/test + @axe-core/playwright для E2E + a11y
+- Созданы vitest.config.ts, test-setup.ts, playwright.config.ts
+- Lighthouse CI workflow (.github/workflows/lighthouse.yml)
+
+*FT.9 — Unit-тесты хуков:*
+- useAuth: 7 тестов — loading, authenticated, unauthenticated, logout, login, register
+
+*FT.10 — Unit-тесты компонентов:*
+- Button: 12 тестов — variants, click, fullWidth, disabled
+- Card: 8 тестов — children, padding, className
+- SideNav: 11 тестов — nav items, active route, hrefs
+
+*FT.15 — Звуки:*
+- sounds.ts: 23 теста — все 9 функций, idempotency, singleton, suspend/resume
+
+*E2E тесты (Playwright):*
+- FT.1: Visual regression — 8 страниц × 6 viewports
+- FT.2: Battle flow, FT.3: Onboarding, FT.4: Learn, FT.5: Warmup, FT.6: AI Chat
+- FT.7: Accessibility audit (axe-core, 9 страниц)
+- FT.11: Offline mode, FT.12: Push, FT.13: Cross-browser, FT.14: Memory leak
+
+*CI:*
+- FT.8: Lighthouse CI — perf≥90, a11y≥95, best-practices≥90
+
+**Результат:** 61 тест, 5 файлов, 0 failures
+
+**Файлы созданы:**
+- `apps/web/vitest.config.ts`, `test-setup.ts`, `playwright.config.ts`
+- `apps/web/lighthouserc.json`, `lighthouse-budget.json`
+- `.github/workflows/lighthouse.yml`
+- `apps/web/hooks/__tests__/useAuth.test.ts`
+- `apps/web/components/__tests__/Button.test.tsx`, `Card.test.tsx`, `SideNav.test.tsx`
+- `apps/web/tests/visual/screenshots.spec.ts`
+- `apps/web/tests/e2e/battle.spec.ts`, `onboarding.spec.ts`, `learn.spec.ts`, `warmup.spec.ts`, `ai-chat.spec.ts`, `offline.spec.ts`, `push.spec.ts`
+- `apps/web/tests/a11y/accessibility.spec.ts`
+- `apps/web/tests/cross-browser/rendering.spec.ts`
+- `apps/web/tests/performance/memory.spec.ts`
+- `apps/web/tests/sound-effects.test.ts`
+
+**Задачи из SPRINT.md закрыты:** FT.1-FT.15
+
+**Коммиты:**
+- `1ba0798` — test(web): full test infrastructure + 61 unit tests + E2E + a11y + Lighthouse CI (FT.1-FT.15)
+- `42c663a` — docs(sprint): close all FT.1-FT.15 frontend testing tasks
+
 ---
 
 ## Яшкин (Backend)
