@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { useBattle } from "@/hooks/useBattle";
 import { BattlePhase, Difficulty, DefenseType } from "@razum/shared";
-import { playBattleStart, playSelect, playCorrect, playWrong, playTick, playVictory, playDefeat } from "@/lib/sounds";
+import { playBattleStart, playSelect, playCorrect, playWrong, playTick, playVictory, playDefeat, playDamage } from "@/lib/sounds";
 import type { BattleState } from "@razum/shared";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
@@ -97,12 +97,16 @@ function TimerCircle({
 
 function HpBar({ hp, maxHp = 100, color }: { hp: number; maxHp?: number; color: "accent" | "accent-red" }) {
   const pct = Math.max(0, Math.min(100, (hp / maxHp) * 100));
+  const isCritical = pct <= 20;
   const barColor = color === "accent"
     ? "bg-gradient-to-r from-accent-warm via-accent to-accent-gold"
     : "bg-gradient-to-r from-accent-red to-accent-red/70";
   return (
     <div className="h-1.5 w-full bg-surface-light rounded-full overflow-hidden mt-1">
-      <div className={`h-full rounded-full transition-all duration-500 ${barColor}`} style={{ width: `${pct}%` }} />
+      <div
+        className={`h-full rounded-full transition-all duration-500 ${barColor}${isCritical ? " battle-pulse-hp" : ""}`}
+        style={{ width: `${pct}%` }}
+      />
     </div>
   );
 }
@@ -244,6 +248,46 @@ const defenseConfig = [
 ];
 
 // ---------------------------------------------------------------------------
+// Victory particles
+// ---------------------------------------------------------------------------
+
+const PARTICLE_ANGLES = [0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330];
+const PARTICLE_COLORS = ["#CF9D7B", "#B98D34", "#E8C89E", "#89352A", "#CF9D7B", "#B98D34"];
+
+function VictoryParticles() {
+  return (
+    <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
+      {PARTICLE_ANGLES.map((angle, i) => {
+        const rad = (angle * Math.PI) / 180;
+        const distance = 60 + (i % 3) * 20;
+        const tx = Math.cos(rad) * distance;
+        const ty = Math.sin(rad) * distance;
+        const color = PARTICLE_COLORS[i % PARTICLE_COLORS.length];
+        const size = 6 + (i % 3) * 2;
+        const delay = (i % 4) * 0.08;
+        return (
+          <div
+            key={angle}
+            className="absolute rounded-full animate-particle-burst"
+            style={{
+              width: size,
+              height: size,
+              background: color,
+              top: "50%",
+              left: "50%",
+              marginTop: -size / 2,
+              marginLeft: -size / 2,
+              transform: `translate(${tx}px, ${ty}px)`,
+              animationDelay: `${delay}s`,
+            }}
+          />
+        );
+      })}
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // Main Page
 // ---------------------------------------------------------------------------
 
@@ -265,6 +309,7 @@ export default function BattlePage() {
 
   const [selectedDifficulty, setSelectedDifficulty] =
     useState<Difficulty | null>(null);
+  const [shakeScreen, setShakeScreen] = useState(false);
 
   const timerActive =
     !!battle &&
@@ -295,13 +340,28 @@ export default function BattlePage() {
     }
   }, [status, result, battle]);
 
-  // Play correct/wrong sound when round result is revealed
+  // Play correct/wrong sound when round result is revealed; shake on miss, play damage on hit
   useEffect(() => {
     if (battle?.phase === BattlePhase.ROUND_RESULT) {
       const lastRound = battle.rounds[battle.rounds.length - 1];
       if (lastRound) {
-        if (lastRound.attackerCorrect && lastRound.attackerId === battle.player1.id) playCorrect();
-        else if (!lastRound.attackerCorrect && lastRound.attackerId === battle.player1.id) playWrong();
+        if (lastRound.attackerCorrect && lastRound.attackerId === battle.player1.id) {
+          playCorrect();
+        } else if (!lastRound.attackerCorrect && lastRound.attackerId === battle.player1.id) {
+          playWrong();
+          // Shake screen on wrong answer (miss)
+          setShakeScreen(true);
+          setTimeout(() => setShakeScreen(false), 600);
+        }
+        // Play damage sound when damage was dealt (regardless of attacker)
+        if (lastRound.damageDealt > 0) {
+          playDamage();
+          // Also shake on taking damage as defender
+          if (lastRound.attackerId !== battle.player1.id) {
+            setShakeScreen(true);
+            setTimeout(() => setShakeScreen(false), 600);
+          }
+        }
       }
     }
   }, [battle?.phase, battle?.rounds, battle?.player1?.id]);
@@ -432,7 +492,8 @@ export default function BattlePage() {
           {/* Big result icon with glow */}
           <div className={`battle-slam ${isWin ? "battle-glow-gold" : isDraw ? "" : "battle-glow-red"}`}>
             {isWin ? (
-              <div className="inline-flex flex-col items-center">
+              <div className="relative inline-flex flex-col items-center">
+                <VictoryParticles />
                 <svg viewBox="0 0 24 24" fill="currentColor" className="w-16 h-16 text-accent-gold mb-2">
                   <path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5z" />
                   <path d="M19 19H5a1 1 0 010-2h14a1 1 0 010 2z" />
@@ -774,7 +835,7 @@ export default function BattlePage() {
     const isHit = lastRound && lastRound.damageDealt > 0;
 
     return (
-      <div className="px-4 pt-8 pb-24 space-y-6">
+      <div className={`px-4 pt-8 pb-24 space-y-6${shakeScreen ? " battle-shake" : ""}`}>
         <ScoreBar battle={battle} />
 
         <div className="text-center space-y-5 pt-2">

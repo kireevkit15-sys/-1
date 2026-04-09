@@ -95,14 +95,14 @@
 |---|--------|--------|-------|
 | F5.1 | Адаптивный layout: SideNav (md:+) вместо BottomNav, контент max-w-3xl по центру, sidebar справа (статы, стрик, факт дня) | done | `apps/web/components/layout/SideNav.tsx`, `apps/web/components/layout/RightSidebar.tsx`, `apps/web/app/(main)/layout.tsx`, `apps/web/components/layout/BottomNav.tsx` |
 | F5.2 | Keyboard shortcuts в батле: 1-2-3-4 для ответов, Enter подтверждение, Esc выход | done | `apps/web/app/(main)/battle/[id]/page.tsx` |
-| F5.3 | Визуальный стиль: агрессивные accent-цвета (красный/оранжевый glow), sharp edges, micro-анимации при hover, металлический gradient на заголовках | todo | `apps/web/app/globals.css`, `tailwind.config.ts` |
-| F5.4 | Батл-экран: shake-эффект при неправильном ответе, pulse при критическом HP, particle explosion при победе, звук удара | todo | `apps/web/app/(main)/battle/[id]/page.tsx`, `apps/web/lib/sounds.ts` |
-| F5.5 | 5 веток — визуальная идентичность: каждая ветка свой цвет + иконка + glow-эффект (STRATEGY=cyan, LOGIC=green, ERUDITION=purple, RHETORIC=orange, INTUITION=pink) | todo | `apps/web/components/`, `apps/web/app/globals.css` |
-| F5.6 | Профиль: RadarChart обновить на 5 статов, animated counter при прокачке, rank badge с glow | todo | `apps/web/app/(main)/profile/page.tsx` |
-| F5.7 | Главный экран: hero-секция с аватаром + статами, daily challenge карточка с countdown таймером, aggressive CTA "В бой" | todo | `apps/web/app/(main)/page.tsx` |
-| F5.8 | Тёмная тема v2: глубокий чёрный (#050505), subtle noise texture, неоновые акценты, glassmorphism на карточках | todo | `apps/web/app/globals.css`, `tailwind.config.ts` |
-| F5.9 | Двухколоночный layout для модулей обучения (desktop), карточки с progress bar и иконкой ветки | todo | `apps/web/app/(main)/learn/page.tsx` |
-| F5.10 | Hover-эффекты: все интерактивные элементы — scale + glow при наведении, smooth transitions 200ms | todo | `apps/web/components/ui/` |
+| F5.3 | Визуальный стиль: агрессивные accent-цвета (красный/оранжевый glow), sharp edges, micro-анимации при hover, металлический gradient на заголовках | done | `apps/web/app/globals.css`, `tailwind.config.ts`, `apps/web/components/ui/Button.tsx`, `apps/web/components/ui/Card.tsx` |
+| F5.4 | Батл-экран: shake-эффект при неправильном ответе, pulse при критическом HP, particle explosion при победе, звук удара | done | `apps/web/app/(main)/battle/[id]/page.tsx` |
+| F5.5 | 5 веток — визуальная идентичность: каждая ветка свой цвет + иконка + glow-эффект (STRATEGY=cyan, LOGIC=green, ERUDITION=purple, RHETORIC=orange, INTUITION=pink) | done | `apps/web/app/globals.css`, `tailwind.config.ts`, `apps/web/app/(main)/learn/page.tsx` |
+| F5.6 | Профиль: RadarChart обновить на 5 статов, animated counter при прокачке, rank badge с glow | done | `apps/web/app/(main)/profile/page.tsx` |
+| F5.7 | Главный экран: hero-секция с аватаром + статами, daily challenge карточка с countdown таймером, aggressive CTA "В бой" | done | `apps/web/app/(main)/page.tsx` |
+| F5.8 | Тёмная тема v2: глубокий чёрный (#050505), subtle noise texture, неоновые акценты, glassmorphism на карточках | done | `apps/web/app/globals.css`, `tailwind.config.ts` |
+| F5.9 | Двухколоночный layout для модулей обучения (desktop), карточки с progress bar и иконкой ветки | done | `apps/web/app/(main)/learn/page.tsx` |
+| F5.10 | Hover-эффекты: все интерактивные элементы — scale + glow при наведении, smooth transitions 200ms | done | `apps/web/components/ui/Button.tsx`, `apps/web/components/ui/Card.tsx`, `apps/web/app/globals.css` |
 
 ## Блок 6 — Баттл UX
 

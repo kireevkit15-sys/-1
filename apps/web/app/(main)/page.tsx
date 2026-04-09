@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import Link from "next/link";
 import { useAuth } from "@/hooks/useAuth";
@@ -18,6 +17,12 @@ interface UserStats {
   xp: number;
   level: number;
   xpToNextLevel: number;
+  strategyXp: number;
+  logicXp: number;
+  eruditionXp: number;
+  rhetoricXp: number;
+  intuitionXp: number;
+  name: string;
 }
 
 interface FactOfDay {
@@ -71,22 +76,86 @@ function Skeleton({ className = "" }: { className?: string }) {
 // ---------------------------------------------------------------------------
 
 const defaultStats: UserStats = {
-  streak: 0,
-  battles: 0,
-  winRate: 0,
-  rank: "---",
-  xp: 0,
-  level: 1,
+  streak: 7,
+  battles: 23,
+  winRate: 65,
+  rank: "Стратег",
+  xp: 1850,
+  level: 4,
   xpToNextLevel: 3000,
+  strategyXp: 500,
+  logicXp: 500,
+  eruditionXp: 500,
+  rhetoricXp: 500,
+  intuitionXp: 500,
+  name: "Воин",
 };
 
+const DEMO_MODE = true; // TODO: убрать после подключения API
+
+// ---------------------------------------------------------------------------
+// Branch bars config
+// ---------------------------------------------------------------------------
+
+const BRANCHES = [
+  { key: "strategyXp",   label: "Стратегия", color: "#06B6D4" },
+  { key: "logicXp",      label: "Логика",    color: "#22C55E" },
+  { key: "eruditionXp",  label: "Эрудиция",  color: "#A855F7" },
+  { key: "rhetoricXp",   label: "Риторика",  color: "#F97316" },
+  { key: "intuitionXp",  label: "Интуиция",  color: "#EC4899" },
+] as const;
+
+const MAX_BRANCH_XP = 1000;
+
+// ---------------------------------------------------------------------------
+// Countdown hook — seconds to midnight
+// ---------------------------------------------------------------------------
+
+function useCountdown(): string {
+  const [timeLeft, setTimeLeft] = useState("--:--:--");
+
+  useEffect(() => {
+    function calc() {
+      const now = new Date();
+      const midnight = new Date(now);
+      midnight.setHours(24, 0, 0, 0);
+      const diff = Math.max(0, Math.floor((midnight.getTime() - now.getTime()) / 1000));
+      const h = String(Math.floor(diff / 3600)).padStart(2, "0");
+      const m = String(Math.floor((diff % 3600) / 60)).padStart(2, "0");
+      const s = String(diff % 60).padStart(2, "0");
+      setTimeLeft(`${h}:${m}:${s}`);
+    }
+    calc();
+    const id = setInterval(calc, 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  return timeLeft;
+}
+
+// ---------------------------------------------------------------------------
+// Main page
+// ---------------------------------------------------------------------------
+
 export default function HomePage() {
-  const { accessToken, isAuthenticated, isLoading: authLoading } = useAuth();
+  const { accessToken, isAuthenticated: realAuth, isLoading: authLoading } = useAuth();
+  const isAuthenticated = realAuth || DEMO_MODE;
 
   const [stats, setStats] = useState<UserStats>(defaultStats);
-  const [fact, setFact] = useState<FactOfDay | null>(null);
+  const [fact, setFact] = useState<FactOfDay | null>(
+    DEMO_MODE
+      ? {
+          id: "demo",
+          text: "Шахматисты мирового уровня могут удерживать в памяти до 100 000 позиций. Это не врождённый талант — а результат тренировки паттернового мышления.",
+          source: "Cognitive Science Journal",
+          category: "Стратегия",
+        }
+      : null,
+  );
   const [warmupDone, setWarmupDone] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!DEMO_MODE);
+
+  const countdown = useCountdown();
 
   useEffect(() => {
     if (authLoading) return;
@@ -106,13 +175,19 @@ export default function HomePage() {
 
       if (userData) {
         setStats({
-          streak: userData.streak ?? 0,
-          battles: userData.battles ?? 0,
-          winRate: userData.winRate ?? 0,
-          rank: userData.rank ?? "---",
-          xp: userData.xp ?? 0,
-          level: userData.level ?? 1,
+          streak:        userData.streak        ?? 0,
+          battles:       userData.battles       ?? 0,
+          winRate:       userData.winRate       ?? 0,
+          rank:          userData.rank          ?? "---",
+          xp:            userData.xp            ?? 0,
+          level:         userData.level         ?? 1,
           xpToNextLevel: userData.xpToNextLevel ?? 3000,
+          strategyXp:    userData.strategyXp    ?? 500,
+          logicXp:       userData.logicXp       ?? 500,
+          eruditionXp:   userData.eruditionXp   ?? 500,
+          rhetoricXp:    userData.rhetoricXp    ?? 500,
+          intuitionXp:   userData.intuitionXp   ?? 500,
+          name:          userData.name          ?? "Воин",
         });
       }
 
@@ -126,14 +201,28 @@ export default function HomePage() {
   }, [accessToken, isAuthenticated, authLoading]);
 
   const xpMax = stats.xpToNextLevel || 3000;
+  const xpPct = Math.min(100, Math.round((stats.xp / xpMax) * 100));
+
+  // Initials from name
+  const initials = stats.name
+    ? stats.name
+        .split(" ")
+        .map((w) => w[0])
+        .join("")
+        .slice(0, 2)
+        .toUpperCase()
+    : "ВН";
 
   return (
-    <div className="px-4 pt-12 pb-24 space-y-6">
-      {/* Header */}
+    <div className="px-4 pt-10 pb-28 space-y-5 max-w-lg mx-auto">
+
+      {/* ── Header ─────────────────────────────────────────────── */}
       <div className="flex items-center justify-between">
-        <h1 className="text-[28px] font-bold text-accent tracking-wider">
+        <h1 className="text-[30px] font-black tracking-[0.12em] text-metallic">
           РАЗУМ
         </h1>
+
+        {/* Streak flame */}
         <div className="flex items-center gap-2 bg-gradient-to-r from-accent-warm/30 to-surface rounded-full px-3.5 py-2 border border-accent/20 shadow-[0_0_12px_rgba(185,141,52,0.15)]">
           <svg
             className="w-5 h-5 text-accent-gold drop-shadow-[0_0_8px_rgba(185,141,52,0.8)]"
@@ -152,145 +241,240 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Fact of the Day */}
-      {fact && (
-        <Card className="relative overflow-hidden border-l-[3px] border-l-accent-gold">
-          <div className="space-y-2">
-            <p className="text-text-muted text-xs tracking-widest uppercase">Факт дня</p>
-            <p className="text-text-primary text-sm leading-relaxed">{fact.text}</p>
-            {fact.source && (
-              <p className="text-text-muted text-xs">Источник: {fact.source}</p>
-            )}
+      {/* ── Hero section ───────────────────────────────────────── */}
+      <div className="glass-card p-4 flex items-center gap-4">
+        {/* Avatar */}
+        <div className="relative shrink-0">
+          <div
+            className="w-20 h-20 rounded-full flex items-center justify-center text-2xl font-black text-white"
+            style={{
+              background: "linear-gradient(135deg, #CF9D7B 0%, #B98D34 60%, #9A7A2F 100%)",
+              boxShadow: "0 0 24px rgba(207,157,123,0.35), 0 0 60px rgba(207,157,123,0.1)",
+            }}
+          >
+            {initials}
           </div>
-        </Card>
+          {/* Level badge */}
+          <div
+            className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-background border-2 border-accent flex items-center justify-center text-[11px] font-black text-accent"
+          >
+            {stats.level}
+          </div>
+        </div>
+
+        {/* Name + rank + branch bars */}
+        <div className="flex-1 min-w-0">
+          <p className="font-bold text-base text-text-primary truncate">
+            {loading ? <Skeleton className="w-24 h-4" /> : stats.name}
+          </p>
+          <p className="text-xs text-accent mb-3 font-semibold tracking-wider uppercase">
+            {loading ? <Skeleton className="w-16 h-3 mt-1" /> : stats.rank}
+          </p>
+
+          {/* 5 branch mini-bars */}
+          <div className="space-y-1.5">
+            {BRANCHES.map(({ key, label, color }) => {
+              const val = stats[key as keyof UserStats] as number;
+              const pct = Math.min(100, Math.round((val / MAX_BRANCH_XP) * 100));
+              return (
+                <div key={key} className="flex items-center gap-2">
+                  <span
+                    className="text-[9px] font-semibold w-14 shrink-0 uppercase tracking-wide"
+                    style={{ color }}
+                  >
+                    {label}
+                  </span>
+                  <div className="flex-1 h-1.5 rounded-full bg-white/5 overflow-hidden">
+                    <div
+                      className="h-full rounded-full transition-all"
+                      style={{
+                        width: `${pct}%`,
+                        background: color,
+                        boxShadow: `0 0 6px ${color}80`,
+                      }}
+                    />
+                  </div>
+                  <span className="text-[9px] text-text-muted w-6 text-right shrink-0">
+                    {pct}%
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
+      {/* ── CTA "В бой" ─────────────────────────────────────────── */}
+      <Link href="/battle/new" className="block">
+        <button className="cta-battle w-full text-center tracking-widest uppercase">
+          В бой
+        </button>
+      </Link>
+
+      {/* ── Stats 2×2 grid ──────────────────────────────────────── */}
+      {isAuthenticated && (
+        <div>
+          <p className="text-text-muted text-[10px] tracking-widest uppercase mb-2.5">
+            Статистика
+          </p>
+          <div className="grid grid-cols-2 gap-2.5">
+            {/* Battles */}
+            <div className="glass-card p-4">
+              {loading ? (
+                <Skeleton className="w-12 h-8 mb-1" />
+              ) : (
+                <p className="text-[28px] font-black text-accent leading-none">
+                  {stats.battles}
+                </p>
+              )}
+              <p className="text-text-secondary text-xs mt-1">Баттлов</p>
+            </div>
+
+            {/* Win rate */}
+            <div className="glass-card p-4">
+              {loading ? (
+                <Skeleton className="w-12 h-8 mb-1" />
+              ) : (
+                <p className="text-[28px] font-black text-accent-gold leading-none">
+                  {stats.winRate}%
+                </p>
+              )}
+              <p className="text-text-secondary text-xs mt-1">Победы</p>
+            </div>
+
+            {/* Level */}
+            <div className="glass-card p-4">
+              {loading ? (
+                <Skeleton className="w-12 h-8 mb-1" />
+              ) : (
+                <p className="text-[28px] font-black text-accent leading-none">
+                  {stats.level}
+                </p>
+              )}
+              <p className="text-text-secondary text-xs mt-1">Уровень</p>
+              <div className="w-full h-[3px] rounded-full bg-white/5 mt-2 overflow-hidden">
+                <div
+                  className="h-full rounded-full bg-gradient-to-r from-accent-warm to-accent"
+                  style={{ width: `${xpPct}%` }}
+                />
+              </div>
+            </div>
+
+            {/* Rank */}
+            <div className="glass-card p-4">
+              {loading ? (
+                <Skeleton className="w-16 h-8 mb-1" />
+              ) : (
+                <p className="text-xl font-black text-accent-gold leading-none">
+                  {stats.rank}
+                </p>
+              )}
+              <p className="text-text-secondary text-xs mt-1">Класс</p>
+            </div>
+          </div>
+        </div>
       )}
 
-      {/* Daily Warmup — secondary style with red tag */}
-      <Card className="relative overflow-hidden border-l-[3px] border-l-accent-red">
-        <div className="space-y-3">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-accent-warm/20 flex items-center justify-center">
-              <svg className="w-5 h-5 text-accent" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M20.5 11H19V7c0-1.1-.9-2-2-2h-4V3.5C13 2.12 11.88 1 10.5 1S8 2.12 8 3.5V5H4c-1.1 0-2 .9-2 2v3.8h1.5c1.38 0 2.5 1.12 2.5 2.5S4.88 15.8 3.5 15.8H2V20c0 1.1.9 2 2 2h3.8v-1.5c0-1.38 1.12-2.5 2.5-2.5s2.5 1.12 2.5 2.5V22H17c1.1 0 2-.9 2-2v-4h1.5c1.38 0 2.5-1.12 2.5-2.5S21.88 11 20.5 11z" />
-              </svg>
-            </div>
-            <h2 className="font-bold text-lg text-text-primary">
-              Ежедневная разминка
-            </h2>
+      {/* ── XP Progress bar ─────────────────────────────────────── */}
+      {isAuthenticated && (
+        <div className="glass-card p-4">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs font-semibold text-text-secondary uppercase tracking-wider">
+              Опыт
+            </span>
+            {loading ? (
+              <Skeleton className="w-20 h-3" />
+            ) : (
+              <span className="text-xs text-text-muted">
+                {stats.xp.toLocaleString()} / {xpMax.toLocaleString()} XP
+              </span>
+            )}
           </div>
-          <p className="text-text-secondary text-sm">
-            5 вопросов на логику и мышление
+          <div className="h-3 bg-white/5 rounded-full overflow-hidden">
+            <div
+              className="h-full rounded-full transition-all"
+              style={{
+                width: `${xpPct}%`,
+                background: "linear-gradient(90deg, #CF9D7B 0%, #B98D34 50%, #E8C89E 100%)",
+                boxShadow: "0 0 10px rgba(207,157,123,0.4)",
+              }}
+            />
+          </div>
+          <p className="text-[10px] text-text-muted mt-1.5 text-right">
+            {xpPct}% до следующего уровня
           </p>
+        </div>
+      )}
+
+      {/* ── Daily challenge card ─────────────────────────────────── */}
+      <div className="glass-card p-4 border-l-[3px] border-l-accent-gold overflow-hidden relative">
+        {/* Glow accent */}
+        <div
+          className="absolute top-0 right-0 w-24 h-24 rounded-full pointer-events-none"
+          style={{
+            background: "radial-gradient(circle, rgba(185,141,52,0.12) 0%, transparent 70%)",
+          }}
+        />
+        <div className="relative">
+          <p className="text-[10px] text-text-muted uppercase tracking-widest mb-1">
+            Ежедневный вызов
+          </p>
+          <p className="font-bold text-sm text-text-primary mb-3">
+            Пройди разминку до конца дня
+          </p>
+
+          {/* Countdown */}
+          <div className="flex items-center gap-3 mb-4">
+            <div className="flex items-center gap-1.5">
+              <svg className="w-3.5 h-3.5 text-accent-gold" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
+                <circle cx="12" cy="12" r="10" />
+                <polyline points="12 6 12 12 16 14" />
+              </svg>
+              <span className="text-xs text-text-muted">Сброс через</span>
+            </div>
+            <span
+              className="text-lg font-black tabular-nums tracking-widest"
+              style={{
+                background: "linear-gradient(90deg, #CF9D7B, #B98D34)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+              }}
+            >
+              {countdown}
+            </span>
+          </div>
+
+          {/* Warmup button */}
           {warmupDone ? (
-            <div className="w-full py-3 rounded-xl text-sm font-semibold bg-green-500/15 text-green-400 border border-green-500/15 text-center flex items-center justify-center gap-2">
+            <div className="w-full py-2.5 rounded-xl text-sm font-semibold bg-green-500/15 text-green-400 border border-green-500/20 text-center flex items-center justify-center gap-2">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
               </svg>
               Выполнено сегодня
             </div>
           ) : (
-            <Link href="/warmup">
-              <button className="w-full py-3 rounded-xl text-sm font-semibold bg-accent-warm/15 text-accent hover:bg-accent-warm/25 transition-all active:scale-95 border border-accent/15">
+            <Link href="/warmup" className="block">
+              <button className="w-full py-2.5 rounded-xl text-sm font-semibold bg-accent-warm/15 text-accent hover:bg-accent-warm/25 transition-all active:scale-95 border border-accent/15">
                 Начать разминку
               </button>
             </Link>
           )}
         </div>
-      </Card>
+      </div>
 
-      {/* Battle CTA — primary, bright gradient + glow */}
-      <Link href="/battle/new" className="block mt-4">
-        <Card className="relative overflow-hidden group cursor-pointer hover:border-accent/30 transition-all">
-          <div className="absolute inset-0 bg-gradient-to-br from-accent-warm/20 via-surface to-surface" />
-          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-accent/30 to-transparent" />
-          <div className="relative space-y-3">
-            <h2 className="font-semibold text-[17px] text-text-primary">
-              Интеллект-баттл
-            </h2>
-            <p className="text-text-secondary text-sm">
-              Сразись с соперником в 5 раундах
+      {/* ── Fact of the Day ─────────────────────────────────────── */}
+      {fact && (
+        <div className="glass-card p-4 border-l-[3px] border-l-accent">
+          <p className="text-[10px] text-text-muted uppercase tracking-widest mb-2">
+            Факт дня · {fact.category}
+          </p>
+          <p className="text-text-primary text-sm leading-relaxed">{fact.text}</p>
+          {fact.source && (
+            <p className="text-text-muted text-[11px] mt-2">
+              Источник: {fact.source}
             </p>
-            <Button fullWidth>В бой</Button>
-          </div>
-        </Card>
-      </Link>
-
-      {/* Stats */}
-      {isAuthenticated && (
-        <div>
-          <p className="text-text-muted text-xs tracking-widest mb-3">
-            Статистика
-          </p>
-          <div className="grid grid-cols-2 gap-2.5">
-            <Card padding="sm">
-              {loading ? (
-                <Skeleton className="w-12 h-8" />
-              ) : (
-                <p className="text-[26px] font-bold text-accent">
-                  {stats.battles}
-                </p>
-              )}
-              <p className="text-text-secondary text-xs mt-1">Баттлов</p>
-            </Card>
-            <Card padding="sm">
-              {loading ? (
-                <Skeleton className="w-12 h-8" />
-              ) : (
-                <p className="text-[26px] font-bold text-accent-gold">
-                  {stats.winRate}%
-                </p>
-              )}
-              <p className="text-text-secondary text-xs mt-1">Побед</p>
-            </Card>
-            <Card padding="sm">
-              {loading ? (
-                <Skeleton className="w-12 h-8" />
-              ) : (
-                <p className="text-[24px] font-bold text-accent">
-                  Lvl {stats.level}
-                </p>
-              )}
-              <p className="text-text-secondary text-xs mt-1">Уровень</p>
-              <div className="w-[60px] h-[3px] rounded-full bg-gradient-to-r from-accent to-transparent mt-1" />
-            </Card>
-            <Card padding="sm">
-              {loading ? (
-                <Skeleton className="w-16 h-8" />
-              ) : (
-                <p className="text-xl font-bold text-accent-gold">
-                  {stats.rank}
-                </p>
-              )}
-              <p className="text-text-secondary text-xs mt-1">Класс</p>
-            </Card>
-          </div>
-        </div>
-      )}
-
-      {/* XP Progress */}
-      {isAuthenticated && (
-        <div>
-          <p className="text-text-muted text-xs tracking-widest mb-3">
-            Прогресс
-          </p>
-          <Card padding="sm">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm text-text-secondary">Опыт</span>
-              {loading ? (
-                <Skeleton className="w-20 h-4" />
-              ) : (
-                <span className="text-xs text-text-muted">
-                  {stats.xp} / {xpMax} XP
-                </span>
-              )}
-            </div>
-            <div className="h-2.5 bg-surface-light rounded-full overflow-hidden">
-              <div
-                className="h-full bg-gradient-to-r from-accent-warm via-accent to-accent-gold rounded-full transition-all shadow-[0_2px_8px_rgba(207,157,123,0.3)]"
-                style={{ width: `${(stats.xp / xpMax) * 100}%` }}
-              />
-            </div>
-          </Card>
+          )}
         </div>
       )}
     </div>

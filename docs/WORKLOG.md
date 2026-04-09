@@ -297,6 +297,73 @@
 - `2016e87` — feat(web): adaptive layout — SideNav, RightSidebar, responsive content area (F5.1)
 - `492a24f` — feat(web): keyboard shortcuts in battle (F5.2)
 
+### 2026-04-09 — Сессия 7: Неделя 5 полная — визуальный стиль, батл-эффекты, ветки, профиль, главная
+
+**Время:** ~3 часа
+**Статус:** Завершена
+
+**Что сделано:**
+
+*F5.3 — Визуальный стиль "маскулинная агрессия":*
+- Новые агрессивные accent-цвета: accent-red (#C0392B), accent-orange (#E67E22)
+- Металлический gradient для заголовков (класс `.text-metallic`)
+- Neon glow shadow-система для всех акцентных цветов
+- Sharp edges: обновлены Button и Card компоненты — hover с neon glow и translate
+
+*F5.8 — Тёмная тема v2:*
+- Фон углублён до #050505, surface до #111114
+- SVG noise texture на body (без внешних файлов)
+- Glassmorphism v2: glass-card класс с backdrop-blur-xl
+- Обновлены liquid-glass стили под новые цвета
+
+*F5.5 — 5 веток — визуальная идентичность:*
+- CSS-система branch-* классов с CSS custom properties (--branch-color, --branch-hex)
+- Цвета: STRATEGY=cyan, LOGIC=green, ERUDITION=purple, RHETORIC=orange, INTUITION=pink
+- Классы: branch-card, branch-glow, branch-icon, branch-badge, branch-progress
+- SVG-иконки для каждой ветки: корона, узлы, книга, речь, глаз
+- Tailwind-цвета: branch-strategy, branch-logic, branch-erudition, branch-rhetoric, branch-intuition
+
+*F5.10 — Hover-эффекты:*
+- Утилитные CSS-классы: hover-lift, hover-scale, hover-glow, hover-branch-glow
+- Button: neon glow + translateY при hover
+- Card: glassmorphism усиливается при hover
+
+*F5.4 — Батл-эффекты:*
+- Shake-эффект при неправильном ответе (battle-shake на контейнере)
+- Pulse при критическом HP <= 20% (battle-pulse-hp на HpBar)
+- VictoryParticles: 12 частиц с burst-анимацией при победе
+- playDamage() звук при получении урона
+
+*F5.7 — Главный экран:*
+- Hero-секция: аватар с инициалами (w-20 h-20), 5 мини-баров веток, уровень, класс
+- CTA "В бой" — агрессивная кнопка с огненным gradient и shimmer при hover (класс cta-battle)
+- Daily challenge карточка с countdown до полуночи (HH:MM:SS)
+- Заголовок "РАЗУМ" в металлическом gradient
+
+*F5.6 — Профиль:*
+- useAnimatedCounter хук — числа анимированно считают от 0 до значения при загрузке
+- RadarChart: цветные подписи осей (каждая ветка своим цветом)
+- Rank badge с pulsing glow-анимацией + иконка короны
+- Branch-карточки XP с branch-card стилем
+
+*F5.9 — Обучение layout:*
+- Двухколоночная сетка на md+ (grid-cols-2)
+- SVG-иконки веток на карточках модулей
+- branch-card + hover-lift на модулях
+- branch-progress для цветных прогресс-баров
+
+**Файлы изменены:**
+- `apps/web/tailwind.config.ts` — новая палитра, branch-цвета, анимации, shadows
+- `apps/web/app/globals.css` — полная переработка: glassmorphism v2, branch-система, battle-анимации, hover-утилиты, CTA
+- `apps/web/components/ui/Button.tsx` — neon glow hover
+- `apps/web/components/ui/Card.tsx` — glassmorphism base
+- `apps/web/app/(main)/page.tsx` — hero, CTA, countdown, metallic text
+- `apps/web/app/(main)/battle/[id]/page.tsx` — shake, pulse HP, particles, playDamage
+- `apps/web/app/(main)/profile/page.tsx` — animated counters, colored radar, rank badge
+- `apps/web/app/(main)/learn/page.tsx` — 2-col layout, branch icons, branch-card
+
+**Задачи из SPRINT.md закрыты:** F5.3, F5.4, F5.5, F5.6, F5.7, F5.8, F5.9, F5.10
+
 ---
 
 ## Яшкин (Backend)
