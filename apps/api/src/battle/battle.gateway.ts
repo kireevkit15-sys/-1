@@ -603,7 +603,8 @@ export class BattleGateway
       // Handle post-attack flow for bot battles
       if (this.isBotBattle(state)) {
         if (state.phase === BattlePhase.ROUND_DEFENSE) {
-          // Bot needs to defend — auto-defend after delay
+          // Bot needs to defend — start round timer as safety fallback, then schedule bot
+          this.startRoundTimer(data.battleId);
           this.scheduleBotDefense(data.battleId);
         } else if (state.phase === BattlePhase.ROUND_RESULT) {
           // Attack missed, skip to next round after brief delay
@@ -1092,11 +1093,16 @@ export class BattleGateway
   }
 
   private scheduleBotBranchSelect(battleId: string) {
+    this.clearBotTimer(battleId);
     const level = this.getBotLevel(battleId);
     const delay = this.botService.getThinkingDelay(level);
+    this.logger.debug(`Bot branch select scheduled in ${delay}ms for battle ${battleId}`);
     const timer = setTimeout(() => {
       const state = this.battles.get(battleId);
-      if (!state || (state.phase !== BattlePhase.BRANCH_SELECT && state.phase !== BattlePhase.CATEGORY_SELECT)) return;
+      if (!state || (state.phase !== BattlePhase.BRANCH_SELECT && state.phase !== BattlePhase.CATEGORY_SELECT)) {
+        this.logger.warn(`Bot branch select skipped: phase=${state?.phase} for battle ${battleId}`);
+        return;
+      }
 
       // Bot picks a random branch
       const branch = state.branches[Math.floor(Math.random() * state.branches.length)]!;
@@ -1105,9 +1111,10 @@ export class BattleGateway
         const updated = selectBranch(state, branch);
         this.battles.set(battleId, updated);
         this.server.to(`battle:${battleId}`).emit('battle:phase_changed', updated);
-        this.startRoundTimer(battleId);
 
-        // Bot is attacker, so schedule the attack
+        // Bot is attacker, so schedule the attack (round timer will be started
+        // only as a fallback — the bot will clear it before acting)
+        this.startRoundTimer(battleId);
         this.scheduleBotAttack(battleId);
       } catch (err: any) {
         this.logger.error(`Bot branch select failed: ${err.message}`);
@@ -1117,14 +1124,20 @@ export class BattleGateway
   }
 
   private scheduleBotAttack(battleId: string) {
+    this.clearBotTimer(battleId);
     const level = this.getBotLevel(battleId);
     const delay = this.botService.getThinkingDelay(level);
+    this.logger.debug(`Bot attack scheduled in ${delay}ms for battle ${battleId}`);
     const timer = setTimeout(() => {
       let state = this.battles.get(battleId);
-      if (!state || state.phase !== BattlePhase.ROUND_ATTACK) return;
+      if (!state || state.phase !== BattlePhase.ROUND_ATTACK) {
+        this.logger.warn(`Bot attack skipped: phase=${state?.phase} for battle ${battleId}`);
+        return;
+      }
       if (state.currentAttackerId !== BOT_PLAYER_ID) return;
 
       try {
+        // Clear the round timer BEFORE acting so timeout cannot race with bot
         this.clearRoundTimer(battleId);
 
         const difficulty = this.botService.chooseDifficulty(level);
@@ -1154,14 +1167,22 @@ export class BattleGateway
   }
 
   private scheduleBotDefense(battleId: string) {
+    this.clearBotTimer(battleId);
     const level = this.getBotLevel(battleId);
     const delay = this.botService.getThinkingDelay(level);
+    this.logger.debug(`Bot defense scheduled in ${delay}ms for battle ${battleId}`);
     const timer = setTimeout(() => {
       let state = this.battles.get(battleId);
-      if (!state || state.phase !== BattlePhase.ROUND_DEFENSE) return;
+      if (!state || state.phase !== BattlePhase.ROUND_DEFENSE) {
+        this.logger.warn(`Bot defense skipped: phase=${state?.phase} for battle ${battleId}`);
+        return;
+      }
       if (state.currentDefenderId !== BOT_PLAYER_ID) return;
 
       try {
+        // Clear the round timer BEFORE acting so timeout cannot race with bot
+        this.clearRoundTimer(battleId);
+
         const defenseType: DefenseType = this.botService.chooseDefense(level);
 
         const success = this.resolveDefenseSuccess(defenseType);
@@ -1185,10 +1206,15 @@ export class BattleGateway
   }
 
   private scheduleBotAdvanceRound(battleId: string) {
+    this.clearBotTimer(battleId);
     const delay = 1500; // brief pause before advancing
+    this.logger.debug(`Bot advance round scheduled in ${delay}ms for battle ${battleId}`);
     const timer = setTimeout(() => {
       let state = this.battles.get(battleId);
-      if (!state || state.phase !== BattlePhase.ROUND_RESULT) return;
+      if (!state || state.phase !== BattlePhase.ROUND_RESULT) {
+        this.logger.warn(`Bot advance round skipped: phase=${state?.phase} for battle ${battleId}`);
+        return;
+      }
 
       try {
         if (isGameOver(state)) {
@@ -1207,9 +1233,16 @@ export class BattleGateway
           this.server.to(`battle:${battleId}`).emit('battle:phase_changed', state);
         }
 
-        // If bot is the attacker for the new round, schedule branch select + attack
-        if ((state.phase === BattlePhase.BRANCH_SELECT || state.phase === BattlePhase.CATEGORY_SELECT) && state.currentAttackerId === BOT_PLAYER_ID) {
-          this.scheduleBotBranchSelect(battleId);
+        // Schedule next bot action or wait for human
+        if (state.phase === BattlePhase.BRANCH_SELECT || state.phase === BattlePhase.CATEGORY_SELECT) {
+          if (state.currentAttackerId === BOT_PLAYER_ID) {
+            // Bot is attacker — auto-select branch
+            this.scheduleBotBranchSelect(battleId);
+          } else {
+            // Human is attacker — waiting for human to pick branch (no timer needed here,
+            // human will trigger handleBranchSelect which starts the round timer)
+            this.logger.debug(`Waiting for human to select branch in battle ${battleId}`);
+          }
         }
       } catch (err: any) {
         this.logger.error(`Bot advance round failed: ${err.message}`);
@@ -1231,6 +1264,21 @@ export class BattleGateway
       if (state.phase !== BattlePhase.ROUND_ATTACK && state.phase !== BattlePhase.ROUND_DEFENSE) return;
 
       try {
+        // In bot battles, the bot should have acted well before the 60s timer.
+        // If we get here it means a bot action was missed — log for debugging.
+        if (this.isBotBattle(state)) {
+          const botShouldHaveActed =
+            (state.phase === BattlePhase.ROUND_ATTACK && state.currentAttackerId === BOT_PLAYER_ID) ||
+            (state.phase === BattlePhase.ROUND_DEFENSE && state.currentDefenderId === BOT_PLAYER_ID);
+          if (botShouldHaveActed) {
+            this.logger.warn(
+              `Round timer expired but bot should have acted! ` +
+              `battle=${battleId} phase=${state.phase} round=${state.currentRound}. ` +
+              `Recovering via timeout fallback.`,
+            );
+          }
+        }
+
         const updated = handleTimeout(state);
         this.battles.set(battleId, updated);
         this.server.to(`battle:${battleId}`).emit('battle:round_update', updated);
@@ -1343,13 +1391,17 @@ export class BattleGateway
   // Cleanup
   // ---------------------------------------------------------------------------
 
-  private clearTimers(battleId: string) {
-    this.clearRoundTimer(battleId);
+  private clearBotTimer(battleId: string) {
     const botTimer = this.botTimers.get(battleId);
     if (botTimer) {
       clearTimeout(botTimer);
       this.botTimers.delete(battleId);
     }
+  }
+
+  private clearTimers(battleId: string) {
+    this.clearRoundTimer(battleId);
+    this.clearBotTimer(battleId);
   }
 
   private cleanupBattle(battleId: string) {

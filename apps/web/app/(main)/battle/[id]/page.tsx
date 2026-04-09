@@ -430,6 +430,7 @@ export default function BattlePage() {
   const [currentQuestion, setCurrentQuestion] = useState<BattleQuestion | null>(null);
   const [questionLoading, setQuestionLoading] = useState(false);
   const questionFetchedRef = useRef<string>("");  // "branch:difficulty" to avoid re-fetch
+  const usedQuestionIdsRef = useRef<string[]>([]);  // track used question IDs to avoid repeats
 
   const timerActive =
     !!battle &&
@@ -523,14 +524,19 @@ export default function BattlePage() {
         if (sessionData?.accessToken) {
           headers["Authorization"] = `Bearer ${sessionData.accessToken}`;
         }
+        const excludeParam = usedQuestionIdsRef.current.length > 0
+          ? `&excludeIds=${usedQuestionIdsRef.current.join(',')}`
+          : '';
         const res = await fetch(
-          `${API_BASE}/v1/questions/random?branch=${branch}&difficulty=${selectedDifficulty}&count=1`,
-          { headers },
+          `${API_BASE}/v1/questions/random?branch=${branch}&difficulty=${selectedDifficulty}&count=1${excludeParam}&_t=${Date.now()}`,
+          { headers, cache: 'no-store' },
         );
         if (res.ok) {
           const questions = await res.json();
           if (Array.isArray(questions) && questions.length > 0) {
-            setCurrentQuestion(questions[0]);
+            const q = questions[0];
+            usedQuestionIdsRef.current.push(q.id);
+            setCurrentQuestion(q);
           }
         }
       } catch (e) {

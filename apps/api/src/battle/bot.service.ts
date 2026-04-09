@@ -14,13 +14,13 @@ const BOT_PROFILES: Record<BotLevel, BotProfile> = {
     accuracy: 0.4,
     difficultyWeights: [0.85, 0.97, 1.0], // 85% bronze, 12% silver, 3% gold
     defenseWeights: [0.6, 0.85, 1.0], // 60% accept, 25% dispute, 15% counter
-    thinkingDelayMs: [3000, 6000],
+    thinkingDelayMs: [4000, 8000],
   },
   [BotLevel.STANDARD]: {
     accuracy: 0.6,
     difficultyWeights: [0.7, 0.9, 1.0], // 70% bronze, 20% silver, 10% gold
     defenseWeights: [0.5, 0.8, 1.0], // 50% accept, 30% dispute, 20% counter
-    thinkingDelayMs: [2000, 5000],
+    thinkingDelayMs: [3000, 6000],
   },
   [BotLevel.EXPERT]: {
     accuracy: 0.85,
