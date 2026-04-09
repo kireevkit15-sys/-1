@@ -114,6 +114,138 @@ export class UserService {
     };
   }
 
+  async compareProfiles(myId: string, otherId: string) {
+    const statsSelect = {
+      rating: true as const,
+      streakDays: true as const,
+      thinkerClass: true as const,
+      logicXp: true as const,
+      eruditionXp: true as const,
+      strategyXp: true as const,
+      rhetoricXp: true as const,
+      intuitionXp: true as const,
+      logicRating: true as const,
+      eruditionRating: true as const,
+      strategyRating: true as const,
+      rhetoricRating: true as const,
+      intuitionRating: true as const,
+    };
+
+    const [me, other] = await Promise.all([
+      this.prisma.user.findUnique({
+        where: { id: myId },
+        select: {
+          id: true, name: true, avatarUrl: true, createdAt: true,
+          stats: { select: statsSelect },
+        },
+      }),
+      this.prisma.user.findUnique({
+        where: { id: otherId },
+        select: {
+          id: true, name: true, avatarUrl: true, createdAt: true,
+          stats: { select: statsSelect },
+        },
+      }),
+    ]);
+
+    if (!me) throw new NotFoundException('Your profile not found');
+    if (!other) throw new NotFoundException('User not found');
+
+    const buildProfile = async (user: typeof me) => {
+      const stats = user!.stats;
+      if (!stats) {
+        return {
+          id: user!.id,
+          name: user!.name,
+          avatarUrl: user!.avatarUrl,
+          stats: null,
+          thinkerClass: null,
+          battleStats: { total: 0, wins: 0, losses: 0, winRate: 0 },
+        };
+      }
+
+      const statsData = {
+        logic: stats.logicXp,
+        erudition: stats.eruditionXp,
+        strategy: stats.strategyXp,
+        rhetoric: stats.rhetoricXp,
+        intuition: stats.intuitionXp,
+      };
+
+      const branchLevels = getBranchLevels(statsData);
+      const thinkerClass = stats.thinkerClass ?? determineThinkerClass(statsData);
+      const battleStats = await this.getBattleStats(user!.id);
+
+      return {
+        id: user!.id,
+        name: user!.name,
+        avatarUrl: user!.avatarUrl,
+        stats: {
+          rating: stats.rating,
+          totalXp: this.calculateTotalXp(stats),
+          level: branchLevels.overall,
+          streakDays: stats.streakDays,
+          branchLevels,
+          branchXp: {
+            logic: stats.logicXp,
+            erudition: stats.eruditionXp,
+            strategy: stats.strategyXp,
+            rhetoric: stats.rhetoricXp,
+            intuition: stats.intuitionXp,
+          },
+          branchRatings: {
+            logic: stats.logicRating,
+            erudition: stats.eruditionRating,
+            strategy: stats.strategyRating,
+            rhetoric: stats.rhetoricRating,
+            intuition: stats.intuitionRating,
+          },
+        },
+        thinkerClass,
+        battleStats,
+      };
+    };
+
+    const [myProfile, otherProfile] = await Promise.all([
+      buildProfile(me),
+      buildProfile(other),
+    ]);
+
+    // Head-to-head record
+    const [h2hWins, h2hLosses] = await Promise.all([
+      this.prisma.battle.count({
+        where: {
+          winnerId: myId,
+          status: 'COMPLETED',
+          OR: [
+            { player1Id: myId, player2Id: otherId },
+            { player1Id: otherId, player2Id: myId },
+          ],
+        },
+      }),
+      this.prisma.battle.count({
+        where: {
+          winnerId: otherId,
+          status: 'COMPLETED',
+          OR: [
+            { player1Id: myId, player2Id: otherId },
+            { player1Id: otherId, player2Id: myId },
+          ],
+        },
+      }),
+    ]);
+
+    return {
+      me: myProfile,
+      opponent: otherProfile,
+      headToHead: {
+        myWins: h2hWins,
+        opponentWins: h2hLosses,
+        draws: 0,
+      },
+    };
+  }
+
   async deleteMe(userId: string) {
     const user = await this.prisma.user.findUnique({
       where: { id: userId },

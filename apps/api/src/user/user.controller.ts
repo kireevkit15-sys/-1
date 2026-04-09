@@ -19,9 +19,9 @@ import {
   ApiResponse,
   ApiParam,
 } from '@nestjs/swagger';
-import { UserService } from './user.service';
+import type { UserService } from './user.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { UpdateUserDto } from './dto/update-user.dto';
+import type { UpdateUserDto } from './dto/update-user.dto';
 
 @ApiTags('Users')
 @Controller('users')
@@ -86,5 +86,21 @@ export class UserController {
   @Get(':id/profile')
   async getProfile(@Param('id') id: string) {
     return this.userService.getProfile(id);
+  }
+
+  @ApiOperation({
+    summary: 'Сравнение профилей (экран VS)',
+    description:
+      'Сравнивает текущего пользователя с другим: XP по веткам, уровни, рейтинги, класс мыслителя, личная статистика встреч',
+  })
+  @ApiParam({ name: 'id', description: 'UUID оппонента' })
+  @ApiBearerAuth()
+  @ApiResponse({ status: 200, description: 'Данные сравнения двух профилей' })
+  @ApiResponse({ status: 401, description: 'Не авторизован' })
+  @ApiResponse({ status: 404, description: 'Пользователь не найден' })
+  @UseGuards(JwtAuthGuard)
+  @Get(':id/compare')
+  async compareProfiles(@Request() req: any, @Param('id') id: string) {
+    return this.userService.compareProfiles(req.user.sub, id);
   }
 }
