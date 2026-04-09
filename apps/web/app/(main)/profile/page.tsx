@@ -255,7 +255,7 @@ function CrownIcon() {
 // Profile content (sub-component so hooks are always called unconditionally)
 // ---------------------------------------------------------------------------
 
-function ProfileContent({ profile, token }: { profile: UserProfile; token: string | null }) {
+function ProfileContent({ profile, token, logout }: { profile: UserProfile; token: string | null; logout: () => void }) {
   const { stats } = profile;
 
   // ── Animated counters (always called, no early returns above) ──
@@ -383,6 +383,19 @@ function ProfileContent({ profile, token }: { profile: UserProfile; token: strin
         </div>
       </Link>
 
+      {/* ── Actions ────────────────────────────────── */}
+      <div className="space-y-2">
+        <button
+          onClick={logout}
+          className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-surface border border-border text-text-secondary hover:text-accent-red hover:border-accent-red/30 transition-all text-sm"
+        >
+          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
+          </svg>
+          Выйти из аккаунта
+        </button>
+      </div>
+
       {/* ── Radar Chart ──────────────────────────────── */}
       <Card padding="lg" className="space-y-3">
         <h2 className="font-semibold text-sm text-text-secondary uppercase tracking-wider">
@@ -436,7 +449,7 @@ function ProfileContent({ profile, token }: { profile: UserProfile; token: strin
 // ---------------------------------------------------------------------------
 
 export default function ProfilePage() {
-  const { accessToken, isAuthenticated, isLoading: authLoading } = useAuth();
+  const { accessToken, isAuthenticated, isLoading: authLoading, logout } = useAuth();
 
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
@@ -521,5 +534,5 @@ export default function ProfilePage() {
     );
   }
 
-  return <ProfileContent profile={profile} token={accessToken} />;
+  return <ProfileContent profile={profile} token={accessToken} logout={logout} />;
 }

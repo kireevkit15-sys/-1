@@ -19,7 +19,7 @@ import {
   ApiResponse,
   ApiParam,
 } from '@nestjs/swagger';
-import type { UserService } from './user.service';
+import { UserService } from './user.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import type { UpdateUserDto } from './dto/update-user.dto';
 

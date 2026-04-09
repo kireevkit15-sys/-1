@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import type { PrismaService } from '../prisma/prisma.service';
-import type { LeaderboardService } from '../stats/leaderboard.service';
+import { PrismaService } from '../prisma/prisma.service';
+import { LeaderboardService } from '../stats/leaderboard.service';
 import type { UpdateUserDto } from './dto/update-user.dto';
 import { determineThinkerClass, getBranchLevels, xpToNextLevel } from '@razum/shared';
 

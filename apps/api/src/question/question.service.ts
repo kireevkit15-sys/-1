@@ -1,9 +1,9 @@
 import { Injectable, Inject, Logger, NotFoundException, HttpException, HttpStatus, forwardRef } from '@nestjs/common';
 import type { Question } from '@prisma/client';
-import type { PrismaService } from '../prisma/prisma.service';
-import type { RedisService } from '../redis/redis.service';
-import type { AiService } from '../ai/ai.service';
-import type { KnowledgeService } from '../knowledge/knowledge.service';
+import { PrismaService } from '../prisma/prisma.service';
+import { RedisService } from '../redis/redis.service';
+import { AiService } from '../ai/ai.service';
+import { KnowledgeService } from '../knowledge/knowledge.service';
 import { StatsService } from '../stats/stats.service';
 import type {
   CreateQuestionDto,

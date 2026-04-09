@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
-import type { PrismaService } from '../prisma/prisma.service';
-import type { TelegramNotificationService } from '../telegram/telegram-notification.service';
+import { PrismaService } from '../prisma/prisma.service';
+import { TelegramNotificationService } from '../telegram/telegram-notification.service';
 import type { AchievementCategory } from '@prisma/client';
 
 interface AchievementCondition {

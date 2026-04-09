@@ -22,9 +22,10 @@ import {
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { AdminGuard } from '../common/guards/admin.guard';
-import type { PrismaService } from '../prisma/prisma.service';
-import type { RedisService } from '../redis/redis.service';
-import type { AiService, SocraticMessage } from './ai.service';
+import { PrismaService } from '../prisma/prisma.service';
+import { RedisService } from '../redis/redis.service';
+import { AiService } from './ai.service';
+import type { SocraticMessage } from './ai.service';
 import type { CreateDialogueDto } from './dto/create-dialogue.dto';
 import type { SendMessageDto } from './dto/send-message.dto';
 import type { GetDialoguesQueryDto } from './dto/get-dialogues-query.dto';

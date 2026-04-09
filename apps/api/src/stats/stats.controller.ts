@@ -6,8 +6,8 @@ import {
   ApiQuery,
   ApiResponse,
 } from '@nestjs/swagger';
-import type { StatsService } from './stats.service';
-import type { LeaderboardService } from './leaderboard.service';
+import { StatsService } from './stats.service';
+import { LeaderboardService } from './leaderboard.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @ApiTags('Stats')

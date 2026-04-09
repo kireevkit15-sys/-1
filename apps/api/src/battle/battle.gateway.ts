@@ -10,13 +10,13 @@ import {
 } from '@nestjs/websockets';
 import { Logger } from '@nestjs/common';
 import type { Server, Socket } from 'socket.io';
-import type { JwtService } from '@nestjs/jwt';
-import type { BattleService } from './battle.service';
-import type { MatchmakingService } from './matchmaking.service';
-import type { BotService } from './bot.service';
-import type { QuestionService } from '../question/question.service';
-import type { StatsService } from '../stats/stats.service';
-import type { RedisService } from '../redis/redis.service';
+import { JwtService } from '@nestjs/jwt';
+import { BattleService } from './battle.service';
+import { MatchmakingService } from './matchmaking.service';
+import { BotService } from './bot.service';
+import { QuestionService } from '../question/question.service';
+import { StatsService } from '../stats/stats.service';
+import { RedisService } from '../redis/redis.service';
 import type {
   BattleState,
   Branch,

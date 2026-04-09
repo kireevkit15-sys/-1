@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import type { PrismaService } from '../prisma/prisma.service';
-import type { RedisService } from '../redis/redis.service';
-import type { AchievementsService } from '../achievements/achievements.service';
+import { PrismaService } from '../prisma/prisma.service';
+import { RedisService } from '../redis/redis.service';
+import { AchievementsService } from '../achievements/achievements.service';
 import type { ThinkerClass } from '@razum/shared';
 import { determineThinkerClass, getBranchLevels, xpToLevel, xpToNextLevel, Branch } from '@razum/shared';
 

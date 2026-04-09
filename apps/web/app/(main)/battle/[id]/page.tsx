@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { useBattle } from "@/hooks/useBattle";
-import { BattlePhase, Difficulty, DefenseType } from "@razum/shared";
+import { BattlePhase, Difficulty, DefenseType, Branch } from "@razum/shared";
 import { playBattleStart, playSelect, playCorrect, playWrong, playTick, playVictory, playDefeat, playDamage } from "@/lib/sounds";
 import type { BattleState } from "@razum/shared";
 import Button from "@/components/ui/Button";
@@ -405,6 +405,7 @@ export default function BattlePage() {
     result,
     error,
     opponentDisconnected,
+    selectBranch,
     selectCategory,
     attack,
     defend,
@@ -416,6 +417,19 @@ export default function BattlePage() {
     useState<Difficulty | null>(null);
   const [shakeScreen, setShakeScreen] = useState(false);
   const [floatingXp, setFloatingXp] = useState<number | null>(null);
+
+  // Question loading for attack phase
+  interface BattleQuestion {
+    id: string;
+    text: string;
+    options: string[];
+    correctIndex: number;
+    category: string;
+    difficulty: string;
+  }
+  const [currentQuestion, setCurrentQuestion] = useState<BattleQuestion | null>(null);
+  const [questionLoading, setQuestionLoading] = useState(false);
+  const questionFetchedRef = useRef<string>("");  // "branch:difficulty" to avoid re-fetch
 
   const timerActive =
     !!battle &&
@@ -478,10 +492,55 @@ export default function BattlePage() {
     }
   }, [battle?.phase, battle?.rounds, battle?.player1?.id]);
 
-  // Reset difficulty selection when phase changes
+  // Reset difficulty selection and question when phase changes
   useEffect(() => {
     setSelectedDifficulty(null);
-  }, [battle?.phase]);
+    setCurrentQuestion(null);
+    questionFetchedRef.current = "";
+  }, [battle?.phase, battle?.currentRound]);
+
+  // Fetch question when difficulty is selected
+  useEffect(() => {
+    if (!selectedDifficulty || !battle) return;
+    if (battle.phase !== BattlePhase.ROUND_ATTACK) return;
+    if (battle.currentAttackerId !== battle.player1.id) return;
+
+    const branch = battle.selectedBranch || "STRATEGY";
+    const fetchKey = `${branch}:${selectedDifficulty}:${battle.currentRound}`;
+    if (questionFetchedRef.current === fetchKey) return;
+    questionFetchedRef.current = fetchKey;
+
+    const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+
+    async function loadQuestion() {
+      setQuestionLoading(true);
+      try {
+        const token = (document.cookie.match(/next-auth.session-token=([^;]+)/) || [])[1];
+        const headers: Record<string, string> = { "Content-Type": "application/json" };
+        // Use session accessToken from window
+        const sessionRes = await fetch("/api/auth/session");
+        const sessionData = await sessionRes.json();
+        if (sessionData?.accessToken) {
+          headers["Authorization"] = `Bearer ${sessionData.accessToken}`;
+        }
+        const res = await fetch(
+          `${API_BASE}/v1/questions/random?branch=${branch}&difficulty=${selectedDifficulty}&count=1`,
+          { headers },
+        );
+        if (res.ok) {
+          const questions = await res.json();
+          if (Array.isArray(questions) && questions.length > 0) {
+            setCurrentQuestion(questions[0]);
+          }
+        }
+      } catch (e) {
+        console.error("Failed to load question", e);
+      } finally {
+        setQuestionLoading(false);
+      }
+    }
+    loadQuestion();
+  }, [selectedDifficulty, battle?.phase, battle?.currentRound, battle?.selectedBranch, battle?.currentAttackerId, battle?.player1?.id]);
 
   // Trigger floating XP on ROUND_RESULT when points were awarded
   useEffect(() => {
@@ -497,12 +556,10 @@ export default function BattlePage() {
 
   const handleAttack = useCallback(
     (answerIndex: number) => {
-      if (!selectedDifficulty) return;
-      // TODO: questionId will come from server question service
-      const questionId = "placeholder";
-      attack(selectedDifficulty, answerIndex, questionId);
+      if (!selectedDifficulty || !currentQuestion) return;
+      attack(selectedDifficulty, answerIndex, currentQuestion.id);
     },
-    [selectedDifficulty, attack],
+    [selectedDifficulty, currentQuestion, attack],
   );
 
   // ---------------------------------------------------------------------------
@@ -528,6 +585,22 @@ export default function BattlePage() {
 
       const numKey = parseInt(e.key, 10);
       const isNum = numKey >= 1 && numKey <= 9;
+
+      // BRANCH_SELECT — 1..5 selects branch
+      if (battle.phase === BattlePhase.BRANCH_SELECT) {
+        const isMyTurn = battle.currentAttackerId === battle.player1.id;
+        const allBranches = [Branch.STRATEGY, Branch.LOGIC, Branch.ERUDITION, Branch.RHETORIC, Branch.INTUITION];
+        const availBranches = battle.branches?.length ? battle.branches : allBranches;
+        if (isMyTurn && isNum && numKey <= availBranches.length) {
+          const branch = availBranches[numKey - 1];
+          if (branch) {
+            e.preventDefault();
+            playSelect();
+            selectBranch(branch);
+          }
+        }
+        return;
+      }
 
       // CATEGORY_SELECT — 1..5 selects branch card by visible order
       if (battle.phase === BattlePhase.CATEGORY_SELECT) {
@@ -586,7 +659,7 @@ export default function BattlePage() {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [battle, selectedDifficulty, status, disconnect, router, selectCategory, defend, handleAttack]);
+  }, [battle, selectedDifficulty, status, disconnect, router, selectBranch, selectCategory, defend, handleAttack]);
 
   // -- No battle state yet --------------------------------------------------
 
@@ -744,6 +817,64 @@ export default function BattlePage() {
     </Card>
   );
 
+  // -- BRANCH_SELECT phase --------------------------------------------------
+
+  if (battle.phase === BattlePhase.BRANCH_SELECT) {
+    const isMyTurn = battle.currentAttackerId === battle.player1.id;
+
+    const branchConfig: { value: Branch; label: string; color: string; icon: string }[] = [
+      { value: Branch.STRATEGY, label: "Стратегия", color: "text-cyan-400 bg-cyan-400/10 border-cyan-400/25 hover:border-cyan-400/50", icon: "♟" },
+      { value: Branch.LOGIC, label: "Логика", color: "text-green-400 bg-green-400/10 border-green-400/25 hover:border-green-400/50", icon: "⚙" },
+      { value: Branch.ERUDITION, label: "Эрудиция", color: "text-purple-400 bg-purple-400/10 border-purple-400/25 hover:border-purple-400/50", icon: "📚" },
+      { value: Branch.RHETORIC, label: "Риторика", color: "text-orange-400 bg-orange-400/10 border-orange-400/25 hover:border-orange-400/50", icon: "🗣" },
+      { value: Branch.INTUITION, label: "Интуиция", color: "text-pink-400 bg-pink-400/10 border-pink-400/25 hover:border-pink-400/50", icon: "✨" },
+    ];
+
+    const availableBranches = branchConfig.filter(
+      (b) => !battle.branches || battle.branches.includes(b.value)
+    );
+
+    return (
+      <div className="px-4 pt-8 pb-24 space-y-6">
+        <ScoreBar battle={battle} />
+        {disconnectBanner}
+
+        <div className="text-center space-y-2">
+          <h2 className="text-xl font-bold">
+            {isMyTurn ? "Выбери ветку атаки" : "Соперник выбирает ветку..."}
+          </h2>
+          <p className="text-text-muted text-sm">
+            {isMyTurn
+              ? "Атакуй вопросом из выбранной ветки знаний"
+              : "Приготовься к защите"}
+          </p>
+        </div>
+
+        {isMyTurn ? (
+          <div className="space-y-3">
+            {availableBranches.map((b, idx) => (
+              <button
+                key={b.value}
+                onClick={() => { playSelect(); selectBranch(b.value); }}
+                className={`w-full flex items-center gap-4 p-4 rounded-2xl border transition-all active:scale-[0.98] ${b.color}`}
+              >
+                <span className="text-2xl">{b.icon}</span>
+                <span className="font-semibold text-lg">{b.label}</span>
+                <span className="ml-auto hidden md:inline-flex w-6 h-6 items-center justify-center rounded-md bg-surface-light/40 text-xs font-mono text-text-muted">
+                  {idx + 1}
+                </span>
+              </button>
+            ))}
+          </div>
+        ) : (
+          <div className="flex justify-center pt-8">
+            <div className="w-12 h-12 rounded-full border-2 border-accent/30 border-t-accent animate-spin" />
+          </div>
+        )}
+      </div>
+    );
+  }
+
   // -- CATEGORY_SELECT phase ------------------------------------------------
 
   if (battle.phase === BattlePhase.CATEGORY_SELECT) {
@@ -844,25 +975,42 @@ export default function BattlePage() {
                   >
                     {difficultyConfig.find((d) => d.value === selectedDifficulty)?.label}
                   </span>
+                  {battle.selectedBranch && (
+                    <span className="text-xs text-text-muted px-2 py-0.5 rounded bg-surface-light">
+                      {battle.selectedBranch}
+                    </span>
+                  )}
                 </div>
-                <p className="text-text-primary leading-relaxed">
-                  Вопрос загружается...
-                </p>
-                {/* TODO: render actual question from server */}
-                <div className="space-y-2">
-                  {[0, 1, 2, 3].map((idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => { playSelect(); handleAttack(idx); }}
-                      className="w-full text-left p-3 rounded-xl border border-accent/15 bg-surface-light hover:border-accent/40 transition-all text-sm text-text-primary flex items-center gap-3"
-                    >
-                      <span className="hidden md:inline-flex w-6 h-6 flex-shrink-0 items-center justify-center rounded-md bg-surface/60 text-xs font-mono text-text-muted border border-accent/10">
-                        {idx + 1}
-                      </span>
-                      Вариант {idx + 1}
-                    </button>
-                  ))}
-                </div>
+
+                {questionLoading ? (
+                  <div className="flex items-center justify-center py-8">
+                    <div className="w-8 h-8 border-2 border-accent border-t-transparent rounded-full animate-spin" />
+                  </div>
+                ) : currentQuestion ? (
+                  <>
+                    <p className="text-text-primary leading-relaxed">
+                      {currentQuestion.text}
+                    </p>
+                    <div className="space-y-2">
+                      {currentQuestion.options.map((opt, idx) => (
+                        <button
+                          key={idx}
+                          onClick={() => { playSelect(); handleAttack(idx); }}
+                          className="w-full text-left p-3 rounded-xl border border-accent/15 bg-surface-light hover:border-accent/40 transition-all text-sm text-text-primary flex items-center gap-3 active:scale-[0.98]"
+                        >
+                          <span className="w-6 h-6 flex-shrink-0 flex items-center justify-center rounded-md bg-surface/60 text-xs font-mono text-text-muted border border-accent/10">
+                            {String.fromCharCode(65 + idx)}
+                          </span>
+                          <span>{opt}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </>
+                ) : (
+                  <p className="text-text-muted text-center py-4">
+                    Нет доступных вопросов для этой ветки
+                  </p>
+                )}
               </Card>
             )}
           </>

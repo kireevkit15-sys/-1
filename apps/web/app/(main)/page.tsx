@@ -223,22 +223,31 @@ export default function HomePage() {
           РАЗУМ
         </h1>
 
-        {/* Streak flame */}
-        <div className="flex items-center gap-2 bg-gradient-to-r from-accent-warm/30 to-surface rounded-full px-3.5 py-2 border border-accent/20 shadow-[0_0_12px_rgba(185,141,52,0.15)]">
-          <svg
-            className="w-5 h-5 text-accent-gold drop-shadow-[0_0_8px_rgba(185,141,52,0.8)]"
-            viewBox="0 0 14 18"
-            fill="currentColor"
-          >
-            <path d="M 7 0 C 7 0 10 4 10 4 C 12 6 14 8 14 11 C 14 15 11 18 7 18 C 3 18 0 15 0 11 C 0 8 2 6 4 4 C 4 4 4 7 5.5 8 C 5.5 8 7 0 7 0 Z" />
-          </svg>
-          {loading ? (
-            <Skeleton className="w-5 h-4" />
-          ) : (
-            <span className="text-sm font-bold text-accent-gold">
-              {stats.streak}
-            </span>
+        <div className="flex items-center gap-3">
+          {!isAuthenticated && !authLoading && (
+            <Link
+              href="/login"
+              className="px-4 py-2 rounded-full bg-accent text-background text-sm font-semibold hover:bg-accent/90 transition-all active:scale-95"
+            >
+              Войти
+            </Link>
           )}
+          <div className="flex items-center gap-2 bg-gradient-to-r from-accent-warm/30 to-surface rounded-full px-3.5 py-2 border border-accent/20 shadow-[0_0_12px_rgba(185,141,52,0.15)]">
+            <svg
+              className="w-5 h-5 text-accent-gold drop-shadow-[0_0_8px_rgba(185,141,52,0.8)]"
+              viewBox="0 0 14 18"
+              fill="currentColor"
+            >
+              <path d="M 7 0 C 7 0 10 4 10 4 C 12 6 14 8 14 11 C 14 15 11 18 7 18 C 3 18 0 15 0 11 C 0 8 2 6 4 4 C 4 4 4 7 5.5 8 C 5.5 8 7 0 7 0 Z" />
+            </svg>
+            {loading ? (
+              <Skeleton className="w-5 h-4" />
+            ) : (
+              <span className="text-sm font-bold text-accent-gold">
+                {stats.streak}
+              </span>
+            )}
+          </div>
         </div>
       </div>
 

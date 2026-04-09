@@ -62,15 +62,21 @@ export class BattleService {
 
     const battle = await this.prisma.battle.create({
       data: {
-        id: state.id,
         player1Id: userId,
         player2Id: null,
         mode: 'SIEGE',
         status: 'ACTIVE',
         category: null,
-        state: state as unknown as Prisma.InputJsonValue,
+        state: { ...state, id: undefined } as unknown as Prisma.InputJsonValue,
         startedAt: new Date(),
       },
+    });
+
+    // Sync the DB-generated UUID back into the state
+    state.id = battle.id;
+    await this.prisma.battle.update({
+      where: { id: battle.id },
+      data: { state: state as unknown as Prisma.InputJsonValue },
     });
 
     return battle;

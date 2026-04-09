@@ -9,6 +9,7 @@ import type {
   BattleResult,
   Difficulty,
   DefenseType,
+  Branch,
 } from "@razum/shared";
 
 // ---------------------------------------------------------------------------
@@ -197,7 +198,7 @@ export function useBattle(battleId?: string) {
 
   // -- Actions --------------------------------------------------------------
 
-  const createBotBattle = useCallback(() => {
+  const createBotBattle = useCallback((botLevel?: string) => {
     if (!socketRef.current) {
       // No auth — redirect to demo battle
       if (typeof window !== "undefined") {
@@ -206,7 +207,7 @@ export function useBattle(battleId?: string) {
       return;
     }
     dispatch({ type: "CONNECTING" });
-    socketRef.current.emit("battle:create_bot");
+    socketRef.current.emit("battle:create_bot", { botLevel });
   }, []);
 
   const searchOpponent = useCallback((rating?: number) => {
@@ -222,6 +223,14 @@ export function useBattle(battleId?: string) {
     if (!socketRef.current) return;
     socketRef.current.emit("battle:cancel_matchmake");
     dispatch({ type: "RESET" });
+  }, []);
+
+  const selectBranch = useCallback((branch: Branch) => {
+    if (!socketRef.current || !battleIdRef.current) return;
+    socketRef.current.emit("battle:branch", {
+      battleId: battleIdRef.current,
+      branch,
+    });
   }, []);
 
   const selectCategory = useCallback((category: string) => {
@@ -269,6 +278,7 @@ export function useBattle(battleId?: string) {
     createBotBattle,
     searchOpponent,
     cancelSearch,
+    selectBranch,
     selectCategory,
     attack,
     defend,

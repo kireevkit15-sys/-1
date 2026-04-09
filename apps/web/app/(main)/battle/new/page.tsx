@@ -38,6 +38,14 @@ const COUNTDOWN_STEPS = ["3", "2", "1", "GO!"];
 // Duration per step in ms
 const STEP_DURATION = 900;
 
+type BotLevel = "NOVICE" | "STANDARD" | "EXPERT";
+
+const botLevelConfig: { value: BotLevel; label: string; desc: string; accuracy: string; color: string }[] = [
+  { value: "NOVICE", label: "Новичок", desc: "Отвечает правильно в 40% случаев", accuracy: "40%", color: "text-green-400 border-green-400/25 bg-green-400/5" },
+  { value: "STANDARD", label: "Стандарт", desc: "Отвечает правильно в 60% случаев", accuracy: "60%", color: "text-accent border-accent/25 bg-accent/5" },
+  { value: "EXPERT", label: "Эксперт", desc: "Отвечает правильно в 85% случаев", accuracy: "85%", color: "text-accent-red border-accent-red/25 bg-accent-red/5" },
+];
+
 export default function NewBattlePage() {
   const router = useRouter();
   const {
@@ -53,6 +61,7 @@ export default function NewBattlePage() {
   const [showOpponent, setShowOpponent] = useState(false);
   // null = VS screen, 0-3 = countdown index
   const [countdownStep, setCountdownStep] = useState<number | null>(null);
+  const [showBotLevels, setShowBotLevels] = useState(false);
   const redirectTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const countdownInterval = useRef<ReturnType<typeof setInterval> | null>(null);
 
@@ -302,13 +311,34 @@ export default function NewBattlePage() {
             <div>
               <h3 className="font-semibold">Игра с ботом</h3>
               <p className="text-text-muted text-xs">
-                Тренировка с AI-оппонентом разной сложности
+                Тренировка с AI-оппонентом
               </p>
             </div>
           </div>
-          <Button fullWidth onClick={() => { playSelect(); createBotBattle(); }}>
-            Играть с ботом
-          </Button>
+
+          {!showBotLevels ? (
+            <Button fullWidth onClick={() => { playSelect(); setShowBotLevels(true); }}>
+              Выбрать сложность
+            </Button>
+          ) : (
+            <div className="space-y-2">
+              {botLevelConfig.map((lvl) => (
+                <button
+                  key={lvl.value}
+                  onClick={() => { playSelect(); createBotBattle(lvl.value); }}
+                  className={`w-full flex items-center justify-between p-3.5 rounded-xl border transition-all active:scale-[0.98] ${lvl.color}`}
+                >
+                  <div className="text-left">
+                    <span className="font-semibold text-sm">{lvl.label}</span>
+                    <p className="text-xs text-text-muted mt-0.5">{lvl.desc}</p>
+                  </div>
+                  <span className="text-sm font-mono font-bold opacity-60">
+                    {lvl.accuracy}
+                  </span>
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       </Card>
 
