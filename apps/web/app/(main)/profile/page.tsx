@@ -50,6 +50,126 @@ function useAnimatedCounter(target: number, duration = 1000): number {
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
 
+// ---------------------------------------------------------------------------
+// Battle history types + demo data
+// ---------------------------------------------------------------------------
+
+type BattleResult = "win" | "loss" | "draw";
+
+interface BattleHistoryEntry {
+  id: string;
+  opponentName: string;
+  result: BattleResult;
+  branch: string;
+  ratingChange: number;
+  date: string;
+}
+
+const DEMO_BATTLES: BattleHistoryEntry[] = [
+  { id: "1", opponentName: "Сократ",    result: "win",  branch: "Логика",    ratingChange: +18, date: "2026-04-09" },
+  { id: "2", opponentName: "Платон",    result: "loss", branch: "Стратегия", ratingChange: -12, date: "2026-04-08" },
+  { id: "3", opponentName: "Аристотель",result: "win",  branch: "Эрудиция",  ratingChange: +21, date: "2026-04-07" },
+  { id: "4", opponentName: "Декарт",    result: "draw", branch: "Риторика",  ratingChange:   0, date: "2026-04-06" },
+  { id: "5", opponentName: "Кант",      result: "loss", branch: "Интуиция",  ratingChange: -9,  date: "2026-04-05" },
+];
+
+const resultStyle: Record<BattleResult, { label: string; borderColor: string; textColor: string }> = {
+  win:  { label: "Победа",   borderColor: "#22C55E", textColor: "text-green-400"  },
+  loss: { label: "Поражение",borderColor: "#C0392B", textColor: "text-accent-red" },
+  draw: { label: "Ничья",    borderColor: "#56453A", textColor: "text-text-muted" },
+};
+
+function BattleHistorySection({ token }: { token: string | null }) {
+  const [battles, setBattles] = useState<BattleHistoryEntry[]>([]);
+  const [histLoading, setHistLoading] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function load() {
+      setHistLoading(true);
+      if (token) {
+        try {
+          const res = await fetch(`${API_BASE}/v1/battles/history`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          if (res.ok) {
+            const data: BattleHistoryEntry[] = await res.json();
+            if (!cancelled) setBattles(data.slice(0, 10));
+            return;
+          }
+        } catch {
+          // fall through to demo
+        }
+      }
+      if (!cancelled) setBattles(DEMO_BATTLES);
+    }
+
+    load().finally(() => { if (!cancelled) setHistLoading(false); });
+    return () => { cancelled = true; };
+  }, [token]);
+
+  return (
+    <Card padding="lg" className="space-y-3">
+      <h2 className="font-semibold text-sm text-text-secondary uppercase tracking-wider">
+        История баттлов
+      </h2>
+
+      {histLoading ? (
+        <div className="space-y-2">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="h-14 rounded-xl bg-surface-light animate-pulse" />
+          ))}
+        </div>
+      ) : battles.length === 0 ? (
+        <p className="text-sm text-text-muted text-center py-4">Баттлов пока нет</p>
+      ) : (
+        <div className="space-y-2">
+          {battles.map((b) => {
+            const rs = resultStyle[b.result];
+            return (
+              <div
+                key={b.id}
+                className="glass-card flex items-center gap-3 px-3 py-2.5"
+                style={{ borderLeft: `3px solid ${rs.borderColor}` }}
+              >
+                {/* Opponent */}
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold truncate">{b.opponentName}</p>
+                  <p className="text-xs text-text-muted">{b.branch}</p>
+                </div>
+
+                {/* Result */}
+                <span className={`text-xs font-bold ${rs.textColor} shrink-0`}>
+                  {rs.label}
+                </span>
+
+                {/* Rating change */}
+                <span
+                  className={`text-xs font-mono font-semibold shrink-0 w-10 text-right ${
+                    b.ratingChange > 0
+                      ? "text-green-400"
+                      : b.ratingChange < 0
+                      ? "text-accent-red"
+                      : "text-text-muted"
+                  }`}
+                >
+                  {b.ratingChange > 0 ? `+${b.ratingChange}` : b.ratingChange === 0 ? "±0" : b.ratingChange}
+                </span>
+
+                {/* Date */}
+                <span className="text-xs text-text-muted shrink-0 hidden sm:block">
+                  {new Date(b.date).toLocaleDateString("ru-RU", { day: "numeric", month: "short" })}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </Card>
+  );
+}
+
 interface UserProfile {
   id: string;
   name: string;
@@ -135,7 +255,7 @@ function CrownIcon() {
 // Profile content (sub-component so hooks are always called unconditionally)
 // ---------------------------------------------------------------------------
 
-function ProfileContent({ profile }: { profile: UserProfile }) {
+function ProfileContent({ profile, token }: { profile: UserProfile; token: string | null }) {
   const { stats } = profile;
 
   // ── Animated counters (always called, no early returns above) ──
@@ -245,6 +365,24 @@ function ProfileContent({ profile }: { profile: UserProfile }) {
         </Card>
       )}
 
+      {/* ── Achievements link ─────────────────────────── */}
+      <Link
+        href="/achievements"
+        className="block glass-card px-4 py-3 hover-lift"
+      >
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 text-accent-gold">
+              <circle cx="12" cy="8" r="6" /><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11" />
+            </svg>
+            <span className="text-sm font-semibold">Достижения</span>
+          </div>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 text-text-muted">
+            <path d="M9 18l6-6-6-6" />
+          </svg>
+        </div>
+      </Link>
+
       {/* ── Radar Chart ──────────────────────────────── */}
       <Card padding="lg" className="space-y-3">
         <h2 className="font-semibold text-sm text-text-secondary uppercase tracking-wider">
@@ -286,6 +424,9 @@ function ProfileContent({ profile }: { profile: UserProfile }) {
           ))}
         </div>
       </Card>
+
+      {/* ── Battle History ────────────────────────────── */}
+      <BattleHistorySection token={token} />
     </div>
   );
 }
@@ -380,5 +521,5 @@ export default function ProfilePage() {
     );
   }
 
-  return <ProfileContent profile={profile} />;
+  return <ProfileContent profile={profile} token={accessToken} />;
 }

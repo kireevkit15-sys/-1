@@ -77,6 +77,10 @@ const config: Config = {
           "0%": { transform: "translateY(10px)", opacity: "0" },
           "100%": { transform: "translateY(0)", opacity: "1" },
         },
+        "glow-pulse-badge": {
+          "0%, 100%": { boxShadow: "0 0 8px rgba(207,157,123,0.2), 0 0 20px rgba(207,157,123,0.05)" },
+          "50%": { boxShadow: "0 0 20px rgba(207,157,123,0.45), 0 0 50px rgba(207,157,123,0.12)" },
+        },
       },
       animation: {
         "shake": "shake 0.5s ease-in-out",
@@ -84,6 +88,7 @@ const config: Config = {
         "float-up": "float-up 1.2s ease-out forwards",
         "particle-burst": "particle-burst 0.8s ease-out forwards",
         "glow-pulse": "glow-pulse 2s ease-in-out infinite",
+        "glow-pulse-badge": "glow-pulse-badge 2.5s ease-in-out infinite",
         "count-up": "count-up 0.4s ease-out forwards",
       },
     },
