@@ -516,20 +516,12 @@ export default function BattlePage() {
     async function loadQuestion() {
       setQuestionLoading(true);
       try {
-        const token = (document.cookie.match(/next-auth.session-token=([^;]+)/) || [])[1];
-        const headers: Record<string, string> = { "Content-Type": "application/json" };
-        // Use session accessToken from window
-        const sessionRes = await fetch("/api/auth/session");
-        const sessionData = await sessionRes.json();
-        if (sessionData?.accessToken) {
-          headers["Authorization"] = `Bearer ${sessionData.accessToken}`;
-        }
         const excludeParam = usedQuestionIdsRef.current.length > 0
           ? `&excludeIds=${usedQuestionIdsRef.current.join(',')}`
           : '';
         const res = await fetch(
           `${API_BASE}/v1/questions/random?branch=${branch}&difficulty=${selectedDifficulty}&count=1${excludeParam}&_t=${Date.now()}`,
-          { headers, cache: 'no-store' },
+          { cache: 'no-store' },
         );
         if (res.ok) {
           const questions = await res.json();

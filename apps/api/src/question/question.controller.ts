@@ -35,18 +35,15 @@ import { BulkValidateQuestionsDto } from './dto/bulk-validate.dto';
 export class QuestionController {
   constructor(private readonly questionService: QuestionService) {}
 
-  // ─── Public (JWT only) ────────────────────────────────────
+  // ─── Public ───────────────────────────────────────────────
 
   @ApiOperation({ summary: 'Получить случайные вопросы для батла' })
-  @ApiBearerAuth()
   @ApiQuery({ name: 'branch', required: false, description: 'Ветка знаний' })
   @ApiQuery({ name: 'difficulty', required: false, description: 'Сложность' })
   @ApiQuery({ name: 'category', required: false, description: 'Категория' })
   @ApiQuery({ name: 'excludeIds', required: false, description: 'ID для исключения (через запятую)' })
   @ApiQuery({ name: 'count', required: false, description: 'Количество вопросов (по умолчанию 5)' })
   @ApiResponse({ status: 200, description: 'Список случайных вопросов' })
-  @ApiResponse({ status: 401, description: 'Не авторизован' })
-  @UseGuards(JwtAuthGuard)
   @Get('random')
   async getRandomForBattle(
     @Query('branch') branch?: string,

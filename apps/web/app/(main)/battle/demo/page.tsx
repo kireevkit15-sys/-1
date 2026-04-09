@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import {
   BattlePhase,
@@ -16,10 +16,61 @@ import Card from "@/components/ui/Card";
 import DifficultyPicker from "@/components/battle/DifficultyPicker";
 
 // ---------------------------------------------------------------------------
-// Mock data
+// API
 // ---------------------------------------------------------------------------
 
-const MOCK_CATEGORIES = ["Стратегия", "Логика", "Философия"];
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+
+interface ApiQuestion {
+  id: string;
+  text: string;
+  options: string[];
+  correctIndex: number;
+  category: string;
+  difficulty: string;
+}
+
+async function fetchQuestion(
+  branch: Branch,
+  difficulty: Difficulty,
+  excludeIds: string[],
+): Promise<ApiQuestion | null> {
+  try {
+    const params = new URLSearchParams({
+      branch,
+      difficulty,
+      count: "1",
+      _t: String(Date.now()),
+    });
+    if (excludeIds.length > 0) {
+      params.set("excludeIds", excludeIds.join(","));
+    }
+    const res = await fetch(`${API_BASE}/v1/questions/random?${params}`, {
+      cache: "no-store",
+    });
+    if (!res.ok) return null;
+    const data: ApiQuestion[] = await res.json();
+    return data[0] ?? null;
+  } catch {
+    return null;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Branch config
+// ---------------------------------------------------------------------------
+
+const branchConfig: { value: Branch; label: string; color: string; icon: string }[] = [
+  { value: Branch.STRATEGY, label: "Стратегия", color: "text-cyan-400 bg-cyan-400/10 border-cyan-400/25 hover:border-cyan-400/50", icon: "♟" },
+  { value: Branch.LOGIC, label: "Логика", color: "text-green-400 bg-green-400/10 border-green-400/25 hover:border-green-400/50", icon: "⚙" },
+  { value: Branch.ERUDITION, label: "Эрудиция", color: "text-purple-400 bg-purple-400/10 border-purple-400/25 hover:border-purple-400/50", icon: "📚" },
+  { value: Branch.RHETORIC, label: "Риторика", color: "text-orange-400 bg-orange-400/10 border-orange-400/25 hover:border-orange-400/50", icon: "🗣" },
+  { value: Branch.INTUITION, label: "Интуиция", color: "text-pink-400 bg-pink-400/10 border-pink-400/25 hover:border-pink-400/50", icon: "✨" },
+];
+
+// ---------------------------------------------------------------------------
+// Difficulty / Defense configs
+// ---------------------------------------------------------------------------
 
 const difficultyLabels: Record<string, string> = {
   [Difficulty.BRONZE]: "Бронза",
@@ -27,42 +78,39 @@ const difficultyLabels: Record<string, string> = {
   [Difficulty.GOLD]: "Золото",
 };
 
-const MOCK_QUESTIONS: Record<string, { text: string; answers: string[] }> = {
-  [Difficulty.BRONZE]: {
-    text: "Какой древнегреческий философ основал Академию в Афинах?",
-    answers: ["Платон", "Аристотель", "Сократ", "Диоген"],
-  },
-  [Difficulty.SILVER]: {
-    text: "Является ли следующее утверждение логической ошибкой: «Все успешные люди встают рано, значит, чтобы быть успешным, нужно вставать рано»?",
-    answers: [
-      "Да, это ошибка корреляции",
-      "Нет, это верная дедукция",
-      "Да, это ошибка выживших",
-      "Нет, это индуктивное рассуждение",
-    ],
-  },
-  [Difficulty.GOLD]: {
-    text: "В теории игр, каково равновесие Нэша в однократной «дилемме заключённого» для обоих рациональных игроков?",
-    answers: [
-      "Оба предают",
-      "Оба сотрудничают",
-      "Один предаёт, другой сотрудничает",
-      "Равновесия не существует",
-    ],
-  },
+const difficultyConfig = [
+  { value: Difficulty.BRONZE, label: "Бронза", desc: "Лёгкий вопрос, малый урон", damage: 10, tierClass: "tier-bronze", text: "text-accent-bronze", badge: "bg-accent-bronze/20 text-accent-bronze" },
+  { value: Difficulty.SILVER, label: "Серебро", desc: "Средний вопрос, средний урон", damage: 20, tierClass: "tier-silver", text: "text-accent-silver", badge: "bg-accent-silver/15 text-accent-silver" },
+  { value: Difficulty.GOLD, label: "Золото", desc: "Сложный вопрос, максимальный урон", damage: 35, tierClass: "tier-gold", text: "text-accent-gold", badge: "bg-accent-gold/20 text-accent-gold" },
+];
+
+const defenseConfig = [
+  { value: DefenseType.ACCEPT, label: "Принять удар", desc: "Пропустить атаку без сопротивления", bg: "bg-text-muted/10", border: "border-text-muted/30", text: "text-text-muted" },
+  { value: DefenseType.DISPUTE, label: "Оспорить", desc: "50% шанс отразить атаку", bg: "bg-accent/15", border: "border-accent/30", text: "text-accent" },
+  { value: DefenseType.COUNTER, label: "Контратака", desc: "30% шанс, но отражает весь урон", bg: "bg-accent-gold/15", border: "border-accent-gold/30", text: "text-accent-gold" },
+];
+
+const defenseLabels: Record<string, string> = {
+  [DefenseType.ACCEPT]: "Принять удар",
+  [DefenseType.DISPUTE]: "Оспорить",
+  [DefenseType.COUNTER]: "Контратака",
 };
 
-function createMockBattle(): BattleState {
+// ---------------------------------------------------------------------------
+// Initial state
+// ---------------------------------------------------------------------------
+
+function createInitialBattle(): BattleState {
   return {
     id: "demo-battle",
-    phase: BattlePhase.CATEGORY_SELECT,
+    phase: BattlePhase.BRANCH_SELECT,
     mode: BattleMode.SIEGE,
     player1: { id: "player", name: "Вы", score: 0, hp: 100 },
     player2: { id: "bot", name: "РАЗУМ-бот", score: 0, hp: 100 },
     currentRound: 1,
     totalRounds: 5,
     rounds: [],
-    categories: MOCK_CATEGORIES,
+    categories: [],
     branches: [Branch.STRATEGY, Branch.LOGIC, Branch.ERUDITION, Branch.RHETORIC, Branch.INTUITION],
     currentAttackerId: "player",
     currentDefenderId: "bot",
@@ -187,26 +235,36 @@ function ScoreBar({ battle }: { battle: BattleState }) {
 }
 
 // ---------------------------------------------------------------------------
-// Difficulty / Defense configs
+// Bot auto-defense (3-6 seconds)
 // ---------------------------------------------------------------------------
 
-const difficultyConfig = [
-  { value: Difficulty.BRONZE, label: "Бронза", desc: "Лёгкий вопрос, малый урон", damage: 10, tierClass: "tier-bronze", text: "text-accent-bronze", badge: "bg-accent-bronze/20 text-accent-bronze" },
-  { value: Difficulty.SILVER, label: "Серебро", desc: "Средний вопрос, средний урон", damage: 20, tierClass: "tier-silver", text: "text-accent-silver", badge: "bg-accent-silver/15 text-accent-silver" },
-  { value: Difficulty.GOLD, label: "Золото", desc: "Сложный вопрос, максимальный урон", damage: 35, tierClass: "tier-gold", text: "text-accent-gold", badge: "bg-accent-gold/20 text-accent-gold" },
-];
+function BotAutoDefend({
+  onDone,
+}: {
+  onDone: (defenseType: DefenseType, success: boolean) => void;
+}) {
+  const called = useRef(false);
+  useEffect(() => {
+    if (called.current) return;
+    const delay = 3000 + Math.random() * 3000; // 3-6 seconds
+    const timer = setTimeout(() => {
+      if (called.current) return;
+      called.current = true;
+      const types = [DefenseType.ACCEPT, DefenseType.DISPUTE, DefenseType.COUNTER];
+      const chosen = types[Math.floor(Math.random() * types.length)]!;
+      const success =
+        chosen === DefenseType.ACCEPT
+          ? false
+          : chosen === DefenseType.DISPUTE
+            ? Math.random() < 0.5
+            : Math.random() < 0.3;
+      onDone(chosen, success);
+    }, delay);
+    return () => clearTimeout(timer);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-const defenseConfig = [
-  { value: DefenseType.ACCEPT, label: "Принять удар", desc: "Пропустить атаку без сопротивления", bg: "bg-text-muted/10", border: "border-text-muted/30", text: "text-text-muted" },
-  { value: DefenseType.DISPUTE, label: "Оспорить", desc: "50% шанс отразить атаку", bg: "bg-accent/15", border: "border-accent/30", text: "text-accent" },
-  { value: DefenseType.COUNTER, label: "Контратака", desc: "30% шанс, но отражает весь урон", bg: "bg-accent-gold/15", border: "border-accent-gold/30", text: "text-accent-gold" },
-];
-
-const defenseLabels: Record<string, string> = {
-  [DefenseType.ACCEPT]: "Принять удар",
-  [DefenseType.DISPUTE]: "Оспорить",
-  [DefenseType.COUNTER]: "Контратака",
-};
+  return null;
+}
 
 // ---------------------------------------------------------------------------
 // Demo Page
@@ -214,11 +272,16 @@ const defenseLabels: Record<string, string> = {
 
 export default function BattleDemoPage() {
   const router = useRouter();
-  const [battle, setBattle] = useState<BattleState>(createMockBattle);
+  const [battle, setBattle] = useState<BattleState>(createInitialBattle);
+  const [selectedBranch, setSelectedBranch] = useState<Branch | null>(null);
   const [selectedDifficulty, setSelectedDifficulty] = useState<Difficulty | null>(null);
+  const [currentQuestion, setCurrentQuestion] = useState<ApiQuestion | null>(null);
+  const [questionLoading, setQuestionLoading] = useState(false);
+  const [questionError, setQuestionError] = useState(false);
   const [lastRound, setLastRound] = useState<BattleRound | null>(null);
   const [result, setResult] = useState<BattleResult | null>(null);
   const [answerSelected, setAnswerSelected] = useState<number | null>(null);
+  const [usedQuestionIds, setUsedQuestionIds] = useState<string[]>([]);
 
   // Play battle start sound once
   const battleStartPlayed = useRef(false);
@@ -247,6 +310,20 @@ export default function BattleDemoPage() {
 
   const { seconds, progress } = useCountdown(battle.timeLimit, timerActive);
 
+  // Load question from API when difficulty is selected
+  const loadQuestion = useCallback(async (branch: Branch, difficulty: Difficulty) => {
+    setQuestionLoading(true);
+    setQuestionError(false);
+    const q = await fetchQuestion(branch, difficulty, usedQuestionIds);
+    if (q) {
+      setCurrentQuestion(q);
+      setUsedQuestionIds((prev) => [...prev, q.id]);
+    } else {
+      setQuestionError(true);
+    }
+    setQuestionLoading(false);
+  }, [usedQuestionIds]);
+
   // -- Demo label -----------------------------------------------------------
 
   const demoBadge = (
@@ -257,46 +334,42 @@ export default function BattleDemoPage() {
     </div>
   );
 
-  // -- CATEGORY_SELECT ------------------------------------------------------
+  // -- BRANCH_SELECT --------------------------------------------------------
 
-  if (battle.phase === BattlePhase.CATEGORY_SELECT) {
+  if (battle.phase === BattlePhase.BRANCH_SELECT) {
     return (
       <div className="px-4 pt-8 pb-24 space-y-6">
         {demoBadge}
         <ScoreBar battle={battle} />
 
         <div className="text-center space-y-2">
-          <h2 className="text-xl font-bold">Выбери категорию</h2>
-          <p className="text-text-muted text-sm">Атакуй вопросом из выбранной области</p>
+          <h2 className="text-xl font-bold">Выбери ветку атаки</h2>
+          <p className="text-text-muted text-sm">Атакуй вопросом из выбранной ветки знаний</p>
         </div>
 
         <div className="space-y-3">
-          {battle.categories.map((cat, idx) => {
-            const styles = [
-              "bg-accent-red/10 text-accent-red border-accent-red/25 hover:border-accent-red/50",
-              "bg-accent-gold/10 text-accent-gold border-accent-gold/25 hover:border-accent-gold/50",
-              "bg-accent/10 text-accent border-accent/25 hover:border-accent/50",
-            ];
-            return (
-              <button
-                key={cat}
-                onClick={() => {
-                  playSelect();
-                  setBattle((b) => ({
-                    ...b,
-                    phase: BattlePhase.ROUND_ATTACK,
-                    selectedCategory: cat,
-                  }));
-                  setSelectedDifficulty(null);
-                  setAnswerSelected(null);
-                }}
-                className={`w-full flex items-center gap-4 p-4 rounded-2xl border transition-all active:scale-[0.98] ${styles[idx % styles.length]}`}
-              >
-                <span className="text-lg font-serif font-bold">{cat.charAt(0)}</span>
-                <span className="font-semibold">{cat}</span>
-              </button>
-            );
-          })}
+          {branchConfig.map((b) => (
+            <button
+              key={b.value}
+              onClick={() => {
+                playSelect();
+                setSelectedBranch(b.value);
+                setBattle((prev) => ({
+                  ...prev,
+                  phase: BattlePhase.ROUND_ATTACK,
+                  selectedBranch: b.value,
+                }));
+                setSelectedDifficulty(null);
+                setCurrentQuestion(null);
+                setAnswerSelected(null);
+                setQuestionError(false);
+              }}
+              className={`w-full flex items-center gap-4 p-4 rounded-2xl border transition-all active:scale-[0.98] ${b.color}`}
+            >
+              <span className="text-2xl">{b.icon}</span>
+              <span className="font-semibold text-lg">{b.label}</span>
+            </button>
+          ))}
         </div>
       </div>
     );
@@ -305,7 +378,7 @@ export default function BattleDemoPage() {
   // -- ROUND_ATTACK ---------------------------------------------------------
 
   if (battle.phase === BattlePhase.ROUND_ATTACK) {
-    const question = selectedDifficulty ? MOCK_QUESTIONS[selectedDifficulty] : null;
+    const branchLabel = branchConfig.find((b) => b.value === selectedBranch)?.label ?? "";
 
     return (
       <div className="px-4 pt-8 pb-24 space-y-6">
@@ -315,7 +388,7 @@ export default function BattleDemoPage() {
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-lg font-bold">Твоя атака</h2>
-            <p className="text-text-muted text-sm">{battle.selectedCategory}</p>
+            <p className="text-text-muted text-sm">{branchLabel}</p>
           </div>
           <TimerCircle seconds={seconds} progress={progress} />
         </div>
@@ -323,28 +396,62 @@ export default function BattleDemoPage() {
         {/* Step 1: Choose difficulty */}
         {!selectedDifficulty && (
           <DifficultyPicker
-            onSelect={(difficulty) => setSelectedDifficulty(difficulty)}
+            onSelect={(difficulty) => {
+              setSelectedDifficulty(difficulty);
+              if (selectedBranch) {
+                loadQuestion(selectedBranch, difficulty);
+              }
+            }}
           />
         )}
 
+        {/* Loading state */}
+        {selectedDifficulty && questionLoading && (
+          <Card padding="lg" className="space-y-4">
+            <div className="flex flex-col items-center justify-center py-8">
+              <div className="w-10 h-10 rounded-full border-2 border-accent/30 border-t-accent animate-spin" />
+              <p className="text-text-muted text-sm mt-4">Загрузка вопроса...</p>
+            </div>
+          </Card>
+        )}
+
+        {/* Error state */}
+        {selectedDifficulty && questionError && !questionLoading && (
+          <Card padding="lg" className="space-y-4">
+            <div className="flex flex-col items-center justify-center py-6 space-y-3">
+              <p className="text-accent-red text-sm">Не удалось загрузить вопрос</p>
+              <Button
+                variant="secondary"
+                onClick={() => {
+                  if (selectedBranch && selectedDifficulty) {
+                    loadQuestion(selectedBranch, selectedDifficulty);
+                  }
+                }}
+              >
+                Попробовать снова
+              </Button>
+            </div>
+          </Card>
+        )}
+
         {/* Step 2: Answer */}
-        {selectedDifficulty && question && (
+        {selectedDifficulty && currentQuestion && !questionLoading && (
           <Card padding="lg" className="space-y-4">
             <div className="flex items-center gap-2">
               <span className={`text-xs font-semibold px-2.5 py-1 rounded-lg ${difficultyConfig.find((d) => d.value === selectedDifficulty)?.badge}`}>
                 {difficultyConfig.find((d) => d.value === selectedDifficulty)?.label}
               </span>
             </div>
-            <p className="text-text-primary leading-relaxed">{question.text}</p>
+            <p className="text-text-primary leading-relaxed">{currentQuestion.text}</p>
             <div className="space-y-2">
-              {question.answers.map((ans, idx) => (
+              {currentQuestion.options.map((ans, idx) => (
                 <button
                   key={idx}
                   onClick={() => {
                     if (answerSelected !== null) return;
                     playSelect();
                     setAnswerSelected(idx);
-                    const isCorrect = idx === 0; // first answer is always correct in demo
+                    const isCorrect = idx === currentQuestion.correctIndex;
                     if (isCorrect) playCorrect(); else playWrong();
                     const dmg = difficultyConfig.find((d) => d.value === selectedDifficulty)?.damage ?? 10;
 
@@ -360,7 +467,7 @@ export default function BattleDemoPage() {
                     };
                     setLastRound(round);
 
-                    // Transition to defense phase after 1 sec
+                    // Transition after 1.2 sec
                     setTimeout(() => {
                       if (isCorrect) {
                         setBattle((b) => ({
@@ -383,10 +490,10 @@ export default function BattleDemoPage() {
                     answerSelected === null
                       ? "border-accent/15 bg-surface-light hover:border-accent/40 text-text-primary"
                       : answerSelected === idx
-                        ? idx === 0
+                        ? idx === currentQuestion.correctIndex
                           ? "border-accent/40 bg-accent/10 text-accent"
                           : "border-accent-red/40 bg-accent-red/10 text-accent-red"
-                        : idx === 0 && answerSelected !== null
+                        : idx === currentQuestion.correctIndex && answerSelected !== null
                           ? "border-accent/30 bg-accent/5 text-accent"
                           : "border-accent/10 bg-surface-light text-text-muted opacity-50"
                   }`}
@@ -401,7 +508,7 @@ export default function BattleDemoPage() {
     );
   }
 
-  // -- ROUND_DEFENSE (bot defends — auto-simulate) --------------------------
+  // -- ROUND_DEFENSE (bot defends — auto-simulate 3-6s) ---------------------
 
   if (battle.phase === BattlePhase.ROUND_DEFENSE) {
     return (
@@ -433,7 +540,6 @@ export default function BattleDemoPage() {
           <p className="text-text-muted text-sm mt-4">Бот думает...</p>
         </div>
 
-        {/* Auto-advance after 2 sec */}
         <BotAutoDefend
           onDone={(defenseType, success) => {
             const dmg = lastRound?.damageDealt ?? 0;
@@ -547,15 +653,19 @@ export default function BattleDemoPage() {
               onClick={() => {
                 setBattle((b) => ({
                   ...b,
-                  phase: BattlePhase.CATEGORY_SELECT,
+                  phase: BattlePhase.BRANCH_SELECT,
                   currentRound: b.currentRound + 1,
                   currentAttackerId: "player",
                   currentDefenderId: "bot",
                   selectedCategory: undefined,
+                  selectedBranch: undefined,
                 }));
+                setSelectedBranch(null);
                 setSelectedDifficulty(null);
+                setCurrentQuestion(null);
                 setAnswerSelected(null);
                 setLastRound(null);
+                setQuestionError(false);
               }}
             >
               Следующий раунд
@@ -674,11 +784,16 @@ export default function BattleDemoPage() {
           <Button
             fullWidth
             onClick={() => {
-              setBattle(createMockBattle());
+              setBattle(createInitialBattle());
               setResult(null);
               setLastRound(null);
+              setSelectedBranch(null);
               setSelectedDifficulty(null);
+              setCurrentQuestion(null);
               setAnswerSelected(null);
+              setUsedQuestionIds([]);
+              setQuestionError(false);
+              resultSoundPlayed.current = false;
             }}
           >
             Играть снова
@@ -690,33 +805,6 @@ export default function BattleDemoPage() {
       </div>
     );
   }
-
-  return null;
-}
-
-// ---------------------------------------------------------------------------
-// Helper: Bot auto-defense after 2 seconds
-// ---------------------------------------------------------------------------
-
-function BotAutoDefend({
-  onDone,
-}: {
-  onDone: (defenseType: DefenseType, success: boolean) => void;
-}) {
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      const types = [DefenseType.ACCEPT, DefenseType.DISPUTE, DefenseType.COUNTER];
-      const chosen = types[Math.floor(Math.random() * types.length)]!;
-      const success =
-        chosen === DefenseType.ACCEPT
-          ? false
-          : chosen === DefenseType.DISPUTE
-            ? Math.random() < 0.5
-            : Math.random() < 0.3;
-      onDone(chosen, success);
-    }, 2000);
-    return () => clearTimeout(timer);
-  }, [onDone]);
 
   return null;
 }
