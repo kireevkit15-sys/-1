@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
-import { determineThinkerClass, ThinkerClass, Branch } from '@razum/shared';
+import type { PrismaService } from '../prisma/prisma.service';
+import type { ThinkerClass } from '@razum/shared';
+import { determineThinkerClass, getBranchLevels, xpToNextLevel, Branch } from '@razum/shared';
 
 @Injectable()
 export class StatsService {
@@ -63,11 +64,30 @@ export class StatsService {
     const totalXp = this.calculateTotalXp(stats);
     const level = this.calculateLevel(totalXp);
     const progress = this.calculateXpToNextLevel(totalXp);
+
+    const branchLevels = getBranchLevels({
+      logic: stats.logicXp,
+      erudition: stats.eruditionXp,
+      strategy: stats.strategyXp,
+      rhetoric: stats.rhetoricXp,
+      intuition: stats.intuitionXp,
+    });
+
+    const branchProgress = {
+      logic: xpToNextLevel(stats.logicXp),
+      erudition: xpToNextLevel(stats.eruditionXp),
+      strategy: xpToNextLevel(stats.strategyXp),
+      rhetoric: xpToNextLevel(stats.rhetoricXp),
+      intuition: xpToNextLevel(stats.intuitionXp),
+    };
+
     return {
       ...stats,
       totalXp,
       level,
       xpProgress: progress,
+      branchLevels,
+      branchProgress,
     };
   }
 
@@ -236,25 +256,36 @@ export class StatsService {
       throw new NotFoundException('Stats not found for this user');
     }
 
-    const totalXp = this.calculateTotalXp(stats);
-    const level = this.calculateLevel(totalXp);
-    const progress = this.calculateXpToNextLevel(totalXp);
-
-    const thinkerClass: ThinkerClass = determineThinkerClass({
+    const statsData = {
       logic: stats.logicXp,
       erudition: stats.eruditionXp,
       strategy: stats.strategyXp,
       rhetoric: stats.rhetoricXp,
       intuition: stats.intuitionXp,
-    });
+    };
+
+    const totalXp = this.calculateTotalXp(stats);
+    const branchLevels = getBranchLevels(statsData);
+    const progress = this.calculateXpToNextLevel(totalXp);
+    const thinkerClass: ThinkerClass = determineThinkerClass(statsData);
+
+    const branchProgress = {
+      logic: xpToNextLevel(stats.logicXp),
+      erudition: xpToNextLevel(stats.eruditionXp),
+      strategy: xpToNextLevel(stats.strategyXp),
+      rhetoric: xpToNextLevel(stats.rhetoricXp),
+      intuition: xpToNextLevel(stats.intuitionXp),
+    };
 
     const battleStats = await this.getBattleStats(userId);
 
     return {
       user: stats.user,
-      level,
+      level: branchLevels.overall,
       totalXp,
       xpProgress: progress,
+      branchLevels,
+      branchProgress,
       rating: stats.rating,
       branchRatings: {
         logic: (stats as any).logicRating ?? 1000,
@@ -306,11 +337,19 @@ export class StatsService {
     return {
       leaderboard: users.map((entry, index: number) => {
         const totalXp = this.calculateTotalXp(entry);
+        const branchLevels = getBranchLevels({
+          logic: entry.logicXp,
+          erudition: entry.eruditionXp,
+          strategy: entry.strategyXp,
+          rhetoric: entry.rhetoricXp,
+          intuition: entry.intuitionXp,
+        });
         return {
           rank: offset + index + 1,
           ...entry,
           totalXp,
-          level: this.calculateLevel(totalXp),
+          level: branchLevels.overall,
+          branchLevels,
         };
       }),
     };

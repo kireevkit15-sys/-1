@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
-import { RedisService } from '../redis/redis.service';
-import { determineThinkerClass } from '@razum/shared';
+import type { PrismaService } from '../prisma/prisma.service';
+import type { RedisService } from '../redis/redis.service';
+import { determineThinkerClass, getBranchLevels } from '@razum/shared';
 
 type LeaderboardType = 'rating' | 'xp' | 'streak';
 type LeaderboardPeriod = 'all' | 'week' | 'month';
@@ -125,22 +125,24 @@ export class LeaderboardService {
       type: 'xp' as const,
       period,
       entries: entries.map((e, i) => {
-        const totalXp = Number(e.totalXp);
-        const level = Math.floor(Math.sqrt(totalXp / 100));
-        const thinkerClass = determineThinkerClass({
+        const statsData = {
           logic: e.logicXp,
           erudition: e.eruditionXp,
           strategy: e.strategyXp,
           rhetoric: e.rhetoricXp,
           intuition: e.intuitionXp,
-        });
+        };
+        const totalXp = Number(e.totalXp);
+        const branchLevels = getBranchLevels(statsData);
+        const thinkerClass = determineThinkerClass(statsData);
 
         return {
           rank: i + 1,
           user: { id: e.userId, name: e.name, avatarUrl: e.avatarUrl },
           rating: e.rating,
           totalXp,
-          level,
+          level: branchLevels.overall,
+          branchLevels,
           streakDays: e.streakDays,
           thinkerClass,
         };
@@ -162,23 +164,25 @@ export class LeaderboardService {
     },
     i: number,
   ) {
-    const totalXp =
-      e.logicXp + e.eruditionXp + e.strategyXp + e.rhetoricXp + e.intuitionXp;
-    const level = Math.floor(Math.sqrt(totalXp / 100));
-    const thinkerClass = determineThinkerClass({
+    const statsData = {
       logic: e.logicXp,
       erudition: e.eruditionXp,
       strategy: e.strategyXp,
       rhetoric: e.rhetoricXp,
       intuition: e.intuitionXp,
-    });
+    };
+    const totalXp =
+      e.logicXp + e.eruditionXp + e.strategyXp + e.rhetoricXp + e.intuitionXp;
+    const branchLevels = getBranchLevels(statsData);
+    const thinkerClass = determineThinkerClass(statsData);
 
     return {
       rank: i + 1,
       user: e.user,
       rating: e.rating,
       totalXp,
-      level,
+      level: branchLevels.overall,
+      branchLevels,
       streakDays: e.streakDays,
       thinkerClass,
     };

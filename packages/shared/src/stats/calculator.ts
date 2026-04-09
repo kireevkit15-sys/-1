@@ -63,6 +63,41 @@ export function determineThinkerClass(stats: UserStatsData): ThinkerClass {
 }
 
 /**
+ * Calculate per-branch levels and overall level (average of 5 branches).
+ */
+export function getBranchLevels(stats: UserStatsData): {
+  logic: number;
+  erudition: number;
+  strategy: number;
+  rhetoric: number;
+  intuition: number;
+  overall: number;
+} {
+  const logic = xpToLevel(stats.logic);
+  const erudition = xpToLevel(stats.erudition);
+  const strategy = xpToLevel(stats.strategy);
+  const rhetoric = xpToLevel(stats.rhetoric);
+  const intuition = xpToLevel(stats.intuition);
+  const overall = Math.floor((logic + erudition + strategy + rhetoric + intuition) / 5);
+  return { logic, erudition, strategy, rhetoric, intuition, overall };
+}
+
+/**
+ * XP needed to reach next level for a given XP amount.
+ */
+export function xpToNextLevel(xp: number): { current: number; required: number; level: number } {
+  const level = xpToLevel(xp);
+  const nextLevel = level + 1;
+  const xpForCurrentLevel = level * level * 100;
+  const xpForNextLevel = nextLevel * nextLevel * 100;
+  return {
+    current: xp - xpForCurrentLevel,
+    required: xpForNextLevel - xpForCurrentLevel,
+    level,
+  };
+}
+
+/**
  * Get stats formatted for a radar chart.
  */
 export function getStatsRadar(stats: UserStatsData): { name: string; value: number; level: number }[] {

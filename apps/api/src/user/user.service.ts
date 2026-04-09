@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
-import { LeaderboardService } from '../stats/leaderboard.service';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { determineThinkerClass } from '@razum/shared';
+import type { PrismaService } from '../prisma/prisma.service';
+import type { LeaderboardService } from '../stats/leaderboard.service';
+import type { UpdateUserDto } from './dto/update-user.dto';
+import { determineThinkerClass, getBranchLevels, xpToNextLevel } from '@razum/shared';
 
 interface XpFields {
   logicXp: number;
@@ -153,29 +153,32 @@ export class UserService {
     );
   }
 
-  private calculateLevel(totalXp: number): number {
-    return Math.floor(Math.sqrt(totalXp / 100));
-  }
-
-  private calculateXpProgress(totalXp: number): {
-    current: number;
-    required: number;
-  } {
-    const level = this.calculateLevel(totalXp);
-    const nextLevel = level + 1;
-    return {
-      current: totalXp - level * level * 100,
-      required: nextLevel * nextLevel * 100 - level * level * 100,
-    };
-  }
-
   private enrichStats<T extends XpFields>(stats: T) {
     const totalXp = this.calculateTotalXp(stats);
+    const statsData = {
+      logic: stats.logicXp,
+      erudition: stats.eruditionXp,
+      strategy: stats.strategyXp,
+      rhetoric: stats.rhetoricXp,
+      intuition: stats.intuitionXp,
+    };
+
+    const branchLevels = getBranchLevels(statsData);
+    const branchProgress = {
+      logic: xpToNextLevel(stats.logicXp),
+      erudition: xpToNextLevel(stats.eruditionXp),
+      strategy: xpToNextLevel(stats.strategyXp),
+      rhetoric: xpToNextLevel(stats.rhetoricXp),
+      intuition: xpToNextLevel(stats.intuitionXp),
+    };
+
     return {
       ...stats,
       totalXp,
-      level: this.calculateLevel(totalXp),
-      xpProgress: this.calculateXpProgress(totalXp),
+      level: branchLevels.overall,
+      branchLevels,
+      branchProgress,
+      xpProgress: xpToNextLevel(totalXp),
     };
   }
 

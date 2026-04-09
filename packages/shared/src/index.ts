@@ -43,6 +43,8 @@ export type { UserStatsData } from './stats/types';
 
 export {
   xpToLevel,
+  xpToNextLevel,
+  getBranchLevels,
   determineThinkerClass,
   getStatsRadar,
 } from './stats/calculator';
