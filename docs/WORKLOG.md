@@ -441,6 +441,77 @@
 **Коммиты:**
 - `81799ab` — feat(web): knowledge tree map + question slide animations (F8.1, F8.3)
 
+### 2026-04-09 — Сессия 10: Блоки 6-11 полностью — баттл UX, обучение, PWA, полировка
+
+**Время:** ~5 часов
+**Статус:** Завершена
+
+**Что сделано:**
+
+*Батч A — Баттл UX (F6.4-F6.7):*
+- F6.4: 5 карточек выбора ветки атаки — branch-card + hover-branch-glow + keyboard hints 1-5
+- F6.5: FloatingXP — "+N XP" всплывает и тает при получении очков
+- F6.6: Экран VS — аватары w-20, rank badge, 5 branch stat bars, countdown 3-2-1-GO с battle-slam
+- F6.7: CountUpNumber анимация очков, подсветка правильного (зелёный) / неправильного (красный) ответа
+- fix: добавлен Branch в demo/page.tsx (предсуществующий баг)
+- fix: разные иконки для Рейтинг (трофей) и Достижения (звезда) в SideNav
+
+*Батч B — Новые страницы (F7.3-F7.5, F8.4):*
+- Записано в сессии 8 выше
+
+*Батч C — Доработки (F8.1, F8.3, F8.5, F9.3, F9.5, F9.6):*
+- F8.1: Карта знаний переработана — клик на узел → ?branch=KEY, модули показываются inline, секции веток снизу убраны
+- F8.3: Slide-left анимации + result screen (записано в сессии 9)
+- F8.5: Streak badge + мотивационные сообщения по результату (5/5 → звезда, 4/5 → палец вверх и т.д.) + floating XP
+- F9.3: SwipeToDismiss компонент — swipe-right на факте дня, хранит dismiss в localStorage по дате
+- F9.5: Лидерборд — аватары с инициалами, top-3 gold/silver/bronze коронки, подсветка текущего игрока
+- F9.6: Онбординг v2 — шаг выбора 3 веток из 5, branch-card стиль, финальный CTA "Начать первый баттл"
+
+*Батч D — PWA + полировка (F10.2-F11.12):*
+- F10.2: Offline — runtime cache (NetworkFirst 5s) для API, страниц, вопросов
+- F10.4: Splash SVG (медный gradient "Р") + manifest.json обновлён
+- F10.5: SwipeNavigation — свайп между вкладками с visual feedback
+- F11.3: Toast система — 5 типов (xp/achievement/streak/info/error), glass-card, auto-dismiss 3s
+- F11.4: confetti.ts — Canvas particle system, 3 палитры (levelup/achievement/victory)
+- F11.5: Settings — звук/push/тема toggles, аккаунт секция, удаление аккаунта
+- F11.7: Referral — код + clipboard/share + ввод чужого кода + список друзей
+- F11.8: NetworkError — WiFi-off + auto-dismiss при онлайн
+- F11.9: EmptyState — 5 пресетов (battles/achievements/history/modules/friends)
+- F11.10: Micro-interactions CSS — wiggle, bounce-badge, pulse-ring, hover-tilt
+- F11.11: ThemeToggle — moon/sun toggle, "Светлая тема скоро"
+- F11.12: About — миссия, команда (3 чел.), tech stack badges, контакты
+
+*Дубли помечены (13 задач):*
+- F6.1-6.3, F7.1-7.2, F8.2, F9.1-9.2, F9.4, F10.1, F10.3, F11.1-11.2, F11.6
+
+**Файлы созданы:**
+- `apps/web/app/(main)/chat/page.tsx`, `settings/page.tsx`, `referral/page.tsx`, `about/page.tsx`
+- `apps/web/components/ui/Toast.tsx`, `SwipeToDismiss.tsx`, `NetworkError.tsx`, `EmptyState.tsx`, `ThemeToggle.tsx`
+- `apps/web/components/layout/SwipeNavigation.tsx`
+- `apps/web/lib/confetti.ts`
+- `apps/web/public/splash-icon.svg`
+
+**Файлы изменены:**
+- `apps/web/app/(main)/battle/[id]/page.tsx` — branch cards, floating XP, round result
+- `apps/web/app/(main)/battle/new/page.tsx` — VS screen + countdown
+- `apps/web/app/(main)/battle/demo/page.tsx` — fix Branch import
+- `apps/web/app/(main)/learn/page.tsx` — tree click → branch modules inline
+- `apps/web/app/(main)/warmup/page.tsx` — streak badge + motivational messages
+- `apps/web/app/(main)/leaderboard/page.tsx` — avatars, crowns, player glow
+- `apps/web/app/(main)/onboarding/page.tsx` — branch selection step
+- `apps/web/app/(main)/page.tsx` — SwipeToDismiss на факте дня
+- `apps/web/app/globals.css` — micro-interactions CSS
+- `apps/web/app/sw.ts` — offline runtime caching
+- `apps/web/components/layout/SideNav.tsx` — star icon for achievements
+- `apps/web/public/manifest.json` — splash metadata
+
+**Задачи из SPRINT.md закрыты:** F6.4-F6.7, F8.4, F8.5, F9.3, F9.5, F9.6, F10.2, F10.4, F10.5, F11.3-F11.5, F11.7-F11.12
+
+**Коммиты:**
+- `3c9ad92` — feat(web): battle UX + profile pages + AI chat (F6.4-F6.7, F7.3-F7.5, F8.4)
+- `0fdb7c6` — feat(web): knowledge tree, module animations, warmup UX, leaderboard, onboarding v2
+- `6dc4ea1` — feat(web): PWA offline + polish — toast, confetti, settings, referral, about
+
 ---
 
 ## Яшкин (Backend)

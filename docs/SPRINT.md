@@ -111,10 +111,10 @@
 | F6.1 | Keyboard shortcuts: 1-2-3-4 ответы, Enter подтверждение, Esc выход | done | дубль F5.2 |
 | F6.2 | Shake-эффект при неправильном ответе, pulse при критическом HP | done | дубль F5.4 |
 | F6.3 | Particle explosion при победе (canvas или CSS) | done | дубль F5.4 |
-| F6.4 | Экран выбора ветки атаки: 5 карточек с иконками + glow активной ветки | todo | `apps/web/app/(main)/battle/[id]/page.tsx` |
-| F6.5 | Анимация получения XP: floating numbers +15 XP, прогресс-бар заполняется | todo | `apps/web/components/` |
-| F6.6 | Экран VS: аватары с рангами, 5 статов каждого игрока, countdown 3-2-1 | todo | `apps/web/app/(main)/battle/new/page.tsx` |
-| F6.7 | Результат раунда: анимированная разница очков, подсветка правильного ответа | todo | `apps/web/app/(main)/battle/[id]/page.tsx` |
+| F6.4 | Экран выбора ветки атаки: 5 карточек с иконками + glow активной ветки | done | `apps/web/app/(main)/battle/[id]/page.tsx` |
+| F6.5 | Анимация получения XP: floating numbers +15 XP, прогресс-бар заполняется | done | `apps/web/app/(main)/battle/[id]/page.tsx` |
+| F6.6 | Экран VS: аватары с рангами, 5 статов каждого игрока, countdown 3-2-1 | done | `apps/web/app/(main)/battle/new/page.tsx` |
+| F6.7 | Результат раунда: анимированная разница очков, подсветка правильного ответа | done | `apps/web/app/(main)/battle/[id]/page.tsx` |
 
 ## Блок 7 — Профиль и прогресс
 
@@ -133,8 +133,8 @@
 | F8.1 | Дерево знаний: визуальная карта 5 веток → 25 категорий, прогресс по каждой | done | `apps/web/app/(main)/learn/page.tsx` |
 | F8.2 | Двухколоночный layout модулей на desktop, карточки с progress bar и иконкой ветки | done | дубль F5.9 |
 | F8.3 | Экран модуля: вопросы с анимацией перехода, прогресс сверху, результат в конце | done | `apps/web/app/(main)/learn/[moduleId]/page.tsx` |
-| F8.4 | AI-чат: расширенный layout на desktop, markdown рендер, code blocks | todo | `apps/web/app/(main)/chat/page.tsx` |
-| F8.5 | Страница разминки: 5 вопросов, streak counter, мотивационное сообщение | todo | `apps/web/app/(main)/warmup/page.tsx` |
+| F8.4 | AI-чат: расширенный layout на desktop, markdown рендер, code blocks | done | `apps/web/app/(main)/chat/page.tsx` |
+| F8.5 | Страница разминки: 5 вопросов, streak counter, мотивационное сообщение | done | `apps/web/app/(main)/warmup/page.tsx` |
 
 ## Блок 9 — Главная и навигация
 
@@ -142,20 +142,20 @@
 |---|--------|--------|-------|
 | F9.1 | Hero-секция: аватар + 5 статов мини-баром, уровень, класс мыслителя | done | дубль F5.7 |
 | F9.2 | Daily challenge карточка с countdown таймером | done | дубль F5.7 |
-| F9.3 | Факт дня: карточка с swipe to dismiss | todo | `apps/web/components/` |
+| F9.3 | Факт дня: карточка с swipe to dismiss | done | `apps/web/components/ui/SwipeToDismiss.tsx` |
 | F9.4 | CTA кнопка "В бой" — aggressive стиль, пульсация, glow | done | дубль F5.7 |
-| F9.5 | Лидерборд: топ-20 с аватарами, позиция текущего игрока подсвечена | todo | `apps/web/app/(main)/leaderboard/page.tsx` |
-| F9.6 | Онбординг v2: выбор 3 любимых веток, интро-баттл с ботом | todo | `apps/web/app/(main)/onboarding/page.tsx` |
+| F9.5 | Лидерборд: топ-20 с аватарами, позиция текущего игрока подсвечена | done | `apps/web/app/(main)/leaderboard/page.tsx` |
+| F9.6 | Онбординг v2: выбор 3 любимых веток, интро-баттл с ботом | done | `apps/web/app/(main)/onboarding/page.tsx` |
 
 ## Блок 10 — PWA и мобайл
 
 | # | Задача | Статус | Файлы |
 |---|--------|--------|-------|
 | F10.1 | Push-уведомления: подписка, UI разрешения, значок на иконке | done | `apps/web/hooks/usePushSubscription.ts` (сессия 5) |
-| F10.2 | Offline-режим: cached страницы, offline fallback с кешированными вопросами | todo | `apps/web/app/sw.ts` |
+| F10.2 | Offline-режим: cached страницы, offline fallback с кешированными вопросами | done | `apps/web/app/sw.ts` |
 | F10.3 | Install prompt: кастомный баннер "Установи РАЗУМ" | done | `apps/web/components/ui/InstallBanner.tsx` (сессия 5) |
-| F10.4 | Splash screen при запуске PWA | todo | `apps/web/public/` |
-| F10.5 | Swipe-жесты: свайп между вкладками, pull-to-refresh | todo | `apps/web/components/layout/` |
+| F10.4 | Splash screen при запуске PWA | done | `apps/web/public/splash-icon.svg`, `apps/web/public/manifest.json` |
+| F10.5 | Swipe-жесты: свайп между вкладками, pull-to-refresh | done | `apps/web/components/layout/SwipeNavigation.tsx` |
 
 ## Блок 11 — Полировка и допфичи
 
@@ -163,16 +163,16 @@
 |---|--------|--------|-------|
 | F11.1 | Анимация перехода между страницами: slide/fade transitions (Framer Motion / View Transitions API) | done | `apps/web/components/layout/PageTransition.tsx` (сессия 5) |
 | F11.2 | Skeleton loading: shimmer-эффект на все карточки, профиль, лидерборд | done | `apps/web/components/ui/Skeleton.tsx` (сессия 5) |
-| F11.3 | Toast-уведомления: XP получен, ачивка разблокирована, стрик продлён | todo | `apps/web/components/ui/Toast.tsx` |
-| F11.4 | Confetti / particles при level up, новый ранг, разблокировке ачивки | todo | `apps/web/lib/confetti.ts` |
-| F11.5 | Настройки пользователя: звук вкл/выкл, уведомления | todo | `apps/web/app/(main)/settings/page.tsx` |
+| F11.3 | Toast-уведомления: XP получен, ачивка разблокирована, стрик продлён | done | `apps/web/components/ui/Toast.tsx` |
+| F11.4 | Confetti / particles при level up, новый ранг, разблокировке ачивки | done | `apps/web/lib/confetti.ts` |
+| F11.5 | Настройки пользователя: звук вкл/выкл, уведомления | done | `apps/web/app/(main)/settings/page.tsx` |
 | F11.6 | Share-кнопка: поделиться результатом баттла (OG-image) в Telegram/VK | done | `apps/web/components/profile/ShareButton.tsx` (сессия 5) |
-| F11.7 | Реферальная страница: ввод кода, бонус, список приглашённых | todo | `apps/web/app/(main)/referral/page.tsx` |
-| F11.8 | Страница ошибки сети: красивый UI при потере соединения с retry-кнопкой | todo | `apps/web/components/` |
-| F11.9 | Дизайн empty states: нет баттлов, нет достижений, нет истории — мотивационные экраны | todo | `apps/web/components/` |
-| F11.10 | Micro-interactions: иконка батла вибрирует при новом challenge, бейдж bounce | todo | `apps/web/components/` |
-| F11.11 | Тёмный/светлый toggle (подготовка к светлой теме) | todo | `apps/web/app/` |
-| F11.12 | Страница "О проекте": миссия, команда, контакты | todo | `apps/web/app/(main)/about/page.tsx` |
+| F11.7 | Реферальная страница: ввод кода, бонус, список приглашённых | done | `apps/web/app/(main)/referral/page.tsx` |
+| F11.8 | Страница ошибки сети: красивый UI при потере соединения с retry-кнопкой | done | `apps/web/components/ui/NetworkError.tsx` |
+| F11.9 | Дизайн empty states: нет баттлов, нет достижений, нет истории — мотивационные экраны | done | `apps/web/components/ui/EmptyState.tsx` |
+| F11.10 | Micro-interactions: иконка батла вибрирует при новом challenge, бейдж bounce | done | `apps/web/app/globals.css` |
+| F11.11 | Тёмный/светлый toggle (подготовка к светлой теме) | done | `apps/web/components/ui/ThemeToggle.tsx` |
+| F11.12 | Страница "О проекте": миссия, команда, контакты | done | `apps/web/app/(main)/about/page.tsx` |
 
 ## Тестирование Бонди
 
