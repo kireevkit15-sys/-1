@@ -366,6 +366,58 @@
 
 ---
 
+### 2026-04-09 — Сессия 8: История баттлов, достижения, публичный профиль
+
+**Время:** ~1.5 часа
+**Статус:** Завершена
+
+**Что сделано:**
+
+*F7.3 — История баттлов на странице профиля:*
+- Добавлен компонент `BattleHistorySection` в `profile/page.tsx`
+- Карточки последних 10 баттлов с цветной left-border (зелёная=победа, красная=поражение, серая=ничья)
+- Показывает: соперника, результат, ветку, изменение рейтинга (+/-), дату
+- Fetch из `${API_BASE}/v1/battles/history` с fallback на 5 demo-баттлов
+- Добавлена ссылка-кнопка перехода на `/achievements`
+
+*F7.4 — Страница достижений `/achievements`:*
+- Новая страница `apps/web/app/(main)/achievements/page.tsx`
+- Сетка бейджей: 3 колонки mobile, 4 колонки desktop (md+)
+- Unlocked: branch-colored glow (animate-glow-pulse-badge), цветная иконка
+- Locked: grayscale + opacity-40 + иконка замка в углу
+- Прогресс-бар к ближайшему достижению (`NextMilestone`)
+- Общий прогресс-бар вверху
+- 8 demo-достижений: Первая победа, Стратег, Логик, Эрудит, Серия побед, Ветеран, Мудрец, Полиглот
+- Fetch из `${API_BASE}/v1/achievements` с auth token
+
+*F7.5 — Публичный профиль `/profile/[id]`:*
+- Новая страница `apps/web/app/(main)/profile/[id]/page.tsx`
+- Read-only: аватар, имя, ранг, уровень, рейтинг
+- RadarChart с 5 ветками (цветные оси, те же настройки что в личном профиле)
+- Сетка статистики (баттлы, победы, винрейт)
+- CTA "Вызвать на баттл" → `/battle/new?opponent=ID`
+- 404-состояние если игрок не найден
+- Demo data fallback при ошибке API
+
+*SideNav — добавлен пункт "Достижения"*
+- Новый nav item `/achievements` с иконкой медали (между Рейтингом и Профилем)
+
+*tailwind.config.ts — добавлена анимация `animate-glow-pulse-badge`*
+
+**Файлы созданы/изменены:**
+- `apps/web/app/(main)/profile/page.tsx` — добавлена секция истории баттлов и ссылка на достижения
+- `apps/web/app/(main)/achievements/page.tsx` — создана новая страница
+- `apps/web/app/(main)/profile/[id]/page.tsx` — создана новая страница
+- `apps/web/components/layout/SideNav.tsx` — добавлен nav item Достижения
+- `apps/web/tailwind.config.ts` — новая keyframe + animation
+
+**Задачи из SPRINT.md закрыты:** F7.3, F7.4, F7.5
+
+**Коммиты:**
+- `f9e80eb` — feat(web): battle history, achievements page, public profile — F7.3, F7.4, F7.5
+
+---
+
 ## Яшкин (Backend)
 
 ### 2026-04-06 — Сессия 1: Первая миграция, ConfigModule, exception filter, запуск NestJS
