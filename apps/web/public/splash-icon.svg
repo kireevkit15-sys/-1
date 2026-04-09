@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <radialGradient id="bg-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#1a1208"/>
+      <stop offset="100%" stop-color="#0a0a0a"/>
+    </radialGradient>
+    <linearGradient id="letter-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E8C89E"/>
+      <stop offset="35%" stop-color="#CF9D7B"/>
+      <stop offset="65%" stop-color="#B98D34"/>
+      <stop offset="100%" stop-color="#9A7A2F"/>
+    </linearGradient>
+    <linearGradient id="shine-gradient" x1="0%" y1="0%" x2="60%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.25"/>
+      <stop offset="50%" stop-color="#FFFFFF" stop-opacity="0.05"/>
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="letter-shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="0" stdDeviation="12" flood-color="#CF9D7B" flood-opacity="0.5"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="512" height="512" fill="url(#bg-glow)" rx="80"/>
+
+  <!-- Subtle inner ring -->
+  <circle cx="256" cy="256" r="210" fill="none" stroke="#CF9D7B" stroke-width="1" stroke-opacity="0.15"/>
+  <circle cx="256" cy="256" r="195" fill="none" stroke="#B98D34" stroke-width="0.5" stroke-opacity="0.1"/>
+
+  <!-- Letter Р (Cyrillic) — metallic copper/gold style -->
+  <!-- Path draws the letter Р: vertical stem + bowl on top right -->
+  <g filter="url(#letter-shadow)">
+    <path
+      d="
+        M 148 380
+        L 148 132
+        L 284 132
+        Q 364 132 364 213
+        Q 364 294 284 294
+        L 198 294
+        L 198 380
+        Z
+        M 198 176
+        L 198 250
+        L 278 250
+        Q 314 250 314 213
+        Q 314 176 278 176
+        Z
+      "
+      fill="url(#letter-gradient)"
+    />
+    <!-- Shine overlay on the letter -->
+    <path
+      d="
+        M 148 380
+        L 148 132
+        L 284 132
+        Q 364 132 364 213
+        Q 364 294 284 294
+        L 198 294
+        L 198 380
+        Z
+        M 198 176
+        L 198 250
+        L 278 250
+        Q 314 250 314 213
+        Q 314 176 278 176
+        Z
+      "
+      fill="url(#shine-gradient)"
+    />
+  </g>
+
+  <!-- Bottom accent line -->
+  <line x1="148" y1="400" x2="364" y2="400" stroke="url(#letter-gradient)" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round"/>
+</svg>

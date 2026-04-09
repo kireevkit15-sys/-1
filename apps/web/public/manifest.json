@@ -17,6 +17,21 @@
       "src": "/icons/icon-512.png",
       "sizes": "512x512",
       "type": "image/png"
+    },
+    {
+      "src": "/splash-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable any"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/splash-icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "form_factor": "narrow",
+      "label": "РАЗУМ — Главный экран"
     }
   ],
   "shortcuts": [
@@ -32,5 +47,7 @@
       "url": "/battle/new",
       "description": "Найти баттл"
     }
-  ]
+  ],
+  "splash_pages": null,
+  "prefer_related_applications": false
 }
