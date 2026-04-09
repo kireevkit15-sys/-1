@@ -1,7 +1,9 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Card from "@/components/ui/Card";
+import Link from "next/link";
 import { useAuth } from "@/hooks/useAuth";
 
 // ---------------------------------------------------------------------------
@@ -193,7 +195,7 @@ function KnowledgeTree({
   onNodeClick,
 }: {
   branches: BranchData[];
-  onNodeClick: (id: string) => void;
+  onNodeClick: (key: string) => void;
 }) {
   const nodes: TreeNode[] = branchConfig.map((cfg) => {
     const branch = branches.find((b) => b.id === cfg.key.toLowerCase());
@@ -375,10 +377,12 @@ const branchColorRgb: Record<string, string> = {
 
 export default function LearnPage() {
   const { accessToken, isLoading: authLoading } = useAuth();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const selectedBranch = searchParams.get("branch")?.toUpperCase() ?? null;
 
   const [branches, setBranches] = useState<BranchData[]>([]);
   const [loading, setLoading] = useState(true);
-  const branchRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   useEffect(() => {
     if (authLoading) return;
@@ -408,20 +412,26 @@ export default function LearnPage() {
     load();
   }, [accessToken, authLoading]);
 
-  function scrollToBranch(id: string) {
-    const el = branchRefs.current[id];
-    if (el) {
-      el.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
+  function handleNodeClick(key: string) {
+    router.push(`/learn?branch=${key.toLowerCase()}`);
   }
+
+  // Find selected branch data
+  const activeBranch = selectedBranch
+    ? branches.find((b) => b.id === selectedBranch.toLowerCase())
+    : null;
+  const activeBranchKey = selectedBranch ?? "";
+  const activeIdentityClass = branchIdentityClass[activeBranchKey] ?? "";
+  const activeDotHex = branchDotHex[activeBranchKey] ?? "#888";
+  const activeCfg = branchConfig.find((c) => c.key === activeBranchKey);
 
   return (
     <div className="px-4 pt-12 pb-24 space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold">Обучение</h1>
+        <h1 className="text-2xl font-bold text-metallic">Обучение</h1>
         <p className="text-text-muted text-sm mt-1">
-          Прокачивай навыки мышления по модулям
+          Выбери ветку знаний для изучения
         </p>
       </div>
 
@@ -430,115 +440,110 @@ export default function LearnPage() {
         <p className="text-xs text-text-muted mb-4 font-medium tracking-wider uppercase">
           Карта знаний
         </p>
-        <KnowledgeTree branches={branches} onNodeClick={scrollToBranch} />
+        <KnowledgeTree branches={branches} onNodeClick={handleNodeClick} />
       </div>
 
-      {/* Loading state */}
-      {loading && (
-        <>
-          {branchConfig.map((cfg) => (
-            <div key={cfg.key} className="space-y-3">
-              <div className="flex items-center gap-2 px-1">
-                <div
-                  className="w-2 h-2 rounded-full"
-                  style={{ background: branchDotHex[cfg.key] }}
-                />
-                <h2 className="font-semibold text-sm">{cfg.title}</h2>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <ModuleSkeleton />
-                <ModuleSkeleton />
-                <ModuleSkeleton />
-              </div>
+      {/* Selected branch modules */}
+      {selectedBranch && activeCfg && (
+        <div className="space-y-4" style={{ animation: "onboarding-fade-in 0.4s ease-out" }}>
+          {/* Branch header with back button */}
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => router.push("/learn")}
+              className="w-8 h-8 rounded-lg bg-surface-light/50 flex items-center justify-center text-text-muted hover:text-text-primary transition-colors"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+              </svg>
+            </button>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded-full" style={{ background: activeDotHex }} />
+              <h2 className="font-bold text-lg">{activeCfg.title}</h2>
             </div>
-          ))}
-        </>
-      )}
+          </div>
 
-      {/* Branches */}
-      {!loading && branches.map((branch) => {
-        const branchKey = branch.id.toUpperCase();
-        const identityClass = branchIdentityClass[branchKey] ?? "";
-        const dotHex = branchDotHex[branchKey] ?? "#888";
-
-        return (
-          <div
-            key={branch.id}
-            ref={(el) => { branchRefs.current[branch.id] = el; }}
-            className="space-y-3"
-          >
-            {/* Branch header */}
-            <div className="flex items-center gap-2 px-1">
-              <div
-                className="w-2 h-2 rounded-full"
-                style={{ background: dotHex }}
-              />
-              <h2 className="font-semibold text-sm">{branch.title}</h2>
-            </div>
-
-            {branch.modules.length === 0 && (
-              <p className="text-text-muted text-sm px-1">Модули пока недоступны</p>
-            )}
-
-            {/* 2-column grid on md+ */}
+          {loading && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              {branch.modules.map((mod, idx) => {
-                const isLocked = mod.progress === 0 && idx > 0 && (branch.modules[idx - 1]?.progress ?? 0) < 100;
+              <ModuleSkeleton />
+              <ModuleSkeleton />
+              <ModuleSkeleton />
+            </div>
+          )}
+
+          {!loading && activeBranch && activeBranch.modules.length === 0 && (
+            <Card className="text-center py-8 space-y-3">
+              <BranchIcon branchKey={activeBranchKey} className="w-10 h-10 mx-auto" style={{ color: activeDotHex }} />
+              <p className="text-text-secondary text-sm">Модули скоро появятся</p>
+              <p className="text-text-muted text-xs">Мы готовим материалы для этой ветки</p>
+            </Card>
+          )}
+
+          {!loading && activeBranch && activeBranch.modules.length > 0 && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {activeBranch.modules.map((mod, idx) => {
+                const isLocked = mod.progress === 0 && idx > 0 && (activeBranch.modules[idx - 1]?.progress ?? 0) < 100;
 
                 return (
-                  <Card
+                  <Link
                     key={mod.id ?? mod.title}
-                    padding="sm"
-                    className={`${identityClass} branch-card hover-lift space-y-3 ${isLocked ? "opacity-60" : "cursor-pointer"}`}
+                    href={isLocked ? "#" : `/learn/${mod.id}`}
+                    className={isLocked ? "pointer-events-none" : ""}
                   >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        {/* Module index / status icon */}
-                        <div
-                          className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold branch-icon ${
-                            mod.progress > 0 ? "" : isLocked ? "opacity-50" : ""
-                          }`}
-                        >
-                          {mod.progress === 100 ? (
-                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                            </svg>
-                          ) : isLocked ? (
-                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
-                            </svg>
-                          ) : (
-                            <BranchIcon branchKey={branchKey} className="w-4 h-4" />
-                          )}
+                    <Card
+                      padding="sm"
+                      className={`${activeIdentityClass} branch-card hover-lift space-y-3 ${isLocked ? "opacity-60" : "cursor-pointer"}`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div
+                            className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold branch-icon ${
+                              mod.progress > 0 ? "" : isLocked ? "opacity-50" : ""
+                            }`}
+                          >
+                            {mod.progress === 100 ? (
+                              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                              </svg>
+                            ) : isLocked ? (
+                              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                              </svg>
+                            ) : (
+                              <BranchIcon branchKey={activeBranchKey} className="w-4 h-4" />
+                            )}
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium">{mod.title}</p>
+                            <p className="text-xs text-text-muted">{mod.lessons} уроков</p>
+                          </div>
                         </div>
-
-                        <div>
-                          <p className="text-sm font-medium">{mod.title}</p>
-                          <p className="text-xs text-text-muted">{mod.lessons} уроков</p>
-                        </div>
+                        {mod.progress > 0 && (
+                          <span
+                            className="text-xs font-semibold"
+                            style={{ color: mod.progress === 100 ? activeDotHex : undefined }}
+                          >
+                            {mod.progress}%
+                          </span>
+                        )}
                       </div>
-
-                      {mod.progress > 0 && (
-                        <span
-                          className="text-xs font-semibold"
-                          style={{ color: mod.progress === 100 ? dotHex : undefined }}
-                        >
-                          {mod.progress}%
-                        </span>
+                      {mod.progress > 0 && mod.progress < 100 && (
+                        <ProgressBar progress={mod.progress} />
                       )}
-                    </div>
-
-                    {/* Progress bar — uses branch-progress CSS class which reads --branch-color */}
-                    {mod.progress > 0 && mod.progress < 100 && (
-                      <ProgressBar progress={mod.progress} />
-                    )}
-                  </Card>
+                    </Card>
+                  </Link>
                 );
               })}
             </div>
-          </div>
-        );
-      })}
+          )}
+        </div>
+      )}
+
+      {/* No branch selected — show prompt */}
+      {!selectedBranch && !loading && (
+        <p className="text-center text-text-muted text-sm pt-4">
+          Выбери ветку на карте знаний
+        </p>
+      )}
     </div>
   );
 }

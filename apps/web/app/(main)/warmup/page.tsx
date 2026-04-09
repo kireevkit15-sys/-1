@@ -9,6 +9,68 @@ import { useApiToken } from "@/hooks/useApiToken";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/v1";
 
+// ---------------------------------------------------------------------------
+// Motivational messages by score
+// ---------------------------------------------------------------------------
+
+function getMotivation(correct: number, total: number): { text: string; icon: React.ReactNode } {
+  const score = correct;
+  const max = total;
+
+  const StarIcon = (
+    <svg className="w-6 h-6 text-accent-gold" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+    </svg>
+  );
+  const ThumbsIcon = (
+    <svg className="w-6 h-6 text-accent" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3v11z" />
+    </svg>
+  );
+  const MuscleIcon = (
+    <svg className="w-6 h-6 text-accent-warm" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+      <path d="M18 8h1a4 4 0 0 1 0 8h-1" />
+      <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z" />
+      <line x1="6" y1="1" x2="6" y2="4" />
+      <line x1="10" y1="1" x2="10" y2="4" />
+      <line x1="14" y1="1" x2="14" y2="4" />
+    </svg>
+  );
+  const FireIcon = (
+    <svg className="w-6 h-6 text-accent-red" viewBox="0 0 14 18" fill="currentColor">
+      <path d="M7 0C7 0 10 4 10 4C12 6 14 8 14 11C14 15 11 18 7 18C3 18 0 15 0 11C0 8 2 6 4 4C4 4 4 7 5.5 8C5.5 8 7 0 7 0Z" />
+    </svg>
+  );
+
+  if (score === max) return { text: "Превосходно! Идеальный результат!", icon: StarIcon };
+  if (score === max - 1) return { text: "Отличная работа! Почти идеально!", icon: ThumbsIcon };
+  if (score === max - 2) return { text: "Хорошо! Есть куда расти.", icon: MuscleIcon };
+  return { text: "Не сдавайся! Практика делает мастера.", icon: FireIcon };
+}
+
+// ---------------------------------------------------------------------------
+// Floating XP animation
+// ---------------------------------------------------------------------------
+
+function FloatingXP({ xp }: { xp: number }) {
+  return (
+    <div
+      className="absolute top-0 left-1/2 -translate-x-1/2 pointer-events-none"
+      style={{ animation: "floatUp 1.4s ease-out forwards" }}
+    >
+      <span className="text-accent-gold font-black text-lg drop-shadow-[0_0_8px_rgba(185,141,52,0.8)]">
+        +{xp} XP
+      </span>
+      <style>{`
+        @keyframes floatUp {
+          0%   { transform: translateX(-50%) translateY(0);   opacity: 1; }
+          100% { transform: translateX(-50%) translateY(-48px); opacity: 0; }
+        }
+      `}</style>
+    </div>
+  );
+}
+
 interface WarmupQuestion {
   id: string;
   text: string;
@@ -68,20 +130,33 @@ export default function WarmupPage() {
   const [selectedIndexes, setSelectedIndexes] = useState<number[]>([]);
   const [timeLeft, setTimeLeft] = useState(30);
   const [alreadyDone, setAlreadyDone] = useState(false);
+  const [streak, setStreak] = useState<number | null>(null);
+  const [showXpAnim, setShowXpAnim] = useState(false);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  // Fetch warmup questions
+  // Fetch warmup questions + streak
   useEffect(() => {
     async function fetchWarmup() {
       try {
-        const res = await fetch(`${API_BASE}/warmup/today`, {
-          headers: token ? { Authorization: `Bearer ${token}` } : {},
-        });
-        if (res.ok) {
-          const data = await res.json();
+        const [warmupRes, userRes] = await Promise.all([
+          fetch(`${API_BASE}/warmup/today`, {
+            headers: token ? { Authorization: `Bearer ${token}` } : {},
+          }),
+          token
+            ? fetch(`${API_BASE}/users/me`, { headers: { Authorization: `Bearer ${token}` } })
+            : Promise.resolve(null),
+        ]);
+
+        if (userRes?.ok) {
+          const userData = await userRes.json();
+          setStreak(userData.streak ?? null);
+        }
+
+        if (warmupRes.ok) {
+          const data = await warmupRes.json();
           setQuestions(data.questions || data);
           setPhase("question");
-        } else if (res.status === 409) {
+        } else if (warmupRes.status === 409) {
           setAlreadyDone(true);
           setPhase("result");
         } else {
@@ -139,8 +214,9 @@ export default function WarmupPage() {
       setSelected(null);
     } else {
       setPhase("result");
+      setShowXpAnim(true);
+      setTimeout(() => setShowXpAnim(false), 1600);
       // Submit results
-      const correct = answers.filter(Boolean).length + (selected === questions[currentQ]?.correctIndex ? 1 : 0);
       fetch(`${API_BASE}/warmup/submit`, {
         method: "POST",
         headers: {
@@ -165,10 +241,21 @@ export default function WarmupPage() {
   if (phase === "result") {
     const correctCount = answers.filter(Boolean).length;
     const total = questions.length || 5;
+    const xpEarned = correctCount * 20;
+    const newStreak = streak !== null ? streak + 1 : null;
 
     if (alreadyDone) {
       return (
         <div className="px-4 pt-12 pb-24 flex flex-col items-center justify-center min-h-[60vh] text-center">
+          {/* Streak badge */}
+          {newStreak !== null && (
+            <div className="flex items-center gap-2 bg-accent-gold/10 border border-accent-gold/20 rounded-full px-4 py-2 mb-6">
+              <svg className="w-5 h-5 text-accent-gold" viewBox="0 0 14 18" fill="currentColor">
+                <path d="M7 0C7 0 10 4 10 4C12 6 14 8 14 11C14 15 11 18 7 18C3 18 0 15 0 11C0 8 2 6 4 4C4 4 4 7 5.5 8C5.5 8 7 0 7 0Z" />
+              </svg>
+              <span className="text-accent-gold font-bold text-sm">{newStreak} дней подряд</span>
+            </div>
+          )}
           <div className="w-16 h-16 rounded-full bg-accent-gold/20 flex items-center justify-center mb-4">
             <svg className="w-8 h-8 text-accent-gold" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
@@ -185,28 +272,58 @@ export default function WarmupPage() {
       );
     }
 
+    const motivation = getMotivation(correctCount, total);
+
     return (
       <div className="px-4 pt-12 pb-24 flex flex-col items-center justify-center min-h-[60vh] text-center">
-        <div className="relative mb-6">
+
+        {/* Streak counter — prominent at top */}
+        <div className="flex items-center gap-2.5 bg-gradient-to-r from-accent-warm/20 to-accent-gold/10 border border-accent-gold/25 rounded-2xl px-5 py-3 mb-6 shadow-[0_0_20px_rgba(185,141,52,0.12)]">
+          <svg
+            className="w-7 h-7 text-accent-gold drop-shadow-[0_0_8px_rgba(185,141,52,0.7)]"
+            viewBox="0 0 14 18"
+            fill="currentColor"
+          >
+            <path d="M7 0C7 0 10 4 10 4C12 6 14 8 14 11C14 15 11 18 7 18C3 18 0 15 0 11C0 8 2 6 4 4C4 4 4 7 5.5 8C5.5 8 7 0 7 0Z" />
+          </svg>
+          <div className="text-left">
+            <p className="text-accent-gold font-black text-2xl leading-none">
+              {newStreak !== null ? newStreak : "—"}
+            </p>
+            <p className="text-accent-gold/70 text-xs font-medium">дней подряд</p>
+          </div>
+        </div>
+
+        {/* Score circle */}
+        <div className="relative mb-4">
           <div className="absolute inset-0 blur-3xl opacity-20 bg-accent-gold rounded-full scale-150" />
           <div className="relative w-20 h-20 rounded-full bg-surface border border-accent-gold/20 flex items-center justify-center shadow-[0_0_40px_rgba(185,141,52,0.15)]">
             <span className="text-3xl font-bold text-accent-gold">
               {correctCount}
             </span>
           </div>
+          {/* Floating XP animation */}
+          {showXpAnim && <FloatingXP xp={xpEarned} />}
         </div>
 
         <h1 className="text-2xl font-bold text-text-primary mb-1">
           Разминка завершена!
         </h1>
-        <p className="text-text-secondary text-sm mb-6">
+        <p className="text-text-secondary text-sm mb-5">
           {correctCount}/{total} правильных ответов
         </p>
 
-        <div className="grid grid-cols-2 gap-3 w-full max-w-xs mb-8">
+        {/* Motivational message */}
+        <div className="flex items-center gap-3 bg-surface border border-border rounded-xl px-4 py-3 mb-6 w-full max-w-xs">
+          <div className="shrink-0">{motivation.icon}</div>
+          <p className="text-sm font-semibold text-text-primary text-left">{motivation.text}</p>
+        </div>
+
+        {/* Stats grid */}
+        <div className="grid grid-cols-2 gap-3 w-full max-w-xs mb-4">
           <Card padding="sm" className="text-center">
             <p className="text-2xl font-bold text-accent">
-              +{correctCount * 20}
+              +{xpEarned}
             </p>
             <p className="text-xs text-text-muted mt-1">XP</p>
           </Card>
@@ -220,6 +337,11 @@ export default function WarmupPage() {
             <p className="text-xs text-text-muted mt-1">Стрик</p>
           </Card>
         </div>
+
+        {/* Continue streak hint */}
+        <p className="text-text-muted text-xs mb-6">
+          Продолжить стрик завтра
+        </p>
 
         <div className="space-y-3 w-full max-w-xs">
           <Button fullWidth onClick={() => router.push("/")}>

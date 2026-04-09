@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Card from "@/components/ui/Card";
 import Link from "next/link";
 import { useAuth } from "@/hooks/useAuth";
+import SwipeToDismiss from "@/components/ui/SwipeToDismiss";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -465,17 +466,19 @@ export default function HomePage() {
 
       {/* ── Fact of the Day ─────────────────────────────────────── */}
       {fact && (
-        <div className="glass-card p-4 border-l-[3px] border-l-accent">
-          <p className="text-[10px] text-text-muted uppercase tracking-widest mb-2">
-            Факт дня · {fact.category}
-          </p>
-          <p className="text-text-primary text-sm leading-relaxed">{fact.text}</p>
-          {fact.source && (
-            <p className="text-text-muted text-[11px] mt-2">
-              Источник: {fact.source}
+        <SwipeToDismiss storageKey="razum_fact_dismissed" threshold={100}>
+          <div className="glass-card p-4 border-l-[3px] border-l-accent pt-6">
+            <p className="text-[10px] text-text-muted uppercase tracking-widest mb-2">
+              Факт дня · {fact.category}
             </p>
-          )}
-        </div>
+            <p className="text-text-primary text-sm leading-relaxed">{fact.text}</p>
+            {fact.source && (
+              <p className="text-text-muted text-[11px] mt-2">
+                Источник: {fact.source}
+              </p>
+            )}
+          </div>
+        </SwipeToDismiss>
       )}
     </div>
   );

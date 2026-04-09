@@ -15,11 +15,15 @@ interface LeaderEntry {
   level: number;
   totalXp: number;
   thinkerClass?: string;
+  isMe?: boolean;
 }
 
 interface MyPosition {
   rank: number;
   rating: number;
+  username?: string;
+  level?: number;
+  thinkerClass?: string;
 }
 
 const DEMO_LEADERS: LeaderEntry[] = [
@@ -35,7 +39,7 @@ const DEMO_LEADERS: LeaderEntry[] = [
   { id: "10", username: "NashPlayer", rating: 1310, level: 10, totalXp: 5800, thinkerClass: "Стратег" },
 ];
 
-const DEMO_MY_POS: MyPosition = { rank: 42, rating: 1180 };
+const DEMO_MY_POS: MyPosition = { rank: 42, rating: 1180, username: "Ты", level: 7, thinkerClass: "Логик" };
 
 const periodLabels: Record<Period, string> = {
   all: "Все время",
@@ -50,6 +54,111 @@ const classColors: Record<string, string> = {
   "Ритор": "text-accent-silver",
   "Интуит": "text-accent-bronze",
 };
+
+// Crown icons for top 3
+function CrownIcon({ rank }: { rank: number }) {
+  const color =
+    rank === 1 ? "#FFD700" : rank === 2 ? "#C0C0C0" : "#CD7F32";
+  return (
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 24 24"
+      fill={color}
+      className="absolute -top-2 -right-1"
+    >
+      <path d="M5 16L2 6l5 4 5-8 5 8 5-4-3 10H5z" />
+    </svg>
+  );
+}
+
+function getInitials(username: string): string {
+  const parts = username.trim().split(/\s+/);
+  if (parts.length >= 2 && parts[0] && parts[1]) {
+    return ((parts[0][0] ?? "") + (parts[1][0] ?? "")).toUpperCase();
+  }
+  return username.slice(0, 2).toUpperCase();
+}
+
+function AvatarCircle({ username, isMe }: { username: string; isMe?: boolean }) {
+  return (
+    <div
+      className={`w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 ${
+        isMe
+          ? "bg-accent/20 border-2 border-accent/60"
+          : "bg-surface-light border border-accent/10"
+      }`}
+    >
+      <span className={`text-xs font-bold ${isMe ? "text-accent" : "text-text-secondary"}`}>
+        {getInitials(username)}
+      </span>
+    </div>
+  );
+}
+
+interface LeaderRowProps {
+  player: LeaderEntry;
+  rank: number;
+  isMe?: boolean;
+}
+
+function LeaderRow({ player, rank, isMe }: LeaderRowProps) {
+  const isTop3 = rank <= 3;
+
+  const rowClass = isMe
+    ? "border border-accent/40 shadow-[0_0_20px_rgba(207,157,123,0.12)] bg-accent/5"
+    : isTop3
+      ? "border border-accent/15"
+      : "";
+
+  return (
+    <Card padding="sm" className={`glass-card ${rowClass}`}>
+      <div className="flex items-center gap-3">
+        {/* Rank number */}
+        <div className="relative w-8 flex-shrink-0 flex items-center justify-center">
+          <span
+            className={`font-black tabular-nums leading-none ${
+              rank === 1
+                ? "text-xl text-[#FFD700]"
+                : rank === 2
+                  ? "text-xl text-[#C0C0C0]"
+                  : rank === 3
+                    ? "text-xl text-[#CD7F32]"
+                    : "text-base text-text-muted"
+            }`}
+          >
+            {rank}
+          </span>
+          {isTop3 && <CrownIcon rank={rank} />}
+        </div>
+
+        {/* Avatar */}
+        <AvatarCircle username={player.username} isMe={isMe} />
+
+        {/* Name + meta */}
+        <div className="flex-1 min-w-0">
+          <p className={`text-sm font-medium truncate ${isMe ? "text-accent" : "text-text-primary"}`}>
+            {player.username}
+            {isMe && <span className="ml-1 text-xs font-normal text-accent/70">(ты)</span>}
+          </p>
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-text-muted">Lvl {player.level}</span>
+            {player.thinkerClass && (
+              <span className={`text-xs font-medium ${classColors[player.thinkerClass] ?? "text-text-muted"}`}>
+                {player.thinkerClass}
+              </span>
+            )}
+          </div>
+        </div>
+
+        {/* Rating */}
+        <span className={`text-sm font-bold tabular-nums ${isMe ? "text-accent" : "text-accent"}`}>
+          {player.rating}
+        </span>
+      </div>
+    </Card>
+  );
+}
 
 export default function LeaderboardPage() {
   const token = useApiToken();
@@ -91,6 +200,13 @@ export default function LeaderboardPage() {
     fetchLeaderboard();
   }, [fetchLeaderboard]);
 
+  // Determine if current player is already in top list
+  const myRankInList = myPosition
+    ? leaders.findIndex((l) => l.isMe === true || l.id === "me")
+    : -1;
+  const showMyRowAtBottom =
+    myPosition !== null && myRankInList === -1 && myPosition.rank > leaders.length;
+
   return (
     <div className="px-4 pt-12 pb-24 space-y-6">
       {/* Header */}
@@ -116,7 +232,7 @@ export default function LeaderboardPage() {
         ))}
       </div>
 
-      {/* My position */}
+      {/* My position summary card */}
       {myPosition && (
         <Card padding="md" className="border-accent/20 bg-accent/5">
           <div className="flex items-center justify-between">
@@ -140,57 +256,37 @@ export default function LeaderboardPage() {
         </div>
       ) : (
         <div className="space-y-1.5">
-          {leaders.map((player, i) => {
-            const isTop3 = i < 3;
-            return (
-              <Card
-                key={player.id}
-                padding="sm"
-                className={isTop3 ? "border-accent/15" : ""}
-              >
-                <div className="flex items-center gap-3">
-                  <span
-                    className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${
-                      i === 0
-                        ? "bg-accent-gold/20 text-accent-gold"
-                        : i === 1
-                          ? "bg-accent-silver/20 text-accent-silver"
-                          : i === 2
-                            ? "bg-accent-bronze/20 text-accent-bronze"
-                            : "bg-surface-light text-text-muted"
-                    }`}
-                  >
-                    {i + 1}
-                  </span>
+          {leaders.map((player, i) => (
+            <LeaderRow
+              key={player.id}
+              player={player}
+              rank={i + 1}
+              isMe={player.isMe}
+            />
+          ))}
 
-                  {/* Avatar initials */}
-                  <div className="w-9 h-9 rounded-full bg-surface-light border border-accent/10 flex items-center justify-center">
-                    <span className="text-xs font-bold text-text-secondary">
-                      {player.username.slice(0, 2).toUpperCase()}
-                    </span>
-                  </div>
-
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-text-primary truncate">
-                      {player.username}
-                    </p>
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs text-text-muted">Lvl {player.level}</span>
-                      {player.thinkerClass && (
-                        <span className={`text-xs font-medium ${classColors[player.thinkerClass] || "text-text-muted"}`}>
-                          {player.thinkerClass}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-
-                  <span className="text-sm font-bold text-accent tabular-nums">
-                    {player.rating}
-                  </span>
-                </div>
-              </Card>
-            );
-          })}
+          {/* Separator + current player row if outside top list */}
+          {showMyRowAtBottom && myPosition && (
+            <>
+              <div className="flex items-center gap-3 py-2 px-1">
+                <div className="flex-1 border-t border-dashed border-surface-light" />
+                <span className="text-xs text-text-muted font-mono">···</span>
+                <div className="flex-1 border-t border-dashed border-surface-light" />
+              </div>
+              <LeaderRow
+                player={{
+                  id: "me",
+                  username: myPosition.username ?? "Ты",
+                  rating: myPosition.rating,
+                  level: myPosition.level ?? 1,
+                  totalXp: 0,
+                  thinkerClass: myPosition.thinkerClass,
+                }}
+                rank={myPosition.rank}
+                isMe
+              />
+            </>
+          )}
         </div>
       )}
     </div>
