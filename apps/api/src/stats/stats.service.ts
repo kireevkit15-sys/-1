@@ -1,15 +1,32 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import type { PrismaService } from '../prisma/prisma.service';
+import type { RedisService } from '../redis/redis.service';
 import type { AchievementsService } from '../achievements/achievements.service';
 import type { ThinkerClass } from '@razum/shared';
 import { determineThinkerClass, getBranchLevels, xpToLevel, xpToNextLevel, Branch } from '@razum/shared';
+
+/** Cache TTLs in seconds */
+const CACHE_TTL = {
+  SUMMARY: 120,       // 2 min — user profile summary
+  WEAKNESSES: 300,    // 5 min — weakness analysis (heavy SQL)
+  BATTLE_STATS: 120,  // 2 min — win/loss counts
+} as const;
 
 @Injectable()
 export class StatsService {
   constructor(
     private readonly prisma: PrismaService,
+    private readonly redis: RedisService,
     private readonly achievements: AchievementsService,
   ) {}
+
+  /**
+   * Invalidate all cached stats for a user.
+   * Called after XP changes, battle results, etc.
+   */
+  async invalidateUserCache(userId: string): Promise<void> {
+    await this.redis.invalidatePattern(`stats:${userId}:*`);
+  }
 
   /**
    * Calculate total XP from all 5 stats.
@@ -142,27 +159,29 @@ export class StatsService {
    * Get battle statistics for a user (wins, losses, total).
    */
   async getBattleStats(userId: string) {
-    const [total, wins] = await Promise.all([
-      this.prisma.battle.count({
-        where: {
-          OR: [{ player1Id: userId }, { player2Id: userId }],
-          status: 'COMPLETED',
-        },
-      }),
-      this.prisma.battle.count({
-        where: {
-          winnerId: userId,
-          status: 'COMPLETED',
-        },
-      }),
-    ]);
+    return this.redis.getOrSet(`stats:${userId}:battles`, CACHE_TTL.BATTLE_STATS, async () => {
+      const [total, wins] = await Promise.all([
+        this.prisma.battle.count({
+          where: {
+            OR: [{ player1Id: userId }, { player2Id: userId }],
+            status: 'COMPLETED',
+          },
+        }),
+        this.prisma.battle.count({
+          where: {
+            winnerId: userId,
+            status: 'COMPLETED',
+          },
+        }),
+      ]);
 
-    return {
-      total,
-      wins,
-      losses: total - wins,
-      winRate: total > 0 ? Math.round((wins / total) * 100) : 0,
-    };
+      return {
+        total,
+        wins,
+        losses: total - wins,
+        winRate: total > 0 ? Math.round((wins / total) * 100) : 0,
+      };
+    });
   }
 
   /**
@@ -213,6 +232,7 @@ export class StatsService {
         .catch(() => {});
     }
 
+    await this.invalidateUserCache(userId);
     return this.enrichStats(updated);
   }
 
@@ -264,6 +284,7 @@ export class StatsService {
       .checkBranchAchievements(userId, results.branch, branchXp, branchLevel)
       .catch(() => {});
 
+    await this.invalidateUserCache(userId);
     return this.enrichStats(updated);
   }
 
@@ -271,75 +292,81 @@ export class StatsService {
    * Full profile summary: level, rating, streak, thinker class, XP breakdown.
    */
   async getSummary(userId: string) {
-    const stats = await this.prisma.userStats.findUnique({
-      where: { userId },
-      include: {
-        user: {
-          select: { id: true, name: true, avatarUrl: true },
+    return this.redis.getOrSet(`stats:${userId}:summary`, CACHE_TTL.SUMMARY, async () => {
+      const stats = await this.prisma.userStats.findUnique({
+        where: { userId },
+        include: {
+          user: {
+            select: { id: true, name: true, avatarUrl: true },
+          },
         },
-      },
+      });
+
+      if (!stats) {
+        throw new NotFoundException('Stats not found for this user');
+      }
+
+      const statsData = {
+        logic: stats.logicXp,
+        erudition: stats.eruditionXp,
+        strategy: stats.strategyXp,
+        rhetoric: stats.rhetoricXp,
+        intuition: stats.intuitionXp,
+      };
+
+      const totalXp = this.calculateTotalXp(stats);
+      const branchLevels = getBranchLevels(statsData);
+      const progress = this.calculateXpToNextLevel(totalXp);
+      const thinkerClass: ThinkerClass = determineThinkerClass(statsData);
+
+      const branchProgress = {
+        logic: xpToNextLevel(stats.logicXp),
+        erudition: xpToNextLevel(stats.eruditionXp),
+        strategy: xpToNextLevel(stats.strategyXp),
+        rhetoric: xpToNextLevel(stats.rhetoricXp),
+        intuition: xpToNextLevel(stats.intuitionXp),
+      };
+
+      const battleStats = await this.getBattleStats(userId);
+
+      return {
+        user: stats.user,
+        level: branchLevels.overall,
+        totalXp,
+        xpProgress: progress,
+        branchLevels,
+        branchProgress,
+        rating: stats.rating,
+        branchRatings: {
+          logic: (stats as any).logicRating ?? 1000,
+          erudition: (stats as any).eruditionRating ?? 1000,
+          strategy: (stats as any).strategyRating ?? 1000,
+          rhetoric: (stats as any).rhetoricRating ?? 1000,
+          intuition: (stats as any).intuitionRating ?? 1000,
+        },
+        streakDays: stats.streakDays,
+        streakDate: stats.streakDate,
+        thinkerClass,
+        stats: {
+          logicXp: stats.logicXp,
+          eruditionXp: stats.eruditionXp,
+          strategyXp: stats.strategyXp,
+          rhetoricXp: stats.rhetoricXp,
+          intuitionXp: stats.intuitionXp,
+        },
+        battles: battleStats,
+      };
     });
-
-    if (!stats) {
-      throw new NotFoundException('Stats not found for this user');
-    }
-
-    const statsData = {
-      logic: stats.logicXp,
-      erudition: stats.eruditionXp,
-      strategy: stats.strategyXp,
-      rhetoric: stats.rhetoricXp,
-      intuition: stats.intuitionXp,
-    };
-
-    const totalXp = this.calculateTotalXp(stats);
-    const branchLevels = getBranchLevels(statsData);
-    const progress = this.calculateXpToNextLevel(totalXp);
-    const thinkerClass: ThinkerClass = determineThinkerClass(statsData);
-
-    const branchProgress = {
-      logic: xpToNextLevel(stats.logicXp),
-      erudition: xpToNextLevel(stats.eruditionXp),
-      strategy: xpToNextLevel(stats.strategyXp),
-      rhetoric: xpToNextLevel(stats.rhetoricXp),
-      intuition: xpToNextLevel(stats.intuitionXp),
-    };
-
-    const battleStats = await this.getBattleStats(userId);
-
-    return {
-      user: stats.user,
-      level: branchLevels.overall,
-      totalXp,
-      xpProgress: progress,
-      branchLevels,
-      branchProgress,
-      rating: stats.rating,
-      branchRatings: {
-        logic: (stats as any).logicRating ?? 1000,
-        erudition: (stats as any).eruditionRating ?? 1000,
-        strategy: (stats as any).strategyRating ?? 1000,
-        rhetoric: (stats as any).rhetoricRating ?? 1000,
-        intuition: (stats as any).intuitionRating ?? 1000,
-      },
-      streakDays: stats.streakDays,
-      streakDate: stats.streakDate,
-      thinkerClass,
-      stats: {
-        logicXp: stats.logicXp,
-        eruditionXp: stats.eruditionXp,
-        strategyXp: stats.strategyXp,
-        rhetoricXp: stats.rhetoricXp,
-        intuitionXp: stats.intuitionXp,
-      },
-      battles: battleStats,
-    };
   }
 
   /**
    * B17.1 — Analyse weak branches and categories by correctness rate.
    */
   async getWeaknesses(userId: string) {
+    return this.redis.getOrSet(`stats:${userId}:weaknesses`, CACHE_TTL.WEAKNESSES, () => this.computeWeaknesses(userId));
+  }
+
+  private async computeWeaknesses(userId: string) {
     // Per-branch accuracy from battle rounds (raw SQL to avoid nullable groupBy issues)
     const branchRows = await this.prisma.$queryRaw<
       { branch: string; total: bigint; correct: bigint }[]

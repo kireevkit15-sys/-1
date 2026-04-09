@@ -1,6 +1,7 @@
 import { Injectable, Inject, Logger, NotFoundException, HttpException, HttpStatus, forwardRef } from '@nestjs/common';
 import type { Question } from '@prisma/client';
 import type { PrismaService } from '../prisma/prisma.service';
+import type { RedisService } from '../redis/redis.service';
 import type { AiService } from '../ai/ai.service';
 import type { KnowledgeService } from '../knowledge/knowledge.service';
 import { StatsService } from '../stats/stats.service';
@@ -15,6 +16,7 @@ export class QuestionService {
 
   constructor(
     private readonly prisma: PrismaService,
+    private readonly redis: RedisService,
     private readonly aiService: AiService,
     private readonly knowledgeService: KnowledgeService,
     @Inject(forwardRef(() => StatsService))
@@ -615,14 +617,16 @@ export class QuestionService {
    * Returns categories that have at least `minCount` active questions.
    */
   async getAvailableCategories(minCount = 1): Promise<string[]> {
-    const groups = await this.prisma.question.groupBy({
-      by: ['category'],
-      where: { isActive: true },
-      _count: { id: true },
-      having: { id: { _count: { gte: minCount } } },
-    });
+    return this.redis.getOrSet(`questions:categories:min${minCount}`, 600, async () => {
+      const groups = await this.prisma.question.groupBy({
+        by: ['category'],
+        where: { isActive: true },
+        _count: { id: true },
+        having: { id: { _count: { gte: minCount } } },
+      });
 
-    return groups.map((g: { category: string }) => g.category);
+      return groups.map((g: { category: string }) => g.category);
+    });
   }
 
   // ── B14.1: AI Question Generation ────────────────────────────────

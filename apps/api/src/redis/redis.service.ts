@@ -1,10 +1,11 @@
+import type {
+  OnModuleInit,
+  OnModuleDestroy} from '@nestjs/common';
 import {
   Injectable,
-  OnModuleInit,
-  OnModuleDestroy,
   Logger,
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import type { ConfigService } from '@nestjs/config';
 import Redis from 'ioredis';
 
 @Injectable()
@@ -69,5 +70,36 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
 
   async publish(channel: string, message: string): Promise<void> {
     await this.client.publish(channel, message);
+  }
+
+  /**
+   * Cache-aside helper: return cached value or compute, store, and return.
+   */
+  async getOrSet<T>(key: string, ttlSeconds: number, factory: () => Promise<T>): Promise<T> {
+    const cached = await this.client.get(key);
+    if (cached !== null) {
+      return JSON.parse(cached) as T;
+    }
+    const value = await factory();
+    await this.client.set(key, JSON.stringify(value), 'EX', ttlSeconds);
+    return value;
+  }
+
+  /**
+   * Invalidate all keys matching a glob pattern (e.g. "stats:user:abc*").
+   * Uses SCAN to avoid blocking Redis.
+   */
+  async invalidatePattern(pattern: string): Promise<number> {
+    let cursor = '0';
+    let deleted = 0;
+    do {
+      const [nextCursor, keys] = await this.client.scan(cursor, 'MATCH', pattern, 'COUNT', 100);
+      cursor = nextCursor;
+      if (keys.length > 0) {
+        await this.client.del(...keys);
+        deleted += keys.length;
+      }
+    } while (cursor !== '0');
+    return deleted;
   }
 }

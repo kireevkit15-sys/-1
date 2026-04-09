@@ -1,29 +1,32 @@
+import type {
+  OnGatewayConnection,
+  OnGatewayDisconnect} from '@nestjs/websockets';
 import {
   WebSocketGateway,
   WebSocketServer,
   SubscribeMessage,
   MessageBody,
-  ConnectedSocket,
-  OnGatewayConnection,
-  OnGatewayDisconnect,
+  ConnectedSocket
 } from '@nestjs/websockets';
 import { Logger } from '@nestjs/common';
-import { Server, Socket } from 'socket.io';
-import { JwtService } from '@nestjs/jwt';
-import { BattleService } from './battle.service';
-import { MatchmakingService } from './matchmaking.service';
-import { BotService } from './bot.service';
-import { QuestionService } from '../question/question.service';
-import { StatsService } from '../stats/stats.service';
-import {
+import type { Server, Socket } from 'socket.io';
+import type { JwtService } from '@nestjs/jwt';
+import type { BattleService } from './battle.service';
+import type { MatchmakingService } from './matchmaking.service';
+import type { BotService } from './bot.service';
+import type { QuestionService } from '../question/question.service';
+import type { StatsService } from '../stats/stats.service';
+import type { RedisService } from '../redis/redis.service';
+import type {
   BattleState,
+  Branch,
+  Difficulty,
+  BattleResult} from '@razum/shared';
+import {
   BattlePhase,
   BattleMode,
   BotLevel,
-  Branch,
-  Difficulty,
   DefenseType,
-  BattleResult,
   createBattle,
   selectCategory,
   selectBranch,
@@ -116,6 +119,9 @@ export class BattleGateway
   private readonly REMATCH_TIMEOUT_MS = 30_000;
   private readonly COMPLETED_META_TTL_MS = 60_000;
 
+  /** TTL for Redis active-battle keys (1 hour — longer than any battle) */
+  private readonly ACTIVE_BATTLE_TTL = 3600;
+
   constructor(
     private readonly jwtService: JwtService,
     private readonly battleService: BattleService,
@@ -123,7 +129,28 @@ export class BattleGateway
     private readonly botService: BotService,
     private readonly questionService: QuestionService,
     private readonly statsService: StatsService,
+    private readonly redis: RedisService,
   ) {}
+
+  // ---------------------------------------------------------------------------
+  // Redis active-battle mapping helpers
+  // ---------------------------------------------------------------------------
+
+  private activeBattleKey(userId: string): string {
+    return `battle:active:${userId}`;
+  }
+
+  private async setActiveBattle(userId: string, battleId: string): Promise<void> {
+    await this.redis.set(this.activeBattleKey(userId), battleId, this.ACTIVE_BATTLE_TTL);
+  }
+
+  private async getActiveBattle(userId: string): Promise<string | null> {
+    return this.redis.get(this.activeBattleKey(userId));
+  }
+
+  private async clearActiveBattle(userId: string): Promise<void> {
+    await this.redis.del(this.activeBattleKey(userId));
+  }
 
   // ---------------------------------------------------------------------------
   // Connection lifecycle
@@ -223,26 +250,124 @@ export class BattleGateway
   }
 
   /**
-   * Handle reconnection — cancel disconnect timer if player comes back.
+   * Handle reconnection — cancel disconnect timer, recover state from memory or DB.
+   * Works after brief disconnects (timer active) AND full reconnects (server restart, page refresh).
    */
   async handleReconnect(userId: string, client: AuthenticatedSocket) {
+    // 1. Cancel disconnect timer if active
     const timer = this.disconnectTimers.get(userId);
     if (timer) {
       clearTimeout(timer);
       this.disconnectTimers.delete(userId);
       this.logger.log(`Player ${userId} reconnected, disconnect timer cancelled`);
+    }
 
-      // Rejoin battle room
-      const battleId = this.userBattles.get(userId);
-      if (battleId) {
-        await client.join(`battle:${battleId}`);
-        const state = this.battles.get(battleId);
-        if (state) {
-          client.emit('battle:state', state);
-          this.server.to(`battle:${battleId}`).emit('battle:opponent_reconnected', { userId });
+    // 2. Find active battle — in-memory first, then Redis
+    let battleId = this.userBattles.get(userId);
+    if (!battleId) {
+      battleId = (await this.getActiveBattle(userId)) ?? undefined;
+    }
+    if (!battleId) return;
+
+    // 3. Recover state — in-memory first, then DB
+    let state = this.battles.get(battleId);
+    if (!state) {
+      try {
+        state = await this.battleService.getBattleState(battleId);
+        if (state && state.phase !== BattlePhase.FINAL_RESULT) {
+          this.battles.set(battleId, state);
+          this.userBattles.set(userId, battleId);
+          this.logger.log(`Recovered battle ${battleId} state from DB for user ${userId}`);
+        } else {
+          // Battle already finished — clean up stale Redis key
+          await this.clearActiveBattle(userId);
+          return;
         }
+      } catch {
+        await this.clearActiveBattle(userId);
+        return;
       }
     }
+
+    // 4. Rejoin room and send current state
+    await client.join(`battle:${battleId}`);
+    client.emit('battle:reconnected', {
+      battleId,
+      state,
+      message: 'Reconnected to active battle',
+    });
+    this.server.to(`battle:${battleId}`).emit('battle:opponent_reconnected', { userId });
+    this.logger.log(`Player ${userId} rejoined battle ${battleId}`);
+  }
+
+  // ---------------------------------------------------------------------------
+  // battle:reconnect — Client explicitly requests to rejoin an active battle
+  // ---------------------------------------------------------------------------
+
+  @SubscribeMessage('battle:reconnect')
+  async handleExplicitReconnect(
+    @ConnectedSocket() client: AuthenticatedSocket,
+    @MessageBody() data: { battleId?: string },
+  ) {
+    const userId = client.data.userId;
+    if (!userId) return;
+
+    // If client knows the battleId, use it; otherwise look up from Redis
+    let battleId = data?.battleId;
+    if (!battleId) {
+      battleId = (await this.getActiveBattle(userId)) ?? undefined;
+    }
+
+    if (!battleId) {
+      client.emit('battle:reconnect_failed', { reason: 'no_active_battle' });
+      return;
+    }
+
+    // Recover state — in-memory first, then DB
+    let state = this.battles.get(battleId);
+    if (!state) {
+      try {
+        state = await this.battleService.getBattleState(battleId);
+        if (state && state.phase !== BattlePhase.FINAL_RESULT) {
+          this.battles.set(battleId, state);
+          this.userBattles.set(userId, battleId);
+        } else {
+          await this.clearActiveBattle(userId);
+          client.emit('battle:reconnect_failed', { reason: 'battle_ended' });
+          return;
+        }
+      } catch {
+        await this.clearActiveBattle(userId);
+        client.emit('battle:reconnect_failed', { reason: 'battle_not_found' });
+        return;
+      }
+    }
+
+    // Verify user is a participant
+    if (state.player1.id !== userId && state.player2.id !== userId) {
+      client.emit('battle:reconnect_failed', { reason: 'not_a_participant' });
+      return;
+    }
+
+    // Cancel disconnect timer if active
+    const timer = this.disconnectTimers.get(userId);
+    if (timer) {
+      clearTimeout(timer);
+      this.disconnectTimers.delete(userId);
+    }
+
+    // Rejoin
+    this.userSockets.set(userId, client.id);
+    this.userBattles.set(userId, battleId);
+    await client.join(`battle:${battleId}`);
+
+    client.emit('battle:reconnected', {
+      battleId,
+      state,
+      message: 'Reconnected to active battle',
+    });
+    this.server.to(`battle:${battleId}`).emit('battle:opponent_reconnected', { userId });
+    this.logger.log(`Explicit reconnect: ${userId} → battle ${battleId}`);
   }
 
   // ---------------------------------------------------------------------------
@@ -321,6 +446,7 @@ export class BattleGateway
       this.battles.set(dbBattle.id, state);
       this.botLevels.set(dbBattle.id, botLevel);
       this.userBattles.set(userId, dbBattle.id);
+      await this.setActiveBattle(userId, dbBattle.id);
 
       await client.join(`battle:${dbBattle.id}`);
 
@@ -592,6 +718,8 @@ export class BattleGateway
         this.battles.set(dbBattle.id, state);
         this.userBattles.set(userId, dbBattle.id);
         this.userBattles.set(match.opponentId, dbBattle.id);
+        await this.setActiveBattle(userId, dbBattle.id);
+        await this.setActiveBattle(match.opponentId, dbBattle.id);
         this.matchmakingUsers.delete(userId);
         this.matchmakingUsers.delete(match.opponentId);
 
@@ -646,8 +774,9 @@ export class BattleGateway
     try {
       const { battle, inviteCode } = await this.battleService.createSparringBattle(userId);
 
-      // Track the host in userBattles so reconnect logic works
+      // Track the host in userBattles + Redis so reconnect logic works
       this.userBattles.set(userId, battle.id);
+      await this.setActiveBattle(userId, battle.id);
       await client.join(`battle:${battle.id}`);
 
       client.emit('battle:sparring_created', {
@@ -705,6 +834,7 @@ export class BattleGateway
 
       this.battles.set(invite.battleId, state);
       this.userBattles.set(userId, invite.battleId);
+      await this.setActiveBattle(userId, invite.battleId);
       await client.join(`battle:${invite.battleId}`);
 
       // Notify both players
@@ -821,6 +951,8 @@ export class BattleGateway
       this.battles.set(dbBattle.id, state);
       this.userBattles.set(request.requesterId, dbBattle.id);
       this.userBattles.set(userId, dbBattle.id);
+      await this.setActiveBattle(request.requesterId, dbBattle.id);
+      await this.setActiveBattle(userId, dbBattle.id);
 
       // Join both players to the new room
       const requesterSocketId = this.userSockets.get(request.requesterId);
@@ -911,6 +1043,8 @@ export class BattleGateway
         this.battles.set(dbBattle.id, state);
         this.userBattles.set(userId, dbBattle.id);
         this.userBattles.set(match.opponentId, dbBattle.id);
+        await this.setActiveBattle(userId, dbBattle.id);
+        await this.setActiveBattle(match.opponentId, dbBattle.id);
 
         client.emit('battle:matched', { battleId: dbBattle.id, opponent: { id: match.opponentId } });
         const opponentSocketId = this.userSockets.get(match.opponentId);
@@ -1222,10 +1356,13 @@ export class BattleGateway
     this.battles.delete(battleId);
     this.botLevels.delete(battleId);
 
-    // Remove user-battle associations
+    // Remove user-battle associations (in-memory + Redis)
     for (const [uid, bid] of this.userBattles) {
       if (bid === battleId) {
         this.userBattles.delete(uid);
+        this.clearActiveBattle(uid).catch((err) =>
+          this.logger.warn(`Failed to clear active battle for ${uid}: ${err.message}`),
+        );
       }
     }
   }

@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
+import { ScheduleModule } from '@nestjs/schedule';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { LoggerModule } from 'nestjs-pino';
 import { join } from 'path';
@@ -24,6 +25,7 @@ import { AnalyticsModule } from './analytics/analytics.module';
 import { ChallengeModule } from './challenge/challenge.module';
 import { FactsModule } from './facts/facts.module';
 import { NotificationModule } from './notification/notification.module';
+import { CronModule } from './cron/cron.module';
 import { AppController } from './app.controller';
 
 @Module({
@@ -78,6 +80,7 @@ import { AppController } from './app.controller';
         },
       },
     }),
+    ScheduleModule.forRoot(),
     PrismaModule,
     RedisModule,
     AuthModule,
@@ -97,6 +100,7 @@ import { AppController } from './app.controller';
     ChallengeModule,
     FactsModule,
     NotificationModule,
+    CronModule,
   ],
   providers: [
     {

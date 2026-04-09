@@ -6,9 +6,10 @@ import { PrismaModule } from '../prisma/prisma.module';
 import { AiModule } from '../ai/ai.module';
 import { KnowledgeModule } from '../knowledge/knowledge.module';
 import { StatsModule } from '../stats/stats.module';
+import { RedisModule } from '../redis/redis.module';
 
 @Module({
-  imports: [AuthModule, PrismaModule, AiModule, KnowledgeModule, forwardRef(() => StatsModule)],
+  imports: [AuthModule, PrismaModule, AiModule, KnowledgeModule, RedisModule, forwardRef(() => StatsModule)],
   controllers: [QuestionController],
   providers: [QuestionService],
   exports: [QuestionService],
