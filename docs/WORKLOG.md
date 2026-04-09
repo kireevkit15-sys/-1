@@ -511,6 +511,38 @@
 
 ---
 
+### 2026-04-09 — Сессия 8: Блок 16 — Пользовательская система v2 (B16.3–B16.5)
+
+**Время:** ~1.5 часа
+**Статус:** Завершена
+
+**Что сделано:**
+- **B16.3 — Класс мыслителя v2:** 12 классов вместо 6. 5 базовых (1:1 с ветками) + 6 гибридных (SAGE, WARLORD, SCIENTIST, ANALYST, ORACLE, DIPLOMAT) + POLYMATH для сбалансированных профилей. Алгоритм: доминирующая ветка → базовый класс, два близких топа → гибрид, все ровно → POLYMATH. 20 тестов.
+- **B16.4 — Достижения v2:** 25 новых branch-specific ачивок (5 на ветку: уровень 3/5/10 + 1000/5000 XP). Новая категория BRANCH в Prisma enum + миграция. Метод `checkBranchAchievements()` в AchievementsService. Интеграция в StatsService.addXp() и addBattleXp().
+- **B16.5 — Compare profiles:** GET /users/:id/compare — экран VS. Сравнивает двух игроков: XP по веткам, уровни, рейтинги, класс мыслителя, батл-статистику + личный счёт встреч (head-to-head).
+
+**Файлы созданы/изменены:**
+- `packages/shared/src/stats/types.ts` — ThinkerClass enum (12 значений)
+- `packages/shared/src/stats/calculator.ts` — новый алгоритм с lookup-таблицами
+- `packages/shared/__tests__/stats/calculator.test.ts` — 20 тестов на все классы
+- `prisma/schema.prisma` — AchievementCategory.BRANCH
+- `prisma/seed.ts` — 25 новых ачивок
+- `prisma/migrations/20260409100000_add_branch_achievement_category/` — миграция
+- `apps/api/src/achievements/achievements.service.ts` — branch_level/branch_xp + checkBranchAchievements()
+- `apps/api/src/stats/stats.service.ts` — интеграция ачивок + импорт AchievementsService
+- `apps/api/src/stats/stats.module.ts` — импорт AchievementsModule
+- `apps/api/src/user/user.service.ts` — compareProfiles()
+- `apps/api/src/user/user.controller.ts` — GET :id/compare
+
+**Задачи из SPRINT.md закрыты:** B16.3, B16.4, B16.5
+
+**Коммиты:**
+- `d29e262` — feat(stats): thinker class v2 — 12 classes based on dominant branch (B16.3)
+- `47e0e00` — feat(achievements): v2 — 25 branch-specific achievements + auto-check on XP gain (B16.4)
+- `578d897` — feat(user): GET /users/:id/compare — VS screen profile comparison (B16.5)
+
+---
+
 ## Сводка по неделям
 
 ### Неделя 1 (2026-04-05 — 2026-04-11)

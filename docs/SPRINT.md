@@ -319,11 +319,11 @@
 
 | # | Задача | Статус | Файлы |
 |---|--------|--------|-------|
-| B16.1 | UserStats: отдельные поля XP по каждой из 5 веток | todo | `prisma/schema.prisma`, `apps/api/src/stats/` |
-| B16.2 | Система уровней по веткам: уровень ветки = f(xp), общий уровень = среднее | todo | `packages/shared/src/stats/`, `apps/api/src/stats/` |
-| B16.3 | Класс мыслителя v2: определяется по доминирующей ветке (5+ классов) | todo | `packages/shared/src/stats/` |
-| B16.4 | Достижения v2: ачивки за прокачку каждой ветки (25 новых) | todo | `apps/api/src/achievements/` |
-| B16.5 | GET /users/:id/compare — сравнение двух профилей для экрана VS | todo | `apps/api/src/user/` |
+| B16.1 | UserStats: отдельные поля XP по каждой из 5 веток | done | `prisma/schema.prisma`, `apps/api/src/stats/` |
+| B16.2 | Система уровней по веткам: уровень ветки = f(xp), общий уровень = среднее | done | `packages/shared/src/stats/`, `apps/api/src/stats/` |
+| B16.3 | Класс мыслителя v2: определяется по доминирующей ветке (12 классов) | done | `packages/shared/src/stats/` |
+| B16.4 | Достижения v2: ачивки за прокачку каждой ветки (25 новых) | done | `apps/api/src/achievements/`, `prisma/seed.ts` |
+| B16.5 | GET /users/:id/compare — сравнение двух профилей для экрана VS | done | `apps/api/src/user/` |
 
 ## Блок 17 — Аналитика и умные фичи
 
