@@ -1,8 +1,7 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
-import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
 import QuestionCard from "@/components/learn/QuestionCard";
 import AiChat from "@/components/learn/AiChat";
@@ -142,6 +141,9 @@ export default function ModulePage() {
   const [showComplete, setShowComplete] = useState(false);
   const [showAiChat, setShowAiChat] = useState(false);
   const [loading, setLoading] = useState(true);
+  // Slide animation state
+  const [slideState, setSlideState] = useState<"idle" | "exit" | "enter">("idle");
+  const questionAreaRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     async function fetchModule() {
@@ -187,11 +189,23 @@ export default function ModulePage() {
 
   const goNext = useCallback(() => {
     if (!mod) return;
-    if (currentQ < mod.questions.length - 1) {
-      setCurrentQ((q) => q + 1);
-    } else {
-      setShowComplete(true);
-    }
+    // Trigger exit slide animation
+    setSlideState("exit");
+    setTimeout(() => {
+      if (currentQ < mod.questions.length - 1) {
+        setCurrentQ((q) => q + 1);
+      } else {
+        setShowComplete(true);
+        return;
+      }
+      setSlideState("enter");
+      // Short frame to allow DOM update, then reset to idle
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          setSlideState("idle");
+        });
+      });
+    }, 220);
   }, [currentQ, mod]);
 
   if (loading) {
@@ -204,43 +218,119 @@ export default function ModulePage() {
 
   if (!mod) return null;
 
-  // Completion screen
+  // Completion screen (F8.3)
   if (showComplete) {
     const pct = Math.round((correctCount / mod.questions.length) * 100);
+    const xpEarned = correctCount * 15 + (pct === 100 ? 50 : 0);
+    const wrongCount = mod.questions.length - correctCount;
+    const grade =
+      pct >= 80 ? "Отлично" : pct >= 60 ? "Хорошо" : "Требует повторения";
+    const gradeColor =
+      pct >= 80
+        ? "text-accent-gold"
+        : pct >= 60
+          ? "text-green-400"
+          : "text-accent-bronze";
+
     return (
-      <div className="px-4 pt-12 pb-24 flex flex-col items-center justify-center min-h-[60vh] text-center">
+      <div
+        className="px-4 pt-12 pb-24 flex flex-col items-center justify-center min-h-[60vh]"
+        style={{ animation: "onboarding-fade-in 0.4s ease-out" }}
+      >
+        {/* Trophy icon */}
         <div className="relative mb-6">
-          <div className="absolute inset-0 blur-3xl opacity-20 bg-accent-gold rounded-full scale-150" />
-          <div className="relative w-20 h-20 rounded-full bg-surface border border-accent-gold/20 flex items-center justify-center shadow-[0_0_40px_rgba(185,141,52,0.15)]">
-            <svg className="w-10 h-10 text-accent-gold" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+          <div className="absolute inset-0 blur-3xl opacity-25 bg-accent-gold rounded-full scale-150" />
+          <div className="relative w-24 h-24 rounded-full bg-surface border border-accent-gold/25 flex items-center justify-center shadow-[0_0_48px_rgba(185,141,52,0.18)]">
+            <svg
+              className="w-12 h-12 text-accent-gold"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 18.75h-9m9 0a3 3 0 013 3h-15a3 3 0 013-3m9 0v-3.375c0-.621-.503-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.007 0H9.497m5.007 0a7.454 7.454 0 01-.982-3.172M9.497 14.25a7.454 7.454 0 00.981-3.172M5.25 4.236c-.982.143-1.954.317-2.916.52A6.003 6.003 0 007.73 9.728M5.25 4.236V4.5c0 2.108.966 3.99 2.48 5.228M5.25 4.236V2.721C7.456 2.41 9.71 2.25 12 2.25c2.291 0 4.545.16 6.75.47v1.516M7.73 9.728a6.726 6.726 0 002.748 1.35m8.272-6.842V4.5c0 2.108-.966 3.99-2.48 5.228m2.48-5.492a46.32 46.32 0 012.916.52 6.003 6.003 0 01-5.395 4.972m0 0a6.726 6.726 0 01-2.749 1.35m0 0a6.772 6.772 0 01-3.044 0" />
             </svg>
           </div>
         </div>
-        <h1 className="text-2xl font-bold text-text-primary mb-2">
+
+        <h1 className="text-2xl font-bold text-text-primary mb-1 text-center">
           Модуль пройден!
         </h1>
-        <p className="text-text-secondary text-sm mb-6">
-          {mod.title}
-        </p>
+        <p className="text-text-muted text-sm mb-1 text-center">{mod.title}</p>
+        <p className={`text-sm font-semibold mb-6 ${gradeColor}`}>{grade}</p>
 
-        <div className="grid grid-cols-2 gap-3 w-full max-w-xs mb-8">
-          <Card padding="sm" className="text-center">
-            <p className="text-2xl font-bold text-accent-gold">{pct}%</p>
-            <p className="text-xs text-text-muted mt-1">Верных</p>
-          </Card>
-          <Card padding="sm" className="text-center">
-            <p className="text-2xl font-bold text-accent">
-              {correctCount}/{mod.questions.length}
+        {/* Stats glass card */}
+        <div
+          className="glass-card w-full max-w-sm p-5 mb-6"
+          style={{ animation: "onboarding-fade-in 0.5s 0.15s ease-out both" }}
+        >
+          {/* Score arc */}
+          <div className="flex items-center justify-center mb-4">
+            <div className="relative w-24 h-24">
+              <svg className="w-full h-full -rotate-90" viewBox="0 0 96 96">
+                <circle cx="48" cy="48" r="42" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="7" />
+                <circle
+                  cx="48"
+                  cy="48"
+                  r="42"
+                  fill="none"
+                  stroke={pct >= 80 ? "#B98D34" : pct >= 60 ? "#22C55E" : "#CF9D7B"}
+                  strokeWidth="7"
+                  strokeLinecap="round"
+                  strokeDasharray={`${(pct / 100) * 263.9} 263.9`}
+                  style={{ transition: "stroke-dasharray 0.8s ease-out" }}
+                />
+              </svg>
+              <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <span className="text-xl font-bold text-text-primary">{pct}%</span>
+                <span className="text-[10px] text-text-muted">точность</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Stats row */}
+          <div className="grid grid-cols-3 gap-3 text-center">
+            <div>
+              <p className="text-lg font-bold text-green-400">{correctCount}</p>
+              <p className="text-[11px] text-text-muted">Верных</p>
+            </div>
+            <div>
+              <p className="text-lg font-bold text-red-400">{wrongCount}</p>
+              <p className="text-[11px] text-text-muted">Ошибок</p>
+            </div>
+            <div>
+              <p className="text-lg font-bold text-accent-gold">+{xpEarned}</p>
+              <p className="text-[11px] text-text-muted">XP</p>
+            </div>
+          </div>
+
+          {pct === 100 && (
+            <p className="text-center text-xs text-accent-gold mt-3 font-medium">
+              Бонус за идеальный результат: +50 XP
             </p>
-            <p className="text-xs text-text-muted mt-1">Ответов</p>
-          </Card>
+          )}
         </div>
 
-        <div className="space-y-3 w-full max-w-xs">
+        {/* Actions */}
+        <div
+          className="space-y-3 w-full max-w-sm"
+          style={{ animation: "onboarding-fade-in 0.5s 0.3s ease-out both" }}
+        >
           <Button fullWidth onClick={() => router.push("/learn")}>
-            К модулям
+            Назад к модулям
           </Button>
+          <button
+            onClick={() => {
+              setCurrentQ(0);
+              setAnswered(new Set());
+              setCorrectCount(0);
+              setShowComplete(false);
+              setSlideState("idle");
+            }}
+            className="w-full py-3 text-sm text-text-muted hover:text-text-primary transition-colors"
+          >
+            Пройти ещё раз
+          </button>
         </div>
       </div>
     );
@@ -277,7 +367,7 @@ export default function ModulePage() {
       </div>
 
       {/* Difficulty badge */}
-      <div className="flex justify-end">
+      <div className="flex justify-end" style={{ animation: "onboarding-fade-in 0.3s ease-out" }}>
         <span
           className={`text-xs px-2 py-0.5 rounded-md font-medium ${
             q.difficulty === "GOLD"
@@ -291,18 +381,32 @@ export default function ModulePage() {
         </span>
       </div>
 
-      {/* Question card */}
-      <QuestionCard
-        key={q.id}
-        question={q.text}
-        options={q.options.map((text, i) => ({ text, index: i }))}
-        correctIndex={q.correctIndex}
-        explanation={q.explanation}
-        onAnswer={handleAnswer}
-      />
+      {/* Question card — with slide-left / fade-in animation (F8.3) */}
+      <div
+        ref={questionAreaRef}
+        style={{
+          transition: "transform 0.22s ease, opacity 0.22s ease",
+          transform:
+            slideState === "exit"
+              ? "translateX(-32px)"
+              : slideState === "enter"
+                ? "translateX(24px)"
+                : "translateX(0)",
+          opacity: slideState === "idle" ? 1 : 0,
+        }}
+      >
+        <QuestionCard
+          key={q.id}
+          question={q.text}
+          options={q.options.map((text, i) => ({ text, index: i }))}
+          correctIndex={q.correctIndex}
+          explanation={q.explanation}
+          onAnswer={handleAnswer}
+        />
+      </div>
 
       {/* Next button + Ask AI */}
-      {answered.has(currentQ) && (
+      {answered.has(currentQ) && slideState === "idle" && (
         <div className="space-y-2 animate-[onboarding-fade-in_0.3s_ease-out]">
           <Button fullWidth onClick={goNext}>
             {currentQ < mod.questions.length - 1 ? "Следующий вопрос" : "Завершить модуль"}

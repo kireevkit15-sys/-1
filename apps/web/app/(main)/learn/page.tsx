@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Card from "@/components/ui/Card";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -102,19 +102,19 @@ const branchConfig: { key: string; title: string; color: string }[] = [
 ];
 
 // Branch SVG icons
-function BranchIcon({ branchKey, className = "w-4 h-4" }: { branchKey: string; className?: string }) {
+function BranchIcon({ branchKey, className = "w-4 h-4", style }: { branchKey: string; className?: string; style?: React.CSSProperties }) {
   switch (branchKey) {
     case "STRATEGY":
       // Crown / chess piece
       return (
-        <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+        <svg className={className} style={style} viewBox="0 0 24 24" fill="currentColor">
           <path d="M5 20h14v-2H5v2zm7-18l-2 6H6l4 3-1.5 5h7L14 11l4-3h-4L12 2z" />
         </svg>
       );
     case "LOGIC":
       // Circuit / brain nodes
       return (
-        <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8}>
+        <svg className={className} style={style} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8}>
           <circle cx="5"  cy="6"  r="2" />
           <circle cx="19" cy="6"  r="2" />
           <circle cx="5"  cy="18" r="2" />
@@ -129,7 +129,7 @@ function BranchIcon({ branchKey, className = "w-4 h-4" }: { branchKey: string; c
     case "ERUDITION":
       // Open book / scroll
       return (
-        <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8}>
+        <svg className={className} style={style} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.5C10.5 5 8 4.5 5 5v14c3-.5 5.5 0 7 1.5 1.5-1.5 4-2 7-1.5V5c-3-.5-5.5 0-7 1.5z" />
           <line x1="12" y1="6.5" x2="12" y2="20" />
         </svg>
@@ -137,14 +137,14 @@ function BranchIcon({ branchKey, className = "w-4 h-4" }: { branchKey: string; c
     case "RHETORIC":
       // Speech bubble
       return (
-        <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8}>
+        <svg className={className} style={style} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
         </svg>
       );
     case "INTUITION":
       // Eye with star glint
       return (
-        <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8}>
+        <svg className={className} style={style} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
           <circle cx="12" cy="12" r="3" />
           <path strokeLinecap="round" d="M17 4l.5 1.5L19 6l-1.5.5L17 8l-.5-1.5L15 6l1.5-.5L17 4z" fill="currentColor" stroke="none" />
@@ -166,11 +166,219 @@ function ProgressBar({ progress }: { progress: number }) {
   );
 }
 
+// ---------------------------------------------------------------------------
+// Knowledge Tree component (F8.1)
+// ---------------------------------------------------------------------------
+
+interface TreeNode {
+  key: string;
+  title: string;
+  shortTitle: string;
+  hex: string;
+  progress: number;
+}
+
+// Pentagonal positions for 5 nodes (% of container, relative to center)
+// Top, top-right, bottom-right, bottom-left, top-left
+const PENTA_POSITIONS: { x: number; y: number }[] = [
+  { x: 50,   y: 8  },   // STRATEGY  — top
+  { x: 88,   y: 36 },   // LOGIC     — top-right
+  { x: 74,   y: 80 },   // ERUDITION — bottom-right
+  { x: 26,   y: 80 },   // RHETORIC  — bottom-left
+  { x: 12,   y: 36 },   // INTUITION — top-left
+];
+
+function KnowledgeTree({
+  branches,
+  onNodeClick,
+}: {
+  branches: BranchData[];
+  onNodeClick: (id: string) => void;
+}) {
+  const nodes: TreeNode[] = branchConfig.map((cfg) => {
+    const branch = branches.find((b) => b.id === cfg.key.toLowerCase());
+    const totalProgress =
+      branch && branch.modules.length > 0
+        ? Math.round(
+            branch.modules.reduce((sum, m) => sum + m.progress, 0) /
+              branch.modules.length,
+          )
+        : 0;
+    return {
+      key: cfg.key,
+      title: cfg.title,
+      shortTitle: cfg.title.split(" ")[0] ?? cfg.title,
+      hex: branchDotHex[cfg.key] ?? "#888",
+      progress: totalProgress,
+    };
+  });
+
+  const cx = 50; // center x %
+  const cy = 50; // center y %
+
+  return (
+    <>
+      {/* ── Desktop / tablet: pentagonal radial map ── */}
+      <div className="hidden sm:block relative w-full" style={{ paddingBottom: "88%" }}>
+        {/* SVG lines layer */}
+        <svg
+          className="absolute inset-0 w-full h-full"
+          viewBox="0 0 100 100"
+          preserveAspectRatio="none"
+        >
+          {PENTA_POSITIONS.map((pos, i) => (
+            <line
+              key={i}
+              x1={cx}
+              y1={cy}
+              x2={pos.x}
+              y2={pos.y}
+              stroke={nodes[i]?.hex ?? "#888"}
+              strokeWidth="0.5"
+              strokeOpacity="0.35"
+              strokeDasharray="1.5 1"
+            />
+          ))}
+        </svg>
+
+        {/* Central РАЗУМ node */}
+        <div
+          className="absolute z-10 flex flex-col items-center"
+          style={{
+            left: "50%",
+            top: "50%",
+            transform: "translate(-50%, -50%)",
+          }}
+        >
+          <div
+            className="w-14 h-14 rounded-full flex items-center justify-center"
+            style={{
+              background:
+                "radial-gradient(circle at 35% 35%, rgba(207,157,123,0.22), rgba(207,157,123,0.06))",
+              border: "1px solid rgba(207,157,123,0.35)",
+              boxShadow:
+                "0 0 24px rgba(207,157,123,0.18), inset 0 1px 0 rgba(255,255,255,0.06)",
+            }}
+          >
+            <span className="text-[9px] font-bold text-metallic tracking-widest">
+              РАЗУМ
+            </span>
+          </div>
+        </div>
+
+        {/* Branch nodes */}
+        {nodes.map((node, i) => {
+          const pos = PENTA_POSITIONS[i]!;
+          return (
+            <button
+              key={node.key}
+              onClick={() => onNodeClick(node.key.toLowerCase())}
+              className="absolute z-10 flex flex-col items-center gap-1.5 group"
+              style={{
+                left: `${pos.x}%`,
+                top: `${pos.y}%`,
+                transform: "translate(-50%, -50%)",
+              }}
+            >
+              {/* Circle */}
+              <div
+                className={`branch-${node.key.toLowerCase()} relative w-12 h-12 rounded-full flex items-center justify-center transition-all duration-200 group-hover:scale-110`}
+                style={{
+                  background: `radial-gradient(circle at 35% 35%, rgba(${
+                    branchColorRgb[node.key]
+                  }, 0.25), rgba(${branchColorRgb[node.key]}, 0.06))`,
+                  border: `1px solid rgba(${branchColorRgb[node.key]}, 0.45)`,
+                  boxShadow: `0 0 16px rgba(${branchColorRgb[node.key]}, 0.2), inset 0 1px 0 rgba(255,255,255,0.06)`,
+                }}
+              >
+                <BranchIcon branchKey={node.key} className="w-5 h-5" style={{ color: node.hex } as React.CSSProperties} />
+                {/* Progress arc ring */}
+                <svg
+                  className="absolute inset-0 w-full h-full -rotate-90"
+                  viewBox="0 0 48 48"
+                >
+                  <circle
+                    cx="24"
+                    cy="24"
+                    r="22"
+                    fill="none"
+                    stroke={node.hex}
+                    strokeOpacity="0.15"
+                    strokeWidth="2"
+                  />
+                  <circle
+                    cx="24"
+                    cy="24"
+                    r="22"
+                    fill="none"
+                    stroke={node.hex}
+                    strokeOpacity="0.8"
+                    strokeWidth="2"
+                    strokeDasharray={`${(node.progress / 100) * 138.2} 138.2`}
+                    strokeLinecap="round"
+                  />
+                </svg>
+              </div>
+              {/* Label */}
+              <div className="text-center max-w-[72px]">
+                <p className="text-[10px] font-semibold leading-tight text-text-primary">
+                  {node.shortTitle}
+                </p>
+                <p
+                  className="text-[9px] font-bold"
+                  style={{ color: node.hex }}
+                >
+                  {node.progress}%
+                </p>
+              </div>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* ── Mobile: horizontal scrollable chip row ── */}
+      <div className="sm:hidden flex gap-3 overflow-x-auto pb-2 px-0.5 scrollbar-none">
+        {nodes.map((node) => (
+          <button
+            key={node.key}
+            onClick={() => onNodeClick(node.key.toLowerCase())}
+            className={`branch-${node.key.toLowerCase()} flex-none flex items-center gap-2 px-3 py-2 rounded-full transition-all active:scale-95`}
+            style={{
+              background: `rgba(${branchColorRgb[node.key]}, 0.1)`,
+              border: `1px solid rgba(${branchColorRgb[node.key]}, 0.3)`,
+            }}
+          >
+            <BranchIcon branchKey={node.key} className="w-4 h-4 flex-none" style={{ color: node.hex } as React.CSSProperties} />
+            <div className="text-left">
+              <p className="text-[11px] font-semibold text-text-primary whitespace-nowrap">
+                {node.shortTitle}
+              </p>
+              <p className="text-[10px] font-bold" style={{ color: node.hex }}>
+                {node.progress}%
+              </p>
+            </div>
+          </button>
+        ))}
+      </div>
+    </>
+  );
+}
+
+// RGB values for inline use (matches branchDotHex)
+const branchColorRgb: Record<string, string> = {
+  STRATEGY:  "6, 182, 212",
+  LOGIC:     "34, 197, 94",
+  ERUDITION: "168, 85, 247",
+  RHETORIC:  "249, 115, 22",
+  INTUITION: "236, 72, 153",
+};
+
 export default function LearnPage() {
   const { accessToken, isLoading: authLoading } = useAuth();
 
   const [branches, setBranches] = useState<BranchData[]>([]);
   const [loading, setLoading] = useState(true);
+  const branchRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   useEffect(() => {
     if (authLoading) return;
@@ -200,6 +408,13 @@ export default function LearnPage() {
     load();
   }, [accessToken, authLoading]);
 
+  function scrollToBranch(id: string) {
+    const el = branchRefs.current[id];
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }
+
   return (
     <div className="px-4 pt-12 pb-24 space-y-8">
       {/* Header */}
@@ -208,6 +423,14 @@ export default function LearnPage() {
         <p className="text-text-muted text-sm mt-1">
           Прокачивай навыки мышления по модулям
         </p>
+      </div>
+
+      {/* Knowledge Tree (F8.1) */}
+      <div className="glass-card p-4">
+        <p className="text-xs text-text-muted mb-4 font-medium tracking-wider uppercase">
+          Карта знаний
+        </p>
+        <KnowledgeTree branches={branches} onNodeClick={scrollToBranch} />
       </div>
 
       {/* Loading state */}
@@ -239,7 +462,11 @@ export default function LearnPage() {
         const dotHex = branchDotHex[branchKey] ?? "#888";
 
         return (
-          <div key={branch.id} className="space-y-3">
+          <div
+            key={branch.id}
+            ref={(el) => { branchRefs.current[branch.id] = el; }}
+            className="space-y-3"
+          >
             {/* Branch header */}
             <div className="flex items-center gap-2 px-1">
               <div
