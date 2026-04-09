@@ -1,11 +1,15 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import type { PrismaService } from '../prisma/prisma.service';
+import type { AchievementsService } from '../achievements/achievements.service';
 import type { ThinkerClass } from '@razum/shared';
-import { determineThinkerClass, getBranchLevels, xpToNextLevel, Branch } from '@razum/shared';
+import { determineThinkerClass, getBranchLevels, xpToLevel, xpToNextLevel, Branch } from '@razum/shared';
 
 @Injectable()
 export class StatsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly achievements: AchievementsService,
+  ) {}
 
   /**
    * Calculate total XP from all 5 stats.
@@ -192,6 +196,23 @@ export class StatsService {
       });
     }
 
+    // Check branch achievements
+    const statToBranch: Record<string, 'STRATEGY' | 'LOGIC' | 'ERUDITION' | 'RHETORIC' | 'INTUITION'> = {
+      strategyXp: 'STRATEGY',
+      logicXp: 'LOGIC',
+      eruditionXp: 'ERUDITION',
+      rhetoricXp: 'RHETORIC',
+      intuitionXp: 'INTUITION',
+    };
+    const branch = statToBranch[stat];
+    if (branch) {
+      const branchXp = updated[stat];
+      const branchLevel = xpToLevel(branchXp);
+      this.achievements
+        .checkBranchAchievements(userId, branch, branchXp, branchLevel)
+        .catch(() => {});
+    }
+
     return this.enrichStats(updated);
   }
 
@@ -235,6 +256,13 @@ export class StatsService {
         eruditionXp: { increment: secondaryXp },
       },
     });
+
+    // Check branch achievements for primary branch
+    const branchXp = updated[primaryStat];
+    const branchLevel = xpToLevel(branchXp);
+    this.achievements
+      .checkBranchAchievements(userId, results.branch, branchXp, branchLevel)
+      .catch(() => {});
 
     return this.enrichStats(updated);
   }

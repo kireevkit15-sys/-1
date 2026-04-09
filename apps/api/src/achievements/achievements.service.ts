@@ -1,11 +1,15 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
-import { TelegramNotificationService } from '../telegram/telegram-notification.service';
-import { AchievementCategory } from '@prisma/client';
+import type { PrismaService } from '../prisma/prisma.service';
+import type { TelegramNotificationService } from '../telegram/telegram-notification.service';
+import type { AchievementCategory } from '@prisma/client';
 
 interface AchievementCondition {
-  type: 'wins' | 'battles' | 'streak' | 'level' | 'questions_answered' | 'modules_completed' | 'pvp_battles';
+  type:
+    | 'wins' | 'battles' | 'streak' | 'level'
+    | 'questions_answered' | 'modules_completed' | 'pvp_battles'
+    | 'branch_level' | 'branch_xp';
   threshold: number;
+  branch?: 'STRATEGY' | 'LOGIC' | 'ERUDITION' | 'RHETORIC' | 'INTUITION';
 }
 
 @Injectable()
@@ -131,6 +135,99 @@ export class AchievementsService {
     }
 
     // Execute all upserts + XP reward in a single transaction
+    if (upsertOps.length > 0) {
+      const ops = [...upsertOps];
+      if (totalXpReward > 0) {
+        ops.push(
+          this.prisma.userStats.update({
+            where: { userId },
+            data: { eruditionXp: { increment: totalXpReward } },
+          }) as any,
+        );
+      }
+      await this.prisma.$transaction(ops);
+    }
+
+    return { newlyUnlocked };
+  }
+
+  /**
+   * Check branch-specific achievements after XP gain.
+   * Queries achievements with branch_level and branch_xp conditions for the given branch.
+   */
+  async checkBranchAchievements(
+    userId: string,
+    branch: 'STRATEGY' | 'LOGIC' | 'ERUDITION' | 'RHETORIC' | 'INTUITION',
+    branchXp: number,
+    branchLevel: number,
+  ): Promise<{ newlyUnlocked: string[] }> {
+    const achievements = await this.prisma.achievement.findMany({
+      where: {
+        isActive: true,
+        condition: { path: ['branch'], equals: branch },
+      },
+    });
+
+    if (achievements.length === 0) return { newlyUnlocked: [] };
+
+    const existingRecords = await this.prisma.userAchievement.findMany({
+      where: {
+        userId,
+        achievementId: { in: achievements.map((a) => a.id) },
+      },
+    });
+
+    const existingMap = new Map(
+      existingRecords.map((r) => [r.achievementId, r]),
+    );
+
+    const newlyUnlocked: string[] = [];
+    const upsertOps: ReturnType<typeof this.prisma.userAchievement.upsert>[] = [];
+    let totalXpReward = 0;
+
+    for (const achievement of achievements) {
+      const condition = achievement.condition as unknown as AchievementCondition;
+      const existing = existingMap.get(achievement.id);
+
+      if (existing?.unlockedAt) continue;
+
+      const currentValue = condition.type === 'branch_level' ? branchLevel : branchXp;
+      const unlocked = currentValue >= condition.threshold;
+
+      upsertOps.push(
+        this.prisma.userAchievement.upsert({
+          where: {
+            userId_achievementId: { userId, achievementId: achievement.id },
+          },
+          create: {
+            userId,
+            achievementId: achievement.id,
+            progress: Math.min(currentValue, condition.threshold),
+            unlockedAt: unlocked ? new Date() : null,
+          },
+          update: {
+            progress: Math.min(currentValue, condition.threshold),
+            ...(unlocked && !existing?.unlockedAt ? { unlockedAt: new Date() } : {}),
+          },
+        }),
+      );
+
+      if (unlocked && !existing?.unlockedAt) {
+        newlyUnlocked.push(achievement.code);
+        totalXpReward += achievement.xpReward;
+
+        this.telegramNotification
+          .sendAchievementUnlocked(userId, {
+            achievementName: achievement.name,
+            achievementIcon: achievement.icon,
+            xpReward: achievement.xpReward,
+          })
+          .catch((err) =>
+            this.logger.warn(`Failed to send achievement notification: ${(err as Error).message}`),
+          );
+      }
+    }
+
     if (upsertOps.length > 0) {
       const ops = [...upsertOps];
       if (totalXpReward > 0) {

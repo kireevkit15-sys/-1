@@ -63,6 +63,7 @@ enum AchievementCategory {
   LEARNING
   STREAK
   SOCIAL
+  BRANCH
 }
 
 // ── User ─────────────────────────────────────
