@@ -8,13 +8,39 @@ export function xpToLevel(xp: number): number {
   return Math.floor(Math.sqrt(xp / 100));
 }
 
+type BranchKey = 'strategy' | 'logic' | 'erudition' | 'rhetoric' | 'intuition';
+
+const BRANCH_CLASS_MAP: Record<BranchKey, ThinkerClass> = {
+  strategy: ThinkerClass.STRATEGIST,
+  logic: ThinkerClass.PHILOSOPHER,
+  erudition: ThinkerClass.SCHOLAR,
+  rhetoric: ThinkerClass.COMMANDER,
+  intuition: ThinkerClass.VISIONARY,
+};
+
+const HYBRID_CLASS_MAP: Record<string, ThinkerClass> = {
+  'logic+strategy': ThinkerClass.SAGE,
+  'rhetoric+strategy': ThinkerClass.WARLORD,
+  'erudition+logic': ThinkerClass.SCIENTIST,
+  'intuition+logic': ThinkerClass.ANALYST,
+  'erudition+intuition': ThinkerClass.ORACLE,
+  'intuition+rhetoric': ThinkerClass.DIPLOMAT,
+};
+
 /**
- * Determine a player's thinker class based on their dominant stat ratios.
+ * Determine a player's thinker class based on their dominant branch.
+ *
+ * Algorithm:
+ * 1. If all stats are 0 → POLYMATH (no data yet)
+ * 2. If all branches within 5% of each other → POLYMATH (balanced)
+ * 3. If dominant branch > 30% AND lead over secondary ≥ 5% → base class (1:1 with branch)
+ * 4. If top-2 branches are close (diff < 5%) → hybrid class (combo of two branches)
+ * 5. Fallback → base class of dominant branch
  */
 export function determineThinkerClass(stats: UserStatsData): ThinkerClass {
   const total = stats.logic + stats.erudition + stats.strategy + stats.rhetoric + stats.intuition;
 
-  if (total === 0) return ThinkerClass.SCHOLAR;
+  if (total === 0) return ThinkerClass.POLYMATH;
 
   const ratios = {
     logic: stats.logic / total,
@@ -24,42 +50,32 @@ export function determineThinkerClass(stats: UserStatsData): ThinkerClass {
     intuition: stats.intuition / total,
   };
 
-  // Find the dominant stat
-  const entries = Object.entries(ratios) as [keyof typeof ratios, number][];
+  const entries = Object.entries(ratios) as [BranchKey, number][];
   entries.sort((a, b) => b[1] - a[1]);
 
   const [dominant, dominantRatio] = entries[0]!;
   const [secondary, secondaryRatio] = entries[1]!;
+  const [, lowestRatio] = entries[4]!;
 
-  // If one stat is clearly dominant (>30%), use single-class mapping
-  if (dominantRatio > 0.3) {
-    switch (dominant) {
-      case 'strategy':
-        return ThinkerClass.STRATEGIST;
-      case 'logic':
-        return ThinkerClass.PHILOSOPHER;
-      case 'erudition':
-        return ThinkerClass.SCHOLAR;
-      case 'rhetoric':
-        return ThinkerClass.COMMANDER;
-      case 'intuition':
-        return ThinkerClass.VISIONARY;
-    }
+  // All branches balanced (spread < 5%)
+  if (dominantRatio - lowestRatio < 0.05) {
+    return ThinkerClass.POLYMATH;
   }
 
-  // If two stats are close and both significant, use combo classes
-  if (dominantRatio - secondaryRatio < 0.05) {
-    // Strategy + Logic combo
-    if (
-      (dominant === 'strategy' && secondary === 'logic') ||
-      (dominant === 'logic' && secondary === 'strategy')
-    ) {
-      return ThinkerClass.SAGE;
-    }
+  // Clear dominant branch (lead ≥ 5% over secondary)
+  if (dominantRatio - secondaryRatio >= 0.05) {
+    return BRANCH_CLASS_MAP[dominant];
   }
 
-  // Default: balanced = SAGE
-  return ThinkerClass.SAGE;
+  // Top-2 branches close → hybrid class
+  const hybridKey = [dominant, secondary].sort().join('+');
+  const hybrid = HYBRID_CLASS_MAP[hybridKey];
+  if (hybrid) {
+    return hybrid;
+  }
+
+  // Remaining combos without a specific hybrid → base class of dominant
+  return BRANCH_CLASS_MAP[dominant];
 }
 
 /**

@@ -111,53 +111,111 @@ describe('getBranchLevels', () => {
 });
 
 describe('determineThinkerClass', () => {
-  it('returns SCHOLAR when all stats are 0', () => {
-    expect(determineThinkerClass({
-      logic: 0, erudition: 0, strategy: 0, rhetoric: 0, intuition: 0,
-    })).toBe(ThinkerClass.SCHOLAR);
+  describe('zero / balanced → POLYMATH', () => {
+    it('returns POLYMATH when all stats are 0', () => {
+      expect(determineThinkerClass({
+        logic: 0, erudition: 0, strategy: 0, rhetoric: 0, intuition: 0,
+      })).toBe(ThinkerClass.POLYMATH);
+    });
+
+    it('returns POLYMATH when all branches perfectly balanced', () => {
+      expect(determineThinkerClass({
+        logic: 100, erudition: 100, strategy: 100, rhetoric: 100, intuition: 100,
+      })).toBe(ThinkerClass.POLYMATH);
+    });
+
+    it('returns POLYMATH when spread < 5%', () => {
+      // total=505, max ratio=105/505≈20.8%, min=95/505≈18.8%, diff≈2% < 5%
+      expect(determineThinkerClass({
+        logic: 100, erudition: 105, strategy: 100, rhetoric: 95, intuition: 105,
+      })).toBe(ThinkerClass.POLYMATH);
+    });
   });
 
-  it('returns STRATEGIST when strategy dominates', () => {
-    expect(determineThinkerClass({
-      logic: 10, erudition: 10, strategy: 100, rhetoric: 10, intuition: 10,
-    })).toBe(ThinkerClass.STRATEGIST);
+  describe('base classes — clear dominant branch (≥5% lead)', () => {
+    it('returns STRATEGIST when strategy dominates', () => {
+      expect(determineThinkerClass({
+        logic: 10, erudition: 10, strategy: 100, rhetoric: 10, intuition: 10,
+      })).toBe(ThinkerClass.STRATEGIST);
+    });
+
+    it('returns PHILOSOPHER when logic dominates', () => {
+      expect(determineThinkerClass({
+        logic: 100, erudition: 10, strategy: 10, rhetoric: 10, intuition: 10,
+      })).toBe(ThinkerClass.PHILOSOPHER);
+    });
+
+    it('returns SCHOLAR when erudition dominates', () => {
+      expect(determineThinkerClass({
+        logic: 10, erudition: 100, strategy: 10, rhetoric: 10, intuition: 10,
+      })).toBe(ThinkerClass.SCHOLAR);
+    });
+
+    it('returns COMMANDER when rhetoric dominates', () => {
+      expect(determineThinkerClass({
+        logic: 10, erudition: 10, strategy: 10, rhetoric: 100, intuition: 10,
+      })).toBe(ThinkerClass.COMMANDER);
+    });
+
+    it('returns VISIONARY when intuition dominates', () => {
+      expect(determineThinkerClass({
+        logic: 10, erudition: 10, strategy: 10, rhetoric: 10, intuition: 100,
+      })).toBe(ThinkerClass.VISIONARY);
+    });
   });
 
-  it('returns PHILOSOPHER when logic dominates', () => {
-    expect(determineThinkerClass({
-      logic: 100, erudition: 10, strategy: 10, rhetoric: 10, intuition: 10,
-    })).toBe(ThinkerClass.PHILOSOPHER);
+  describe('hybrid classes — top-2 branches close (diff < 5%)', () => {
+    it('returns SAGE when strategy + logic are close', () => {
+      // strategy=40%, logic=38%, others small → diff 2% < 5%
+      expect(determineThinkerClass({
+        logic: 95, erudition: 10, strategy: 100, rhetoric: 20, intuition: 25,
+      })).toBe(ThinkerClass.SAGE);
+    });
+
+    it('returns WARLORD when strategy + rhetoric are close', () => {
+      expect(determineThinkerClass({
+        logic: 10, erudition: 10, strategy: 100, rhetoric: 95, intuition: 10,
+      })).toBe(ThinkerClass.WARLORD);
+    });
+
+    it('returns SCIENTIST when logic + erudition are close', () => {
+      expect(determineThinkerClass({
+        logic: 100, erudition: 95, strategy: 10, rhetoric: 10, intuition: 10,
+      })).toBe(ThinkerClass.SCIENTIST);
+    });
+
+    it('returns ANALYST when logic + intuition are close', () => {
+      expect(determineThinkerClass({
+        logic: 100, erudition: 10, strategy: 10, rhetoric: 10, intuition: 95,
+      })).toBe(ThinkerClass.ANALYST);
+    });
+
+    it('returns ORACLE when erudition + intuition are close', () => {
+      expect(determineThinkerClass({
+        logic: 10, erudition: 100, strategy: 10, rhetoric: 10, intuition: 95,
+      })).toBe(ThinkerClass.ORACLE);
+    });
+
+    it('returns DIPLOMAT when rhetoric + intuition are close', () => {
+      expect(determineThinkerClass({
+        logic: 10, erudition: 10, strategy: 10, rhetoric: 100, intuition: 95,
+      })).toBe(ThinkerClass.DIPLOMAT);
+    });
   });
 
-  it('returns SCHOLAR when erudition dominates', () => {
-    expect(determineThinkerClass({
-      logic: 10, erudition: 100, strategy: 10, rhetoric: 10, intuition: 10,
-    })).toBe(ThinkerClass.SCHOLAR);
-  });
+  describe('edge cases', () => {
+    it('falls back to dominant branch class for combos without hybrid', () => {
+      // strategy + erudition close — no specific hybrid → STRATEGIST (dominant)
+      expect(determineThinkerClass({
+        logic: 10, erudition: 95, strategy: 100, rhetoric: 10, intuition: 10,
+      })).toBe(ThinkerClass.STRATEGIST);
+    });
 
-  it('returns COMMANDER when rhetoric dominates', () => {
-    expect(determineThinkerClass({
-      logic: 10, erudition: 10, strategy: 10, rhetoric: 100, intuition: 10,
-    })).toBe(ThinkerClass.COMMANDER);
-  });
-
-  it('returns VISIONARY when intuition dominates', () => {
-    expect(determineThinkerClass({
-      logic: 10, erudition: 10, strategy: 10, rhetoric: 10, intuition: 100,
-    })).toBe(ThinkerClass.VISIONARY);
-  });
-
-  it('returns SAGE when strategy and logic are close and no stat > 30%', () => {
-    // Both at ~27%, none >30%, and diff < 5% → SAGE
-    expect(determineThinkerClass({
-      logic: 60, erudition: 50, strategy: 60, rhetoric: 25, intuition: 25,
-    })).toBe(ThinkerClass.SAGE);
-  });
-
-  it('returns SAGE when balanced', () => {
-    expect(determineThinkerClass({
-      logic: 20, erudition: 20, strategy: 20, rhetoric: 20, intuition: 20,
-    })).toBe(ThinkerClass.SAGE);
+    it('handles single non-zero stat', () => {
+      expect(determineThinkerClass({
+        logic: 0, erudition: 0, strategy: 0, rhetoric: 0, intuition: 50,
+      })).toBe(ThinkerClass.VISIONARY);
+    });
   });
 });
 

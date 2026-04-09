@@ -15,10 +15,21 @@ export interface UserStatsData {
 }
 
 export enum ThinkerClass {
-  STRATEGIST = 'STRATEGIST',
-  PHILOSOPHER = 'PHILOSOPHER',
-  SCHOLAR = 'SCHOLAR',
-  COMMANDER = 'COMMANDER',
-  SAGE = 'SAGE',
-  VISIONARY = 'VISIONARY',
+  // Base classes (1:1 with branches)
+  STRATEGIST = 'STRATEGIST',   // Strategy dominant
+  PHILOSOPHER = 'PHILOSOPHER', // Logic dominant
+  SCHOLAR = 'SCHOLAR',         // Erudition dominant
+  COMMANDER = 'COMMANDER',     // Rhetoric dominant
+  VISIONARY = 'VISIONARY',     // Intuition dominant
+
+  // Hybrid classes (top-2 branches close)
+  SAGE = 'SAGE',               // Strategy + Logic
+  WARLORD = 'WARLORD',         // Strategy + Rhetoric
+  SCIENTIST = 'SCIENTIST',     // Logic + Erudition
+  ANALYST = 'ANALYST',         // Logic + Intuition
+  ORACLE = 'ORACLE',           // Erudition + Intuition
+  DIPLOMAT = 'DIPLOMAT',       // Rhetoric + Intuition
+
+  // Balanced
+  POLYMATH = 'POLYMATH',       // All branches balanced
 }
