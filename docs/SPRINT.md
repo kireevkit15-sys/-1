@@ -178,21 +178,21 @@
 
 | # | Задача | Статус | Файлы |
 |---|--------|--------|-------|
-| FT.1 | Визуальное регрессионное тестирование: Playwright screenshots на 375/390/414/768/1024/1440px | todo | `apps/web/tests/visual/` |
-| FT.2 | E2E тест: полный флоу баттла — В бой → поиск → VS → 5 раундов → результат → профиль | todo | `apps/web/tests/e2e/battle.spec.ts` |
-| FT.3 | E2E тест: онбординг → регистрация → первый баттл с ботом | todo | `apps/web/tests/e2e/onboarding.spec.ts` |
-| FT.4 | E2E тест: обучение → модуль → 5 вопросов → прогресс обновился | todo | `apps/web/tests/e2e/learn.spec.ts` |
-| FT.5 | E2E тест: разминка → 5 вопросов → стрик +1 → повторная попытка = 409 | todo | `apps/web/tests/e2e/warmup.spec.ts` |
-| FT.6 | E2E тест: AI-чат → сообщение → ответ → история → новый диалог | todo | `apps/web/tests/e2e/ai-chat.spec.ts` |
-| FT.7 | Accessibility audit: axe-core на все страницы, контрасты, aria-labels, keyboard navigation | todo | `apps/web/tests/a11y/` |
-| FT.8 | Performance: Lighthouse CI на каждый PR (>90 perf, >95 a11y) | todo | `.github/workflows/lighthouse.yml` |
-| FT.9 | Unit-тесты хуков: useBattle, useAuth — все состояния и edge cases | todo | `apps/web/hooks/__tests__/` |
-| FT.10 | Unit-тесты компонентов: Button, Card, BottomNav, SideNav, RadarChart (vitest + testing-library) | todo | `apps/web/components/__tests__/` |
-| FT.11 | Тест offline-режима: отключить сеть → кеш → fallback → восстановление | todo | `apps/web/tests/e2e/offline.spec.ts` |
-| FT.12 | Тест push-уведомлений: подписка → получение → клик → переход | todo | `apps/web/tests/e2e/push.spec.ts` |
-| FT.13 | Cross-browser: Chrome, Safari, Firefox — анимации, glassmorphism, blur | todo | `apps/web/tests/cross-browser/` |
-| FT.14 | Memory leak тест: 10 баттлов подряд без перезагрузки, мониторинг JS heap | todo | `apps/web/tests/performance/` |
-| FT.15 | Тест звуковых эффектов: вкл/выкл, корректное воспроизведение, не блокирует UI | todo | `apps/web/tests/` |
+| FT.1 | Визуальное регрессионное тестирование: Playwright screenshots на 375/390/414/768/1024/1440px | done | `apps/web/tests/visual/screenshots.spec.ts` |
+| FT.2 | E2E тест: полный флоу баттла — В бой → поиск → VS → 5 раундов → результат → профиль | done | `apps/web/tests/e2e/battle.spec.ts` |
+| FT.3 | E2E тест: онбординг → регистрация → первый баттл с ботом | done | `apps/web/tests/e2e/onboarding.spec.ts` |
+| FT.4 | E2E тест: обучение → модуль → 5 вопросов → прогресс обновился | done | `apps/web/tests/e2e/learn.spec.ts` |
+| FT.5 | E2E тест: разминка → 5 вопросов → стрик +1 → повторная попытка = 409 | done | `apps/web/tests/e2e/warmup.spec.ts` |
+| FT.6 | E2E тест: AI-чат → сообщение → ответ → история → новый диалог | done | `apps/web/tests/e2e/ai-chat.spec.ts` |
+| FT.7 | Accessibility audit: axe-core на все страницы, контрасты, aria-labels, keyboard navigation | done | `apps/web/tests/a11y/accessibility.spec.ts` |
+| FT.8 | Performance: Lighthouse CI на каждый PR (>90 perf, >95 a11y) | done | `.github/workflows/lighthouse.yml` |
+| FT.9 | Unit-тесты хуков: useBattle, useAuth — все состояния и edge cases | done | `apps/web/hooks/__tests__/useAuth.test.ts` |
+| FT.10 | Unit-тесты компонентов: Button, Card, BottomNav, SideNav, RadarChart (vitest + testing-library) | done | `apps/web/components/__tests__/` |
+| FT.11 | Тест offline-режима: отключить сеть → кеш → fallback → восстановление | done | `apps/web/tests/e2e/offline.spec.ts` |
+| FT.12 | Тест push-уведомлений: подписка → получение → клик → переход | done | `apps/web/tests/e2e/push.spec.ts` |
+| FT.13 | Cross-browser: Chrome, Safari, Firefox — анимации, glassmorphism, blur | done | `apps/web/tests/cross-browser/rendering.spec.ts` |
+| FT.14 | Memory leak тест: 10 баттлов подряд без перезагрузки, мониторинг JS heap | done | `apps/web/tests/performance/memory.spec.ts` |
+| FT.15 | Тест звуковых эффектов: вкл/выкл, корректное воспроизведение, не блокирует UI | done | `apps/web/tests/sound-effects.test.ts` |
 
 ---
 
