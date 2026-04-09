@@ -7,6 +7,7 @@ import {
   Difficulty,
   DefenseType,
   BattleMode,
+  Branch,
 } from "@razum/shared";
 import { playBattleStart, playSelect, playCorrect, playWrong, playTick, playVictory, playDefeat } from "@/lib/sounds";
 import type { BattleState, BattleRound, BattleResult } from "@razum/shared";
@@ -62,6 +63,7 @@ function createMockBattle(): BattleState {
     totalRounds: 5,
     rounds: [],
     categories: MOCK_CATEGORIES,
+    branches: [Branch.STRATEGY, Branch.LOGIC, Branch.ERUDITION, Branch.RHETORIC, Branch.INTUITION],
     currentAttackerId: "player",
     currentDefenderId: "bot",
     timeLimit: 60,

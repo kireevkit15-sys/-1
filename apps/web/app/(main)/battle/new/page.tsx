@@ -7,6 +7,37 @@ import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import { playSelect, playBattleStart } from "@/lib/sounds";
 
+// Branch stats for comparison display
+const BRANCH_STATS = [
+  { label: "Стратегия", color: "bg-cyan-500", key: "strategy" },
+  { label: "Логика",    color: "bg-green-500", key: "logic" },
+  { label: "Эрудиция",  color: "bg-purple-500", key: "erudition" },
+  { label: "Риторика",  color: "bg-orange-500", key: "rhetoric" },
+  { label: "Интуиция",  color: "bg-pink-500",   key: "intuition" },
+] as const;
+
+// Default demo stat values when real data is unavailable
+const DEFAULT_STATS: Record<string, number> = {
+  strategy: 65,
+  logic: 72,
+  erudition: 58,
+  rhetoric: 80,
+  intuition: 45,
+};
+
+const DEFAULT_OPPONENT_STATS: Record<string, number> = {
+  strategy: 78,
+  logic: 60,
+  erudition: 85,
+  rhetoric: 55,
+  intuition: 70,
+};
+
+// Countdown steps: 3, 2, 1, GO
+const COUNTDOWN_STEPS = ["3", "2", "1", "GO!"];
+// Duration per step in ms
+const STEP_DURATION = 900;
+
 export default function NewBattlePage() {
   const router = useRouter();
   const {
@@ -20,77 +51,157 @@ export default function NewBattlePage() {
   } = useBattle();
 
   const [showOpponent, setShowOpponent] = useState(false);
+  // null = VS screen, 0-3 = countdown index
+  const [countdownStep, setCountdownStep] = useState<number | null>(null);
   const redirectTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const countdownInterval = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  // When battle starts, show opponent screen for 2.5s then redirect
+  // When battle starts, show VS screen then run countdown then redirect
   useEffect(() => {
     if (status === "in_battle" && battle) {
       setShowOpponent(true);
       playBattleStart();
+
+      // Show VS screen for 2s, then start countdown
       redirectTimer.current = setTimeout(() => {
-        router.push(`/battle/${battle.id}`);
-      }, 2500);
+        let step = 0;
+        setCountdownStep(0);
+
+        countdownInterval.current = setInterval(() => {
+          step += 1;
+          if (step < COUNTDOWN_STEPS.length) {
+            setCountdownStep(step);
+          } else {
+            // Countdown finished — navigate
+            clearInterval(countdownInterval.current!);
+            router.push(`/battle/${battle.id}`);
+          }
+        }, STEP_DURATION);
+      }, 2000);
     }
     return () => {
       if (redirectTimer.current) clearTimeout(redirectTimer.current);
+      if (countdownInterval.current) clearInterval(countdownInterval.current);
     };
   }, [status, battle, router]);
 
-  // -- Opponent found screen --------------------------------------------------
+  // -- Countdown overlay -----------------------------------------------------
+
+  if (showOpponent && battle && countdownStep !== null) {
+    const label = COUNTDOWN_STEPS[countdownStep];
+    const isGo = label === "GO!";
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90">
+        {/* key forces re-mount on each step so battle-slam reruns */}
+        <div key={countdownStep} className="battle-slam text-center select-none">
+          <span
+            className={
+              isGo
+                ? "text-[7rem] font-black text-metallic leading-none"
+                : "text-[10rem] font-black text-accent-gold leading-none"
+            }
+          >
+            {label}
+          </span>
+        </div>
+      </div>
+    );
+  }
+
+  // -- Opponent found / VS screen --------------------------------------------
 
   if (showOpponent && battle) {
+    const p1 = battle.player1;
     const opponent = battle.player2;
+    const p1Stats: Record<string, number> = (p1 as { stats?: Record<string, number> }).stats ?? DEFAULT_STATS;
+    const p2Stats: Record<string, number> = (opponent as { stats?: Record<string, number> }).stats ?? DEFAULT_OPPONENT_STATS;
+    const p1Rank: string = (p1 as { rank?: string }).rank ?? "Новичок";
+    const p2Rank: string = (opponent as { rank?: string }).rank ?? "Новичок";
+
     return (
-      <div className="px-4 pt-20 flex flex-col items-center justify-center min-h-[70vh] space-y-8">
-        <div className="text-center space-y-6">
-          <p className="text-sm text-accent-gold font-semibold uppercase tracking-wider battle-fade-up battle-stagger-1">
-            Соперник найден
-          </p>
+      <div className="px-4 pt-16 flex flex-col items-center justify-center min-h-[85vh] space-y-8">
+        {/* Label */}
+        <p className="text-sm text-accent-gold font-semibold uppercase tracking-wider battle-fade-up battle-stagger-1">
+          Соперник найден
+        </p>
 
-          {/* VS display */}
-          <div className="flex items-center justify-center gap-6 battle-scale-in">
-            {/* Player */}
-            <div className="flex flex-col items-center gap-2">
-              <div className="w-16 h-16 rounded-full bg-accent/20 flex items-center justify-center border-2 border-accent/30">
-                <span className="text-accent text-xl font-bold">
-                  {battle.player1.name.charAt(0).toUpperCase()}
-                </span>
-              </div>
-              <span className="text-sm font-medium text-text-primary max-w-[80px] truncate">
-                {battle.player1.name}
+        {/* Avatars + VS */}
+        <div className="flex items-center justify-center gap-8 battle-scale-in w-full max-w-xs">
+          {/* Player 1 */}
+          <div className="flex flex-col items-center gap-2 flex-1">
+            <div className="w-20 h-20 rounded-full bg-accent/20 flex items-center justify-center border-2 border-accent/40 shadow-[0_0_20px_rgba(107,107,207,0.25)]">
+              <span className="text-accent text-2xl font-black">
+                {p1.name.charAt(0).toUpperCase()}
               </span>
             </div>
-
-            {/* VS */}
-            <div className="battle-slam">
-              <span className="text-2xl font-bold text-accent-gold font-serif">VS</span>
-            </div>
-
-            {/* Opponent */}
-            <div className="flex flex-col items-center gap-2">
-              <div className="w-16 h-16 rounded-full bg-accent-red/20 flex items-center justify-center border-2 border-accent-red/30">
-                <span className="text-accent-red text-xl font-bold">
-                  {opponent.name.charAt(0).toUpperCase()}
-                </span>
-              </div>
-              <span className="text-sm font-medium text-text-primary max-w-[80px] truncate">
-                {opponent.name}
-              </span>
-            </div>
+            <span className="text-sm font-semibold text-text-primary max-w-[90px] truncate text-center">
+              {p1.name}
+            </span>
+            <span className="rank-badge text-xs px-2 py-0.5">
+              {p1Rank}
+            </span>
           </div>
 
-          <p className="text-text-muted text-sm battle-fade-up battle-stagger-3">
-            Баттл начинается...
-          </p>
+          {/* VS */}
+          <div className="battle-slam flex-shrink-0">
+            <span className="text-3xl font-black text-metallic font-serif">VS</span>
+          </div>
+
+          {/* Opponent */}
+          <div className="flex flex-col items-center gap-2 flex-1">
+            <div className="w-20 h-20 rounded-full bg-accent-red/20 flex items-center justify-center border-2 border-accent-red/40 shadow-[0_0_20px_rgba(192,57,43,0.25)]">
+              <span className="text-accent-red text-2xl font-black">
+                {opponent.name.charAt(0).toUpperCase()}
+              </span>
+            </div>
+            <span className="text-sm font-semibold text-text-primary max-w-[90px] truncate text-center">
+              {opponent.name}
+            </span>
+            <span className="rank-badge text-xs px-2 py-0.5">
+              {p2Rank}
+            </span>
+          </div>
+        </div>
+
+        {/* Branch stats comparison */}
+        <div className="w-full max-w-xs space-y-2 battle-fade-up battle-stagger-2">
+          {BRANCH_STATS.map(({ label, color, key }) => {
+            const v1 = p1Stats[key] ?? 50;
+            const v2 = p2Stats[key] ?? 50;
+            return (
+              <div key={key} className="flex items-center gap-2">
+                {/* Left bar (player 1) — grows leftward */}
+                <div className="flex-1 flex justify-end">
+                  <div className="w-full h-2 bg-surface-light rounded-full overflow-hidden flex justify-end">
+                    <div
+                      className={`h-full rounded-full ${color} opacity-80`}
+                      style={{ width: `${v1}%` }}
+                    />
+                  </div>
+                </div>
+                {/* Label */}
+                <span className="text-[10px] text-text-muted w-16 text-center shrink-0 leading-tight">
+                  {label}
+                </span>
+                {/* Right bar (opponent) — grows rightward */}
+                <div className="flex-1">
+                  <div className="w-full h-2 bg-surface-light rounded-full overflow-hidden">
+                    <div
+                      className={`h-full rounded-full ${color} opacity-60`}
+                      style={{ width: `${v2}%` }}
+                    />
+                  </div>
+                </div>
+              </div>
+            );
+          })}
         </div>
 
         {/* Loading bar */}
         <div className="w-48 h-1 bg-surface-light rounded-full overflow-hidden battle-fade-up battle-stagger-3">
           <div
             className="h-full rounded-full bg-gradient-to-r from-accent to-accent-gold"
-            style={{
-              animation: "battle-load-bar 2.5s ease-in-out forwards",
-            }}
+            style={{ animation: "battle-load-bar 2s ease-in-out forwards" }}
           />
         </div>
       </div>

@@ -172,6 +172,71 @@ function ScoreBar({ battle }: { battle: BattleState }) {
 }
 
 // ---------------------------------------------------------------------------
+// Branch config for CATEGORY_SELECT
+// ---------------------------------------------------------------------------
+
+const BRANCH_CONFIG = [
+  {
+    key: "STRATEGY",
+    label: "Стратегия",
+    cssClass: "branch-strategy",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="currentColor" className="w-7 h-7" aria-hidden="true">
+        <path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5z" />
+        <path d="M19 19H5a1 1 0 010-2h14a1 1 0 010 2z" />
+      </svg>
+    ),
+  },
+  {
+    key: "LOGIC",
+    label: "Логика",
+    cssClass: "branch-logic",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-7 h-7" aria-hidden="true">
+        <circle cx="6" cy="6" r="2" />
+        <circle cx="18" cy="6" r="2" />
+        <circle cx="6" cy="18" r="2" />
+        <circle cx="18" cy="18" r="2" />
+        <circle cx="12" cy="12" r="2" />
+        <path d="M8 6h4M14 6h2M8 18h4M14 18h2M6 8v4M6 14v2M18 8v4M18 14v2M10 12h4" />
+      </svg>
+    ),
+  },
+  {
+    key: "ERUDITION",
+    label: "Эрудиция",
+    cssClass: "branch-erudition",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-7 h-7" aria-hidden="true">
+        <path d="M4 19.5A2.5 2.5 0 016.5 17H20" />
+        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z" />
+      </svg>
+    ),
+  },
+  {
+    key: "RHETORIC",
+    label: "Риторика",
+    cssClass: "branch-rhetoric",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-7 h-7" aria-hidden="true">
+        <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
+      </svg>
+    ),
+  },
+  {
+    key: "INTUITION",
+    label: "Интуиция",
+    cssClass: "branch-intuition",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-7 h-7" aria-hidden="true">
+        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+        <circle cx="12" cy="12" r="3" />
+      </svg>
+    ),
+  },
+] as const;
+
+// ---------------------------------------------------------------------------
 // Difficulty configs
 // ---------------------------------------------------------------------------
 
@@ -248,6 +313,46 @@ const defenseConfig = [
 ];
 
 // ---------------------------------------------------------------------------
+// CountUpNumber component — animates from 0 to target value
+// ---------------------------------------------------------------------------
+
+function CountUpNumber({ target, className }: { target: number; className?: string }) {
+  const [displayed, setDisplayed] = useState(0);
+
+  useEffect(() => {
+    if (target === 0) { setDisplayed(0); return; }
+    const duration = 600; // ms
+    const steps = 20;
+    const stepMs = duration / steps;
+    let step = 0;
+    const timer = setInterval(() => {
+      step += 1;
+      setDisplayed(Math.round((target * step) / steps));
+      if (step >= steps) clearInterval(timer);
+    }, stepMs);
+    return () => clearInterval(timer);
+  }, [target]);
+
+  return <span className={className}>{displayed}</span>;
+}
+
+// ---------------------------------------------------------------------------
+// FloatingXP component
+// ---------------------------------------------------------------------------
+
+function FloatingXP({ xp }: { xp: number }) {
+  return (
+    <span
+      className="float-number text-accent-gold select-none"
+      style={{ left: "50%", transform: "translateX(-50%)", bottom: "100%", marginBottom: "4px" }}
+      aria-hidden="true"
+    >
+      +{xp} XP
+    </span>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // Victory particles
 // ---------------------------------------------------------------------------
 
@@ -310,6 +415,7 @@ export default function BattlePage() {
   const [selectedDifficulty, setSelectedDifficulty] =
     useState<Difficulty | null>(null);
   const [shakeScreen, setShakeScreen] = useState(false);
+  const [floatingXp, setFloatingXp] = useState<number | null>(null);
 
   const timerActive =
     !!battle &&
@@ -330,13 +436,19 @@ export default function BattlePage() {
     }
   }, [battle]);
 
-  // Play victory/defeat sound when battle finishes
+  // Play victory/defeat sound when battle finishes; show total XP
   useEffect(() => {
     if (status === "finished" && result && battle) {
       const isWin = result.winnerId === battle.player1.id;
       const isDraw = result.winnerId === null;
       if (isWin) playVictory();
       else if (!isDraw) playDefeat();
+      const xp = result.xpGained[battle.player1.id];
+      if (xp != null && xp > 0) {
+        setFloatingXp(xp);
+        const t = setTimeout(() => setFloatingXp(null), 1200);
+        return () => clearTimeout(t);
+      }
     }
   }, [status, result, battle]);
 
@@ -370,6 +482,18 @@ export default function BattlePage() {
   useEffect(() => {
     setSelectedDifficulty(null);
   }, [battle?.phase]);
+
+  // Trigger floating XP on ROUND_RESULT when points were awarded
+  useEffect(() => {
+    if (battle?.phase === BattlePhase.ROUND_RESULT) {
+      const lastRound = battle.rounds[battle.rounds.length - 1];
+      if (lastRound && lastRound.pointsAwarded > 0) {
+        setFloatingXp(lastRound.pointsAwarded);
+        const t = setTimeout(() => setFloatingXp(null), 1200);
+        return () => clearTimeout(t);
+      }
+    }
+  }, [battle?.phase, battle?.rounds]);
 
   const handleAttack = useCallback(
     (answerIndex: number) => {
@@ -405,14 +529,15 @@ export default function BattlePage() {
       const numKey = parseInt(e.key, 10);
       const isNum = numKey >= 1 && numKey <= 9;
 
-      // CATEGORY_SELECT — 1..N selects category
+      // CATEGORY_SELECT — 1..5 selects branch card by visible order
       if (battle.phase === BattlePhase.CATEGORY_SELECT) {
         const isMyTurn = battle.currentAttackerId === battle.player1.id;
-        const cat = battle.categories[numKey - 1];
-        if (isMyTurn && isNum && numKey <= battle.categories.length && cat) {
+        const visibleBranches = BRANCH_CONFIG.filter(b => battle.categories.includes(b.key));
+        const branch = visibleBranches[numKey - 1];
+        if (isMyTurn && isNum && numKey <= visibleBranches.length && branch) {
           e.preventDefault();
           playSelect();
-          selectCategory(cat);
+          selectCategory(branch.key);
         }
         return;
       }
@@ -541,19 +666,22 @@ export default function BattlePage() {
           <div className="space-y-3">
             {/* XP gained */}
             {battle && result.xpGained[battle.player1.id] != null && (
-              <Card padding="sm" className="battle-fade-up battle-stagger-2">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-accent-gold">
-                      <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" />
-                    </svg>
-                    <span className="text-sm text-text-secondary">Опыт</span>
+              <div className="relative">
+                {floatingXp !== null && <FloatingXP xp={floatingXp} />}
+                <Card padding="sm" className="battle-fade-up battle-stagger-2">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-accent-gold">
+                        <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" />
+                      </svg>
+                      <span className="text-sm text-text-secondary">Опыт</span>
+                    </div>
+                    <span className="text-lg font-bold text-accent-gold font-mono">
+                      +{result.xpGained[battle.player1.id]} XP
+                    </span>
                   </div>
-                  <span className="text-lg font-bold text-accent-gold font-mono">
-                    +{result.xpGained[battle.player1.id]} XP
-                  </span>
-                </div>
-              </Card>
+                </Card>
+              </div>
             )}
 
             {/* Rating change */}
@@ -639,31 +767,29 @@ export default function BattlePage() {
 
         {isMyTurn ? (
           <div className="space-y-3">
-            {battle.categories.map((cat, idx) => {
-              const styles = [
-                "bg-accent-red/10 text-accent-red border-accent-red/25 hover:border-accent-red/50",
-                "bg-accent-gold/10 text-accent-gold border-accent-gold/25 hover:border-accent-gold/50",
-                "bg-accent/10 text-accent border-accent/25 hover:border-accent/50",
-                "bg-accent-warm/10 text-accent-warm border-accent-warm/25 hover:border-accent-warm/50",
-                "bg-accent-silver/10 text-accent-silver border-accent-silver/25 hover:border-accent-silver/50",
-                "bg-accent-muted/10 text-accent-muted border-accent-muted/25 hover:border-accent-muted/50",
-              ];
-              return (
+            {(() => {
+              const visibleBranches = BRANCH_CONFIG.filter(b => battle.categories.includes(b.key));
+              return visibleBranches.map((branch, visIdx) => (
                 <button
-                  key={cat}
-                  onClick={() => { playSelect(); selectCategory(cat); }}
-                  className={`w-full flex items-center gap-4 p-4 rounded-2xl border transition-all active:scale-[0.98] ${styles[idx % styles.length]}`}
+                  key={branch.key}
+                  onClick={() => { playSelect(); selectCategory(branch.key); }}
+                  className={`${branch.cssClass} branch-card hover-branch-glow w-full flex items-center gap-4 p-4 rounded-2xl transition-all active:scale-[0.98]`}
                 >
-                  <span className="hidden md:inline-flex w-6 h-6 items-center justify-center rounded-md bg-surface-light/60 text-xs font-mono text-text-muted">
-                    {idx + 1}
+                  {/* Keyboard hint */}
+                  <span className="hidden md:inline-flex w-6 h-6 flex-shrink-0 items-center justify-center rounded-md bg-surface-light/60 text-xs font-mono text-text-muted">
+                    {visIdx + 1}
                   </span>
-                  <span className="text-lg font-serif font-bold md:hidden">
-                    {cat.charAt(0)}
+                  {/* Icon */}
+                  <span className="branch-icon flex-shrink-0 w-11 h-11 rounded-xl flex items-center justify-center">
+                    {branch.icon}
                   </span>
-                  <span className="font-semibold">{cat}</span>
+                  {/* Label */}
+                  <span className="font-semibold text-base" style={{ color: "var(--branch-hex)" }}>
+                    {branch.label}
+                  </span>
                 </button>
-              );
-            })}
+              ));
+            })()}
           </div>
         ) : (
           <div className="flex justify-center pt-8">
@@ -850,7 +976,7 @@ export default function BattlePage() {
                   <path d="M19 21l2-2" />
                 </svg>
                 <span className="text-4xl font-bold text-accent-red font-mono">
-                  -{lastRound!.damageDealt} HP
+                  -<CountUpNumber target={lastRound!.damageDealt} /> HP
                 </span>
               </div>
             ) : (
@@ -865,23 +991,63 @@ export default function BattlePage() {
             )}
           </div>
 
+          {/* Answer result highlighting */}
+          {lastRound && lastRound.attackerAnswer !== undefined && (
+            <div className="space-y-2">
+              <p className="text-xs text-text-muted uppercase tracking-wide">Ответы</p>
+              {[0, 1, 2, 3].map((idx) => {
+                const isPlayerChoice = idx === lastRound.attackerAnswer;
+                const isCorrect = isPlayerChoice && lastRound.attackerCorrect;
+                const isWrong = isPlayerChoice && !lastRound.attackerCorrect;
+                if (!isPlayerChoice) return null;
+                return (
+                  <div
+                    key={idx}
+                    className="flex items-center gap-3 p-3 rounded-xl border text-sm font-medium"
+                    style={
+                      isCorrect
+                        ? { borderColor: "#22C55E", backgroundColor: "rgba(34,197,94,0.08)", color: "#22C55E" }
+                        : isWrong
+                        ? { borderColor: "#C0392B", backgroundColor: "rgba(192,57,43,0.08)", color: "#C0392B" }
+                        : {}
+                    }
+                  >
+                    {isCorrect ? (
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 flex-shrink-0">
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
+                    ) : (
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 flex-shrink-0">
+                        <path d="M18 6L6 18M6 6l12 12" />
+                      </svg>
+                    )}
+                    <span>Вариант {idx + 1} — {isCorrect ? "Верно" : "Неверно"}</span>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
           {/* Stats cards */}
           {lastRound && (
             <div className="space-y-3">
               {/* Points earned */}
-              <Card padding="sm" className="battle-fade-up battle-stagger-1">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-accent-gold">
-                      <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" />
-                    </svg>
-                    <span className="text-sm text-text-secondary">Очки</span>
+              <div className="relative">
+                {floatingXp !== null && <FloatingXP xp={floatingXp} />}
+                <Card padding="sm" className="battle-fade-up battle-stagger-1">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-accent-gold">
+                        <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" />
+                      </svg>
+                      <span className="text-sm text-text-secondary">Очки</span>
+                    </div>
+                    <span className="text-lg font-bold text-accent-gold font-mono">
+                      +<CountUpNumber target={lastRound.pointsAwarded} />
+                    </span>
                   </div>
-                  <span className="text-lg font-bold text-accent-gold font-mono">
-                    +{lastRound.pointsAwarded}
-                  </span>
-                </div>
-              </Card>
+                </Card>
+              </div>
 
               {/* Attack accuracy */}
               <Card padding="sm" className="battle-fade-up battle-stagger-2">
