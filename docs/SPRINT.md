@@ -130,9 +130,9 @@
 
 | # | Задача | Статус | Файлы |
 |---|--------|--------|-------|
-| F8.1 | Дерево знаний: визуальная карта 5 веток → 25 категорий, прогресс по каждой | todo | `apps/web/app/(main)/learn/page.tsx` |
+| F8.1 | Дерево знаний: визуальная карта 5 веток → 25 категорий, прогресс по каждой | done | `apps/web/app/(main)/learn/page.tsx` |
 | F8.2 | Двухколоночный layout модулей на desktop, карточки с progress bar и иконкой ветки | done | дубль F5.9 |
-| F8.3 | Экран модуля: вопросы с анимацией перехода, прогресс сверху, результат в конце | todo | `apps/web/app/(main)/learn/[moduleId]/page.tsx` |
+| F8.3 | Экран модуля: вопросы с анимацией перехода, прогресс сверху, результат в конце | done | `apps/web/app/(main)/learn/[moduleId]/page.tsx` |
 | F8.4 | AI-чат: расширенный layout на desktop, markdown рендер, code blocks | todo | `apps/web/app/(main)/chat/page.tsx` |
 | F8.5 | Страница разминки: 5 вопросов, streak counter, мотивационное сообщение | todo | `apps/web/app/(main)/warmup/page.tsx` |
 
