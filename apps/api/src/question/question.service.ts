@@ -1,9 +1,10 @@
-import { Injectable, Logger, NotFoundException, HttpException, HttpStatus } from '@nestjs/common';
-import { Question } from '@prisma/client';
-import { PrismaService } from '../prisma/prisma.service';
-import { AiService } from '../ai/ai.service';
-import { KnowledgeService } from '../knowledge/knowledge.service';
-import {
+import { Injectable, Inject, Logger, NotFoundException, HttpException, HttpStatus, forwardRef } from '@nestjs/common';
+import type { Question } from '@prisma/client';
+import type { PrismaService } from '../prisma/prisma.service';
+import type { AiService } from '../ai/ai.service';
+import type { KnowledgeService } from '../knowledge/knowledge.service';
+import { StatsService } from '../stats/stats.service';
+import type {
   CreateQuestionDto,
   UpdateQuestionDto,
 } from './dto/create-question.dto';
@@ -16,6 +17,8 @@ export class QuestionService {
     private readonly prisma: PrismaService,
     private readonly aiService: AiService,
     private readonly knowledgeService: KnowledgeService,
+    @Inject(forwardRef(() => StatsService))
+    private readonly statsService: StatsService,
   ) {}
 
   async findAll(filters: {
@@ -218,12 +221,27 @@ export class QuestionService {
   }
 
   /**
-   * BC7 — Adaptive question selection with AI fallback.
+   * B17.3 — Determine difficulty based on player's branch rating.
+   * Rating < 900 → BRONZE, 900–1100 → SILVER, > 1100 → GOLD.
+   */
+  async getAdaptiveDifficulty(
+    userId: string,
+    branch?: 'STRATEGY' | 'LOGIC' | 'ERUDITION' | 'RHETORIC' | 'INTUITION',
+  ): Promise<'BRONZE' | 'SILVER' | 'GOLD'> {
+    const rating = await this.statsService.getBranchRating(userId, branch as any);
+    if (rating < 900) return 'BRONZE';
+    if (rating <= 1100) return 'SILVER';
+    return 'GOLD';
+  }
+
+  /**
+   * BC7 + B17.3 — Adaptive question selection with AI fallback.
    *
-   * 1. Try to get questions from DB matching criteria
-   * 2. If not enough — search KnowledgeService for context
-   * 3. Generate missing questions via AiService using RAG context
-   * 4. Save generated questions to DB for future use
+   * 1. If no difficulty specified and userId provided, auto-select by branch rating
+   * 2. Try to get questions from DB matching criteria
+   * 3. If not enough — search KnowledgeService for context
+   * 4. Generate missing questions via AiService using RAG context
+   * 5. Save generated questions to DB for future use
    */
   async getForBattle(params: {
     branch?: 'STRATEGY' | 'LOGIC' | 'ERUDITION' | 'RHETORIC' | 'INTUITION';
@@ -231,12 +249,21 @@ export class QuestionService {
     category?: string;
     excludeIds?: string[];
     count?: number;
+    userId?: string;
   }) {
     const count = params.count || 5;
+
+    // B17.3: Auto-select difficulty if not specified and userId provided
+    let difficulty = params.difficulty;
+    if (!difficulty && params.userId) {
+      difficulty = await this.getAdaptiveDifficulty(params.userId, params.branch);
+      this.logger.log(`B17.3: Adaptive difficulty for user ${params.userId}: ${difficulty} (branch=${params.branch ?? 'overall'})`);
+    }
 
     // Step 1: Try DB first (don't throw on empty — AI fallback below)
     const dbQuestions = await this.getRandomForBattle({
       ...params,
+      difficulty,
       count,
       throwOnEmpty: false,
     });
@@ -252,7 +279,7 @@ export class QuestionService {
 
     const needed = count - dbQuestions.length;
     const branch = params.branch ?? 'ERUDITION';
-    const difficulty = params.difficulty ?? 'BRONZE';
+    const finalDifficulty = difficulty ?? params.difficulty ?? 'BRONZE';
     const category = params.category ?? 'Общие знания';
 
     // Step 2: Get RAG context from knowledge base
@@ -277,7 +304,7 @@ export class QuestionService {
         subcategoryRu: category,
         topicRu: category,
         branch,
-        difficulty,
+        difficulty: finalDifficulty,
         count: needed,
         existingQuestions: existingTexts,
         bloggerContext: bloggerContext || undefined,
@@ -295,7 +322,7 @@ export class QuestionService {
               explanation: q.explanation,
               category,
               branch,
-              difficulty,
+              difficulty: finalDifficulty,
               statPrimary: branch === 'STRATEGY' ? 'strategyXp'
               : branch === 'LOGIC' ? 'logicXp'
               : branch === 'ERUDITION' ? 'eruditionXp'

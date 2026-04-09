@@ -6,8 +6,8 @@ import {
   ApiQuery,
   ApiResponse,
 } from '@nestjs/swagger';
-import { StatsService } from './stats.service';
-import { LeaderboardService } from './leaderboard.service';
+import type { StatsService } from './stats.service';
+import type { LeaderboardService } from './leaderboard.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @ApiTags('Stats')
@@ -41,6 +41,20 @@ export class StatsController {
   @Get('me/battles')
   async getMyBattleStats(@Request() req: any) {
     return this.statsService.getBattleStats(req.user.sub);
+  }
+
+  @ApiOperation({ summary: 'Слабые ветки и категории (по % правильных ответов)' })
+  @ApiResponse({ status: 200, description: 'Анализ слабых мест: ветки и категории с низкой точностью' })
+  @Get('me/weaknesses')
+  async getMyWeaknesses(@Request() req: any) {
+    return this.statsService.getWeaknesses(req.user.sub);
+  }
+
+  @ApiOperation({ summary: 'Рекомендации модулей для прокачки слабых веток' })
+  @ApiResponse({ status: 200, description: 'Модули и категории для тренировки' })
+  @Get('me/recommendations')
+  async getMyRecommendations(@Request() req: any) {
+    return this.statsService.getRecommendations(req.user.sub);
   }
 
   @ApiOperation({ summary: 'Лидерборд (с Redis-кешем 5 мин)' })

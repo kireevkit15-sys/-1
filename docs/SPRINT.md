@@ -329,11 +329,11 @@
 
 | # | Задача | Статус | Файлы |
 |---|--------|--------|-------|
-| B17.1 | GET /stats/me/weaknesses — слабые ветки и категории (по % правильных) | todo | `apps/api/src/stats/` |
-| B17.2 | GET /stats/me/recommendations — рекомендации модулей для прокачки слабых веток | todo | `apps/api/src/stats/` |
-| B17.3 | Адаптивный подбор: сложность вопросов по рейтингу игрока в конкретной ветке | todo | `apps/api/src/question/question.service.ts` |
-| B17.4 | Token usage tracking: расход токенов AI по дням, лимиты, алерты | todo | `apps/api/src/ai/`, `prisma/schema.prisma` |
-| B17.5 | Rate limiting v2: per-user daily AI quota (диалоги + генерация) | todo | `apps/api/src/ai/ai.controller.ts` |
+| B17.1 | GET /stats/me/weaknesses — слабые ветки и категории (по % правильных) | done | `apps/api/src/stats/stats.service.ts`, `apps/api/src/stats/stats.controller.ts` |
+| B17.2 | GET /stats/me/recommendations — рекомендации модулей для прокачки слабых веток | done | `apps/api/src/stats/stats.service.ts`, `apps/api/src/stats/stats.controller.ts` |
+| B17.3 | Адаптивный подбор: сложность вопросов по рейтингу игрока в конкретной ветке | done | `apps/api/src/question/question.service.ts`, `apps/api/src/question/question.module.ts` |
+| B17.4 | Token usage tracking: расход токенов AI по дням, лимиты, алерты | done | `apps/api/src/ai/ai.service.ts`, `prisma/schema.prisma`, `prisma/migrations/20260409300000_add_ai_token_usage/` |
+| B17.5 | Rate limiting v2: per-user daily AI quota (диалоги + генерация) | done | `apps/api/src/ai/ai.controller.ts`, `apps/api/src/ai/ai.service.ts` |
 
 ## Блок 18 — Инфраструктура
 

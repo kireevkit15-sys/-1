@@ -1,12 +1,15 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import type { ConfigService } from '@nestjs/config';
+import type { PrismaService } from '../prisma/prisma.service';
+import type {
+  QuestionGeneratorParams} from './prompts/question-generator';
 import {
-  buildQuestionGeneratorPrompt,
-  QuestionGeneratorParams,
+  buildQuestionGeneratorPrompt
 } from './prompts/question-generator';
+import type {
+  SocraticTutorParams} from './prompts/socratic-tutor';
 import {
-  buildSocraticTutorPrompt,
-  SocraticTutorParams,
+  buildSocraticTutorPrompt
 } from './prompts/socratic-tutor';
 
 // ── Types for AI service methods ──────────────────────────────────────
@@ -25,6 +28,7 @@ export interface SocraticMessage {
 
 export interface SocraticChatParams extends SocraticTutorParams {
   messages: SocraticMessage[];
+  userId?: string;
 }
 
 export interface ContentConcept {
@@ -59,7 +63,10 @@ export class AiService {
   private readonly modelFast: string;
   private readonly modelSmart: string;
 
-  constructor(private readonly configService: ConfigService) {
+  constructor(
+    private readonly configService: ConfigService,
+    private readonly prisma: PrismaService,
+  ) {
     this.apiKey = this.configService.get<string>('AI_API_KEY', '');
     this.baseUrl = this.configService.get<string>(
       'AI_BASE_URL',
@@ -87,7 +94,7 @@ export class AiService {
 
   private async chat(
     messages: ChatMessage[],
-    options: { model?: string; maxTokens?: number } = {},
+    options: { model?: string; maxTokens?: number; userId?: string; operation?: string } = {},
   ): Promise<string> {
     const model = options.model ?? this.modelFast;
     const maxTokens = options.maxTokens ?? 1024;
@@ -117,9 +124,150 @@ export class AiService {
       this.logger.log(
         `AI usage: model=${model} in=${data.usage.prompt_tokens} out=${data.usage.completion_tokens}`,
       );
+
+      // B17.4: Track token usage in DB
+      this.trackTokenUsage({
+        userId: options.userId,
+        model,
+        operation: options.operation ?? 'unknown',
+        promptTokens: data.usage.prompt_tokens,
+        completionTokens: data.usage.completion_tokens,
+      }).catch((err) => {
+        this.logger.warn(`Failed to track token usage: ${(err as Error).message}`);
+      });
     }
 
     return data.choices?.[0]?.message?.content ?? '';
+  }
+
+  /**
+   * B17.4 — Record token usage to DB.
+   */
+  private async trackTokenUsage(params: {
+    userId?: string;
+    model: string;
+    operation: string;
+    promptTokens: number;
+    completionTokens: number;
+  }) {
+    const date = new Date().toISOString().slice(0, 10);
+    await this.prisma.aiTokenUsage.create({
+      data: {
+        userId: params.userId || null,
+        date,
+        model: params.model,
+        operation: params.operation,
+        promptTokens: params.promptTokens,
+        completionTokens: params.completionTokens,
+        totalTokens: params.promptTokens + params.completionTokens,
+      },
+    });
+  }
+
+  /**
+   * B17.4 — Get token usage summary for admin dashboard.
+   */
+  async getTokenUsageSummary(days = 7) {
+    const since = new Date();
+    since.setDate(since.getDate() - days);
+    const sinceDate = since.toISOString().slice(0, 10);
+
+    const [byDay, byOperation, byUser, totals] = await Promise.all([
+      this.prisma.$queryRaw<{ date: string; total_tokens: bigint; requests: bigint }[]>`
+        SELECT date,
+               SUM("totalTokens")::bigint AS total_tokens,
+               COUNT(id)::bigint AS requests
+        FROM ai_token_usage
+        WHERE date >= ${sinceDate}
+        GROUP BY date
+        ORDER BY date DESC
+      `,
+      this.prisma.$queryRaw<{ operation: string; total_tokens: bigint; requests: bigint }[]>`
+        SELECT operation,
+               SUM("totalTokens")::bigint AS total_tokens,
+               COUNT(id)::bigint AS requests
+        FROM ai_token_usage
+        WHERE date >= ${sinceDate}
+        GROUP BY operation
+        ORDER BY total_tokens DESC
+      `,
+      this.prisma.$queryRaw<{ user_id: string; name: string; total_tokens: bigint; requests: bigint }[]>`
+        SELECT t."userId" AS user_id, u.name,
+               SUM(t."totalTokens")::bigint AS total_tokens,
+               COUNT(t.id)::bigint AS requests
+        FROM ai_token_usage t
+        LEFT JOIN users u ON u.id = t."userId"
+        WHERE t.date >= ${sinceDate} AND t."userId" IS NOT NULL
+        GROUP BY t."userId", u.name
+        ORDER BY total_tokens DESC
+        LIMIT 20
+      `,
+      this.prisma.$queryRaw<{ total_tokens: bigint; total_prompt: bigint; total_completion: bigint; requests: bigint }[]>`
+        SELECT SUM("totalTokens")::bigint AS total_tokens,
+               SUM("promptTokens")::bigint AS total_prompt,
+               SUM("completionTokens")::bigint AS total_completion,
+               COUNT(id)::bigint AS requests
+        FROM ai_token_usage
+        WHERE date >= ${sinceDate}
+      `,
+    ]);
+
+    const t = totals[0];
+
+    return {
+      period: { days, since: sinceDate },
+      totals: {
+        tokens: Number(t?.total_tokens ?? 0),
+        promptTokens: Number(t?.total_prompt ?? 0),
+        completionTokens: Number(t?.total_completion ?? 0),
+        requests: Number(t?.requests ?? 0),
+      },
+      byDay: byDay.map((d) => ({
+        date: d.date,
+        tokens: Number(d.total_tokens),
+        requests: Number(d.requests),
+      })),
+      byOperation: byOperation.map((o) => ({
+        operation: o.operation,
+        tokens: Number(o.total_tokens),
+        requests: Number(o.requests),
+      })),
+      topUsers: byUser.map((u) => ({
+        userId: u.user_id,
+        name: u.name,
+        tokens: Number(u.total_tokens),
+        requests: Number(u.requests),
+      })),
+    };
+  }
+
+  /**
+   * B17.5 — Check if user has exceeded daily AI quota.
+   * Returns remaining quota info.
+   */
+  async checkDailyQuota(userId: string): Promise<{
+    used: number;
+    limit: number;
+    remaining: number;
+    exceeded: boolean;
+  }> {
+    const DAILY_TOKEN_LIMIT = 50000; // 50k tokens per day per user
+    const today = new Date().toISOString().slice(0, 10);
+
+    const result = await this.prisma.$queryRaw<{ total: bigint }[]>`
+      SELECT COALESCE(SUM("totalTokens"), 0)::bigint AS total
+      FROM ai_token_usage
+      WHERE "userId" = ${userId}::uuid AND date = ${today}
+    `;
+
+    const used = Number(result[0]?.total ?? 0);
+
+    return {
+      used,
+      limit: DAILY_TOKEN_LIMIT,
+      remaining: Math.max(0, DAILY_TOKEN_LIMIT - used),
+      exceeded: used >= DAILY_TOKEN_LIMIT,
+    };
   }
 
   // ── Public methods ─────────────────────────────────────────────────
@@ -128,6 +276,7 @@ export class AiService {
     question: string,
     correctAnswer: string,
     userAnswer: string,
+    userId?: string,
   ): Promise<string> {
     try {
       return await this.chat([
@@ -135,21 +284,21 @@ export class AiService {
           role: 'user',
           content: `Вопрос: "${question}"\nПравильный ответ: "${correctAnswer}"\nОтвет пользователя: "${userAnswer}"\n\nОбъясни кратко и понятно, почему правильный ответ именно такой. Если пользователь ответил неправильно, объясни его ошибку. Отвечай на русском языке.`,
         },
-      ], { maxTokens: 512 });
+      ], { maxTokens: 512, userId, operation: 'explanation' });
     } catch (error) {
       this.logger.error('Failed to generate AI explanation', error);
       return 'Не удалось сгенерировать объяснение.';
     }
   }
 
-  async generateHint(question: string, options: string[]): Promise<string> {
+  async generateHint(question: string, options: string[], userId?: string): Promise<string> {
     try {
       return await this.chat([
         {
           role: 'user',
           content: `Вопрос: "${question}"\nВарианты: ${options.join(', ')}\n\nДай небольшую подсказку, не раскрывая правильный ответ напрямую. Отвечай на русском языке.`,
         },
-      ], { maxTokens: 256 });
+      ], { maxTokens: 256, userId, operation: 'hint' });
     } catch (error) {
       this.logger.error('Failed to generate AI hint', error);
       return 'Не удалось сгенерировать подсказку.';
@@ -171,7 +320,7 @@ export class AiService {
 
       const raw = await this.chat(
         [{ role: 'user', content: prompt }],
-        { maxTokens: 4096 },
+        { maxTokens: 4096, operation: 'question_generation' },
       );
 
       const parsed = this.parseJsonArray<GeneratedQuestion>(raw);
@@ -215,7 +364,7 @@ export class AiService {
         })),
       ];
 
-      return await this.chat(chatMessages, { maxTokens: 1024 });
+      return await this.chat(chatMessages, { maxTokens: 1024, userId: params.userId, operation: 'dialogue' });
     } catch (error) {
       this.logger.error(
         `socraticChat failed: topic="${topic}"`,
@@ -270,7 +419,7 @@ ${text}
 
       const raw = await this.chat(
         [{ role: 'user', content: prompt }],
-        { maxTokens: 4096 },
+        { maxTokens: 4096, operation: 'concept_extraction' },
       );
 
       const parsed = this.parseJsonArray<ContentConcept>(raw);

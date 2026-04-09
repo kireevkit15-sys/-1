@@ -541,6 +541,30 @@
 - `47e0e00` — feat(achievements): v2 — 25 branch-specific achievements + auto-check on XP gain (B16.4)
 - `578d897` — feat(user): GET /users/:id/compare — VS screen profile comparison (B16.5)
 
+### 2026-04-09 — Сессия 9: Блок 17 — Аналитика и умные фичи (B17.1–B17.5)
+
+**Время:** ~2 часа
+**Статус:** Завершена
+
+**Что сделано:**
+- **B17.1 — GET /stats/me/weaknesses:** Анализ слабых веток (% правильных из battle_rounds) и категорий (raw SQL, MIN 3 ответа). Возвращает: branches sorted by accuracy, categories sorted by accuracy, xpByBranch, weakestBranch.
+- **B17.2 — GET /stats/me/recommendations:** Рекомендации модулей для прокачки слабых веток. Логика: ветки с accuracy <70% → модули этих веток. Если нет слабых — ветки с наименьшим XP. До 5 незавершённых модулей + категории для практики.
+- **B17.3 — Адаптивный подбор сложности:** getAdaptiveDifficulty() определяет сложность по branch rating: <900 → BRONZE, 900–1100 → SILVER, >1100 → GOLD. Интеграция в getForBattle() — если difficulty не указан и есть userId, автоподбор.
+- **B17.4 — Token usage tracking:** Новая таблица AiTokenUsage (Prisma + миграция). AiService.chat() автоматически записывает promptTokens/completionTokens/model/operation. Admin endpoint GET /ai/tokens/usage — сводка по дням, операциям, топ-юзерам.
+- **B17.5 — Per-user daily AI quota:** checkDailyQuota() — 50k токенов/день на юзера. Проверка в createDialogue и sendMessage. GET /ai/quota — текущее состояние квоты. Увеличен лимит диалогов с 1 до 5 в день.
+
+**Файлы созданы/изменены:**
+- `apps/api/src/stats/stats.service.ts` — getWeaknesses(), getRecommendations()
+- `apps/api/src/stats/stats.controller.ts` — GET me/weaknesses, GET me/recommendations
+- `apps/api/src/question/question.service.ts` — getAdaptiveDifficulty(), обновлён getForBattle()
+- `apps/api/src/question/question.module.ts` — импорт StatsModule
+- `apps/api/src/ai/ai.service.ts` — trackTokenUsage(), getTokenUsageSummary(), checkDailyQuota()
+- `apps/api/src/ai/ai.controller.ts` — GET tokens/usage, GET quota, проверка квоты
+- `prisma/schema.prisma` — модель AiTokenUsage
+- `prisma/migrations/20260409300000_add_ai_token_usage/migration.sql`
+
+**Задачи из SPRINT.md закрыты:** B17.1, B17.2, B17.3, B17.4, B17.5
+
 ---
 
 ## Сводка по неделям

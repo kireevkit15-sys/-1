@@ -17,17 +17,20 @@ import {
   ApiOperation,
   ApiBearerAuth,
   ApiParam,
+  ApiQuery,
+  ApiResponse,
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { PrismaService } from '../prisma/prisma.service';
-import { RedisService } from '../redis/redis.service';
-import { AiService, SocraticMessage } from './ai.service';
-import { CreateDialogueDto } from './dto/create-dialogue.dto';
-import { SendMessageDto } from './dto/send-message.dto';
-import { GetDialoguesQueryDto } from './dto/get-dialogues-query.dto';
+import { AdminGuard } from '../common/guards/admin.guard';
+import type { PrismaService } from '../prisma/prisma.service';
+import type { RedisService } from '../redis/redis.service';
+import type { AiService, SocraticMessage } from './ai.service';
+import type { CreateDialogueDto } from './dto/create-dialogue.dto';
+import type { SendMessageDto } from './dto/send-message.dto';
+import type { GetDialoguesQueryDto } from './dto/get-dialogues-query.dto';
 
 const MAX_EXCHANGES = 10;
-const DAILY_DIALOGUE_LIMIT = 1;
+const DAILY_DIALOGUE_LIMIT = 5;
 const DAILY_LIMIT_TTL = 86400; // 24 hours
 
 @ApiTags('AI')
@@ -62,6 +65,14 @@ export class AiController {
       );
     }
 
+    // B17.5: Check daily token quota
+    const quota = await this.aiService.checkDailyQuota(userId);
+    if (quota.exceeded) {
+      throw new ForbiddenException(
+        `Дневной лимит токенов AI исчерпан (${quota.used}/${quota.limit}). Попробуйте завтра.`,
+      );
+    }
+
     // Get user stats for level context
     const userStats = await this.prisma.userStats.findUnique({
       where: { userId },
@@ -87,6 +98,7 @@ export class AiController {
       branch: 'STRATEGY',
       userLevel,
       messages,
+      userId,
     });
 
     // Save dialogue
@@ -151,6 +163,14 @@ export class AiController {
       );
     }
 
+    // B17.5: Check daily token quota
+    const quota = await this.aiService.checkDailyQuota(userId);
+    if (quota.exceeded) {
+      throw new ForbiddenException(
+        `Дневной лимит токенов AI исчерпан (${quota.used}/${quota.limit}). Попробуйте завтра.`,
+      );
+    }
+
     // Get user stats for level context
     const userStats = await this.prisma.userStats.findUnique({
       where: { userId },
@@ -177,6 +197,7 @@ export class AiController {
       branch: 'STRATEGY',
       userLevel,
       messages,
+      userId,
     });
 
     // Append new messages
@@ -283,5 +304,25 @@ export class AiController {
         totalPages: Math.ceil(total / limit),
       },
     };
+  }
+
+  // ── B17.4: Token usage admin endpoint ─────────────────────────────
+
+  @Get('tokens/usage')
+  @UseGuards(AdminGuard)
+  @ApiOperation({ summary: 'Token usage summary (admin only)' })
+  @ApiQuery({ name: 'days', required: false, type: Number, description: 'Period in days (default 7)' })
+  @ApiResponse({ status: 200, description: 'Token usage by day, operation, and user' })
+  async getTokenUsage(@Query('days') days?: string) {
+    return this.aiService.getTokenUsageSummary(days ? parseInt(days, 10) : 7);
+  }
+
+  // ── B17.5: User daily quota check ─────────────────────────────────
+
+  @Get('quota')
+  @ApiOperation({ summary: 'Check remaining daily AI quota for current user' })
+  @ApiResponse({ status: 200, description: 'Daily token quota status' })
+  async getMyQuota(@Request() req: { user: { sub: string } }) {
+    return this.aiService.checkDailyQuota(req.user.sub);
   }
 }

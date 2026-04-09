@@ -97,6 +97,7 @@ model User {
   dailyChallenges   DailyChallenge[]
   warmupResults     WarmupResult[]
   pushSubscriptions PushSubscription[]
+  aiTokenUsage      AiTokenUsage[]
 
   @@map("users")
 }
@@ -460,4 +461,26 @@ model WarmupResult {
   @@index([userId])
   @@index([date])
   @@map("warmup_results")
+}
+
+// ── AiTokenUsage (B17.4) ─────────────────────
+
+model AiTokenUsage {
+  id              String   @id @default(uuid()) @db.Uuid
+  userId          String?  @db.Uuid
+  date            String   // YYYY-MM-DD (UTC)
+  model           String   // Model name (e.g. "gemini-2.5-flash")
+  operation       String   // "dialogue", "question_generation", "explanation", "hint", "concept_extraction"
+  promptTokens    Int      @default(0)
+  completionTokens Int     @default(0)
+  totalTokens     Int      @default(0)
+  createdAt       DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([date])
+  @@index([operation])
+  @@index([userId, date])
+  @@map("ai_token_usage")
 }

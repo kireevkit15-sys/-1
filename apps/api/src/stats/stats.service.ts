@@ -336,6 +336,162 @@ export class StatsService {
     };
   }
 
+  /**
+   * B17.1 — Analyse weak branches and categories by correctness rate.
+   */
+  async getWeaknesses(userId: string) {
+    // Per-branch accuracy from battle rounds (raw SQL to avoid nullable groupBy issues)
+    const branchRows = await this.prisma.$queryRaw<
+      { branch: string; total: bigint; correct: bigint }[]
+    >`
+      SELECT branch,
+             COUNT(id)::bigint AS total,
+             SUM(CASE WHEN "isCorrect" = true THEN 1 ELSE 0 END)::bigint AS correct
+      FROM battle_rounds
+      WHERE "attackerId" = ${userId}::uuid
+        AND "isCorrect" IS NOT NULL
+        AND branch IS NOT NULL
+      GROUP BY branch
+      ORDER BY (SUM(CASE WHEN "isCorrect" = true THEN 1 ELSE 0 END)::float / NULLIF(COUNT(id), 0)) ASC
+    `;
+
+    const branches = branchRows.map((b) => {
+      const total = Number(b.total);
+      const correct = Number(b.correct);
+      return {
+        branch: b.branch,
+        total,
+        correct,
+        accuracy: total > 0 ? Math.round((correct / total) * 100) : 0,
+      };
+    });
+
+    // Per-category accuracy (across all branches)
+    const categoryStats = await this.prisma.$queryRaw<
+      { category: string; total: bigint; correct: bigint }[]
+    >`
+      SELECT q.category,
+             COUNT(br.id)::bigint AS total,
+             SUM(CASE WHEN br."isCorrect" = true THEN 1 ELSE 0 END)::bigint AS correct
+      FROM battle_rounds br
+      JOIN questions q ON q.id = br."questionId"
+      WHERE br."attackerId" = ${userId}::uuid
+        AND br."isCorrect" IS NOT NULL
+      GROUP BY q.category
+      HAVING COUNT(br.id) >= 3
+      ORDER BY (SUM(CASE WHEN br."isCorrect" = true THEN 1 ELSE 0 END)::float / COUNT(br.id)) ASC
+      LIMIT 10
+    `;
+
+    const categories = categoryStats.map((c) => ({
+      category: c.category,
+      total: Number(c.total),
+      correct: Number(c.correct),
+      accuracy:
+        Number(c.total) > 0
+          ? Math.round((Number(c.correct) / Number(c.total)) * 100)
+          : 0,
+    }));
+
+    // Overall stats
+    const userStats = await this.prisma.userStats.findUnique({
+      where: { userId },
+    });
+
+    const xpByBranch = userStats
+      ? {
+          STRATEGY: userStats.strategyXp,
+          LOGIC: userStats.logicXp,
+          ERUDITION: userStats.eruditionXp,
+          RHETORIC: userStats.rhetoricXp,
+          INTUITION: userStats.intuitionXp,
+        }
+      : {};
+
+    return {
+      branches,
+      categories,
+      xpByBranch,
+      weakestBranch: branches[0]?.branch ?? null,
+    };
+  }
+
+  /**
+   * B17.2 — Recommend modules to improve weak branches.
+   */
+  async getRecommendations(userId: string) {
+    const weaknesses = await this.getWeaknesses(userId);
+
+    // Sort branches by accuracy ascending (weakest first)
+    const weakBranches = weaknesses.branches
+      .filter((b) => b.accuracy < 70)
+      .map((b) => b.branch);
+
+    // If no weak branches, recommend branches with lowest XP
+    const targetBranches: string[] =
+      weakBranches.length > 0
+        ? weakBranches
+        : Object.entries(weaknesses.xpByBranch)
+            .sort(([, a], [, b]) => (a as number) - (b as number))
+            .slice(0, 2)
+            .map(([branch]) => branch);
+
+    // Find uncompleted modules for target branches
+    const modules = await this.prisma.module.findMany({
+      where: {
+        branch: { in: targetBranches as any },
+      },
+      orderBy: [{ branch: 'asc' }, { orderIndex: 'asc' }],
+      include: {
+        progress: {
+          where: { userId },
+        },
+      },
+    });
+
+    const recommendations = modules
+      .filter((m) => {
+        const prog = m.progress[0];
+        return !prog || !prog.completedAt;
+      })
+      .slice(0, 5)
+      .map((m) => {
+        const prog = m.progress[0];
+        const completedCount = prog?.completedQuestions?.length ?? 0;
+        const totalCount = m.questionIds.length;
+        const branchAccuracy = weaknesses.branches.find((b) => b.branch === m.branch)?.accuracy ?? 0;
+        return {
+          moduleId: m.id,
+          branch: m.branch,
+          title: m.title,
+          description: m.description,
+          progress: totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0,
+          completedQuestions: completedCount,
+          totalQuestions: totalCount,
+          reason:
+            weakBranches.includes(m.branch)
+              ? `Ветка ${m.branch} — точность ${branchAccuracy}%`
+              : `Ветка ${m.branch} — наименьший XP`,
+        };
+      });
+
+    // Weak categories with practice suggestions
+    const practiceCategories = weaknesses.categories
+      .filter((c) => c.accuracy < 60)
+      .slice(0, 5)
+      .map((c) => ({
+        category: c.category,
+        accuracy: c.accuracy,
+        suggestion: `Практикуйте категорию «${c.category}» — текущая точность ${c.accuracy}%`,
+      }));
+
+    return {
+      targetBranches,
+      modules: recommendations,
+      practiceCategories,
+    };
+  }
+
   async getLeaderboard(limit: number, offset: number) {
     const safeLimit = Math.min(limit, 100);
 
