@@ -26,6 +26,7 @@ import { ChallengeModule } from './challenge/challenge.module';
 import { FactsModule } from './facts/facts.module';
 import { NotificationModule } from './notification/notification.module';
 import { CronModule } from './cron/cron.module';
+import { TournamentModule } from './tournament/tournament.module';
 import { AppController } from './app.controller';
 
 @Module({
@@ -101,6 +102,7 @@ import { AppController } from './app.controller';
     FactsModule,
     NotificationModule,
     CronModule,
+    TournamentModule,
   ],
   providers: [
     {

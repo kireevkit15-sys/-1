@@ -99,6 +99,7 @@ model User {
   pushSubscriptions PushSubscription[]
   aiTokenUsage      AiTokenUsage[]
   seasonRewards     SeasonReward[]
+  tournamentEntries TournamentParticipant[]
 
   @@map("users")
 }
@@ -525,4 +526,49 @@ model AiTokenUsage {
   @@index([operation])
   @@index([userId, date])
   @@map("ai_token_usage")
+}
+
+// ── Tournament ──────────────────────────────
+
+model Tournament {
+  id           String           @id @default(uuid()) @db.Uuid
+  name         String
+  description  String?
+  maxPlayers   Int              @default(8) // 8 or 16
+  xpPrizePool  Int              @default(1000)
+  status       TournamentStatus @default(REGISTRATION)
+  bracket      Json             @default("[]") // Array of {round, match, player1Id, player2Id, winnerId}
+  startsAt     DateTime
+  createdAt    DateTime         @default(now())
+
+  participants TournamentParticipant[]
+
+  @@index([status])
+  @@index([startsAt])
+  @@map("tournaments")
+}
+
+model TournamentParticipant {
+  id           String   @id @default(uuid()) @db.Uuid
+  tournamentId String   @db.Uuid
+  userId       String   @db.Uuid
+  seed         Int?     // Seeding position (by rating)
+  eliminated   Boolean  @default(false)
+  placement    Int?     // Final placement (1st, 2nd, etc.)
+  xpReward     Int      @default(0)
+  joinedAt     DateTime @default(now())
+
+  tournament Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([tournamentId, userId])
+  @@index([tournamentId])
+  @@map("tournament_participants")
+}
+
+enum TournamentStatus {
+  REGISTRATION
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
 }
