@@ -66,6 +66,9 @@ async function bootstrap() {
 
   app.useWebSocketAdapter(new IoAdapter(app));
 
+  // Enable graceful shutdown hooks (SIGTERM, SIGINT)
+  app.enableShutdownHooks();
+
   const port = process.env.PORT || 3001;
   await app.listen(port);
 

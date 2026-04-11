@@ -8,6 +8,7 @@ import {
   MessageBody,
   ConnectedSocket
 } from '@nestjs/websockets';
+import type { BeforeApplicationShutdown } from '@nestjs/common';
 import { Logger } from '@nestjs/common';
 import type { Server, Socket } from 'socket.io';
 import { JwtService } from '@nestjs/jwt';
@@ -64,7 +65,7 @@ interface AuthenticatedSocket extends Socket {
   },
 })
 export class BattleGateway
-  implements OnGatewayConnection, OnGatewayDisconnect
+  implements OnGatewayConnection, OnGatewayDisconnect, BeforeApplicationShutdown
 {
   @WebSocketServer()
   server!: Server;
@@ -1385,6 +1386,55 @@ export class BattleGateway
     } catch (err: any) {
       this.logger.error(`Failed to persist battle result: ${err.message}`);
     }
+  }
+
+  // ---------------------------------------------------------------------------
+  // Graceful shutdown
+  // ---------------------------------------------------------------------------
+
+  async beforeApplicationShutdown(signal?: string) {
+    this.logger.warn(`Shutting down (${signal ?? 'unknown signal'}). Active battles: ${this.battles.size}`);
+
+    // Clear all timers first to prevent new actions
+    for (const battleId of this.roundTimers.keys()) {
+      this.clearTimers(battleId);
+    }
+    for (const battleId of this.botTimers.keys()) {
+      this.clearBotTimer(battleId);
+    }
+
+    // Notify all players in active battles and end as draw
+    for (const [battleId, state] of this.battles) {
+      try {
+        this.server.to(`battle:${battleId}`).emit('battle:serverShutdown', {
+          message: 'Сервер перезапускается. Баттл завершён как ничья.',
+          battleId,
+        });
+
+        // Persist as draw if battle was in progress
+        if (state.phase !== BattlePhase.FINAL_RESULT) {
+          await this.persistBattleResult(battleId, state, {
+            winnerId: null,
+            player1Score: state.player1.hp,
+            player2Score: state.player2.hp,
+            xpGained: {},
+            ratingChange: 0,
+          });
+        }
+      } catch (err: any) {
+        this.logger.error(`Shutdown: failed to close battle ${battleId}: ${err.message}`);
+      }
+    }
+
+    // Clear matchmaking queue
+    this.matchmakingUsers.clear();
+
+    // Disconnect all sockets
+    if (this.server) {
+      this.server.disconnectSockets(true);
+    }
+
+    this.logger.log('Battle gateway shut down gracefully.');
   }
 
   // ---------------------------------------------------------------------------
