@@ -9,10 +9,10 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
 import { PrismaService } from '../prisma/prisma.service';
-import { TelegramLoginDto } from './dto/telegram-login.dto';
-import { RegisterDto } from './dto/register.dto';
-import { LoginDto } from './dto/login.dto';
-import { JwtPayload } from './strategies/jwt.strategy';
+import type { TelegramLoginDto } from './dto/telegram-login.dto';
+import type { RegisterDto } from './dto/register.dto';
+import type { LoginDto } from './dto/login.dto';
+import type { JwtPayload } from './strategies/jwt.strategy';
 
 export interface TokenPair {
   accessToken: string;

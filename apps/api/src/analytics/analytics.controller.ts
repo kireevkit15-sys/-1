@@ -16,8 +16,8 @@ import {
 import { AnalyticsService } from './analytics.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { AdminGuard } from '../common/guards/admin.guard';
-import { TrackEventDto } from './dto/track-event.dto';
-import { QueryEventsDto } from './dto/query-events.dto';
+import type { TrackEventDto } from './dto/track-event.dto';
+import type { QueryEventsDto } from './dto/query-events.dto';
 
 @ApiTags('Analytics')
 @Controller('analytics')

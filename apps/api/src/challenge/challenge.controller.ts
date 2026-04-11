@@ -17,7 +17,7 @@ import {
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { ChallengeService } from './challenge.service';
-import { SubmitChallengeDto } from './dto/submit-challenge.dto';
+import type { SubmitChallengeDto } from './dto/submit-challenge.dto';
 
 @ApiTags('Challenge')
 @Controller('challenge')

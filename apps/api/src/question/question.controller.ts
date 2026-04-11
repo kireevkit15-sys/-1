@@ -18,7 +18,7 @@ import {
   ApiQuery,
   ApiResponse,
 } from '@nestjs/swagger';
-import type { QuestionService } from './question.service';
+import { QuestionService } from './question.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { AdminGuard } from '../common/guards/admin.guard';
 import type {

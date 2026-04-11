@@ -16,7 +16,7 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import type { WarmupService } from './warmup.service';
+import { WarmupService } from './warmup.service';
 import type { SubmitWarmupDto } from './dto/warmup.dto';
 
 @ApiTags('Warmup')

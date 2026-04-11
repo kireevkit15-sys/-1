@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { RedisService } from '../redis/redis.service';
-import { Branch } from '@razum/shared';
+import type { Branch } from '@razum/shared';
 
 const MATCHMAKING_QUEUE_KEY = 'matchmaking:queue';
 const INITIAL_RATING_RANGE = 100;

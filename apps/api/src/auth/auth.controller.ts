@@ -6,8 +6,8 @@ import { TelegramLoginDto } from './dto/telegram-login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { JwtRefreshGuard } from './guards/jwt-refresh.guard';
-import { TokenPair } from './auth.service';
-import { JwtPayload } from './strategies/jwt.strategy';
+import type { TokenPair } from './auth.service';
+import type { JwtPayload } from './strategies/jwt.strategy';
 
 @ApiTags('Auth')
 @Throttle({ short: { ttl: 1000, limit: 2 }, medium: { ttl: 60000, limit: 5 }, long: { ttl: 3600000, limit: 60 } })

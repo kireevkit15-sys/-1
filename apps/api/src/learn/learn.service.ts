@@ -4,7 +4,7 @@ import {
   ForbiddenException,
   BadRequestException,
 } from '@nestjs/common';
-import { Branch } from '@prisma/client';
+import type { Branch } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()

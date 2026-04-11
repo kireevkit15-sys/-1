@@ -5,9 +5,9 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { StatsService } from '../stats/stats.service';
-import { Question } from '@prisma/client';
+import type { Question } from '@prisma/client';
 import { QuestionService } from '../question/question.service';
-import { Prisma, Difficulty, Branch } from '@prisma/client';
+import type { Prisma, Difficulty, Branch } from '@prisma/client';
 
 const CHALLENGE_QUESTION_COUNT = 3;
 

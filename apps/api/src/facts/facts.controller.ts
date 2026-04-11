@@ -15,7 +15,7 @@ import {
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { AdminGuard } from '../common/guards/admin.guard';
 import { FactsService } from './facts.service';
-import { CreateFactDto } from './dto/create-fact.dto';
+import type { CreateFactDto } from './dto/create-fact.dto';
 
 @ApiTags('Facts')
 @Controller('facts')

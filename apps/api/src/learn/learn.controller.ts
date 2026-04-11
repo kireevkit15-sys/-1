@@ -17,8 +17,8 @@ import {
 } from '@nestjs/swagger';
 import { LearnService } from './learn.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { GetModulesQueryDto } from './dto/get-modules-query.dto';
-import { SubmitProgressDto } from './dto/submit-progress.dto';
+import type { GetModulesQueryDto } from './dto/get-modules-query.dto';
+import type { SubmitProgressDto } from './dto/submit-progress.dto';
 
 @ApiTags('Learn')
 @ApiBearerAuth()

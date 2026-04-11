@@ -15,8 +15,8 @@ import {
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { NotificationService } from './notification.service';
-import { SubscribePushDto } from './dto/subscribe.dto';
-import { UnsubscribePushDto } from './dto/unsubscribe.dto';
+import type { SubscribePushDto } from './dto/subscribe.dto';
+import type { UnsubscribePushDto } from './dto/unsubscribe.dto';
 
 @ApiTags('Notifications')
 @ApiBearerAuth()

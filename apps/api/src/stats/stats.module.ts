@@ -1,4 +1,4 @@
-import { Module, forwardRef } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { StatsController } from './stats.controller';
 import { StatsService } from './stats.service';
 import { LeaderboardService } from './leaderboard.service';
@@ -9,7 +9,7 @@ import { RedisModule } from '../redis/redis.module';
 import { AchievementsModule } from '../achievements/achievements.module';
 
 @Module({
-  imports: [AuthModule, PrismaModule, RedisModule, forwardRef(() => AchievementsModule)],
+  imports: [AuthModule, PrismaModule, RedisModule, AchievementsModule],
   controllers: [StatsController],
   providers: [StatsService, LeaderboardService, SeasonService],
   exports: [StatsService, LeaderboardService, SeasonService],

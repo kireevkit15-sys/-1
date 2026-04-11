@@ -1,4 +1,4 @@
-import { Injectable, Inject, Logger, NotFoundException, HttpException, HttpStatus, forwardRef } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException, HttpException, HttpStatus } from '@nestjs/common';
 import type { Question } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { RedisService } from '../redis/redis.service';
@@ -19,7 +19,6 @@ export class QuestionService {
     private readonly redis: RedisService,
     private readonly aiService: AiService,
     private readonly knowledgeService: KnowledgeService,
-    @Inject(forwardRef(() => StatsService))
     private readonly statsService: StatsService,
   ) {}
 

@@ -4,11 +4,11 @@ import {
   BadRequestException,
   Logger,
 } from '@nestjs/common';
-import type { PrismaService } from '../prisma/prisma.service';
-import type { RedisService } from '../redis/redis.service';
-import type { StatsService } from '../stats/stats.service';
+import { PrismaService } from '../prisma/prisma.service';
+import { RedisService } from '../redis/redis.service';
+import { StatsService } from '../stats/stats.service';
 import type { Question } from '@prisma/client';
-import type { QuestionService } from '../question/question.service';
+import { QuestionService } from '../question/question.service';
 
 /** 5 вопросов, ещё не отвеченных */
 export interface WarmupQuestions {

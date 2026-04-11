@@ -20,7 +20,7 @@ import {
 } from '@nestjs/swagger';
 import { BattleService } from './battle.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { CreateBattleDto } from './dto/create-battle.dto';
+import type { CreateBattleDto } from './dto/create-battle.dto';
 
 @ApiTags('Battles')
 @ApiBearerAuth()

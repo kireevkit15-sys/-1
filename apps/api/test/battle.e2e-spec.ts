@@ -8,11 +8,14 @@
  * and cleans them up in afterAll.
  */
 
-import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication, ValidationPipe } from '@nestjs/common';
+import type { TestingModule } from '@nestjs/testing';
+import { Test } from '@nestjs/testing';
+import type { INestApplication} from '@nestjs/common';
+import { ValidationPipe } from '@nestjs/common';
 import { IoAdapter } from '@nestjs/platform-socket.io';
-import * as request from 'supertest';
-import { io, Socket } from 'socket.io-client';
+import request from 'supertest';
+import type { Socket } from 'socket.io-client';
+import { io } from 'socket.io-client';
 import { AppModule } from '../src/app.module';
 import { PrismaService } from '../src/prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
@@ -82,7 +85,7 @@ describe('Battle E2E', () => {
   let authToken: string;
   let userId: string;
   let testQuestionId: string;
-  let testQuestionIds: string[] = [];
+  const testQuestionIds: string[] = [];
 
   const TEST_EMAIL = `e2e-battle-${Date.now()}@test.razum.dev`;
   const TEST_NAME = 'E2E Battle Tester';

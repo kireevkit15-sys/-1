@@ -4,9 +4,14 @@
   "testEnvironment": "node",
   "testRegex": ".e2e-spec.ts$",
   "transform": {
-    "^.+\\.ts$": "ts-jest"
+    "^.+\\.ts$": [
+      "ts-jest",
+      {
+        "tsconfig": "tsconfig.json"
+      }
+    ]
   },
   "moduleNameMapper": {
-    "^@razum/shared(.*)$": "<rootDir>/../../packages/shared/src$1"
+    "^@razum/shared(.*)$": "<rootDir>/../../packages/shared/dist$1"
   }
 }

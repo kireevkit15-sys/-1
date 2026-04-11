@@ -14,7 +14,7 @@ import {
 } from '@nestjs/swagger';
 import { ReferralService } from './referral.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { ApplyReferralDto } from './dto/apply-referral.dto';
+import type { ApplyReferralDto } from './dto/apply-referral.dto';
 
 @ApiTags('Referral')
 @Controller('referral')
