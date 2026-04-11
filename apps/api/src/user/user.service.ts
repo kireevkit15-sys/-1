@@ -371,4 +371,81 @@ export class UserService {
       };
     });
   }
+
+  // ── B19.7: GDPR export/import ──────────────────────────────
+
+  /**
+   * Export all user data as JSON (GDPR data portability).
+   */
+  async exportUserData(userId: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      include: {
+        stats: true,
+        moduleProgress: true,
+        achievements: { include: { achievement: true } },
+        warmupResults: { orderBy: { createdAt: 'desc' } },
+        aiDialogues: { orderBy: { createdAt: 'desc' } },
+        referralsMade: { select: { id: true, createdAt: true, xpRewarded: true } },
+        referralsReceived: { select: { id: true, createdAt: true } },
+        seasonRewards: {
+          include: { season: { select: { name: true, startDate: true, endDate: true } } },
+        },
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    // Get battle history
+    const battles = await this.prisma.battle.findMany({
+      where: { OR: [{ player1Id: userId }, { player2Id: userId }] },
+      include: {
+        rounds: { where: { attackerId: userId } },
+      },
+      orderBy: { startedAt: 'desc' },
+    });
+
+    // Get question feedbacks
+    const feedbacks = await this.prisma.questionFeedback.findMany({
+      where: { userId },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    const { passwordHash, ...safeUser } = user;
+
+    return {
+      exportedAt: new Date().toISOString(),
+      version: '1.0',
+      user: safeUser,
+      battles: battles.map(b => ({
+        id: b.id,
+        status: b.status,
+        mode: b.mode,
+        startedAt: b.startedAt,
+        endedAt: b.endedAt,
+        won: b.winnerId === userId,
+        rounds: b.rounds,
+      })),
+      feedbacks,
+    };
+  }
+
+  /**
+   * Import user profile data (name, avatarUrl only — stats are not importable).
+   */
+  async importUserData(userId: string, data: { name?: string; avatarUrl?: string }) {
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    if (!user) throw new NotFoundException('User not found');
+
+    return this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        ...(data.name && { name: data.name }),
+        ...(data.avatarUrl && { avatarUrl: data.avatarUrl }),
+      },
+      select: { id: true, name: true, avatarUrl: true, createdAt: true },
+    });
+  }
 }

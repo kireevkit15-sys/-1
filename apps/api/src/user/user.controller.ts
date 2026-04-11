@@ -1,6 +1,7 @@
 import {
   Controller,
   Get,
+  Post,
   Patch,
   Delete,
   Param,
@@ -102,5 +103,33 @@ export class UserController {
   @Get(':id/compare')
   async compareProfiles(@Request() req: any, @Param('id') id: string) {
     return this.userService.compareProfiles(req.user.sub, id);
+  }
+
+  // ─── B19.7: GDPR export/import ────────────────────────────
+
+  @ApiOperation({
+    summary: 'Экспорт всех данных пользователя (GDPR)',
+    description: 'JSON dump: профиль, статы, батлы, достижения, диалоги, разминки',
+  })
+  @ApiBearerAuth()
+  @ApiResponse({ status: 200, description: 'Полный JSON-дамп данных пользователя' })
+  @UseGuards(JwtAuthGuard)
+  @Get('me/export')
+  async exportData(@Request() req: any) {
+    return this.userService.exportUserData(req.user.sub);
+  }
+
+  @ApiOperation({
+    summary: 'Импорт данных профиля (только имя и аватар)',
+  })
+  @ApiBearerAuth()
+  @ApiResponse({ status: 200, description: 'Профиль обновлён' })
+  @UseGuards(JwtAuthGuard)
+  @Post('me/import')
+  async importData(
+    @Request() req: any,
+    @Body() body: { name?: string; avatarUrl?: string },
+  ) {
+    return this.userService.importUserData(req.user.sub, body);
   }
 }
