@@ -16,8 +16,8 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { WarmupService } from './warmup.service';
-import { SubmitWarmupDto } from './dto/warmup.dto';
+import type { WarmupService } from './warmup.service';
+import type { SubmitWarmupDto } from './dto/warmup.dto';
 
 @ApiTags('Warmup')
 @Controller('warmup')
@@ -50,5 +50,16 @@ export class WarmupController {
   @Post('submit')
   async submit(@Request() req: any, @Body() dto: SubmitWarmupDto) {
     return this.warmupService.submit(req.user.sub, dto.answers);
+  }
+
+  @ApiOperation({
+    summary: 'Статус защиты стрика (1 бесплатный пропуск в неделю)',
+  })
+  @ApiOkResponse({
+    description: 'Доступность защиты стрика и текущий стрик',
+  })
+  @Get('streak-protection')
+  async getStreakProtection(@Request() req: any) {
+    return this.warmupService.getStreakProtectionStatus(req.user.sub);
   }
 }

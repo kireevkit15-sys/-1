@@ -4,11 +4,11 @@ import {
   BadRequestException,
   Logger,
 } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
-import { RedisService } from '../redis/redis.service';
-import { StatsService } from '../stats/stats.service';
-import { Question } from '@prisma/client';
-import { QuestionService } from '../question/question.service';
+import type { PrismaService } from '../prisma/prisma.service';
+import type { RedisService } from '../redis/redis.service';
+import type { StatsService } from '../stats/stats.service';
+import type { Question } from '@prisma/client';
+import type { QuestionService } from '../question/question.service';
 
 /** 5 вопросов, ещё не отвеченных */
 export interface WarmupQuestions {
@@ -43,6 +43,7 @@ const SEEN_TTL_DAYS = 30;
 const CACHE_TTL_SECONDS = 86_400; // 24 h
 const XP_CORRECT = 20;
 const XP_PARTICIPATION = 5;
+const STREAK_PROTECTION_TTL = 7 * 24 * 60 * 60; // 1 week in seconds
 
 @Injectable()
 export class WarmupService {
@@ -74,6 +75,10 @@ export class WarmupService {
 
   private redisKeySeen(userId: string): string {
     return `warmup:seen:${userId}`;
+  }
+
+  private redisKeyStreakProtection(userId: string): string {
+    return `warmup:streak_protection:${userId}`;
   }
 
   // ──────────────────────────────────────────────
@@ -308,8 +313,16 @@ export class WarmupService {
         // Продолжаем стрик
         newStreakDays = stats.streakDays + 1;
       } else {
-        // Стрик сброшен — начинаем заново
-        newStreakDays = 1;
+        // Пропуск больше 1 дня — проверяем защиту стрика
+        const protected_ = await this.useStreakProtection(userId);
+        if (protected_ && stats.streakDays > 0) {
+          // Стрик сохранён, продолжаем (+1 за сегодня)
+          newStreakDays = stats.streakDays + 1;
+          this.logger.log(`Streak protection used for user ${userId}, streak preserved at ${newStreakDays}`);
+        } else {
+          // Стрик сброшен — начинаем заново
+          newStreakDays = 1;
+        }
       }
     } else {
       // Первая разминка
@@ -325,6 +338,50 @@ export class WarmupService {
     });
 
     return newStreakDays;
+  }
+
+  // ──────────────────────────────────────────────
+  // Streak protection (1 free skip per week)
+  // ──────────────────────────────────────────────
+
+  /**
+   * Check if user has streak protection available this week.
+   */
+  async hasStreakProtection(userId: string): Promise<boolean> {
+    const key = this.redisKeyStreakProtection(userId);
+    const used = await this.redis.get(key);
+    return used === null;
+  }
+
+  /**
+   * Get streak protection status for the user.
+   */
+  async getStreakProtectionStatus(userId: string): Promise<{
+    available: boolean;
+    streakDays: number;
+  }> {
+    const available = await this.hasStreakProtection(userId);
+    const stats = await this.prisma.userStats.findUnique({
+      where: { userId },
+      select: { streakDays: true },
+    });
+    return {
+      available,
+      streakDays: stats?.streakDays ?? 0,
+    };
+  }
+
+  /**
+   * Try to use streak protection. Returns true if protection was available and consumed.
+   */
+  private async useStreakProtection(userId: string): Promise<boolean> {
+    const key = this.redisKeyStreakProtection(userId);
+    const used = await this.redis.get(key);
+    if (used !== null) return false; // already used this week
+
+    // Mark as used with TTL until end of week (7 days max)
+    await this.redis.set(key, '1', STREAK_PROTECTION_TTL);
+    return true;
   }
 
   // ──────────────────────────────────────────────
