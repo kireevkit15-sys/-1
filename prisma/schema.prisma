@@ -606,3 +606,35 @@ enum AppealStatus {
   APPROVED
   REJECTED
 }
+
+// ── Webhooks ──────────────────────────────────
+
+model WebhookEndpoint {
+  id        String   @id @default(uuid()) @db.Uuid
+  url       String
+  events    Json     @default("[]")
+  secret    String?
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  deliveries WebhookDelivery[]
+
+  @@map("webhook_endpoints")
+}
+
+model WebhookDelivery {
+  id         String   @id @default(uuid()) @db.Uuid
+  endpointId String   @db.Uuid
+  event      String
+  payload    Json
+  statusCode Int
+  success    Boolean
+  error      String?
+  createdAt  DateTime @default(now())
+
+  endpoint WebhookEndpoint @relation(fields: [endpointId], references: [id], onDelete: Cascade)
+
+  @@index([endpointId])
+  @@index([createdAt])
+  @@map("webhook_deliveries")
+}

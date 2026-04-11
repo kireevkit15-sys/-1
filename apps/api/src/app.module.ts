@@ -28,6 +28,7 @@ import { NotificationModule } from './notification/notification.module';
 import { CronModule } from './cron/cron.module';
 import { TournamentModule } from './tournament/tournament.module';
 import { BanModule } from './ban/ban.module';
+import { WebhookModule } from './webhook/webhook.module';
 import { AppController } from './app.controller';
 
 @Module({
@@ -105,6 +106,7 @@ import { AppController } from './app.controller';
     CronModule,
     TournamentModule,
     BanModule,
+    WebhookModule,
   ],
   providers: [
     {
