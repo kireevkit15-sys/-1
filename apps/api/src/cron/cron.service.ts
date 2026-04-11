@@ -4,6 +4,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { RedisService } from '../redis/redis.service';
 import { LeaderboardService } from '../stats/leaderboard.service';
 import { SeasonService } from '../stats/season.service';
+import { TelegramDigestService } from '../telegram/telegram-digest.service';
 
 @Injectable()
 export class CronService {
@@ -14,6 +15,7 @@ export class CronService {
     private readonly redis: RedisService,
     private readonly leaderboard: LeaderboardService,
     private readonly seasonService: SeasonService,
+    private readonly digest: TelegramDigestService,
   ) {}
 
   // ── Leaderboard warm-up: every 5 minutes ──────────────────────────
@@ -115,6 +117,45 @@ export class CronService {
       this.logger.log('Cron: daily rotation complete');
     } catch (err: any) {
       this.logger.error(`Cron: daily rotation failed: ${err.message}`);
+    }
+  }
+
+  // ── Daily digest: every day at 20:00 UTC ──────────────────────────
+
+  @Cron('0 20 * * *')
+  async sendDailyDigest() {
+    this.logger.log('Cron: sending daily digests');
+    try {
+      const sent = await this.digest.sendDigests('daily');
+      this.logger.log(`Cron: daily digest sent to ${sent} users`);
+    } catch (err: any) {
+      this.logger.error(`Cron: daily digest failed: ${err.message}`);
+    }
+  }
+
+  // ── Weekly digest: every Monday at 10:00 UTC ────────────────────
+
+  @Cron('0 10 * * 1')
+  async sendWeeklyDigest() {
+    this.logger.log('Cron: sending weekly digests');
+    try {
+      const sent = await this.digest.sendDigests('weekly');
+      this.logger.log(`Cron: weekly digest sent to ${sent} users`);
+    } catch (err: any) {
+      this.logger.error(`Cron: weekly digest failed: ${err.message}`);
+    }
+  }
+
+  // ── Monthly digest: 1st of every month at 12:00 UTC ─────────────
+
+  @Cron('0 12 1 * *')
+  async sendMonthlyDigest() {
+    this.logger.log('Cron: sending monthly digests');
+    try {
+      const sent = await this.digest.sendDigests('monthly');
+      this.logger.log(`Cron: monthly digest sent to ${sent} users`);
+    } catch (err: any) {
+      this.logger.error(`Cron: monthly digest failed: ${err.message}`);
     }
   }
 

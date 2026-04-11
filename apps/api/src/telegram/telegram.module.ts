@@ -1,9 +1,11 @@
 import { Module } from '@nestjs/common';
 import { TelegramNotificationService } from './telegram-notification.service';
+import { TelegramDigestService } from './telegram-digest.service';
+import { PrismaModule } from '../prisma/prisma.module';
 
-// Telegram module — stub (nestjs-telegraf not installed)
 @Module({
-  providers: [TelegramNotificationService],
-  exports: [TelegramNotificationService],
+  imports: [PrismaModule],
+  providers: [TelegramNotificationService, TelegramDigestService],
+  exports: [TelegramNotificationService, TelegramDigestService],
 })
 export class TelegramModule {}
