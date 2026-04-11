@@ -399,6 +399,31 @@ export class QuestionController {
     return this.questionService.moderateDeactivate(id);
   }
 
+  // ─── B19.6: A/B testing ─────────────────────────────────────
+
+  @ApiOperation({ summary: 'Создать вариант B вопроса для A/B теста (админ)' })
+  @ApiBearerAuth()
+  @ApiParam({ name: 'id', description: 'UUID оригинального вопроса' })
+  @ApiResponse({ status: 201, description: 'Вариант создан' })
+  @UseGuards(JwtAuthGuard, AdminGuard)
+  @Post(':id/variant')
+  async createVariant(
+    @Param('id') id: string,
+    @Body() body: { text: string; options: string[]; explanation?: string },
+  ) {
+    return this.questionService.createVariant(id, body);
+  }
+
+  @ApiOperation({ summary: 'Результаты A/B теста: сравнение вариантов (админ)' })
+  @ApiBearerAuth()
+  @ApiParam({ name: 'id', description: 'UUID оригинального вопроса' })
+  @ApiResponse({ status: 200, description: 'Статистика по вариантам' })
+  @UseGuards(JwtAuthGuard, AdminGuard)
+  @Get(':id/ab-results')
+  async getAbTestResults(@Param('id') id: string) {
+    return this.questionService.getAbTestResults(id);
+  }
+
   @ApiOperation({ summary: 'Мягкое удаление вопроса (админ)' })
   @ApiBearerAuth()
   @ApiParam({ name: 'id', description: 'UUID вопроса' })

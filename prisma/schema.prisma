@@ -191,8 +191,14 @@ model Question {
   // B14.6: Tags
   tags         String[]   @default([])
 
+  // B19.6: A/B testing
+  variantOf    String?    @db.Uuid
+  variantLabel String?
+
   battleRounds BattleRound[]
   feedbacks    QuestionFeedback[]
+  originalQuestion Question? @relation("variants", fields: [variantOf], references: [id], onDelete: SetNull)
+  variants     Question[]   @relation("variants")
 
   @@index([branch])
   @@index([difficulty])

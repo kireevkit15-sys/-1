@@ -512,6 +512,118 @@ export class QuestionService {
     return { questionId, status: 'deactivated' };
   }
 
+  // ── B19.6: A/B testing ───────────────────────────────────────
+
+  /**
+   * Create a variant (B) of an existing question with different text/options.
+   */
+  async createVariant(
+    originalId: string,
+    data: { text: string; options: string[]; explanation?: string },
+  ) {
+    const original = await this.prisma.question.findUnique({
+      where: { id: originalId },
+    });
+
+    if (!original) {
+      throw new NotFoundException(`Question ${originalId} not found`);
+    }
+
+    // Mark original as variant "A" if not already
+    if (!original.variantLabel) {
+      await this.prisma.question.update({
+        where: { id: originalId },
+        data: { variantLabel: 'A' },
+      });
+    }
+
+    // Count existing variants to determine label
+    const existingVariants = await this.prisma.question.count({
+      where: { variantOf: originalId },
+    });
+    const label = String.fromCharCode(66 + existingVariants); // B, C, D...
+
+    return this.prisma.question.create({
+      data: {
+        category: original.category,
+        branch: original.branch,
+        difficulty: original.difficulty,
+        text: data.text,
+        options: data.options,
+        correctIndex: original.correctIndex,
+        explanation: data.explanation ?? original.explanation,
+        statPrimary: original.statPrimary,
+        statSecondary: original.statSecondary,
+        tags: original.tags,
+        variantOf: originalId,
+        variantLabel: label,
+      },
+    });
+  }
+
+  /**
+   * Compare A/B variants by % correct answers.
+   */
+  async getAbTestResults(originalId: string) {
+    // Get original + all variants
+    const questions = await this.prisma.question.findMany({
+      where: {
+        OR: [
+          { id: originalId },
+          { variantOf: originalId },
+        ],
+      },
+      select: {
+        id: true,
+        text: true,
+        variantLabel: true,
+        totalAnswers: true,
+        correctAnswers: true,
+        avgTimeTakenMs: true,
+        isActive: true,
+      },
+      orderBy: { variantLabel: 'asc' },
+    });
+
+    if (questions.length === 0) {
+      throw new NotFoundException(`Question ${originalId} not found`);
+    }
+
+    return {
+      originalId,
+      variants: questions.map(q => ({
+        id: q.id,
+        label: q.variantLabel ?? 'A',
+        text: q.text,
+        totalAnswers: q.totalAnswers,
+        correctAnswers: q.correctAnswers,
+        correctRate: q.totalAnswers > 0
+          ? Math.round((q.correctAnswers / q.totalAnswers) * 10000) / 100
+          : null,
+        avgTimeTakenMs: q.avgTimeTakenMs,
+        isActive: q.isActive,
+      })),
+      recommendation: this.getAbRecommendation(questions),
+    };
+  }
+
+  private getAbRecommendation(
+    variants: Array<{ totalAnswers: number; correctAnswers: number; variantLabel: string | null }>,
+  ): string | null {
+    const withEnoughData = variants.filter(v => v.totalAnswers >= 30);
+    if (withEnoughData.length < 2) return 'Недостаточно данных (минимум 30 ответов на вариант)';
+
+    const rates = withEnoughData.map(v => ({
+      label: v.variantLabel ?? 'A',
+      rate: v.correctAnswers / v.totalAnswers,
+    }));
+
+    // Find the variant closest to 50-60% correct (ideal difficulty)
+    const ideal = 0.55;
+    rates.sort((a, b) => Math.abs(a.rate - ideal) - Math.abs(b.rate - ideal));
+    return `Рекомендация: вариант "${rates[0]!.label}" ближе к идеальной сложности (${Math.round(rates[0]!.rate * 100)}%)`;
+  }
+
   // ── BC9: Adaptive difficulty calibration ──────────────────────
 
   private static readonly MIN_ANSWERS_FOR_CALIBRATION = 20;
