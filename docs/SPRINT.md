@@ -344,8 +344,8 @@
 | B18.3 | Redis caching strategy: кеш вопросов, статов, лидерборда с TTL | done | `apps/api/src/redis/`, `apps/api/src/stats/`, `apps/api/src/question/` |
 | B18.4 | Cron jobs: ежедневный пересчёт лидерборда, ротация challenge, очистка sessions | done | `apps/api/src/cron/` |
 | B18.5 | Production seed v2: все 25 категорий, минимум 500 вопросов для запуска | done | `prisma/seed-production-v2.ts` |
-| B18.6 | Database backup automation: pg_dump cron + upload to S3 | todo | `scripts/backup.sh` |
-| B18.7 | Graceful shutdown: корректное завершение активных баттлов при рестарте | todo | `apps/api/src/main.ts` |
+| B18.6 | Database backup automation: pg_dump cron + upload to S3 | done | `scripts/backup.sh`, `.env.example` |
+| B18.7 | Graceful shutdown: корректное завершение активных баттлов при рестарте | done | `apps/api/src/main.ts`, `apps/api/src/battle/battle.gateway.ts` |
 
 ## Блок 19 — Дополнительные фичи
 
