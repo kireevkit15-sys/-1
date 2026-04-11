@@ -21,6 +21,11 @@ DB_USER="razum"
 MAX_BACKUPS=10
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)
 
+# S3 configuration (set via environment or .env)
+S3_BUCKET="${RAZUM_S3_BUCKET:-}"
+S3_PREFIX="${RAZUM_S3_PREFIX:-razum-backups}"
+S3_REGION="${RAZUM_S3_REGION:-eu-central-1}"
+
 # Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -46,6 +51,76 @@ check_container() {
         log_info "Start it with: docker compose up -d postgres"
         exit 1
     fi
+}
+
+# ─── S3 Upload ──────────────────────────────────────────────────────────────
+
+upload_to_s3() {
+    local file="$1"
+    local filename
+    filename=$(basename "$file")
+
+    if [[ -z "$S3_BUCKET" ]]; then
+        log_info "S3 upload skipped (RAZUM_S3_BUCKET not set)"
+        return 0
+    fi
+
+    if ! command -v aws &> /dev/null; then
+        log_warn "AWS CLI not installed — skipping S3 upload"
+        log_info "Install: https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html"
+        return 1
+    fi
+
+    local s3_path="s3://${S3_BUCKET}/${S3_PREFIX}/${filename}"
+    log_info "Uploading to ${s3_path}..."
+
+    if aws s3 cp "$file" "$s3_path" \
+        --region "$S3_REGION" \
+        --storage-class STANDARD_IA \
+        --only-show-errors; then
+        log_ok "Uploaded to S3: ${s3_path}"
+        return 0
+    else
+        log_error "S3 upload failed for ${filename}"
+        return 1
+    fi
+}
+
+cleanup_s3() {
+    if [[ -z "$S3_BUCKET" ]]; then
+        return 0
+    fi
+
+    if ! command -v aws &> /dev/null; then
+        return 0
+    fi
+
+    log_info "Cleaning up old S3 backups (keeping last ${MAX_BACKUPS})..."
+
+    local s3_dumps
+    s3_dumps=$(aws s3 ls "s3://${S3_BUCKET}/${S3_PREFIX}/" \
+        --region "$S3_REGION" 2>/dev/null \
+        | grep '\.dump$' \
+        | sort -r \
+        | awk '{print $4}')
+
+    local count=0
+    while IFS= read -r key; do
+        [[ -z "$key" ]] && continue
+        (( count++ ))
+        if (( count > MAX_BACKUPS )); then
+            log_warn "  Removing S3: ${key}"
+            aws s3 rm "s3://${S3_BUCKET}/${S3_PREFIX}/${key}" \
+                --region "$S3_REGION" --only-show-errors
+
+            # Also remove matching .sql.gz
+            local sql_gz_key="${key%.dump}.sql.gz"
+            aws s3 rm "s3://${S3_BUCKET}/${S3_PREFIX}/${sql_gz_key}" \
+                --region "$S3_REGION" --only-show-errors 2>/dev/null || true
+        fi
+    done <<< "$s3_dumps"
+
+    log_ok "S3 cleanup complete."
 }
 
 # ─── 1. backup() — Create a database backup ─────────────────────────────────
@@ -93,6 +168,10 @@ backup() {
     log_info "Files saved to: ${BACKUP_DIR}/"
     echo "  - $(basename "$dump_file")    (${dump_size})"
     echo "  - $(basename "$sql_gz_file")  (${sql_gz_size})"
+
+    # Upload to S3
+    upload_to_s3 "$dump_file"
+    upload_to_s3 "$sql_gz_file"
 }
 
 # ─── 2. restore(file) — Restore from a backup ───────────────────────────────
@@ -302,10 +381,11 @@ main() {
             echo "Usage: $0 [OPTION]"
             echo ""
             echo "Options:"
-            echo "  (no args)          Create backup and cleanup old ones"
+            echo "  (no args)          Create backup, upload to S3, cleanup old"
             echo "  --restore <file>   Restore from a backup file"
             echo "  --restore latest   Restore from the latest backup"
-            echo "  --list             List available backups"
+            echo "  --list             List available local backups"
+            echo "  --s3-list          List backups in S3"
             echo "  --help             Show this help message"
             echo ""
             echo "Configuration:"
@@ -313,11 +393,31 @@ main() {
             echo "  Database:     ${DB_NAME}"
             echo "  Backup dir:   ${BACKUP_DIR}"
             echo "  Max backups:  ${MAX_BACKUPS}"
+            echo "  S3 bucket:    ${S3_BUCKET:-<not set>}"
+            echo "  S3 prefix:    ${S3_PREFIX}"
+            echo "  S3 region:    ${S3_REGION}"
             echo ""
+            echo "Environment variables:"
+            echo "  RAZUM_S3_BUCKET    S3 bucket name (required for S3 upload)"
+            echo "  RAZUM_S3_PREFIX    S3 key prefix (default: razum-backups)"
+            echo "  RAZUM_S3_REGION    AWS region (default: eu-central-1)"
+            echo ""
+            ;;
+        --s3-list)
+            if [[ -z "$S3_BUCKET" ]]; then
+                log_error "RAZUM_S3_BUCKET is not set"
+                exit 1
+            fi
+            echo ""
+            log_info "S3 backups in s3://${S3_BUCKET}/${S3_PREFIX}/:"
+            echo "─────────────────────────────────────────────────────────"
+            aws s3 ls "s3://${S3_BUCKET}/${S3_PREFIX}/" --region "$S3_REGION" --human-readable
+            echo "─────────────────────────────────────────────────────────"
             ;;
         "")
             backup
             cleanup
+            cleanup_s3
             ;;
         *)
             log_error "Unknown option: $1"
