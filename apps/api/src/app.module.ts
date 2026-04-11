@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { APP_GUARD } from '@nestjs/core';
+import { APP_GUARD, RouterModule } from '@nestjs/core';
 import { ScheduleModule } from '@nestjs/schedule';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { LoggerModule } from 'nestjs-pino';
@@ -29,6 +29,7 @@ import { CronModule } from './cron/cron.module';
 import { TournamentModule } from './tournament/tournament.module';
 import { BanModule } from './ban/ban.module';
 import { WebhookModule } from './webhook/webhook.module';
+import { V2Module } from './v2/v2.module';
 import { AppController } from './app.controller';
 
 @Module({
@@ -107,6 +108,10 @@ import { AppController } from './app.controller';
     TournamentModule,
     BanModule,
     WebhookModule,
+    V2Module,
+    RouterModule.register([
+      { path: 'v2', module: V2Module },
+    ]),
   ],
   providers: [
     {
