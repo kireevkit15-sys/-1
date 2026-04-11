@@ -503,7 +503,7 @@ export class BattleGateway
       const updated = selectBranch(state, data.branch);
       this.battles.set(data.battleId, updated);
 
-      this.server.to(`battle:${data.battleId}`).emit('battle:phase_changed', updated);
+      this.emitPhaseChange(data.battleId, updated);
 
       // Start round timer for the attack phase
       this.startRoundTimer(data.battleId);
@@ -539,7 +539,7 @@ export class BattleGateway
       const updated = selectCategory(state, data.category);
       this.battles.set(data.battleId, updated);
 
-      this.server.to(`battle:${data.battleId}`).emit('battle:phase_changed', updated);
+      this.emitPhaseChange(data.battleId, updated);
 
       // Start round timer for the attack phase
       this.startRoundTimer(data.battleId);
@@ -660,13 +660,13 @@ export class BattleGateway
       // Advance round
       state = nextPhase(state);
       this.battles.set(data.battleId, state);
-      this.server.to(`battle:${data.battleId}`).emit('battle:phase_changed', state);
+      this.emitPhaseChange(data.battleId, state);
 
       // If SWAP_ROLES, advance again to CATEGORY_SELECT after a brief moment
       if (state.phase === BattlePhase.SWAP_ROLES) {
         state = nextPhase(state);
         this.battles.set(data.battleId, state);
-        this.server.to(`battle:${data.battleId}`).emit('battle:phase_changed', state);
+        this.emitPhaseChange(data.battleId, state);
       }
 
       // If bot battle and bot needs to pick branch, schedule it
@@ -1010,6 +1010,125 @@ export class BattleGateway
     this.logger.log(`Rematch declined: battle ${data.battleId}, by ${userId}`);
   }
 
+  // ---------------------------------------------------------------------------
+  // Spectator: watch battles by branch
+  // ---------------------------------------------------------------------------
+
+  @SubscribeMessage('battle:spectate_branch')
+  handleSpectateBranch(
+    @ConnectedSocket() client: AuthenticatedSocket,
+    @MessageBody() data: { branch: string },
+  ) {
+    const userId = client.data.userId;
+    if (!userId) return;
+
+    const branch = data.branch as Branch;
+    const room = `spectate:${branch}`;
+
+    // Leave any other spectator rooms first
+    for (const r of client.rooms) {
+      if (r.startsWith('spectate:') && r !== room) {
+        client.leave(r);
+      }
+    }
+
+    client.join(room);
+
+    // Send list of active battles in this branch
+    const activeBattles: { battleId: string; player1: string; player2: string; round: number; phase: string }[] = [];
+    for (const [battleId, state] of this.battles) {
+      if (state.selectedBranch === branch || state.branches.includes(branch as any)) {
+        activeBattles.push({
+          battleId,
+          player1: state.player1.id,
+          player2: state.player2.id,
+          round: state.currentRound,
+          phase: state.phase,
+        });
+      }
+    }
+
+    client.emit('battle:spectate_joined', { branch, activeBattles });
+    this.logger.debug(`User ${userId} spectating branch ${branch} (${activeBattles.length} active)`);
+  }
+
+  @SubscribeMessage('battle:spectate_battle')
+  handleSpectateBattle(
+    @ConnectedSocket() client: AuthenticatedSocket,
+    @MessageBody() data: { battleId: string },
+  ) {
+    const userId = client.data.userId;
+    if (!userId) return;
+
+    const state = this.battles.get(data.battleId);
+    if (!state) {
+      client.emit('battle:error', { message: 'Battle not found' });
+      return;
+    }
+
+    // Prevent players from spectating their own battle
+    if (state.player1.id === userId || state.player2.id === userId) {
+      client.emit('battle:error', { message: 'Cannot spectate your own battle' });
+      return;
+    }
+
+    const room = `spectate:battle:${data.battleId}`;
+    client.join(room);
+
+    // Send current state (strip sensitive data)
+    client.emit('battle:spectate_state', {
+      battleId: data.battleId,
+      phase: state.phase,
+      currentRound: state.currentRound,
+      totalRounds: state.totalRounds,
+      player1: { id: state.player1.id, name: state.player1.name, hp: state.player1.hp },
+      player2: { id: state.player2.id, name: state.player2.name, hp: state.player2.hp },
+      currentBranch: state.selectedBranch,
+    });
+
+    this.logger.debug(`User ${userId} spectating battle ${data.battleId}`);
+  }
+
+  @SubscribeMessage('battle:spectate_leave')
+  handleSpectateLeave(
+    @ConnectedSocket() client: AuthenticatedSocket,
+  ) {
+    for (const r of client.rooms) {
+      if (r.startsWith('spectate:')) {
+        client.leave(r);
+      }
+    }
+    client.emit('battle:spectate_left');
+  }
+
+  /** Emit phase change to players and spectators */
+  private emitPhaseChange(battleId: string, state: BattleState) {
+    this.emitPhaseChange(battleId, state);
+    this.notifySpectators(battleId, state);
+  }
+
+  /** Notify spectators about battle state changes */
+  private notifySpectators(battleId: string, state: BattleState) {
+    const room = `spectate:battle:${battleId}`;
+    this.server.to(room).emit('battle:spectate_update', {
+      battleId,
+      phase: state.phase,
+      currentRound: state.currentRound,
+      player1: { id: state.player1.id, name: state.player1.name, hp: state.player1.hp },
+      player2: { id: state.player2.id, name: state.player2.name, hp: state.player2.hp },
+      currentBranch: state.selectedBranch,
+    });
+
+    // Also notify the branch room about active battle count
+    if (state.selectedBranch) {
+      this.server.to(`spectate:${state.selectedBranch}`).emit('battle:spectate_battle_update', {
+        battleId,
+        phase: state.phase,
+        round: state.currentRound,
+      });
+    }
+  }
+
   private startMatchmakingTimer(userId: string, rating: number, client: AuthenticatedSocket, branch?: Branch) {
     this.clearMatchmakingTimer(userId);
 
@@ -1111,7 +1230,7 @@ export class BattleGateway
       try {
         const updated = selectBranch(state, branch);
         this.battles.set(battleId, updated);
-        this.server.to(`battle:${battleId}`).emit('battle:phase_changed', updated);
+        this.emitPhaseChange(battleId, updated);
 
         // Bot is attacker, so schedule the attack (round timer will be started
         // only as a fallback — the bot will clear it before acting)
@@ -1225,13 +1344,13 @@ export class BattleGateway
 
         state = nextPhase(state);
         this.battles.set(battleId, state);
-        this.server.to(`battle:${battleId}`).emit('battle:phase_changed', state);
+        this.emitPhaseChange(battleId, state);
 
         // If SWAP_ROLES, advance once more
         if (state.phase === BattlePhase.SWAP_ROLES) {
           state = nextPhase(state);
           this.battles.set(battleId, state);
-          this.server.to(`battle:${battleId}`).emit('battle:phase_changed', state);
+          this.emitPhaseChange(battleId, state);
         }
 
         // Schedule next bot action or wait for human
