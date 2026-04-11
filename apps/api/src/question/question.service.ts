@@ -423,6 +423,95 @@ export class QuestionService {
     }));
   }
 
+  // ── B19.5: Content moderation queue ──────────────────────────
+
+  /**
+   * Get moderation queue: reported questions with full report details.
+   */
+  async getModerationQueue(options: { limit?: number; offset?: number } = {}) {
+    const { limit = 20, offset = 0 } = options;
+
+    // Get questions with pending reports (still active)
+    const reported = await this.prisma.questionFeedback.groupBy({
+      by: ['questionId'],
+      where: { type: 'REPORT' },
+      _count: { id: true },
+      orderBy: { _count: { id: 'desc' } },
+      skip: offset,
+      take: limit,
+    });
+
+    const questionIds = reported.map((r: { questionId: string }) => r.questionId);
+
+    // Fetch questions and their reports with user info
+    const [questions, reports] = await Promise.all([
+      this.prisma.question.findMany({
+        where: { id: { in: questionIds } },
+      }),
+      this.prisma.questionFeedback.findMany({
+        where: { questionId: { in: questionIds }, type: 'REPORT' },
+        include: {
+          user: { select: { id: true, name: true } },
+        },
+        orderBy: { createdAt: 'desc' },
+      }),
+    ]);
+
+    const questionsMap = new Map(questions.map(q => [q.id, q]));
+    const reportsMap = new Map<string, typeof reports>();
+    for (const r of reports) {
+      const arr = reportsMap.get(r.questionId) ?? [];
+      arr.push(r);
+      reportsMap.set(r.questionId, arr);
+    }
+
+    const totalCount = await this.prisma.questionFeedback.groupBy({
+      by: ['questionId'],
+      where: { type: 'REPORT' },
+    });
+
+    return {
+      items: reported.map((r: { questionId: string; _count: { id: number } }) => ({
+        question: questionsMap.get(r.questionId),
+        reportCount: r._count.id,
+        reports: reportsMap.get(r.questionId) ?? [],
+      })),
+      total: totalCount.length,
+      limit,
+      offset,
+    };
+  }
+
+  /**
+   * Dismiss all reports for a question (admin reviewed, question is fine).
+   */
+  async dismissReports(questionId: string) {
+    const deleted = await this.prisma.questionFeedback.deleteMany({
+      where: { questionId, type: 'REPORT' },
+    });
+
+    this.logger.log(`Dismissed ${deleted.count} reports for question ${questionId}`);
+    return { questionId, dismissedCount: deleted.count };
+  }
+
+  /**
+   * Deactivate question and dismiss reports (admin agrees with reports).
+   */
+  async moderateDeactivate(questionId: string) {
+    await this.prisma.$transaction([
+      this.prisma.question.update({
+        where: { id: questionId },
+        data: { isActive: false },
+      }),
+      this.prisma.questionFeedback.deleteMany({
+        where: { questionId, type: 'REPORT' },
+      }),
+    ]);
+
+    this.logger.log(`Question ${questionId} deactivated via moderation`);
+    return { questionId, status: 'deactivated' };
+  }
+
   // ── BC9: Adaptive difficulty calibration ──────────────────────
 
   private static readonly MIN_ANSWERS_FOR_CALIBRATION = 20;

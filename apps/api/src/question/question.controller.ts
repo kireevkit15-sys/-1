@@ -18,17 +18,17 @@ import {
   ApiQuery,
   ApiResponse,
 } from '@nestjs/swagger';
-import { QuestionService } from './question.service';
+import type { QuestionService } from './question.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { AdminGuard } from '../common/guards/admin.guard';
-import {
+import type {
   CreateQuestionDto,
   BulkCreateQuestionsDto,
   UpdateQuestionDto,
 } from './dto/create-question.dto';
-import { CreateFeedbackDto } from './dto/question-feedback.dto';
-import { GenerateQuestionsDto } from './dto/generate-questions.dto';
-import { BulkValidateQuestionsDto } from './dto/bulk-validate.dto';
+import type { CreateFeedbackDto } from './dto/question-feedback.dto';
+import type { GenerateQuestionsDto } from './dto/generate-questions.dto';
+import type { BulkValidateQuestionsDto } from './dto/bulk-validate.dto';
 
 @ApiTags('Questions')
 @Controller('questions')
@@ -358,6 +358,45 @@ export class QuestionController {
     @Body() body: { tags: string[] },
   ) {
     return this.questionService.setTags(id, body.tags);
+  }
+
+  // ─── B19.5: Moderation queue ────────────────────────────────
+
+  @ApiOperation({ summary: 'Очередь модерации: зарепорченные вопросы с деталями (админ)' })
+  @ApiBearerAuth()
+  @ApiQuery({ name: 'limit', required: false, type: Number })
+  @ApiQuery({ name: 'offset', required: false, type: Number })
+  @ApiResponse({ status: 200, description: 'Очередь модерации' })
+  @UseGuards(JwtAuthGuard, AdminGuard)
+  @Get('moderation/queue')
+  async getModerationQueue(
+    @Query('limit') limit?: string,
+    @Query('offset') offset?: string,
+  ) {
+    return this.questionService.getModerationQueue({
+      limit: limit ? parseInt(limit, 10) : undefined,
+      offset: offset ? parseInt(offset, 10) : undefined,
+    });
+  }
+
+  @ApiOperation({ summary: 'Отклонить репорты на вопрос — вопрос в порядке (админ)' })
+  @ApiBearerAuth()
+  @ApiParam({ name: 'id', description: 'UUID вопроса' })
+  @ApiResponse({ status: 200, description: 'Репорты отклонены' })
+  @UseGuards(JwtAuthGuard, AdminGuard)
+  @Post(':id/moderation/dismiss')
+  async dismissReports(@Param('id') id: string) {
+    return this.questionService.dismissReports(id);
+  }
+
+  @ApiOperation({ summary: 'Деактивировать вопрос по результатам модерации (админ)' })
+  @ApiBearerAuth()
+  @ApiParam({ name: 'id', description: 'UUID вопроса' })
+  @ApiResponse({ status: 200, description: 'Вопрос деактивирован' })
+  @UseGuards(JwtAuthGuard, AdminGuard)
+  @Post(':id/moderation/deactivate')
+  async moderateDeactivate(@Param('id') id: string) {
+    return this.questionService.moderateDeactivate(id);
   }
 
   @ApiOperation({ summary: 'Мягкое удаление вопроса (админ)' })
