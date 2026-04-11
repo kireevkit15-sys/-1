@@ -8,6 +8,7 @@ import {
 } from '@nestjs/swagger';
 import { StatsService } from './stats.service';
 import { LeaderboardService } from './leaderboard.service';
+import { SeasonService } from './season.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @ApiTags('Stats')
@@ -18,6 +19,7 @@ export class StatsController {
   constructor(
     private readonly statsService: StatsService,
     private readonly leaderboardService: LeaderboardService,
+    private readonly seasonService: SeasonService,
   ) {}
 
   @ApiOperation({ summary: 'Мои статы (с уровнем и прогрессом)' })
@@ -73,6 +75,27 @@ export class StatsController {
       (period as 'all' | 'week' | 'month') || 'all',
       limit ? parseInt(limit, 10) : 20,
     );
+  }
+
+  @ApiOperation({ summary: 'Текущий сезон' })
+  @ApiResponse({ status: 200, description: 'Активный сезон с топ-10' })
+  @Get('season/current')
+  async getCurrentSeason() {
+    return this.seasonService.getActiveSeason();
+  }
+
+  @ApiOperation({ summary: 'История сезонов' })
+  @ApiResponse({ status: 200, description: 'Все сезоны с наградами' })
+  @Get('season/history')
+  async getSeasonHistory() {
+    return this.seasonService.getSeasonHistory();
+  }
+
+  @ApiOperation({ summary: 'Мои сезонные награды' })
+  @ApiResponse({ status: 200, description: 'Награды пользователя за все сезоны' })
+  @Get('season/me')
+  async getMySeasonRewards(@Request() req: any) {
+    return this.seasonService.getUserSeasonRewards(req.user.sub);
   }
 
   @ApiOperation({ summary: 'Моя позиция в лидерборде' })

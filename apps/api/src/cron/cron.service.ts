@@ -3,6 +3,7 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 import { PrismaService } from '../prisma/prisma.service';
 import { RedisService } from '../redis/redis.service';
 import { LeaderboardService } from '../stats/leaderboard.service';
+import { SeasonService } from '../stats/season.service';
 
 @Injectable()
 export class CronService {
@@ -12,6 +13,7 @@ export class CronService {
     private readonly prisma: PrismaService,
     private readonly redis: RedisService,
     private readonly leaderboard: LeaderboardService,
+    private readonly seasonService: SeasonService,
   ) {}
 
   // ── Leaderboard warm-up: every 5 minutes ──────────────────────────
@@ -113,6 +115,23 @@ export class CronService {
       this.logger.log('Cron: daily rotation complete');
     } catch (err: any) {
       this.logger.error(`Cron: daily rotation failed: ${err.message}`);
+    }
+  }
+
+  // ── Season end: 1st of every month at 00:10 UTC ───────────────────
+
+  @Cron('10 0 1 * *')
+  async endSeason() {
+    this.logger.log('Cron: checking if season needs to end');
+    try {
+      const result = await this.seasonService.endCurrentSeason();
+      if (result) {
+        this.logger.log(`Cron: season ended. ${result.rewardsGiven} rewards given`);
+      } else {
+        this.logger.log('Cron: no active season to end');
+      }
+    } catch (err: any) {
+      this.logger.error(`Cron: season end failed: ${err.message}`);
     }
   }
 
