@@ -351,18 +351,18 @@
 
 | # | Задача | Статус | Файлы |
 |---|--------|--------|-------|
-| B19.1 | WebSocket rooms по веткам: зрители могут смотреть баттлы по ветке | todo | `apps/api/src/battle/battle.gateway.ts` |
-| B19.2 | Сезонный рейтинг: ежемесячный reset с наградами для топ-10 | todo | `apps/api/src/stats/` |
-| B19.3 | Streak protection: 1 бесплатный пропуск разминки в неделю без потери стрика | todo | `apps/api/src/warmup/warmup.service.ts` |
-| B19.4 | Daily/weekly/monthly stats digest (Telegram бот) | todo | `apps/api/src/telegram/` |
-| B19.5 | Content moderation queue: пользовательские репорты → очередь для админа | todo | `apps/api/src/question/` |
-| B19.6 | A/B тестирование вопросов: 2 формулировки, сравнение % правильных | todo | `apps/api/src/question/` |
-| B19.7 | Import/export профиля: JSON dump всей истории пользователя (GDPR) | todo | `apps/api/src/user/` |
-| B19.8 | Турниры: 8/16 игроков, bracket, расписание, призовой фонд XP | todo | `apps/api/src/tournament/` |
-| B19.9 | Система банов: временный/перманентный, причина, апелляция | todo | `apps/api/src/user/`, `prisma/schema.prisma` |
-| B19.10 | Webhook интеграция: оповещения о событиях для внешних сервисов | todo | `apps/api/src/webhook/` |
-| B19.11 | API versioning v2: подготовка второй версии без слома v1 | todo | `apps/api/src/` |
-| B19.12 | Healthcheck dashboard: status всех сервисов (DB, Redis, AI, WS) | todo | `apps/api/src/health/` |
+| B19.1 | WebSocket rooms по веткам: зрители могут смотреть баттлы по ветке | done | `apps/api/src/battle/battle.gateway.ts` |
+| B19.2 | Сезонный рейтинг: ежемесячный reset с наградами для топ-10 | done | `apps/api/src/stats/season.service.ts`, `prisma/schema.prisma` |
+| B19.3 | Streak protection: 1 бесплатный пропуск разминки в неделю без потери стрика | done | `apps/api/src/warmup/warmup.service.ts` |
+| B19.4 | Daily/weekly/monthly stats digest (Telegram бот) | done | `apps/api/src/telegram/telegram-digest.service.ts` |
+| B19.5 | Content moderation queue: пользовательские репорты → очередь для админа | done | `apps/api/src/question/question.service.ts`, `apps/api/src/question/question.controller.ts` |
+| B19.6 | A/B тестирование вопросов: 2 формулировки, сравнение % правильных | done | `apps/api/src/question/question.service.ts`, `prisma/schema.prisma` |
+| B19.7 | Import/export профиля: JSON dump всей истории пользователя (GDPR) | done | `apps/api/src/user/user.service.ts`, `apps/api/src/user/user.controller.ts` |
+| B19.8 | Турниры: 8/16 игроков, bracket, расписание, призовой фонд XP | done | `apps/api/src/tournament/` |
+| B19.9 | Система банов: временный/перманентный, причина, апелляция | done | `apps/api/src/ban/`, `prisma/schema.prisma` |
+| B19.10 | Webhook интеграция: оповещения о событиях для внешних сервисов | done | `apps/api/src/webhook/` |
+| B19.11 | API versioning v2: подготовка второй версии без слома v1 | done | `apps/api/src/v2/` |
+| B19.12 | Healthcheck dashboard: status всех сервисов (DB, Redis, AI, WS) | done | `apps/api/src/health/health.controller.ts` |
 
 ## Тестирование Яшкин
 

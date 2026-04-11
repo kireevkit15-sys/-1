@@ -863,6 +863,56 @@
 - `b21ae3f` — feat(content): B18.5 — add 100 RHETORIC questions (5 categories × 20)
 - `0003143` — feat(content): B18.5 — add 100 INTUITION questions (5 categories × 20)
 
+### 2026-04-11 — Сессия 13: Блок 19 — дополнительные фичи (B19.1–B19.12)
+
+**Время:** ~4 часа
+**Статус:** Завершена
+
+**Что сделано:**
+- B19.1: WebSocket rooms для зрителей — spectate по ветке/баттлу
+- B19.2: Сезонный рейтинг — Season/SeasonReward модели, ежемесячный reset, XP награды топ-10
+- B19.3: Streak protection — 1 бесплатный пропуск разминки в неделю
+- B19.4: Daily/weekly/monthly digest через Telegram бот
+- B19.5: Content moderation queue — репорты, одобрение/деактивация
+- B19.6: A/B тестирование вопросов — варианты, сравнение %
+- B19.7: GDPR — экспорт/импорт профиля (JSON dump)
+- B19.8: Турниры — 8/16 игроков, bracket, seeding по рейтингу, XP призы
+- B19.9: Система банов — временный/перманентный, апелляции, авто-review
+- B19.10: Webhook интеграция — HMAC подпись, auto-disable после 10 фейлов
+- B19.11: API versioning v2 — /v2/ prefix, { data, meta } envelope
+- B19.12: Healthcheck dashboard — DB, Redis, AI, WS статус + статистика
+
+**Файлы созданы/изменены:**
+- `apps/api/src/battle/battle.gateway.ts` — spectator rooms
+- `apps/api/src/stats/season.service.ts` — сезоны
+- `apps/api/src/warmup/warmup.service.ts` — streak protection
+- `apps/api/src/telegram/telegram-digest.service.ts` — дайджесты
+- `apps/api/src/question/question.service.ts` — moderation + A/B
+- `apps/api/src/user/user.service.ts` — GDPR export/import
+- `apps/api/src/tournament/` — весь модуль турниров
+- `apps/api/src/ban/` — весь модуль банов
+- `apps/api/src/webhook/` — весь модуль вебхуков
+- `apps/api/src/v2/` — v2 контроллеры
+- `apps/api/src/health/health.controller.ts` — dashboard
+- `prisma/schema.prisma` — Season, Tournament, UserBan, Webhook модели
+- 4 миграции: seasons, ab_testing, tournaments, bans, webhooks
+
+**Задачи из SPRINT.md закрыты:** B19.1–B19.12 (все 12)
+
+**Коммиты:**
+- `351d17f` — feat(battle): add spectator WebSocket rooms for branch viewing
+- `a4e8cbc` — feat(stats): add seasonal rating with monthly reset and top-10 rewards
+- `ae0a1c4` — feat(warmup): add streak protection — 1 free skip per week
+- `9fa8e38` — feat(telegram): add daily/weekly/monthly stats digest
+- `f34b127` — feat(question): add content moderation queue for user reports
+- `ec3c7c0` — feat(question): add A/B testing for question variants
+- `f39e7e3` — feat(user): add GDPR profile export/import
+- `f6a6b15` — feat(tournament): add tournament system with brackets and XP prizes
+- `b83ace7` — feat(ban): add ban system with temporary/permanent bans and appeals
+- `9dcbb49` — feat(webhook): add webhook integration for external event notifications
+- `1fedd7d` — feat(api): add v2 API versioning with envelope response format
+- `e5a1287` — feat(health): add healthcheck dashboard with DB, Redis, AI, WS status
+
 ---
 
 ## Сводка по неделям
@@ -883,3 +933,4 @@
 | 04-08 | Бонди | Адаптивный layout (SideNav, RightSidebar), keyboard shortcuts в батле | F5.1, F5.2 |
 | 04-09 | Яшкин | Matchmaking v2, спарринг, реванш, бот v2 (3 уровня) | B15.3–B15.6 (4 задачи) |
 | 04-11 | Яшкин | Production seed v2: 500 вопросов, 25 категорий, 5 веток | B18.5 |
+| 04-11 | Яшкин | Блок 19: spectators, сезоны, streak protect, digest, moderation, A/B, GDPR, турниры, баны, webhooks, v2 API, healthcheck | B19.1–B19.12 (все 12) |
