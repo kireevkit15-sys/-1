@@ -10,15 +10,21 @@ import { Test } from '@nestjs/testing';
 import type { INestApplication} from '@nestjs/common';
 import { ValidationPipe } from '@nestjs/common';
 import request from 'supertest';
+import { ThrottlerGuard } from '@nestjs/throttler';
 import { AppModule } from '../src/app.module';
 import { PrismaService } from '../src/prisma/prisma.service';
 import { RedisService } from '../src/redis/redis.service';
+import { WarmupService } from '../src/warmup/warmup.service';
 import { JwtService } from '@nestjs/jwt';
 
-describe('Warmup (e2e)', () => {
+// Disable throttling for E2E tests
+jest.spyOn(ThrottlerGuard.prototype, 'canActivate').mockResolvedValue(true);
+
+describe('Warmup E2E (BT.8)', () => {
   let app: INestApplication;
   let prisma: PrismaService;
   let redis: RedisService;
+  let warmupService: WarmupService;
   let jwt: JwtService;
   let accessToken: string;
   let userId: string;
@@ -34,6 +40,7 @@ describe('Warmup (e2e)', () => {
 
     prisma = app.get(PrismaService);
     redis = app.get(RedisService);
+    warmupService = app.get(WarmupService);
     jwt = app.get(JwtService);
 
     // Create test user + stats
@@ -160,5 +167,45 @@ describe('Warmup (e2e)', () => {
     expect(res.body).toHaveProperty('type', 'result');
     expect(res.body).toHaveProperty('correct');
     expect(res.body).toHaveProperty('streakDays');
+  });
+
+  // ── Service-level: streak & hasCompleted ───────
+
+  it('Service: hasCompletedToday — should return true after submit', async () => {
+    const completed = await warmupService.hasCompletedToday(userId);
+    expect(completed).toBe(true);
+  });
+
+  it('Service: getStreakProtectionStatus — should return status', async () => {
+    const status = await warmupService.getStreakProtectionStatus(userId);
+    expect(status).toHaveProperty('available');
+    expect(status).toHaveProperty('streakDays');
+    expect(typeof status.available).toBe('boolean');
+    expect(status.streakDays).toBeGreaterThanOrEqual(1);
+  });
+
+  // ── XP verification after submit ──────────────
+
+  it('User stats should reflect warmup XP', async () => {
+    const stats = await prisma.userStats.findUnique({ where: { userId } });
+    expect(stats).toBeDefined();
+    // Warmup awards eruditionXp (20 per correct + 5 per wrong)
+    expect(stats!.eruditionXp).toBeGreaterThan(0);
+    expect(stats!.streakDays).toBeGreaterThanOrEqual(1);
+    expect(stats!.streakDate).toBeDefined();
+  });
+
+  // ── DB result record ──────────────────────────
+
+  it('WarmupResult should be saved in DB', async () => {
+    const today = new Date().toISOString().slice(0, 10);
+    const result = await prisma.warmupResult.findUnique({
+      where: { userId_date: { userId, date: today } },
+    });
+    expect(result).toBeDefined();
+    expect(result!.userId).toBe(userId);
+    expect(result!.correctCount).toBeGreaterThanOrEqual(0);
+    expect(result!.totalCount).toBeGreaterThan(0);
+    expect(result!.xpEarned).toBeGreaterThan(0);
   });
 });
