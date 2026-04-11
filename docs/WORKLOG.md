@@ -836,6 +836,35 @@
 
 ---
 
+### 2026-04-11 — Сессия 10: B18.5 — Production seed v2 (500 вопросов)
+
+**Время:** ~2 часа
+**Статус:** Завершена
+
+**Что сделано:**
+- **B18.5 — Production seed v2:** Написан полный seed из 500 вопросов для 25 категорий (5 веток × 5 категорий × 20 вопросов).
+- Каждая категория: 8 BRONZE + 8 SILVER + 4 GOLD.
+- Идемпотентный seed через SHA-256 UUID дедупликацию + skipDuplicates.
+- STRATEGY (100): Decision Making, Leadership, Entrepreneurship, Time Management, Financial Literacy
+- LOGIC (100): Critical Thinking, Fallacies, Cognitive Biases, Probability, First Principles
+- ERUDITION (100): History & Philosophy, Science, Economics, Patterns, Culture
+- RHETORIC (100): Persuasion, Negotiation, Public Speaking, Argumentation, Storytelling
+- INTUITION (100): EQ, Strategic Intuition, Behavior Analysis, Self-Knowledge, Interpersonal
+
+**Файлы созданы/изменены:**
+- `prisma/seed-production-v2.ts` — полный seed 500 вопросов (~8100 строк)
+
+**Задачи из SPRINT.md закрыты:** B18.5
+
+**Коммиты:**
+- `3296a3c` — feat(content): B18.5 WIP — seed-production-v2 with 100 STRATEGY questions
+- `cc65fc8` — feat(content): B18.5 — add 100 LOGIC questions (5 categories × 20)
+- `2cbe885` — feat(content): B18.5 — add 100 ERUDITION questions (5 categories × 20)
+- `b21ae3f` — feat(content): B18.5 — add 100 RHETORIC questions (5 categories × 20)
+- `0003143` — feat(content): B18.5 — add 100 INTUITION questions (5 categories × 20)
+
+---
+
 ## Сводка по неделям
 
 ### Неделя 1 (2026-04-05 — 2026-04-11)
@@ -853,3 +882,4 @@
 | 04-08 | Яшкин | Production seed: 499 вопросов, 13 модулей, bulk-загрузка | B12.8 |
 | 04-08 | Бонди | Адаптивный layout (SideNav, RightSidebar), keyboard shortcuts в батле | F5.1, F5.2 |
 | 04-09 | Яшкин | Matchmaking v2, спарринг, реванш, бот v2 (3 уровня) | B15.3–B15.6 (4 задачи) |
+| 04-11 | Яшкин | Production seed v2: 500 вопросов, 25 категорий, 5 веток | B18.5 |

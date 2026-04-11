@@ -343,7 +343,7 @@
 | B18.2 | DB connection pool tuning: production конфиг для 100+ concurrent users | done | `apps/api/src/prisma/prisma.service.ts` |
 | B18.3 | Redis caching strategy: кеш вопросов, статов, лидерборда с TTL | done | `apps/api/src/redis/`, `apps/api/src/stats/`, `apps/api/src/question/` |
 | B18.4 | Cron jobs: ежедневный пересчёт лидерборда, ротация challenge, очистка sessions | done | `apps/api/src/cron/` |
-| B18.5 | Production seed v2: все 25 категорий, минимум 500 вопросов для запуска | todo | `prisma/seed.ts` |
+| B18.5 | Production seed v2: все 25 категорий, минимум 500 вопросов для запуска | done | `prisma/seed-production-v2.ts` |
 | B18.6 | Database backup automation: pg_dump cron + upload to S3 | todo | `scripts/backup.sh` |
 | B18.7 | Graceful shutdown: корректное завершение активных баттлов при рестарте | todo | `apps/api/src/main.ts` |
 
