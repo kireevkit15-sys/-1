@@ -473,7 +473,18 @@ export class BattleGateway
     await client.join(`battle:${data.battleId}`);
     this.userBattles.set(userId, data.battleId);
 
-    const state = this.battles.get(data.battleId);
+    let state = this.battles.get(data.battleId);
+    if (!state) {
+      // Battle may have been created via REST — load from DB
+      try {
+        state = await this.battleService.getBattleState(data.battleId);
+        if (state) {
+          this.battles.set(data.battleId, state);
+        }
+      } catch {
+        // Battle not found — ignore
+      }
+    }
     if (state) {
       client.emit('battle:state', state);
     }
@@ -660,14 +671,15 @@ export class BattleGateway
       // Advance round
       state = nextPhase(state);
       this.battles.set(data.battleId, state);
-      this.emitPhaseChange(data.battleId, state);
 
-      // If SWAP_ROLES, advance again to CATEGORY_SELECT after a brief moment
+      // If SWAP_ROLES, advance through it immediately without emitting intermediate state
       if (state.phase === BattlePhase.SWAP_ROLES) {
         state = nextPhase(state);
         this.battles.set(data.battleId, state);
-        this.emitPhaseChange(data.battleId, state);
       }
+
+      // Emit only the final phase (BRANCH_SELECT / FINAL_RESULT)
+      this.emitPhaseChange(data.battleId, state);
 
       // If bot battle and bot needs to pick branch, schedule it
       if (this.isBotBattle(state) && (state.phase === BattlePhase.BRANCH_SELECT || state.phase === BattlePhase.CATEGORY_SELECT)) {
@@ -1103,7 +1115,7 @@ export class BattleGateway
 
   /** Emit phase change to players and spectators */
   private emitPhaseChange(battleId: string, state: BattleState) {
-    this.emitPhaseChange(battleId, state);
+    this.server.to(`battle:${battleId}`).emit('battle:phase_changed', state);
     this.notifySpectators(battleId, state);
   }
 
@@ -1344,14 +1356,15 @@ export class BattleGateway
 
         state = nextPhase(state);
         this.battles.set(battleId, state);
-        this.emitPhaseChange(battleId, state);
 
-        // If SWAP_ROLES, advance once more
+        // If SWAP_ROLES, advance through it immediately without emitting intermediate state
         if (state.phase === BattlePhase.SWAP_ROLES) {
           state = nextPhase(state);
           this.battles.set(battleId, state);
-          this.emitPhaseChange(battleId, state);
         }
+
+        // Emit only the final phase (BRANCH_SELECT / FINAL_RESULT)
+        this.emitPhaseChange(battleId, state);
 
         // Schedule next bot action or wait for human
         if (state.phase === BattlePhase.BRANCH_SELECT || state.phase === BattlePhase.CATEGORY_SELECT) {

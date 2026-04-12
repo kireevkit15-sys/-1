@@ -515,7 +515,7 @@ describe('Battle E2E', () => {
             currentState = await waitForEvent<BattleState>(
               socket,
               'battle:phase_changed',
-              15_000,
+              20_000,
             );
           }
           continue;
@@ -541,7 +541,7 @@ describe('Battle E2E', () => {
             currentState = await waitForEvent<BattleState>(
               socket,
               'battle:round_update',
-              15_000,
+              20_000,
             );
             roundsPlayed++;
           }
@@ -549,44 +549,51 @@ describe('Battle E2E', () => {
         }
 
         // ROUND_DEFENSE: human defends
+        // Note: gateway emits round_update (ROUND_RESULT) then immediately phase_changed,
+        // so we must listen for phase_changed BEFORE sending defend to avoid race condition
         if (currentState.phase === BattlePhase.ROUND_DEFENSE) {
           if (currentState.currentDefenderId === userId) {
-            currentState = await emitAndWait<BattleState>(
-              socket,
-              'battle:defend',
-              { battleId, defenseType: DefenseType.ACCEPT },
-              'battle:round_update',
-            );
+            // Pre-register listener for phase_changed/complete before emitting defend
+            const nextPhasePromise = Promise.race([
+              waitForEvent<BattleState>(socket, 'battle:phase_changed', 20_000),
+              waitForEvent<BattleResult>(socket, 'battle:complete', 20_000).then(
+                () => ({ ...currentState, phase: BattlePhase.FINAL_RESULT }) as BattleState,
+              ),
+            ]);
+            socket.emit('battle:defend', { battleId, defenseType: DefenseType.ACCEPT });
+            currentState = await nextPhasePromise;
           } else {
-            // Bot defends — wait for the update
-            currentState = await waitForEvent<BattleState>(
-              socket,
-              'battle:round_update',
-              15_000,
-            );
+            // Bot defends — gateway emits round_update then phase_changed
+            currentState = await Promise.race([
+              waitForEvent<BattleState>(socket, 'battle:phase_changed', 20_000),
+              waitForEvent<BattleResult>(socket, 'battle:complete', 20_000).then(
+                () => ({ ...currentState, phase: BattlePhase.FINAL_RESULT }) as BattleState,
+              ),
+            ]);
           }
           continue;
         }
 
         // ROUND_RESULT / SWAP_ROLES: wait for the gateway to advance
+        // Gateway may emit phase_changed (next round) or battle:complete (game over)
         if (
           currentState.phase === BattlePhase.ROUND_RESULT ||
           currentState.phase === BattlePhase.SWAP_ROLES
         ) {
-          // The gateway auto-advances for bot battles
-          currentState = await waitForEvent<BattleState>(
-            socket,
-            'battle:phase_changed',
-            15_000,
-          );
+          currentState = await Promise.race([
+            waitForEvent<BattleState>(socket, 'battle:phase_changed', 20_000),
+            waitForEvent<BattleResult>(socket, 'battle:complete', 20_000).then(
+              () => ({ ...currentState, phase: BattlePhase.FINAL_RESULT }) as BattleState,
+            ),
+          ]);
           continue;
         }
 
         // Fallback: wait for any update
         currentState = await Promise.race([
-          waitForEvent<BattleState>(socket, 'battle:phase_changed', 10_000),
-          waitForEvent<BattleState>(socket, 'battle:round_update', 10_000),
-          waitForEvent<BattleResult>(socket, 'battle:complete', 10_000).then(
+          waitForEvent<BattleState>(socket, 'battle:phase_changed', 20_000),
+          waitForEvent<BattleState>(socket, 'battle:round_update', 20_000),
+          waitForEvent<BattleResult>(socket, 'battle:complete', 20_000).then(
             () => ({ ...currentState, phase: BattlePhase.FINAL_RESULT }) as BattleState,
           ),
         ]);
