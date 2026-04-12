@@ -385,8 +385,8 @@
 | BT.15 | Unit: KnowledgeService — vector search, similarity threshold, empty, fallback | done | `apps/api/src/knowledge/__tests__/knowledge.service.spec.ts` |
 | BT.16 | Load: k6 скрипт на 100 concurrent баттлов, response time, error rate | done | `scripts/load-tests/battle-load.js` |
 | BT.17 | Load: WebSocket — 200 одновременных подключений, broadcast latency | done | `scripts/load-tests/websocket-load.js` |
-| BT.18 | Security: SQL injection, XSS в вопросах, JWT подделка, rate limit bypass | todo | `apps/api/test/security/` |
-| BT.19 | Security: RBAC — USER vs ADMIN endpoints, невалидный JWT, expired refresh | todo | `apps/api/test/security/` |
+| BT.18 | Security: SQL injection, XSS в вопросах, JWT подделка, rate limit bypass | done | `apps/api/test/security/injection-xss.e2e-spec.ts` |
+| BT.19 | Security: RBAC — USER vs ADMIN endpoints, невалидный JWT, expired refresh | done | `apps/api/test/security/rbac.e2e-spec.ts` |
 | BT.20 | Database: EXPLAIN ANALYZE всех индексов под нагрузкой, slow query detection | todo | `scripts/db-audit/` |
 
 ## Ядро контента — RAG-пайплайн и генерация (Backend)
