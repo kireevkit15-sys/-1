@@ -84,18 +84,6 @@ export class QuestionController {
     });
   }
 
-  @ApiOperation({ summary: 'Получить вопрос по ID' })
-  @ApiBearerAuth()
-  @ApiParam({ name: 'id', description: 'UUID вопроса' })
-  @ApiResponse({ status: 200, description: 'Вопрос найден' })
-  @ApiResponse({ status: 401, description: 'Не авторизован' })
-  @ApiResponse({ status: 404, description: 'Вопрос не найден' })
-  @UseGuards(JwtAuthGuard)
-  @Get(':id')
-  async findOne(@Param('id') id: string) {
-    return this.questionService.findOne(id);
-  }
-
   // ─── Feedback (BC8) ────────────────────────────────────────
 
   @ApiOperation({ summary: 'Отправить отзыв на вопрос (лайк/дизлайк/репорт)' })
@@ -296,19 +284,6 @@ export class QuestionController {
     return this.questionService.bulkCreate(dto.questions);
   }
 
-  @ApiOperation({ summary: 'Обновить вопрос (админ)' })
-  @ApiBearerAuth()
-  @ApiParam({ name: 'id', description: 'UUID вопроса' })
-  @ApiResponse({ status: 200, description: 'Вопрос обновлён' })
-  @ApiResponse({ status: 401, description: 'Не авторизован' })
-  @ApiResponse({ status: 403, description: 'Нет прав администратора' })
-  @ApiResponse({ status: 404, description: 'Вопрос не найден' })
-  @UseGuards(JwtAuthGuard, AdminGuard)
-  @Patch(':id')
-  async update(@Param('id') id: string, @Body() dto: UpdateQuestionDto) {
-    return this.questionService.update(id, dto);
-  }
-
   @ApiOperation({ summary: 'Зарепорченные вопросы (админ)' })
   @ApiBearerAuth()
   @ApiQuery({ name: 'limit', required: false, type: Number, description: 'Лимит (по умолчанию 20)' })
@@ -347,19 +322,6 @@ export class QuestionController {
     return this.questionService.findByTags(tagList, matchAll === 'true');
   }
 
-  @ApiOperation({ summary: 'Установить теги на вопрос (админ)' })
-  @ApiBearerAuth()
-  @ApiParam({ name: 'id', description: 'UUID вопроса' })
-  @ApiResponse({ status: 200, description: 'Теги обновлены' })
-  @UseGuards(JwtAuthGuard, AdminGuard)
-  @Patch(':id/tags')
-  async setTags(
-    @Param('id') id: string,
-    @Body() body: { tags: string[] },
-  ) {
-    return this.questionService.setTags(id, body.tags);
-  }
-
   // ─── B19.5: Moderation queue ────────────────────────────────
 
   @ApiOperation({ summary: 'Очередь модерации: зарепорченные вопросы с деталями (админ)' })
@@ -377,6 +339,46 @@ export class QuestionController {
       limit: limit ? parseInt(limit, 10) : undefined,
       offset: offset ? parseInt(offset, 10) : undefined,
     });
+  }
+
+  // ─── :id routes (MUST be after all named GET routes) ───────
+
+  @ApiOperation({ summary: 'Получить вопрос по ID' })
+  @ApiBearerAuth()
+  @ApiParam({ name: 'id', description: 'UUID вопроса' })
+  @ApiResponse({ status: 200, description: 'Вопрос найден' })
+  @ApiResponse({ status: 401, description: 'Не авторизован' })
+  @ApiResponse({ status: 404, description: 'Вопрос не найден' })
+  @UseGuards(JwtAuthGuard)
+  @Get(':id')
+  async findOne(@Param('id') id: string) {
+    return this.questionService.findOne(id);
+  }
+
+  @ApiOperation({ summary: 'Обновить вопрос (админ)' })
+  @ApiBearerAuth()
+  @ApiParam({ name: 'id', description: 'UUID вопроса' })
+  @ApiResponse({ status: 200, description: 'Вопрос обновлён' })
+  @ApiResponse({ status: 401, description: 'Не авторизован' })
+  @ApiResponse({ status: 403, description: 'Нет прав администратора' })
+  @ApiResponse({ status: 404, description: 'Вопрос не найден' })
+  @UseGuards(JwtAuthGuard, AdminGuard)
+  @Patch(':id')
+  async update(@Param('id') id: string, @Body() dto: UpdateQuestionDto) {
+    return this.questionService.update(id, dto);
+  }
+
+  @ApiOperation({ summary: 'Установить теги на вопрос (админ)' })
+  @ApiBearerAuth()
+  @ApiParam({ name: 'id', description: 'UUID вопроса' })
+  @ApiResponse({ status: 200, description: 'Теги обновлены' })
+  @UseGuards(JwtAuthGuard, AdminGuard)
+  @Patch(':id/tags')
+  async setTags(
+    @Param('id') id: string,
+    @Body() body: { tags: string[] },
+  ) {
+    return this.questionService.setTags(id, body.tags);
   }
 
   @ApiOperation({ summary: 'Отклонить репорты на вопрос — вопрос в порядке (админ)' })

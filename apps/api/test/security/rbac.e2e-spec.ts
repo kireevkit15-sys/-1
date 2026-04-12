@@ -177,44 +177,36 @@ describe('Security — RBAC, Auth Guards, Token Lifecycle (e2e)', () => {
       expect(res.status).toBe(403);
     });
 
-    // NOTE: GET /questions/export, /stats, /reported, /gaps return 500 instead of 403
-    // because @Get(':id') route is declared before them in the controller,
-    // so NestJS matches 'stats' as :id param → Prisma UUID parse error.
-    // This is a route ordering bug (BUG: :id catch-all before named routes).
-    // For now, we verify USER cannot get valid data from these endpoints.
-
-    it('GET /questions/export — user cannot access (not 200 with data)', async () => {
+    it('GET /questions/export — export questions (403)', async () => {
       const res = await request(app.getHttpServer())
         .get('/questions/export')
         .set('Authorization', `Bearer ${userToken}`);
 
-      // Route conflict: :id catches 'export' → 500 (not 403)
-      // Either way, user does NOT get question data
-      expect(res.status).not.toBe(200);
+      expect(res.status).toBe(403);
     });
 
-    it('GET /questions/stats — user cannot access (not 200 with data)', async () => {
+    it('GET /questions/stats — question statistics (403)', async () => {
       const res = await request(app.getHttpServer())
         .get('/questions/stats')
         .set('Authorization', `Bearer ${userToken}`);
 
-      expect(res.status).not.toBe(200);
+      expect(res.status).toBe(403);
     });
 
-    it('GET /questions/reported — user cannot access (not 200 with data)', async () => {
+    it('GET /questions/reported — reported questions (403)', async () => {
       const res = await request(app.getHttpServer())
         .get('/questions/reported')
         .set('Authorization', `Bearer ${userToken}`);
 
-      expect(res.status).not.toBe(200);
+      expect(res.status).toBe(403);
     });
 
-    it('GET /questions/gaps — user cannot access (not 200 with data)', async () => {
+    it('GET /questions/gaps — coverage gaps (403)', async () => {
       const res = await request(app.getHttpServer())
         .get('/questions/gaps')
         .set('Authorization', `Bearer ${userToken}`);
 
-      expect(res.status).not.toBe(200);
+      expect(res.status).toBe(403);
     });
 
     it('POST /questions/generate — AI generation (403)', async () => {
@@ -238,8 +230,21 @@ describe('Security — RBAC, Auth Guards, Token Lifecycle (e2e)', () => {
       expect(res.status).toBe(200);
     });
 
-    // NOTE: /questions/stats and /questions/export hit :id route conflict (see above).
-    // Admin access verified via POST /questions (create) and PATCH /questions/:id (update).
+    it('GET /questions/stats — question stats (200)', async () => {
+      const res = await request(app.getHttpServer())
+        .get('/questions/stats')
+        .set('Authorization', `Bearer ${adminToken}`);
+
+      expect(res.status).toBe(200);
+    });
+
+    it('GET /questions/export — export (200)', async () => {
+      const res = await request(app.getHttpServer())
+        .get('/questions/export')
+        .set('Authorization', `Bearer ${adminToken}`);
+
+      expect(res.status).toBe(200);
+    });
 
     it('PATCH /questions/:id — update question (200)', async () => {
       if (!testQuestionId) return;
