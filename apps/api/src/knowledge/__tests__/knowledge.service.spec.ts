@@ -89,8 +89,8 @@ describe('KnowledgeService', () => {
       });
 
       expect(results).toHaveLength(1);
-      expect(results[0].id).toBe('1');
-      expect(results[0].similarity).toBe(0.9);
+      expect(results[0]!.id).toBe('1');
+      expect(results[0]!.similarity).toBe(0.9);
     });
 
     it('should filter by branch when provided', async () => {
@@ -263,7 +263,7 @@ describe('KnowledgeService', () => {
       const results = await service.findByTopic('intuition');
 
       expect(results).toHaveLength(1);
-      expect(results[0].similarity).toBe(0.25);
+      expect(results[0]!.similarity).toBe(0.25);
     });
   });
 

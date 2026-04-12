@@ -21,14 +21,14 @@ import {
 import { QuestionService } from './question.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { AdminGuard } from '../common/guards/admin.guard';
-import type {
+import {
   CreateQuestionDto,
   BulkCreateQuestionsDto,
   UpdateQuestionDto,
 } from './dto/create-question.dto';
-import type { CreateFeedbackDto } from './dto/question-feedback.dto';
-import type { GenerateQuestionsDto } from './dto/generate-questions.dto';
-import type { BulkValidateQuestionsDto } from './dto/bulk-validate.dto';
+import { CreateFeedbackDto } from './dto/question-feedback.dto';
+import { GenerateQuestionsDto } from './dto/generate-questions.dto';
+import { BulkValidateQuestionsDto } from './dto/bulk-validate.dto';
 
 @ApiTags('Questions')
 @Controller('questions')

@@ -1,8 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { ConfigService } from '@nestjs/config';
-// eslint-disable-next-line @typescript-eslint/no-require-imports
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let OpenAI: any;
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 try { OpenAI = require('openai').default; } catch { OpenAI = null; }
 
 export interface SimilarChunk {

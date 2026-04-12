@@ -384,7 +384,7 @@ describe('Battle E2E', () => {
       );
 
       expect(state).toBeDefined();
-      expect(state.phase).toBe(BattlePhase.CATEGORY_SELECT);
+      expect(state.phase).toBe(BattlePhase.BRANCH_SELECT);
       expect(state.player1.id).toBe(userId);
       expect(state.player2.id).toBe('bot');
       expect(state.player2.name).toBe('РАЗУМ-бот');
@@ -500,7 +500,7 @@ describe('Battle E2E', () => {
         iterations++;
 
         // CATEGORY_SELECT: human picks category (if human is attacker)
-        if (currentState.phase === BattlePhase.CATEGORY_SELECT) {
+        if (currentState.phase === BattlePhase.BRANCH_SELECT) {
           if (currentState.currentAttackerId === userId) {
             const category = currentState.categories[0]!;
             currentState = await emitAndWait<BattleState>(
@@ -621,7 +621,7 @@ describe('Battle E2E', () => {
       expect(battle.status).toBe('ACTIVE');
 
       const state = (await battleService.getBattleState(battle.id)) as BattleState;
-      expect(state.phase).toBe(BattlePhase.CATEGORY_SELECT);
+      expect(state.phase).toBe(BattlePhase.BRANCH_SELECT);
       expect(state.totalRounds).toBe(ROUNDS_PER_BATTLE);
 
       // Record the user's stats before the battle
@@ -677,7 +677,7 @@ describe('Battle E2E', () => {
           continue;
         }
 
-        if (current.phase === BattlePhase.CATEGORY_SELECT) {
+        if (current.phase === BattlePhase.BRANCH_SELECT) {
           const cat = current.categories[0]!;
           current = await battleService.processCategory(
             battle.id,
@@ -978,7 +978,7 @@ describe('Battle E2E', () => {
       let state = await battleService.getBattleState(battle.id);
 
       // Phase 1: CATEGORY_SELECT
-      expect(state.phase).toBe(BattlePhase.CATEGORY_SELECT);
+      expect(state.phase).toBe(BattlePhase.BRANCH_SELECT);
 
       // Phase 2: ROUND_ATTACK
       state = await battleService.processCategory(
@@ -1015,7 +1015,7 @@ describe('Battle E2E', () => {
       state = await battleService.advanceRound(battle.id);
       // After round 1, should go to CATEGORY_SELECT for round 2 (same attacker)
       expect([
-        BattlePhase.CATEGORY_SELECT,
+        BattlePhase.BRANCH_SELECT,
         BattlePhase.SWAP_ROLES,
         BattlePhase.FINAL_RESULT,
       ]).toContain(state.phase);

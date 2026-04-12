@@ -295,9 +295,9 @@ export class BattleService {
       );
     }
 
-    // Persist round to the BattleRound table
+    // Persist round to the BattleRound table (skip for bot attacker — no User row)
     const currentRound = state.rounds[state.rounds.length - 1];
-    if (currentRound) {
+    if (currentRound && userId !== 'bot') {
       await this.prisma.battleRound.create({
         data: {
           battleId,
@@ -487,13 +487,40 @@ export class BattleService {
     const newState = handleDisconnect(state, userId);
     await this.saveState(battleId, newState);
 
-    // Update battle status to ABANDONED and complete
+    // Compute result for stats/rating update
+    const result = getResult(newState);
+
+    // Mark battle as ABANDONED (not COMPLETED)
     await this.prisma.battle.update({
       where: { id: battleId },
-      data: { status: 'ABANDONED' },
+      data: {
+        status: 'ABANDONED',
+        winnerId: result.winnerId,
+        player1Score: result.player1Score,
+        player2Score: result.player2Score,
+        endedAt: new Date(),
+      },
     });
 
-    await this.completeBattle(battleId);
+    // Update user stats
+    const p1Won = result.winnerId === newState.player1.id;
+    await this.updateUserStatsByBranch(
+      newState.player1.id,
+      result.xpGained,
+      p1Won,
+      newState.player2.id !== 'bot' ? newState.player2.id : null,
+    );
+
+    if (newState.player2.id !== 'bot') {
+      const p2Won = result.winnerId === newState.player2.id;
+      await this.updateUserStatsByBranch(
+        newState.player2.id,
+        result.xpGained,
+        p2Won,
+        newState.player1.id,
+      );
+    }
+
     return newState;
   }
 
