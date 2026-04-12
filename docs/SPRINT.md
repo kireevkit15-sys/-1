@@ -368,20 +368,20 @@
 
 | # | Задача | Статус | Файлы |
 |---|--------|--------|-------|
-| BT.1 | E2E: полный цикл баттла с 5 ветками — создание, 5 раундов, скоринг, XP | todo | `apps/api/test/battle-v2.e2e-spec.ts` |
-| BT.2 | E2E: auth полный цикл — register → login → refresh → expired → refresh → ok | todo | `apps/api/test/auth.e2e-spec.ts` |
-| BT.3 | E2E: вопросы — CRUD, фильтры по 5 веткам, bulk, report, auto-deactivate | todo | `apps/api/test/questions.e2e-spec.ts` |
-| BT.4 | E2E: обучение — modules 5 веток, progress, unlock, completion | todo | `apps/api/test/learn.e2e-spec.ts` |
-| BT.5 | E2E: стат-система — XP по 5 веткам, level up, thinkerClass пересчёт | todo | `apps/api/test/stats.e2e-spec.ts` |
-| BT.6 | E2E: лидерборд — топ-20, позиция юзера, кеш-инвалидация | todo | `apps/api/test/leaderboard.e2e-spec.ts` |
-| BT.7 | E2E: AI — диалог, сообщения, daily limit, token counting | todo | `apps/api/test/ai.e2e-spec.ts` |
-| BT.8 | E2E: разминка — today, submit, streak, duplicate prevention | todo | `apps/api/test/warmup.e2e-spec.ts` |
-| BT.9 | E2E: достижения — unlock, список, прогресс, ачивки за 5 веток | todo | `apps/api/test/achievements.e2e-spec.ts` |
-| BT.10 | E2E: уведомления — subscribe, unsubscribe, push | todo | `apps/api/test/notifications.e2e-spec.ts` |
-| BT.11 | Unit: QuestionService.recalibrateDifficulty — граничные случаи, <20 ответов | todo | `apps/api/src/question/__tests__/` |
-| BT.12 | Unit: MatchmakingService — расширение диапазона, таймаут → бот, concurrent | todo | `apps/api/src/battle/__tests__/` |
-| BT.13 | Unit: BattleStateMachine — все переходы, невалидные, таймауты, disconnect | todo | `packages/shared/__tests__/battle/` |
-| BT.14 | Unit: scoring — ELO для 5 веток, edge cases, новичок vs ветеран | todo | `packages/shared/__tests__/battle/` |
+| BT.1 | E2E: полный цикл баттла с 5 ветками — создание, 5 раундов, скоринг, XP | done | `apps/api/test/battle-v2.e2e-spec.ts` |
+| BT.2 | E2E: auth полный цикл — register → login → refresh → expired → refresh → ok | done | `apps/api/test/auth.e2e-spec.ts` |
+| BT.3 | E2E: вопросы — CRUD, фильтры по 5 веткам, bulk, report, auto-deactivate | done | `apps/api/test/questions.e2e-spec.ts` |
+| BT.4 | E2E: обучение — modules 5 веток, progress, unlock, completion | done | `apps/api/test/learn.e2e-spec.ts` |
+| BT.5 | E2E: стат-система — XP по 5 веткам, level up, thinkerClass пересчёт | done | `apps/api/test/stats.e2e-spec.ts` |
+| BT.6 | E2E: лидерборд — топ-20, позиция юзера, кеш-инвалидация | done | `apps/api/test/leaderboard.e2e-spec.ts` |
+| BT.7 | E2E: AI — диалог, сообщения, daily limit, token counting | done | `apps/api/test/ai.e2e-spec.ts` |
+| BT.8 | E2E: разминка — today, submit, streak, duplicate prevention | done | `apps/api/test/warmup.e2e-spec.ts` |
+| BT.9 | E2E: достижения — unlock, список, прогресс, ачивки за 5 веток | done | `apps/api/test/achievements.e2e-spec.ts` |
+| BT.10 | E2E: уведомления — subscribe, unsubscribe, push | done | `apps/api/test/notifications.e2e-spec.ts` |
+| BT.11 | Unit: QuestionService.recalibrateDifficulty — граничные случаи, <20 ответов | done | `apps/api/src/question/__tests__/recalibrate-difficulty.spec.ts` |
+| BT.12 | Unit: MatchmakingService — расширение диапазона, таймаут → бот, concurrent | done | `apps/api/src/battle/__tests__/matchmaking.service.spec.ts` |
+| BT.13 | Unit: BattleStateMachine — все переходы, невалидные, таймауты, disconnect | done | `packages/shared/__tests__/battle/state-machine.spec.ts` |
+| BT.14 | Unit: scoring — ELO для 5 веток, edge cases, новичок vs ветеран | done | `packages/shared/__tests__/battle/scoring.spec.ts` |
 | BT.15 | Unit: KnowledgeService — vector search, similarity threshold, empty, fallback | todo | `apps/api/src/knowledge/__tests__/` |
 | BT.16 | Load: k6 скрипт на 100 concurrent баттлов, response time, error rate | todo | `scripts/load-tests/` |
 | BT.17 | Load: WebSocket — 200 одновременных подключений, broadcast latency | todo | `scripts/load-tests/` |
