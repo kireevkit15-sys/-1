@@ -915,6 +915,57 @@
 
 ---
 
+### 2026-04-12 — Сессия 14: BT.15–BT.20 тесты + полный аудит бэкенда
+
+**Время:** ~5 часов
+**Статус:** Завершена
+
+**Что сделано:**
+- BT.15: 29 unit-тестов для KnowledgeService (vector search, filters, stats, OpenAI disabled)
+- BT.16: k6 нагрузочный тест — 100 concurrent bot battles (ramping VUs)
+- BT.17: k6 WebSocket тест — 200 concurrent Socket.IO подключений
+- BT.18: 22 E2E security теста — SQL injection, XSS, JWT forgery, rate limiting
+- BT.19: 34 E2E RBAC теста — admin guards, role escalation, cross-user isolation
+- BT.20: EXPLAIN ANALYZE аудит — 23 запроса, проверка индексов, unused indexes
+- Найден и исправлен баг: @Get(':id') перехватывал именованные GET-маршруты в QuestionController
+- Полный аудит бэкенда:
+  - Исправлена бесконечная рекурсия в `emitPhaseChange` (вызывала сама себя)
+  - Исправлен баг: `handlePlayerDisconnect` перезаписывал ABANDONED→COMPLETED
+  - Исправлен краш `processAttack` при атаке бота (строка 'bot' в UUID поле)
+  - Исправлен `battle:join` — не загружал state из БД для батлов созданных через REST
+  - Устранены race conditions в WS тестах (SWAP_ROLES double emit, defend→phase_changed)
+  - Исправлены `import type` на runtime imports в question.controller (ESLint --fix ломал DI)
+  - Исправлены eslint-disable комментарии в knowledge.service
+  - Обновлены E2E тесты: CATEGORY_SELECT → BRANCH_SELECT после рефакторинга state-machine
+- Финальны�� результат: ESLint 0 errors, TypeScript 0 errors, 67/67 unit, 294/294 E2E
+
+**Файлы созданы/изменены:**
+- `apps/api/src/knowledge/__tests__/knowledge.service.spec.ts` — BT.15 (создан)
+- `scripts/load-tests/battle-load.js` — BT.16 (создан)
+- `scripts/load-tests/websocket-load.js` — BT.17 (создан)
+- `scripts/load-tests/README.md` — документация к load tests (создан)
+- `apps/api/test/security/injection-xss.e2e-spec.ts` — BT.18 (создан)
+- `apps/api/test/security/rbac.e2e-spec.ts` — BT.19 (создан)
+- `scripts/db-audit/explain-analyze.ts` — BT.20 (создан)
+- `apps/api/src/question/question.controller.ts` — fix route ordering + import type
+- `apps/api/src/battle/battle.service.ts` — fix ABANDONED overwrite + bot UUID
+- `apps/api/src/battle/battle.gateway.ts` — fix recursion + join + SWAP_ROLES race
+- `apps/api/src/knowledge/knowledge.service.ts` — fix eslint-disable
+- `apps/api/test/battle.e2e-spec.ts` — fix CATEGORY_SELECT → BRANCH_SELECT + race conditions
+
+**Задачи из SPRINT.md закрыты:** BT.15, BT.16, BT.17, BT.18, BT.19, BT.20
+
+**Коммиты:**
+- `7ac84b5` — test(unit): BT.15 — unit tests for KnowledgeService (29 tests)
+- `a34010a` — test(load): BT.16–BT.17 — k6 load tests for battles and WebSocket
+- `561534f` — test(security): BT.18–BT.19 — E2E security tests (56 tests)
+- `20393f4` — fix(questions): move @Get(':id') after all named routes to fix 500 errors
+- `74849c7` — test(db): BT.20 — EXPLAIN ANALYZE audit script for all indexes
+- `c0de7bf` — fix(api): backend audit — fix ABANDONED status overwrite, bot UUID crash, stale phase refs
+- `ce30fb5` — fix(battle): fix infinite recursion in emitPhaseChange, race conditions in WS tests
+
+---
+
 ## Сводка по неделям
 
 ### Неделя 1 (2026-04-05 — 2026-04-11)
@@ -934,3 +985,4 @@
 | 04-09 | Яшкин | Matchmaking v2, спарринг, реванш, бот v2 (3 уровня) | B15.3–B15.6 (4 задачи) |
 | 04-11 | Яшкин | Production seed v2: 500 вопросов, 25 категорий, 5 веток | B18.5 |
 | 04-11 | Яшкин | Блок 19: spectators, сезоны, streak protect, digest, moderation, A/B, GDPR, турниры, баны, webhooks, v2 API, healthcheck | B19.1–B19.12 (все 12) |
+| 04-12 | Яшкин | BT.15–BT.20 тесты + полный аудит бэкенда, 5 багов исправлено | BT.15–BT.20 (все 6) |
