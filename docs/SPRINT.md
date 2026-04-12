@@ -382,9 +382,9 @@
 | BT.12 | Unit: MatchmakingService — расширение диапазона, таймаут → бот, concurrent | done | `apps/api/src/battle/__tests__/matchmaking.service.spec.ts` |
 | BT.13 | Unit: BattleStateMachine — все переходы, невалидные, таймауты, disconnect | done | `packages/shared/__tests__/battle/state-machine.spec.ts` |
 | BT.14 | Unit: scoring — ELO для 5 веток, edge cases, новичок vs ветеран | done | `packages/shared/__tests__/battle/scoring.spec.ts` |
-| BT.15 | Unit: KnowledgeService — vector search, similarity threshold, empty, fallback | todo | `apps/api/src/knowledge/__tests__/` |
-| BT.16 | Load: k6 скрипт на 100 concurrent баттлов, response time, error rate | todo | `scripts/load-tests/` |
-| BT.17 | Load: WebSocket — 200 одновременных подключений, broadcast latency | todo | `scripts/load-tests/` |
+| BT.15 | Unit: KnowledgeService — vector search, similarity threshold, empty, fallback | done | `apps/api/src/knowledge/__tests__/knowledge.service.spec.ts` |
+| BT.16 | Load: k6 скрипт на 100 concurrent баттлов, response time, error rate | done | `scripts/load-tests/battle-load.js` |
+| BT.17 | Load: WebSocket — 200 одновременных подключений, broadcast latency | done | `scripts/load-tests/websocket-load.js` |
 | BT.18 | Security: SQL injection, XSS в вопросах, JWT подделка, rate limit bypass | todo | `apps/api/test/security/` |
 | BT.19 | Security: RBAC — USER vs ADMIN endpoints, невалидный JWT, expired refresh | todo | `apps/api/test/security/` |
 | BT.20 | Database: EXPLAIN ANALYZE всех индексов под нагрузкой, slow query detection | todo | `scripts/db-audit/` |
