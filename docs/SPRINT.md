@@ -387,7 +387,7 @@
 | BT.17 | Load: WebSocket — 200 одновременных подключений, broadcast latency | done | `scripts/load-tests/websocket-load.js` |
 | BT.18 | Security: SQL injection, XSS в вопросах, JWT подделка, rate limit bypass | done | `apps/api/test/security/injection-xss.e2e-spec.ts` |
 | BT.19 | Security: RBAC — USER vs ADMIN endpoints, невалидный JWT, expired refresh | done | `apps/api/test/security/rbac.e2e-spec.ts` |
-| BT.20 | Database: EXPLAIN ANALYZE всех индексов под нагрузкой, slow query detection | todo | `scripts/db-audit/` |
+| BT.20 | Database: EXPLAIN ANALYZE всех индексов под нагрузкой, slow query detection | done | `scripts/db-audit/explain-analyze.ts` |
 
 ## Ядро контента — RAG-пайплайн и генерация (Backend)
 
