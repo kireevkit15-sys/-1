@@ -81,6 +81,19 @@ const config: Config = {
           "0%, 100%": { boxShadow: "0 0 8px rgba(207,157,123,0.2), 0 0 20px rgba(207,157,123,0.05)" },
           "50%": { boxShadow: "0 0 20px rgba(207,157,123,0.45), 0 0 50px rgba(207,157,123,0.12)" },
         },
+        "correct-glow": {
+          "0%, 100%": { boxShadow: "0 0 15px rgba(34,197,94,0.15)" },
+          "50%": { boxShadow: "0 0 30px rgba(34,197,94,0.3), 0 0 60px rgba(34,197,94,0.1)" },
+        },
+        "slide-up": {
+          "0%": { transform: "translateY(20px)", opacity: "0" },
+          "100%": { transform: "translateY(0)", opacity: "1" },
+        },
+        "ripple-out": {
+          "0%": { opacity: "0", transform: "scale(0.3)" },
+          "40%": { opacity: "1" },
+          "100%": { opacity: "0", transform: "scale(2.5)" },
+        },
       },
       animation: {
         "shake": "shake 0.5s ease-in-out",
@@ -90,6 +103,9 @@ const config: Config = {
         "glow-pulse": "glow-pulse 2s ease-in-out infinite",
         "glow-pulse-badge": "glow-pulse-badge 2.5s ease-in-out infinite",
         "count-up": "count-up 0.4s ease-out forwards",
+        "correct-glow": "correct-glow 1.5s ease-in-out infinite",
+        "slide-up": "slide-up 0.4s ease-out forwards",
+        "ripple-out": "ripple-out 0.8s ease-out forwards",
       },
     },
   },

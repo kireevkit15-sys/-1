@@ -101,6 +101,8 @@ model User {
   seasonRewards     SeasonReward[]
   tournamentEntries TournamentParticipant[]
   bans              UserBan[]
+  campaignProgress  UserCampaignProgress[]
+  feedState         UserFeedState?
 
   @@map("users")
 }
@@ -605,6 +607,131 @@ enum AppealStatus {
   PENDING
   APPROVED
   REJECTED
+}
+
+// ── Feed Card Types ──────────────────────────────
+
+enum FeedCardType {
+  INSIGHT
+  CHALLENGE
+  CASE
+  SPARRING
+  FORGE
+  WISDOM
+  ARENA
+}
+
+enum WarriorRank {
+  NOVICE
+  WARRIOR
+  GLADIATOR
+  STRATEGIST
+  SPARTAN
+}
+
+// ── Campaign ──────────────────────────────────
+
+model Campaign {
+  id                    String      @id @default(uuid()) @db.Uuid
+  title                 String
+  description           String
+  branch                Branch
+  rank                  WarriorRank @default(NOVICE)
+  durationDays          Int
+  orderIndex            Int         @default(0)
+  prerequisiteCampaignIds String[]  @default([]) @db.Uuid
+  isActive              Boolean     @default(true)
+  createdAt             DateTime    @default(now())
+
+  cards    CampaignCard[]
+  progress UserCampaignProgress[]
+
+  @@unique([branch, orderIndex])
+  @@index([branch])
+  @@index([rank])
+  @@index([isActive])
+  @@map("campaigns")
+}
+
+// ── Campaign Card ─────────────────────────────
+
+model CampaignCard {
+  id          String       @id @default(uuid()) @db.Uuid
+  campaignId  String       @db.Uuid
+  dayNumber   Int          @db.SmallInt
+  orderInDay  Int          @db.SmallInt
+  type        FeedCardType
+  content     Json         // Typed JSON matching FeedCardContent
+  branch      Branch
+  questionId  String?      @db.Uuid  // For CHALLENGE, SPARRING, FORGE types
+  statPrimary String?
+
+  campaign Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+
+  interactions FeedCardInteraction[]
+
+  @@unique([campaignId, dayNumber, orderInDay])
+  @@index([campaignId, dayNumber])
+  @@index([type])
+  @@map("campaign_cards")
+}
+
+// ── User Campaign Progress ────────────────────
+
+model UserCampaignProgress {
+  userId           String    @db.Uuid
+  campaignId       String    @db.Uuid
+  currentDay       Int       @default(1)
+  completedCardIds String[]  @default([]) @db.Uuid
+  streak           Int       @default(0)  // Days in a row in this campaign
+  lastActiveDate   String?   // YYYY-MM-DD
+  startedAt        DateTime  @default(now())
+  completedAt      DateTime?
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  campaign Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+
+  @@id([userId, campaignId])
+  @@index([userId])
+  @@map("user_campaign_progress")
+}
+
+// ── User Feed State ───────────────────────────
+
+model UserFeedState {
+  userId             String   @id @db.Uuid
+  activeCampaignIds  String[] @default([]) @db.Uuid
+  todayCards         Json     @default("[]")  // Generated feed for today
+  forgeQueue         Json     @default("[]")  // SRS queue: {questionId, nextReviewDate, attempt}[]
+  feedStreak         Int      @default(0)
+  lastFeedDate       String?  // YYYY-MM-DD
+  todayViewedCount   Int      @default(0)
+  updatedAt          DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_feed_state")
+}
+
+// ── Feed Card Interaction ─────────────────────
+
+model FeedCardInteraction {
+  id               String   @id @default(uuid()) @db.Uuid
+  userId           String   @db.Uuid
+  cardId           String   @db.Uuid
+  campaignId       String?  @db.Uuid
+  type             String   // VIEWED, ANSWERED_CORRECT, ANSWERED_WRONG, SKIPPED, ARENA_CLICKED
+  answerIndex      Int?     @db.SmallInt
+  timeTakenMs      Int?
+  xpEarned         Int      @default(0)
+  createdAt        DateTime @default(now())
+
+  card CampaignCard @relation(fields: [cardId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@index([cardId])
+  @@index([campaignId])
+  @@map("feed_card_interactions")
 }
 
 // ── Webhooks ──────────────────────────────────

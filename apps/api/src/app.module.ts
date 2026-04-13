@@ -29,7 +29,9 @@ import { CronModule } from './cron/cron.module';
 import { TournamentModule } from './tournament/tournament.module';
 import { BanModule } from './ban/ban.module';
 import { WebhookModule } from './webhook/webhook.module';
+import { CampaignModule } from './campaign/campaign.module';
 import { V2Module } from './v2/v2.module';
+import { FeedModule } from './feed/feed.module';
 import { AppController } from './app.controller';
 
 @Module({
@@ -108,6 +110,8 @@ import { AppController } from './app.controller';
     TournamentModule,
     BanModule,
     WebhookModule,
+    CampaignModule,
+    FeedModule,
     V2Module,
     RouterModule.register([
       { path: 'v2', module: V2Module },

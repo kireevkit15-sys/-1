@@ -10,18 +10,23 @@ import { useAuth } from "@/hooks/useAuth";
 // Types
 // ---------------------------------------------------------------------------
 
-interface ModuleData {
+interface CampaignData {
   id: string;
   title: string;
-  progress: number;
-  lessons: number;
+  description: string;
+  branch: string;
+  durationDays: number;
+  started?: boolean;
+  currentDay?: number;
+  completedDays?: number;
+  progress?: number;
 }
 
 interface BranchData {
   id: string;
   title: string;
   color: string;
-  modules: ModuleData[];
+  campaigns: CampaignData[];
 }
 
 // ---------------------------------------------------------------------------
@@ -59,16 +64,17 @@ function Skeleton({ className = "" }: { className?: string }) {
   );
 }
 
-function ModuleSkeleton() {
+function CampaignSkeleton() {
   return (
     <Card padding="sm" className="space-y-3">
       <div className="flex items-center gap-3">
-        <Skeleton className="w-8 h-8 rounded-lg" />
+        <Skeleton className="w-10 h-10 rounded-lg" />
         <div className="space-y-1.5 flex-1">
-          <Skeleton className="w-32 h-4" />
-          <Skeleton className="w-16 h-3" />
+          <Skeleton className="w-40 h-4" />
+          <Skeleton className="w-24 h-3" />
         </div>
       </div>
+      <Skeleton className="w-full h-1.5" />
     </Card>
   );
 }
@@ -200,10 +206,10 @@ function KnowledgeTree({
   const nodes: TreeNode[] = branchConfig.map((cfg) => {
     const branch = branches.find((b) => b.id === cfg.key.toLowerCase());
     const totalProgress =
-      branch && branch.modules.length > 0
+      branch && branch.campaigns.length > 0
         ? Math.round(
-            branch.modules.reduce((sum, m) => sum + m.progress, 0) /
-              branch.modules.length,
+            branch.campaigns.reduce((sum, c) => sum + (c.progress ?? 0), 0) /
+              branch.campaigns.length,
           )
         : 0;
     return {
@@ -390,20 +396,22 @@ export default function LearnPage() {
     async function load() {
       setLoading(true);
 
-      const results = await Promise.all(
-        branchConfig.map(async (cfg) => {
-          const modules = await fetchJson<ModuleData[]>(
-            `${API_BASE}/v1/modules?branch=${cfg.key}`,
-            accessToken,
-          );
-          return {
-            id: cfg.key.toLowerCase(),
-            title: cfg.title,
-            color: cfg.color,
-            modules: modules ?? [],
-          };
-        }),
+      const allCampaigns = await fetchJson<CampaignData[]>(
+        `${API_BASE}/v1/campaigns`,
+        accessToken,
       );
+
+      const results = branchConfig.map((cfg) => {
+        const branchCampaigns = (allCampaigns ?? []).filter(
+          (c) => c.branch === cfg.key,
+        );
+        return {
+          id: cfg.key.toLowerCase(),
+          title: cfg.title,
+          color: cfg.color,
+          campaigns: branchCampaigns,
+        };
+      });
 
       setBranches(results);
       setLoading(false);
@@ -425,13 +433,19 @@ export default function LearnPage() {
   const activeDotHex = branchDotHex[activeBranchKey] ?? "#888";
   const activeCfg = branchConfig.find((c) => c.key === activeBranchKey);
 
+  // Collect active campaigns across all branches (started but not 100%)
+  const activeCampaigns = branches
+    .flatMap((b) => b.campaigns)
+    .filter((c) => c.started && (c.progress ?? 0) < 100)
+    .slice(0, 2);
+
   return (
     <div className="px-4 pt-12 pb-24 space-y-8">
       {/* Header */}
       <div>
         <h1 className="text-2xl font-bold text-metallic">Обучение</h1>
         <p className="text-text-muted text-sm mt-1">
-          Выбери ветку знаний для изучения
+          Карта знаний, кампании и лента
         </p>
       </div>
 
@@ -443,7 +457,125 @@ export default function LearnPage() {
         <KnowledgeTree branches={branches} onNodeClick={handleNodeClick} />
       </div>
 
-      {/* Selected branch modules */}
+      {/* ── Feed CTA Banner ── */}
+      {!selectedBranch && (
+        <Link href="/feed" className="block">
+          <div
+            className="relative overflow-hidden rounded-2xl p-5 sm:p-6"
+            style={{
+              background: "linear-gradient(135deg, rgba(207,157,123,0.15) 0%, rgba(207,157,123,0.04) 100%)",
+              border: "1px solid rgba(207,157,123,0.25)",
+            }}
+          >
+            {/* Decorative glow */}
+            <div
+              className="absolute -top-10 -right-10 w-32 h-32 rounded-full pointer-events-none"
+              style={{ background: "radial-gradient(circle, rgba(207,157,123,0.2) 0%, transparent 70%)" }}
+            />
+            <div className="relative z-10 flex flex-col sm:flex-row sm:items-center gap-4">
+              <div className="flex-1 space-y-1.5">
+                <div className="flex items-center gap-2">
+                  {/* Sword icon */}
+                  <svg className="w-5 h-5 text-metallic" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M14.5 2l5.5 5.5-11 11L3.5 13 14.5 2zM3 21l3.5-3.5M7.5 14l2.5 2.5" />
+                  </svg>
+                  <h2 className="text-lg font-bold text-metallic">Лента Воина</h2>
+                </div>
+                <p className="text-sm text-text-secondary leading-relaxed">
+                  Учись через ленту: свайпай, отвечай, сражайся
+                </p>
+              </div>
+              <div
+                className="flex-none self-start sm:self-center px-5 py-2.5 rounded-xl text-sm font-semibold text-white transition-all hover:scale-105 active:scale-95"
+                style={{
+                  background: "linear-gradient(135deg, rgba(207,157,123,0.9), rgba(207,157,123,0.7))",
+                  boxShadow: "0 4px 16px rgba(207,157,123,0.3)",
+                }}
+              >
+                Открыть ленту
+              </div>
+            </div>
+          </div>
+        </Link>
+      )}
+
+      {/* ── Active Campaigns (when no branch selected) ── */}
+      {!selectedBranch && !loading && activeCampaigns.length > 0 && (
+        <div className="space-y-3" style={{ animation: "onboarding-fade-in 0.4s ease-out" }}>
+          <div className="flex items-center justify-between">
+            <p className="text-xs text-text-muted font-medium tracking-wider uppercase">
+              Активные кампании
+            </p>
+            <Link href="/campaigns" className="text-xs text-metallic font-medium hover:underline">
+              Все кампании
+            </Link>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {activeCampaigns.map((campaign) => {
+              const campColor = branchDotHex[campaign.branch] ?? "#888";
+              const campRgb = branchColorRgb[campaign.branch] ?? "136,136,136";
+              return (
+                <Link key={campaign.id} href={`/campaigns/${campaign.id}`}>
+                  <Card
+                    padding="sm"
+                    className={`${branchIdentityClass[campaign.branch] ?? ""} branch-card hover-lift space-y-3 cursor-pointer`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div
+                          className="w-10 h-10 rounded-lg flex items-center justify-center"
+                          style={{
+                            background: `rgba(${campRgb}, 0.15)`,
+                            border: `1px solid rgba(${campRgb}, 0.3)`,
+                          }}
+                        >
+                          <BranchIcon branchKey={campaign.branch} className="w-5 h-5" style={{ color: campColor }} />
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium">{campaign.title}</p>
+                          <p className="text-xs text-text-muted">
+                            День {campaign.currentDay ?? 1} из {campaign.durationDays}
+                          </p>
+                        </div>
+                      </div>
+                      <span className="text-xs font-semibold" style={{ color: campColor }}>
+                        {campaign.progress ?? 0}%
+                      </span>
+                    </div>
+                    <ProgressBar progress={campaign.progress ?? 0} />
+                  </Card>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* ── No branch, no active campaigns — prompt ── */}
+      {!selectedBranch && !loading && activeCampaigns.length === 0 && (
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <p className="text-xs text-text-muted font-medium tracking-wider uppercase">
+              Кампании
+            </p>
+            <Link href="/campaigns" className="text-xs text-metallic font-medium hover:underline">
+              Все кампании
+            </Link>
+          </div>
+          <Card className="text-center py-8 space-y-3">
+            <svg className="w-10 h-10 mx-auto text-text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M3 21h18M3 7l9-4 9 4M4 7v10M20 7v10M8 11v6M12 11v6M16 11v6" />
+            </svg>
+            <p className="text-text-secondary text-sm">Начни первую кампанию</p>
+            <p className="text-text-muted text-xs">
+              Выбери ветку на карте или открой{" "}
+              <Link href="/campaigns" className="text-metallic underline">все кампании</Link>
+            </p>
+          </Card>
+        </div>
+      )}
+
+      {/* ── Selected branch → campaigns for that branch ── */}
       {selectedBranch && activeCfg && (
         <div className="space-y-4" style={{ animation: "onboarding-fade-in 0.4s ease-out" }}>
           {/* Branch header with back button */}
@@ -464,85 +596,80 @@ export default function LearnPage() {
 
           {loading && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              <ModuleSkeleton />
-              <ModuleSkeleton />
-              <ModuleSkeleton />
+              <CampaignSkeleton />
+              <CampaignSkeleton />
             </div>
           )}
 
-          {!loading && activeBranch && activeBranch.modules.length === 0 && (
+          {!loading && activeBranch && activeBranch.campaigns.length === 0 && (
             <Card className="text-center py-8 space-y-3">
               <BranchIcon branchKey={activeBranchKey} className="w-10 h-10 mx-auto" style={{ color: activeDotHex }} />
-              <p className="text-text-secondary text-sm">Модули скоро появятся</p>
+              <p className="text-text-secondary text-sm">Кампании скоро появятся</p>
               <p className="text-text-muted text-xs">Мы готовим материалы для этой ветки</p>
             </Card>
           )}
 
-          {!loading && activeBranch && activeBranch.modules.length > 0 && (
+          {!loading && activeBranch && activeBranch.campaigns.length > 0 && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              {activeBranch.modules.map((mod, idx) => {
-                const isLocked = mod.progress === 0 && idx > 0 && (activeBranch.modules[idx - 1]?.progress ?? 0) < 100;
-
-                return (
-                  <Link
-                    key={mod.id ?? mod.title}
-                    href={isLocked ? "#" : `/learn/${mod.id}`}
-                    className={isLocked ? "pointer-events-none" : ""}
+              {activeBranch.campaigns.map((campaign) => (
+                <Link key={campaign.id} href={`/campaigns/${campaign.id}`}>
+                  <Card
+                    padding="sm"
+                    className={`${activeIdentityClass} branch-card hover-lift space-y-3 cursor-pointer`}
                   >
-                    <Card
-                      padding="sm"
-                      className={`${activeIdentityClass} branch-card hover-lift space-y-3 ${isLocked ? "opacity-60" : "cursor-pointer"}`}
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <div
-                            className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold branch-icon ${
-                              mod.progress > 0 ? "" : isLocked ? "opacity-50" : ""
-                            }`}
-                          >
-                            {mod.progress === 100 ? (
-                              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                              </svg>
-                            ) : isLocked ? (
-                              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
-                              </svg>
-                            ) : (
-                              <BranchIcon branchKey={activeBranchKey} className="w-4 h-4" />
-                            )}
-                          </div>
-                          <div>
-                            <p className="text-sm font-medium">{mod.title}</p>
-                            <p className="text-xs text-text-muted">{mod.lessons} уроков</p>
-                          </div>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div
+                          className="w-10 h-10 rounded-lg flex items-center justify-center branch-icon"
+                        >
+                          <BranchIcon branchKey={activeBranchKey} className="w-5 h-5" />
                         </div>
-                        {mod.progress > 0 && (
-                          <span
-                            className="text-xs font-semibold"
-                            style={{ color: mod.progress === 100 ? activeDotHex : undefined }}
-                          >
-                            {mod.progress}%
-                          </span>
-                        )}
+                        <div>
+                          <p className="text-sm font-medium">{campaign.title}</p>
+                          <p className="text-xs text-text-muted">
+                            {campaign.durationDays} дней
+                            {campaign.started && ` · день ${campaign.currentDay ?? 1}`}
+                          </p>
+                        </div>
                       </div>
-                      {mod.progress > 0 && mod.progress < 100 && (
-                        <ProgressBar progress={mod.progress} />
+                      {campaign.started && (
+                        <span
+                          className="text-xs font-semibold"
+                          style={{ color: (campaign.progress ?? 0) === 100 ? activeDotHex : undefined }}
+                        >
+                          {campaign.progress ?? 0}%
+                        </span>
                       )}
-                    </Card>
-                  </Link>
-                );
-              })}
+                      {!campaign.started && (
+                        <span className="text-xs text-text-muted font-medium px-2 py-0.5 rounded-full bg-surface-light">
+                          Новая
+                        </span>
+                      )}
+                    </div>
+                    {campaign.started && (campaign.progress ?? 0) > 0 && (campaign.progress ?? 0) < 100 && (
+                      <ProgressBar progress={campaign.progress ?? 0} />
+                    )}
+                    {campaign.description && (
+                      <p className="text-xs text-text-muted line-clamp-2">{campaign.description}</p>
+                    )}
+                  </Card>
+                </Link>
+              ))}
+            </div>
+          )}
+
+          {/* Link to all campaigns for this branch */}
+          {!loading && activeBranch && activeBranch.campaigns.length > 0 && (
+            <div className="text-center pt-1">
+              <Link
+                href={`/campaigns?branch=${activeBranchKey}`}
+                className="text-sm text-metallic font-medium hover:underline"
+              >
+                Все кампании: {activeCfg.title} →
+              </Link>
             </div>
           )}
         </div>
-      )}
-
-      {/* No branch selected — show prompt */}
-      {!selectedBranch && !loading && (
-        <p className="text-center text-text-muted text-sm pt-4">
-          Выбери ветку на карте знаний
-        </p>
       )}
     </div>
   );

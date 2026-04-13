@@ -489,6 +489,266 @@
 
 ---
 
+# СИСТЕМА ОБУЧЕНИЯ — ПЕРЕСТРОЙКА (Блок 20+)
+
+> **Цель:** Единая система трансформации. Одна нить, персональная для каждого. Бесконечная глубина. Жёсткие барьеры. Связка с батлами. Живая адаптация.
+> **Общий план:** `C:\Users\user\.claude\plans\synthetic-greeting-music.md`
+
+---
+
+## Никита (Lead) — Система обучения
+
+### Блок L20 — Архитектура и граф знаний
+
+| # | Задача | Статус | Файлы | Блокер |
+|---|--------|--------|-------|--------|
+| L20.1 | Спроектировать граф знаний: модели Concept, ConceptRelation, UserConceptMastery, ConceptQuestion — все связи, типы отношений (PREREQUISITE, RELATED, CONTRASTS, DEEPENS, APPLIES_IN) | todo | `prisma/schema.prisma` | — |
+| L20.2 | Спроектировать модель LearningPath — персональная нить для каждого пользователя: текущий уровень, текущий день, пройденные концепты, болевая точка, стиль подачи | todo | `prisma/schema.prisma` | — |
+| L20.3 | Спроектировать модель LevelBarrier — 5 этапов испытания (Вспомни, Свяжи, Примени, Защити, Вердикт), результат, пересдача | todo | `prisma/schema.prisma` | — |
+| L20.4 | Спроектировать систему уровней: Спящий → Пробудившийся → Наблюдатель → Воин → Стратег → Мастер — с привязкой к контенту и батлам | todo | `packages/shared/src/learning/` | — |
+| L20.5 | Prisma миграция всех новых моделей | todo | `prisma/migrations/` | L20.1-L20.4 |
+
+### Блок L21 — Контент: основная нить
+
+| # | Задача | Статус | Файлы | Блокер |
+|---|--------|--------|-------|--------|
+| L21.1 | Засидить все 136 концептов из content/sources/ в таблицу Concept с привязкой к таксономии (ветка, категория, подкатегория) | todo | `scripts/seed-concepts.ts` | L20.5 |
+| L21.2 | AI batch job: для каждой категории определить порядок пререквизитов между концептами → ConceptRelation записи | todo | `scripts/build-knowledge-graph.ts` | L21.1 |
+| L21.3 | AI batch job: для каждого концепта найти 2-5 научных подкреплений (исследования, эксперименты, статистика) → переписать голосом РАЗУМ | todo | `scripts/generate-depth-layers.ts` | L21.1 |
+| L21.4 | AI batch job: для каждого концепта найти 1-3 связанных книги/идеи → ключевая мысль, переписанная голосом РАЗУМ | todo | `scripts/generate-depth-layers.ts` | L21.1 |
+| L21.5 | AI batch job: для каждого концепта найти философский/исторический контекст → переписать голосом РАЗУМ | todo | `scripts/generate-depth-layers.ts` | L21.1 |
+| L21.6 | AI batch job: найти пары концептов с противоречиями (Маркарян vs ЧД и т.д.) → слой "Противоречие" | todo | `scripts/generate-depth-layers.ts` | L21.2 |
+| L21.7 | Для каждого концепта сгенерировать карточки основной нити: Зацепка, Раскрытие (длинное), Подкрепление, Пример, Проверка, Своими словами (рубрика), Нить, Мудрость | todo | `scripts/generate-daily-cards.ts` | L21.1 |
+| L21.8 | Собрать 3 уровня основной нити (15-20 дней) из сгенерированных карточек + ручная проверка качества | todo | — | L21.7 |
+
+### Блок L22 — Алгоритм адаптации
+
+| # | Задача | Статус | Файлы | Блокер |
+|---|--------|--------|-------|--------|
+| L22.1 | Алгоритм начального определения: 5 ситуаций → стартовая зона + болевая точка + стиль подачи | todo | `packages/shared/src/learning/determination.ts` | L20.4 |
+| L22.2 | Алгоритм построения персонального маршрута: на основе графа знаний + результата определения → последовательность дней | todo | `apps/api/src/learning/path-builder.service.ts` | L20.5, L21.2 |
+| L22.3 | Алгоритм живой адаптации: 4 правила (интересное — больше, освоенное — быстрее, неинтересное — минимум, слабое — иначе) | todo | `apps/api/src/learning/adaptation.service.ts` | L22.2 |
+| L22.4 | Метрики для адаптации: время на карточке, глубина погружения, качество ответов, скорость, тематические предпочтения | todo | `apps/api/src/learning/metrics.service.ts` | L20.5 |
+
+### Блок L23 — Связка с батлами
+
+| # | Задача | Статус | Файлы | Блокер |
+|---|--------|--------|-------|--------|
+| L23.1 | Привязка концептов к вопросам батлов: пройдённый концепт открывает вопросы в батлах | todo | `apps/api/src/question/question.service.ts` | L20.5 |
+| L23.2 | Ограничение ранга в батлах уровнем обучения: нельзя быть "Стратегом" в батлах, будучи "Спящим" в обучении | todo | `apps/api/src/battle/matchmaking.service.ts` | L20.4 |
+| L23.3 | Карточка "В бой" после барьера: "Ты прошёл уровень — открыто N новых вопросов для батлов" | todo | `apps/api/src/learning/` | L23.1 |
+
+### Блок L24 — AI-наставник в обучении
+
+| # | Задача | Статус | Файлы | Блокер |
+|---|--------|--------|-------|--------|
+| L24.1 | Промпт AI-наставника для карточки "Своими словами": проверка глубины ответа, подсказка что упущено | todo | `apps/api/src/ai/prompts/explain-grader.ts` | — |
+| L24.2 | Промпт AI-наставника для барьера "Защити": роль оппонента, оспаривание позиции, 3-4 раунда давления | todo | `apps/api/src/ai/prompts/barrier-challenger.ts` | — |
+| L24.3 | Промпт для мастерского режима "Наставничество": AI играет роль ученика, задаёт глупые вопросы | todo | `apps/api/src/ai/prompts/student-mode.ts` | — |
+| L24.4 | Эндпоинт для проверки ответа "Своими словами": POST /learning/grade-explanation | todo | `apps/api/src/learning/` | L24.1 |
+| L24.5 | Эндпоинт для диалога в барьере: POST /learning/barrier/:id/challenge | todo | `apps/api/src/learning/` | L24.2 |
+
+### Блок L25 — Тестирование (Lead)
+
+| # | Задача | Статус | Файлы |
+|---|--------|--------|-------|
+| L25.1 | Интеграционные тесты: граф знаний — создание концептов, связей, обход по пререквизитам | todo | `apps/api/test/knowledge-graph.e2e-spec.ts` |
+| L25.2 | Интеграционные тесты: путь обучения — начальное определение → построение маршрута → прохождение дня | todo | `apps/api/test/learning-path.e2e-spec.ts` |
+| L25.3 | Интеграционные тесты: барьер-испытание — 5 этапов, прошёл/не прошёл, пересдача | todo | `apps/api/test/learning-barrier.e2e-spec.ts` |
+| L25.4 | Интеграционные тесты: адаптация — изменение маршрута при разных паттернах поведения | todo | `apps/api/test/learning-adaptation.e2e-spec.ts` |
+| L25.5 | Интеграционные тесты: связка с батлами — пройденный концепт открывает вопросы | todo | `apps/api/test/learning-battles.e2e-spec.ts` |
+| L25.6 | Нагрузочные тесты: 100 пользователей одновременно проходят обучение | todo | `scripts/load-tests/learning-load.js` |
+| L25.7 | Code review всех PR системы обучения от Бонди и Яшкина | todo | — |
+| L25.8 | Сквозной тест: от определения → 3 дня обучения → барьер → батл с открытыми вопросами | todo | — |
+
+---
+
+## Бонди (Frontend + Дизайн) — Система обучения
+
+### Блок F20 — Начальное определение
+
+| # | Задача | Статус | Файлы |
+|---|--------|--------|-------|
+| F20.1 | Экран начального определения: тёмный фон, минимализм, текст "Ответь честно" | todo | `apps/web/app/(main)/learning/determination/page.tsx` |
+| F20.2 | 5 карточек-ситуаций со свайпом: ситуация + 4 варианта, анимация перехода, нет индикации "правильного" | todo | `apps/web/app/(main)/learning/determination/page.tsx` |
+| F20.3 | Экран результата определения: "Система настроена. Твой путь начинается." + кнопка "Начать" | todo | `apps/web/app/(main)/learning/determination/page.tsx` |
+| F20.4 | Адаптивный дизайн определения: 375/390/414/768/1024px | todo | — |
+
+### Блок F21 — Главный экран обучения
+
+| # | Задача | Статус | Файлы |
+|---|--------|--------|-------|
+| F21.1 | Экран "Мой путь": текущий уровень (название, не номер), текущий день, одна кнопка "Продолжить" | todo | `apps/web/app/(main)/learning/page.tsx` |
+| F21.2 | Вертикальная линия пути с точками уровней: пройденные светятся, текущий пульсирует, будущие тусклые | todo | `apps/web/app/(main)/learning/page.tsx` |
+| F21.3 | Названия уровней: Спящий, Пробудившийся, Наблюдатель, Воин, Стратег, Мастер — с иконками | todo | `apps/web/app/(main)/learning/page.tsx` |
+| F21.4 | Минимализм: тёмный фон, ничего лишнего, фокус на тексте и кнопке | todo | — |
+| F21.5 | Адаптивный дизайн: mobile-first 375px, desktop до 1440px | todo | — |
+
+### Блок F22 — Лента урока (ежедневная)
+
+| # | Задача | Статус | Файлы |
+|---|--------|--------|-------|
+| F22.1 | Экран урока: название темы дня сверху, прогресс "3/7", свайп карточек вверх | todo | `apps/web/app/(main)/learning/day/page.tsx` |
+| F22.2 | Карточка "Зацепка": крупный текст по центру, без рамок, как цитата, минимализм | todo | `apps/web/components/learning/HookCard.tsx` |
+| F22.3 | Карточка "Раскрытие": длинный текст с прокруткой (2-3 экрана), иконка "книга", полноценное объяснение | todo | `apps/web/components/learning/ExplanationCard.tsx` |
+| F22.4 | Карточка "Подкрепление": научный факт, акцентная полоска цвета ветки сбоку, иконка "наука", цифры и факты | todo | `apps/web/components/learning/EvidenceCard.tsx` |
+| F22.5 | Карточка "Пример": история из жизни, визуально отличается (иконка "история", другой фон) | todo | `apps/web/components/learning/ExampleCard.tsx` |
+| F22.6 | Карточка "Проверка": вопрос на осмысление, 4 варианта, после ответа — разбор КАЖДОГО варианта (почему правильный/неправильный) | todo | `apps/web/components/learning/QuizCard.tsx` |
+| F22.7 | Карточка "Своими словами": текстовое поле, пульсирующий курсор, отправка → AI-оценка → результат (уловил/частично/нет) + кнопка "Обсудить с наставником" | todo | `apps/web/components/learning/ExplainCard.tsx` |
+| F22.8 | Карточка "Нить": три точки (вчера → сегодня → завтра) с подписями, визуальная связь тем | todo | `apps/web/components/learning/ThreadCard.tsx` |
+| F22.9 | Карточка "Мудрость": крупный курсив, имя автора внизу, завершающая атмосфера | todo | `apps/web/components/learning/WisdomLearningCard.tsx` |
+| F22.10 | Кнопка "Глубже" внизу карточек Раскрытие и Подкрепление: тонкая, неяркая, но заметная | todo | — |
+
+### Блок F23 — Слои глубины
+
+| # | Задача | Статус | Файлы |
+|---|--------|--------|-------|
+| F23.1 | При нажатии "Глубже" — дополнительные карточки вставляются в ленту (не новая страница), продолжение свайпа | todo | `apps/web/app/(main)/learning/day/page.tsx` |
+| F23.2 | Карточка "Другой угол": тот же концепт через другого автора/метафору | todo | `apps/web/components/learning/AlternativeCard.tsx` |
+| F23.3 | Карточка "Наука": исследование, голос РАЗУМ, цифры, акцент | todo | `apps/web/components/learning/ScienceCard.tsx` |
+| F23.4 | Карточка "Книга": ключевая идея из книги, связанная с темой | todo | `apps/web/components/learning/BookCard.tsx` |
+| F23.5 | Карточка "Философия/История": глубокий контекст, откуда идея | todo | `apps/web/components/learning/PhilosophyCard.tsx` |
+| F23.6 | Карточка "Противоречие": два взгляда на одну тему, вопрос "кто прав?" | todo | `apps/web/components/learning/ContradictionCard.tsx` |
+| F23.7 | Карточка "Связи": паутина связанных концептов, каждый кликабельный → переход к другому концепту | todo | `apps/web/components/learning/ConnectionsCard.tsx` |
+
+### Блок F24 — Барьер-испытание
+
+| # | Задача | Статус | Файлы |
+|---|--------|--------|-------|
+| F24.1 | Экран испытания: другой фон (тёмно-бордовый), другая атмосфера, текст "Испытание. Уровень [название]. Докажи." | todo | `apps/web/app/(main)/learning/barrier/page.tsx` |
+| F24.2 | Этап "Вспомни": 6 коротких вопросов, открытый ответ (1-2 предложения), цветовая оценка (зелёный/жёлтый/красный) | todo | `apps/web/components/learning/barrier/RecallStage.tsx` |
+| F24.3 | Этап "Свяжи": 3 пары концептов, пользователь пишет связь, AI оценивает | todo | `apps/web/components/learning/barrier/ConnectStage.tsx` |
+| F24.4 | Этап "Примени": 2 новые ситуации, открытый ответ, AI оценивает применение концептов | todo | `apps/web/components/learning/barrier/ApplyStage.tsx` |
+| F24.5 | Этап "Защити": чат с AI-наставником (3-4 раунда), наставник оспаривает, пользователь защищает | todo | `apps/web/components/learning/barrier/DefendStage.tsx` |
+| F24.6 | Экран "Прошёл": визуальное подтверждение, новый уровень, анимация | todo | `apps/web/components/learning/barrier/ResultScreen.tsx` |
+| F24.7 | Экран "Не прошёл": список слабых тем, направление на повторение, без утешений | todo | `apps/web/components/learning/barrier/ResultScreen.tsx` |
+| F24.8 | Прогресс испытания: 5 шагов сверху (1→2→3→4→5), пройденные меняют цвет | todo | — |
+
+### Блок F25 — Карта знаний
+
+| # | Задача | Статус | Файлы |
+|---|--------|--------|-------|
+| F25.1 | Экран карты знаний: сетка ячеек, каждая — концепт, цвет по уровню усвоения (серый → жёлтый → зелёный → золотой) | todo | `apps/web/app/(main)/learning/map/page.tsx` |
+| F25.2 | Нажатие на ячейку: детали концепта, уровень усвоения, когда тестировался, связи, кнопка "Погрузиться" | todo | `apps/web/components/learning/ConceptDetail.tsx` |
+| F25.3 | Фильтрация по веткам (5 веток), поиск по названию | todo | — |
+| F25.4 | Статистика сверху: "Освоено 23 из 136 концептов" | todo | — |
+
+### Блок F26 — AI-наставник (UI)
+
+| # | Задача | Статус | Файлы |
+|---|--------|--------|-------|
+| F26.1 | Bottom-sheet для AI-наставника: всплывает поверх карточки, не отдельная страница | todo | `apps/web/components/learning/TutorSheet.tsx` |
+| F26.2 | Чат-интерфейс в bottom-sheet: сообщения пользователя и наставника, поле ввода, кнопка отправки | todo | `apps/web/components/learning/TutorSheet.tsx` |
+| F26.3 | Кнопка "Обсудить с наставником" на карточках: после слабого ответа в "Своими словами", после ошибки в "Проверке" | todo | — |
+| F26.4 | Визуал наставника: минимализм, иконка/аватар наставника, отличие от обычного чата | todo | — |
+
+### Блок F27 — Навигация и связь с батлами
+
+| # | Задача | Статус | Файлы |
+|---|--------|--------|-------|
+| F27.1 | Обновить BottomNav: вкладка "Обучение" ведёт на /learning (не /learn) | todo | `apps/web/components/layout/BottomNav.tsx` |
+| F27.2 | Карточка "В бой" после барьера: "Ты прошёл уровень. Открыто N вопросов для батлов." + кнопка [В бой] | todo | `apps/web/components/learning/BattleUnlockCard.tsx` |
+| F27.3 | Индикатор на экране батла: "Вопросы из: Уровень 'Наблюдатель'" — откуда вопросы | todo | `apps/web/app/(main)/battle/[id]/page.tsx` |
+
+### Блок F28 — Тестирование Бонди
+
+| # | Задача | Статус | Файлы |
+|---|--------|--------|-------|
+| F28.1 | E2E: полный флоу определения → 5 ситуаций → результат → редирект на обучение | todo | `apps/web/tests/e2e/learning-determination.spec.ts` |
+| F28.2 | E2E: урок дня → свайп 7 карточек → ответ на проверку → написать объяснение → AI-оценка | todo | `apps/web/tests/e2e/learning-day.spec.ts` |
+| F28.3 | E2E: нажать "Глубже" → дополнительные карточки появились → свайп → вернуться к нити | todo | `apps/web/tests/e2e/learning-depth.spec.ts` |
+| F28.4 | E2E: барьер-испытание → 5 этапов → прошёл → новый уровень → карточка "В бой" | todo | `apps/web/tests/e2e/learning-barrier.spec.ts` |
+| F28.5 | E2E: барьер не прошёл → список слабых тем → повторение → пересдача | todo | `apps/web/tests/e2e/learning-barrier-fail.spec.ts` |
+| F28.6 | E2E: карта знаний → фильтр по ветке → нажать концепт → детали → "Погрузиться" | todo | `apps/web/tests/e2e/learning-map.spec.ts` |
+| F28.7 | E2E: AI-наставник → кнопка "Обсудить" → bottom-sheet → 3 сообщения → закрыть | todo | `apps/web/tests/e2e/learning-tutor.spec.ts` |
+| F28.8 | Визуальные скриншоты: все экраны обучения на 375/768/1024px | todo | `apps/web/tests/visual/learning-screenshots.spec.ts` |
+| F28.9 | Accessibility: все компоненты обучения — aria-labels, контрасты, keyboard navigation | todo | `apps/web/tests/a11y/learning-a11y.spec.ts` |
+| F28.10 | Performance: Lighthouse на все страницы обучения (>90 perf) | todo | — |
+
+---
+
+## Яшкин (Backend) — Система обучения
+
+### Блок B20 — Модели и миграции
+
+| # | Задача | Статус | Файлы | Блокер |
+|---|--------|--------|-------|--------|
+| B20.1 | Prisma модели: Concept (slug, nameRu, description, branch, category, subcategory, bloomLevel, difficulty, sourceFile) | todo | `prisma/schema.prisma` | L20.1 |
+| B20.2 | Prisma модели: ConceptRelation (sourceId, targetId, relationType, strength) с unique constraint | todo | `prisma/schema.prisma` | L20.1 |
+| B20.3 | Prisma модели: UserConceptMastery (userId, conceptId, mastery 0-1, bloomReached, timesCorrect, timesWrong, lastTestedAt, nextReviewAt) | todo | `prisma/schema.prisma` | L20.1 |
+| B20.4 | Prisma модели: LearningPath (userId, currentLevel, currentDay, startZone, painPoint, deliveryStyle, startedAt) | todo | `prisma/schema.prisma` | L20.2 |
+| B20.5 | Prisma модели: LearningDay (pathId, dayNumber, conceptId, cards JSON, completedAt, metrics JSON) | todo | `prisma/schema.prisma` | L20.2 |
+| B20.6 | Prisma модели: LevelBarrier (pathId, level, stages JSON, score, passed, attemptNumber, attemptedAt) | todo | `prisma/schema.prisma` | L20.3 |
+| B20.7 | Prisma модели: DepthLayer (conceptId, layerType ENUM: ALTERNATIVE/SCIENCE/BOOK/PHILOSOPHY/CONTRADICTION/CONNECTIONS, content JSON, sourceRef) | todo | `prisma/schema.prisma` | L20.1 |
+| B20.8 | Prisma миграция: все модели B20.1-B20.7 + индексы | todo | `prisma/migrations/` | B20.1-B20.7 |
+| B20.9 | Enum LevelName: SLEEPING, AWAKENED, OBSERVER, WARRIOR, STRATEGIST, MASTER | todo | `prisma/schema.prisma` | — |
+| B20.10 | Enum BarrierStage: RECALL, CONNECT, APPLY, DEFEND, VERDICT | todo | `prisma/schema.prisma` | — |
+
+### Блок B21 — LearningModule (API)
+
+| # | Задача | Статус | Файлы | Блокер |
+|---|--------|--------|-------|--------|
+| B21.1 | LearningModule + LearningController + LearningService (NestJS модуль) | todo | `apps/api/src/learning/` | B20.8 |
+| B21.2 | POST /learning/determine — принять 5 ответов, вернуть результат определения (стартовая зона, болевая точка, стиль) | todo | `apps/api/src/learning/learning.controller.ts` | B21.1 |
+| B21.3 | POST /learning/start — создать LearningPath, построить персональный маршрут (вызвать path-builder) | todo | `apps/api/src/learning/learning.controller.ts` | B21.1, L22.2 |
+| B21.4 | GET /learning/today — вернуть карточки сегодняшнего дня (основная нить) | todo | `apps/api/src/learning/learning.controller.ts` | B21.3 |
+| B21.5 | GET /learning/status — текущий уровень, день, прогресс, название уровня | todo | `apps/api/src/learning/learning.controller.ts` | B21.1 |
+| B21.6 | POST /learning/interact — взаимодействие с карточкой (просмотр, ответ, время на карточке, нажатие "Глубже") | todo | `apps/api/src/learning/learning.controller.ts` | B21.1 |
+| B21.7 | POST /learning/explain — отправить ответ "Своими словами" → вызвать AI grading → вернуть оценку | todo | `apps/api/src/learning/learning.controller.ts` | L24.1, L24.4 |
+| B21.8 | GET /learning/depth/:conceptId — вернуть слои глубины для концепта (наука, книги, философия, противоречия, связи) | todo | `apps/api/src/learning/learning.controller.ts` | B20.7 |
+| B21.9 | POST /learning/day/:dayNumber/complete — завершить день, обновить UserConceptMastery, проверить готовность к барьеру | todo | `apps/api/src/learning/learning.controller.ts` | B21.1 |
+
+### Блок B22 — Барьер-испытание (API)
+
+| # | Задача | Статус | Файлы | Блокер |
+|---|--------|--------|-------|--------|
+| B22.1 | GET /learning/barrier — получить испытание для текущего уровня: 6 вопросов "Вспомни" + 3 пары "Свяжи" + 2 ситуации "Примени" | todo | `apps/api/src/learning/barrier.service.ts` | B20.8 |
+| B22.2 | POST /learning/barrier/recall — принять ответы на "Вспомни", оценить через AI, вернуть результаты по каждому | todo | `apps/api/src/learning/barrier.service.ts` | B22.1 |
+| B22.3 | POST /learning/barrier/connect — принять объяснения связей, оценить через AI | todo | `apps/api/src/learning/barrier.service.ts` | B22.1 |
+| B22.4 | POST /learning/barrier/apply — принять ответы на ситуации, оценить применение концептов через AI | todo | `apps/api/src/learning/barrier.service.ts` | B22.1 |
+| B22.5 | POST /learning/barrier/defend — начать диалог с AI-наставником (оппонент), 3-4 раунда | todo | `apps/api/src/learning/barrier.service.ts` | L24.2, L24.5 |
+| B22.6 | POST /learning/barrier/complete — подсчитать общий результат, прошёл/не прошёл, обновить LearningPath уровень или отправить на повторение | todo | `apps/api/src/learning/barrier.service.ts` | B22.2-B22.5 |
+| B22.7 | Логика пересдачи: определить слабые темы → отправить на повторение конкретных дней → допуск к пересдаче | todo | `apps/api/src/learning/barrier.service.ts` | B22.6 |
+
+### Блок B23 — Граф знаний (API)
+
+| # | Задача | Статус | Файлы | Блокер |
+|---|--------|--------|-------|--------|
+| B23.1 | GET /concepts — список концептов с фильтрами (ветка, категория, уровень усвоения) | todo | `apps/api/src/learning/concept.controller.ts` | B20.8 |
+| B23.2 | GET /concepts/:id — детали концепта: описание, связи, уровень усвоения пользователя, слои глубины | todo | `apps/api/src/learning/concept.controller.ts` | B20.8 |
+| B23.3 | GET /concepts/:id/related — связанные концепты с типами связей | todo | `apps/api/src/learning/concept.controller.ts` | B20.8 |
+| B23.4 | GET /learning/mastery — карта знаний пользователя: все концепты с уровнем усвоения, статистика | todo | `apps/api/src/learning/learning.controller.ts` | B20.8 |
+
+### Блок B24 — Данные и сиды
+
+| # | Задача | Статус | Файлы | Блокер |
+|---|--------|--------|-------|--------|
+| B24.1 | Seed 136 концептов из content/sources/ → таблица Concept | todo | `prisma/seed-learning.ts` | B20.8, L21.1 |
+| B24.2 | Seed связей между концептами (пререквизиты) из scripts/build-knowledge-graph.ts | todo | `prisma/seed-learning.ts` | L21.2 |
+| B24.3 | Seed слоёв глубины для первых 40 концептов (уровни 1-3) | todo | `prisma/seed-learning.ts` | L21.3-L21.6 |
+| B24.4 | Seed карточек основной нити для первых 15-20 дней | todo | `prisma/seed-learning.ts` | L21.7-L21.8 |
+| B24.5 | Seed 5 ситуаций начального определения | todo | `prisma/seed-learning.ts` | L22.1 |
+
+### Блок B25 — Тестирование Яшкин
+
+| # | Задача | Статус | Файлы |
+|---|--------|--------|-------|
+| B25.1 | E2E: POST /learning/determine → стартовая зона определена корректно | todo | `apps/api/test/learning.e2e-spec.ts` |
+| B25.2 | E2E: POST /learning/start → LearningPath создан, маршрут построен | todo | `apps/api/test/learning.e2e-spec.ts` |
+| B25.3 | E2E: GET /learning/today → карточки дня возвращаются в правильном порядке | todo | `apps/api/test/learning.e2e-spec.ts` |
+| B25.4 | E2E: POST /learning/explain → AI grading работает, оценка возвращается | todo | `apps/api/test/learning.e2e-spec.ts` |
+| B25.5 | E2E: полный цикл барьера → 5 этапов → результат (прошёл/не прошёл) | todo | `apps/api/test/learning-barrier.e2e-spec.ts` |
+| B25.6 | E2E: пересдача барьера → повторение дней → допуск → пересдача | todo | `apps/api/test/learning-barrier.e2e-spec.ts` |
+| B25.7 | E2E: GET /learning/depth/:conceptId → слои глубины возвращаются | todo | `apps/api/test/learning.e2e-spec.ts` |
+| B25.8 | E2E: GET /learning/mastery → карта знаний с правильными уровнями | todo | `apps/api/test/learning.e2e-spec.ts` |
+| B25.9 | E2E: связка с батлами → пройденный концепт → вопросы открыты | todo | `apps/api/test/learning-battles.e2e-spec.ts` |
+| B25.10 | Unit: PathBuilderService — построение маршрута для разных стартовых зон | todo | `apps/api/src/learning/__tests__/path-builder.spec.ts` |
+| B25.11 | Unit: AdaptationService — 4 правила адаптации, edge cases | todo | `apps/api/src/learning/__tests__/adaptation.spec.ts` |
+| B25.12 | Unit: BarrierService — подсчёт результатов, порог прохождения, пересдача | todo | `apps/api/src/learning/__tests__/barrier.spec.ts` |
+| B25.13 | Security: проверка что пользователь не может перескочить уровни, подделать ответы барьера | todo | `apps/api/test/security/learning-security.e2e-spec.ts` |
+
+---
+
 # Завершённый спринт — Неделя 3
 
 **Дата начала:** 2026-04-07
