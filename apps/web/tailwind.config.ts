@@ -124,6 +124,10 @@ const config: Config = {
           "0%, 100%": { textShadow: "0 0 12px rgba(139,46,46,0.5), 0 0 28px rgba(139,46,46,0.25)" },
           "50%": { textShadow: "0 0 22px rgba(139,46,46,0.8), 0 0 55px rgba(139,46,46,0.4)" },
         },
+        "fade-in": {
+          "0%": { opacity: "0" },
+          "100%": { opacity: "1" },
+        },
       },
       animation: {
         "shake": "shake 0.5s ease-in-out",
@@ -142,6 +146,7 @@ const config: Config = {
         "text-flicker": "text-flicker 3s ease-in-out infinite",
         "shimmer-flicker":
           "steel-shimmer 4s ease-in-out infinite, text-flicker 3s ease-in-out infinite",
+        "fade-in": "fade-in 0.3s ease-out forwards",
       },
     },
   },

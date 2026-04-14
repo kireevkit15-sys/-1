@@ -20,6 +20,7 @@ import {
   type BranchKey,
   type MasteryMapResponse,
 } from "@/lib/api/learning";
+import TutorSheet from "@/components/learning/TutorSheet";
 
 const BRANCHES: Array<{ key: BranchKey; name: string; colorClass: string; bg: string }> = [
   { key: "STRATEGY", name: "Стратегия", colorClass: "text-branch-strategy", bg: "rgba(6,182,212,0.14)" },
@@ -333,6 +334,7 @@ function ConceptDetail({
   const branch = BRANCH_BY_KEY[concept.branch];
   const tier = masteryTier(concept.mastery);
   const percent = Math.round(concept.mastery * 100);
+  const [tutorOpen, setTutorOpen] = useState(false);
 
   return (
     <div
@@ -396,16 +398,34 @@ function ConceptDetail({
           )}
         </div>
 
-        <button
-          className="w-full font-ritual text-xs tracking-[0.4em] uppercase text-text-primary border border-accent rounded-xl py-3.5 hover:bg-accent hover:text-background transition-all duration-300"
-          onClick={() => {
-            // TODO (F23.7): переход к погружению в концепт (depth layers)
-            onClose();
-          }}
-        >
-          Погрузиться
-        </button>
+        <div className="flex gap-3">
+          <button
+            onClick={() => setTutorOpen(true)}
+            className="flex-1 font-ritual text-[11px] sm:text-xs tracking-[0.3em] uppercase text-text-primary border border-accent/50 rounded-xl py-3 hover:border-accent hover:bg-accent/5 transition-all duration-300"
+          >
+            Обсудить
+          </button>
+          <button
+            className="flex-1 font-ritual text-[11px] sm:text-xs tracking-[0.3em] uppercase text-text-primary border border-accent rounded-xl py-3 hover:bg-accent hover:text-background transition-all duration-300"
+            onClick={() => {
+              // TODO (F23.7): переход к погружению в концепт (depth layers)
+              onClose();
+            }}
+          >
+            Погрузиться
+          </button>
+        </div>
       </div>
+
+      <TutorSheet
+        open={tutorOpen}
+        onClose={() => setTutorOpen(false)}
+        context={{
+          title: concept.nameRu,
+          topic: "Обсуждаем концепт",
+          prompt: `Ты выбрал обсудить «${concept.nameRu}». Твоё усвоение — ${percent}%. Что именно хочешь прояснить? Суть идеи? Пример из жизни? Или сомнение, которое у тебя возникло?`,
+        }}
+      />
     </div>
   );
 }
