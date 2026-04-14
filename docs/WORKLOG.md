@@ -111,6 +111,41 @@
 
 ## Бонди (Frontend + Дизайн)
 
+### 2026-04-14 — Сессия: F22 — лента карточек урока (параллельная сборка)
+
+**Время:** ~0.5 часа
+**Статус:** Завершена
+
+**Что сделано:**
+- Запустил 4 фоновых агента параллельно (worktree-изоляция) — каждый собрал по 2 карточки F22.2–F22.9
+- Интегрировал 8 карточек в страницу урока `/learning/day` со scroll-snap лентой, фиксированным заголовком темы и прогрессом N/M (IntersectionObserver отслеживает активную карточку)
+- Добавил `onDeeper` в EvidenceCard (F22.10 — кнопка «Глубже» на карточках Раскрытие и Подкрепление)
+- Демо-урок «Решение без полной информации» со всеми 8 типами карточек, подключён стаб AI-оценки для ExplainCard
+- Typecheck в `apps/web/components/learning/` и `apps/web/app/.../learning/day/` чист
+- Smoke-тест через curl: HTTP 200, SSR без рантайм-ошибок
+
+**Файлы созданы/изменены:**
+- `apps/web/components/learning/HookCard.tsx` (F22.2)
+- `apps/web/components/learning/ExplanationCard.tsx` (F22.3, с «Глубже»)
+- `apps/web/components/learning/EvidenceCard.tsx` (F22.4, добавлен `onDeeper` для F22.10)
+- `apps/web/components/learning/ExampleCard.tsx` (F22.5)
+- `apps/web/components/learning/QuizCard.tsx` (F22.6)
+- `apps/web/components/learning/ExplainCard.tsx` (F22.7)
+- `apps/web/components/learning/ThreadCard.tsx` (F22.8)
+- `apps/web/components/learning/WisdomLearningCard.tsx` (F22.9)
+- `apps/web/app/(main)/learning/day/page.tsx` (F22.1 + F22.10 интеграция)
+
+**Задачи из SPRINT.md закрыты:** F22.1, F22.2, F22.3, F22.4, F22.5, F22.6, F22.7, F22.8, F22.9, F22.10
+
+**Коммиты:**
+- `9ee6753` — feat(learning): add HookCard + ExplanationCard (F22.2, F22.3)
+- `d1ef43a` — feat(learning): add EvidenceCard + ExampleCard (F22.4, F22.5)
+- `9bc998f` — feat(learning): add QuizCard + ExplainCard (F22.6, F22.7)
+- `3613939` — feat(learning): add ThreadCard + WisdomLearningCard (F22.8, F22.9)
+- `189c8cb` — feat(learning): add lesson day page with card feed + Deeper on EvidenceCard (F22.1, F22.10)
+
+---
+
 ### 2026-04-05 — Сессия 1: Проверка фронтенда на мобильных
 
 **Время:** ~1 час
