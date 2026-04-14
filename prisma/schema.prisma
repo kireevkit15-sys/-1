@@ -103,6 +103,8 @@ model User {
   bans              UserBan[]
   campaignProgress  UserCampaignProgress[]
   feedState         UserFeedState?
+  conceptMasteries  UserConceptMastery[]
+  learningPath      LearningPath?
 
   @@map("users")
 }
@@ -203,6 +205,7 @@ model Question {
   feedbacks    QuestionFeedback[]
   originalQuestion Question? @relation("variants", fields: [variantOf], references: [id], onDelete: SetNull)
   variants     Question[]   @relation("variants")
+  concepts     ConceptQuestion[]
 
   @@index([branch])
   @@index([difficulty])
@@ -646,6 +649,173 @@ enum BarrierStage {
   APPLY
   DEFEND
   VERDICT
+}
+
+enum ConceptRelationType {
+  PREREQUISITE
+  RELATED
+  CONTRASTS
+  DEEPENS
+  APPLIES_IN
+}
+
+enum DepthLayerType {
+  ALTERNATIVE
+  SCIENCE
+  BOOK
+  PHILOSOPHY
+  CONTRADICTION
+  CONNECTIONS
+}
+
+model Concept {
+  id           String     @id @default(uuid()) @db.Uuid
+  slug         String     @unique
+  nameRu       String
+  description  String
+  branch       Branch
+  category     String
+  subcategory  String?
+  bloomLevel   Int        @default(1) @db.SmallInt // Bloom's taxonomy 1-6
+  difficulty   Difficulty @default(BRONZE)
+  sourceFile   String?    // path to source content file
+  createdAt    DateTime   @default(now())
+
+  relationsFrom  ConceptRelation[]    @relation("conceptFrom")
+  relationsTo    ConceptRelation[]    @relation("conceptTo")
+  userMasteries  UserConceptMastery[]
+  learningDays   LearningDay[]
+  depthLayers    DepthLayer[]
+  questions      ConceptQuestion[]
+
+  @@index([branch])
+  @@index([category])
+  @@index([branch, category])
+  @@index([difficulty])
+  @@map("concepts")
+}
+
+model ConceptRelation {
+  id           String              @id @default(uuid()) @db.Uuid
+  sourceId     String              @db.Uuid
+  targetId     String              @db.Uuid
+  relationType ConceptRelationType
+  strength     Float               @default(1.0) // 0.0-1.0
+
+  source Concept @relation("conceptFrom", fields: [sourceId], references: [id], onDelete: Cascade)
+  target Concept @relation("conceptTo", fields: [targetId], references: [id], onDelete: Cascade)
+
+  @@unique([sourceId, targetId, relationType])
+  @@index([sourceId])
+  @@index([targetId])
+  @@map("concept_relations")
+}
+
+model UserConceptMastery {
+  id            String   @id @default(uuid()) @db.Uuid
+  userId        String   @db.Uuid
+  conceptId     String   @db.Uuid
+  mastery       Float    @default(0.0) // 0.0-1.0
+  bloomReached  Int      @default(0) @db.SmallInt // highest Bloom level reached
+  timesCorrect  Int      @default(0)
+  timesWrong    Int      @default(0)
+  lastTestedAt  DateTime?
+  nextReviewAt  DateTime?
+  updatedAt     DateTime @updatedAt
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  concept Concept @relation(fields: [conceptId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, conceptId])
+  @@index([userId])
+  @@index([conceptId])
+  @@index([userId, mastery])
+  @@index([nextReviewAt])
+  @@map("user_concept_mastery")
+}
+
+model LearningPath {
+  id            String    @id @default(uuid()) @db.Uuid
+  userId        String    @unique @db.Uuid
+  currentLevel  LevelName @default(SLEEPING)
+  currentDay    Int       @default(1)
+  startZone     String?   // determined from initial assessment
+  painPoint     String?   // user's weak area
+  deliveryStyle String?   // preferred content style
+  startedAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  user     User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  days     LearningDay[]
+  barriers LevelBarrier[]
+
+  @@index([currentLevel])
+  @@map("learning_paths")
+}
+
+model LearningDay {
+  id          String    @id @default(uuid()) @db.Uuid
+  pathId      String    @db.Uuid
+  dayNumber   Int
+  conceptId   String    @db.Uuid
+  cards       Json      // ordered array of card objects
+  metrics     Json?     // time spent, interactions, depth clicks
+  completedAt DateTime?
+  createdAt   DateTime  @default(now())
+
+  path    LearningPath @relation(fields: [pathId], references: [id], onDelete: Cascade)
+  concept Concept      @relation(fields: [conceptId], references: [id], onDelete: Cascade)
+
+  @@unique([pathId, dayNumber])
+  @@index([pathId])
+  @@index([conceptId])
+  @@map("learning_days")
+}
+
+model LevelBarrier {
+  id            String       @id @default(uuid()) @db.Uuid
+  pathId        String       @db.Uuid
+  level         LevelName
+  stages        Json         // results per stage: {recall: [...], connect: [...], apply: [...], defend: [...], verdict: ...}
+  score         Float?       // overall score 0.0-1.0
+  passed        Boolean?
+  attemptNumber Int          @default(1)
+  attemptedAt   DateTime     @default(now())
+
+  path LearningPath @relation(fields: [pathId], references: [id], onDelete: Cascade)
+
+  @@index([pathId])
+  @@index([pathId, level])
+  @@map("level_barriers")
+}
+
+model DepthLayer {
+  id         String         @id @default(uuid()) @db.Uuid
+  conceptId  String         @db.Uuid
+  layerType  DepthLayerType
+  content    Json           // structured content for this layer
+  sourceRef  String?        // reference to source material
+  createdAt  DateTime       @default(now())
+
+  concept Concept @relation(fields: [conceptId], references: [id], onDelete: Cascade)
+
+  @@unique([conceptId, layerType])
+  @@index([conceptId])
+  @@map("depth_layers")
+}
+
+model ConceptQuestion {
+  id         String @id @default(uuid()) @db.Uuid
+  conceptId  String @db.Uuid
+  questionId String @db.Uuid
+
+  concept  Concept  @relation(fields: [conceptId], references: [id], onDelete: Cascade)
+  question Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@unique([conceptId, questionId])
+  @@index([conceptId])
+  @@index([questionId])
+  @@map("concept_questions")
 }
 
 // ── Campaign ──────────────────────────────────

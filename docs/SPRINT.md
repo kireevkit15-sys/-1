@@ -673,14 +673,14 @@
 
 | # | Задача | Статус | Файлы | Блокер |
 |---|--------|--------|-------|--------|
-| B20.1 | Prisma модели: Concept (slug, nameRu, description, branch, category, subcategory, bloomLevel, difficulty, sourceFile) | todo | `prisma/schema.prisma` | L20.1 |
-| B20.2 | Prisma модели: ConceptRelation (sourceId, targetId, relationType, strength) с unique constraint | todo | `prisma/schema.prisma` | L20.1 |
-| B20.3 | Prisma модели: UserConceptMastery (userId, conceptId, mastery 0-1, bloomReached, timesCorrect, timesWrong, lastTestedAt, nextReviewAt) | todo | `prisma/schema.prisma` | L20.1 |
-| B20.4 | Prisma модели: LearningPath (userId, currentLevel, currentDay, startZone, painPoint, deliveryStyle, startedAt) | todo | `prisma/schema.prisma` | L20.2 |
-| B20.5 | Prisma модели: LearningDay (pathId, dayNumber, conceptId, cards JSON, completedAt, metrics JSON) | todo | `prisma/schema.prisma` | L20.2 |
-| B20.6 | Prisma модели: LevelBarrier (pathId, level, stages JSON, score, passed, attemptNumber, attemptedAt) | todo | `prisma/schema.prisma` | L20.3 |
-| B20.7 | Prisma модели: DepthLayer (conceptId, layerType ENUM: ALTERNATIVE/SCIENCE/BOOK/PHILOSOPHY/CONTRADICTION/CONNECTIONS, content JSON, sourceRef) | todo | `prisma/schema.prisma` | L20.1 |
-| B20.8 | Prisma миграция: все модели B20.1-B20.7 + индексы | todo | `prisma/migrations/` | B20.1-B20.7 |
+| B20.1 | Prisma модели: Concept (slug, nameRu, description, branch, category, subcategory, bloomLevel, difficulty, sourceFile) | done | `prisma/schema.prisma` | L20.1 |
+| B20.2 | Prisma модели: ConceptRelation (sourceId, targetId, relationType, strength) с unique constraint | done | `prisma/schema.prisma` | L20.1 |
+| B20.3 | Prisma модели: UserConceptMastery (userId, conceptId, mastery 0-1, bloomReached, timesCorrect, timesWrong, lastTestedAt, nextReviewAt) | done | `prisma/schema.prisma` | L20.1 |
+| B20.4 | Prisma модели: LearningPath (userId, currentLevel, currentDay, startZone, painPoint, deliveryStyle, startedAt) | done | `prisma/schema.prisma` | L20.2 |
+| B20.5 | Prisma модели: LearningDay (pathId, dayNumber, conceptId, cards JSON, completedAt, metrics JSON) | done | `prisma/schema.prisma` | L20.2 |
+| B20.6 | Prisma модели: LevelBarrier (pathId, level, stages JSON, score, passed, attemptNumber, attemptedAt) | done | `prisma/schema.prisma` | L20.3 |
+| B20.7 | Prisma модели: DepthLayer (conceptId, layerType ENUM: ALTERNATIVE/SCIENCE/BOOK/PHILOSOPHY/CONTRADICTION/CONNECTIONS, content JSON, sourceRef) | done | `prisma/schema.prisma` | L20.1 |
+| B20.8 | Prisma миграция: все модели B20.1-B20.7 + индексы | done | `prisma/migrations/20260414000000_add_learning_system_models/` | B20.1-B20.7 |
 | B20.9 | Enum LevelName: SLEEPING, AWAKENED, OBSERVER, WARRIOR, STRATEGIST, MASTER | done | `prisma/schema.prisma` | — |
 | B20.10 | Enum BarrierStage: RECALL, CONNECT, APPLY, DEFEND, VERDICT | done | `prisma/schema.prisma` | — |
 
