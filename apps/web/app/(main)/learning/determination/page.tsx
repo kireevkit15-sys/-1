@@ -132,8 +132,14 @@ export default function DeterminationPage() {
       });
       setPhase("result");
     } catch (e) {
-      const msg = e instanceof Error ? e.message : "Не удалось отправить ответы";
-      setError(msg);
+      // Если бэкенд недоступен — демо-режим: просто показываем результат
+      const msg = e instanceof Error ? e.message : "";
+      if (msg.includes("Failed to fetch") || msg.includes("NetworkError")) {
+        setResult({ level: "SLEEPING" });
+        setPhase("result");
+        return;
+      }
+      setError(msg || "Не удалось отправить ответы");
       setErrorQuote(pickFailureQuote());
       setPhase("error");
     }
@@ -259,7 +265,7 @@ export default function DeterminationPage() {
             Твой уровень —
           </p>
           <h2
-            className="font-ritual text-3xl sm:text-4xl font-semibold tracking-[0.25em] uppercase mb-6 animate-text-flicker"
+            className="inline-block font-ritual text-3xl sm:text-4xl font-semibold tracking-[0.2em] pl-[0.2em] uppercase mb-6 animate-text-flicker"
             style={{
               backgroundImage:
                 "linear-gradient(110deg, #8B2E2E 0%, #C0392B 25%, #E8DDD3 50%, #C0392B 75%, #8B2E2E 100%)",
