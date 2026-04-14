@@ -615,14 +615,14 @@
 
 | # | Задача | Статус | Файлы |
 |---|--------|--------|-------|
-| F24.1 | Экран испытания: другой фон (тёмно-бордовый), другая атмосфера, текст "Испытание. Уровень [название]. Докажи." | todo | `apps/web/app/(main)/learning/barrier/page.tsx` |
-| F24.2 | Этап "Вспомни": 6 коротких вопросов, открытый ответ (1-2 предложения), цветовая оценка (зелёный/жёлтый/красный) | todo | `apps/web/components/learning/barrier/RecallStage.tsx` |
-| F24.3 | Этап "Свяжи": 3 пары концептов, пользователь пишет связь, AI оценивает | todo | `apps/web/components/learning/barrier/ConnectStage.tsx` |
-| F24.4 | Этап "Примени": 2 новые ситуации, открытый ответ, AI оценивает применение концептов | todo | `apps/web/components/learning/barrier/ApplyStage.tsx` |
-| F24.5 | Этап "Защити": чат с AI-наставником (3-4 раунда), наставник оспаривает, пользователь защищает | todo | `apps/web/components/learning/barrier/DefendStage.tsx` |
-| F24.6 | Экран "Прошёл": визуальное подтверждение, новый уровень, анимация | todo | `apps/web/components/learning/barrier/ResultScreen.tsx` |
-| F24.7 | Экран "Не прошёл": список слабых тем, направление на повторение, без утешений | todo | `apps/web/components/learning/barrier/ResultScreen.tsx` |
-| F24.8 | Прогресс испытания: 5 шагов сверху (1→2→3→4→5), пройденные меняют цвет | todo | — |
+| F24.1 | Экран испытания: другой фон (тёмно-бордовый), другая атмосфера, текст "Испытание. Уровень [название]. Докажи." | done | `apps/web/app/(main)/learning/barrier/page.tsx` |
+| F24.2 | Этап "Вспомни": 6 коротких вопросов, открытый ответ (1-2 предложения), цветовая оценка (зелёный/жёлтый/красный) | done | `apps/web/components/learning/barrier/RecallStage.tsx` |
+| F24.3 | Этап "Свяжи": 3 пары концептов, пользователь пишет связь, AI оценивает | done | `apps/web/components/learning/barrier/ConnectStage.tsx` |
+| F24.4 | Этап "Примени": 2 новые ситуации, открытый ответ, AI оценивает применение концептов | done | `apps/web/components/learning/barrier/ApplyStage.tsx` |
+| F24.5 | Этап "Защити": чат с AI-наставником (3-4 раунда), наставник оспаривает, пользователь защищает | done | `apps/web/components/learning/barrier/DefendStage.tsx` |
+| F24.6 | Экран "Прошёл": визуальное подтверждение, новый уровень, анимация | done | `apps/web/components/learning/barrier/ResultScreen.tsx` |
+| F24.7 | Экран "Не прошёл": список слабых тем, направление на повторение, без утешений | done | `apps/web/components/learning/barrier/ResultScreen.tsx` |
+| F24.8 | Прогресс испытания: 5 шагов сверху (1→2→3→4→5), пройденные меняют цвет | done | — |
 
 ### Блок F25 — Карта знаний
 

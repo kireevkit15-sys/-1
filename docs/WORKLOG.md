@@ -111,6 +111,37 @@
 
 ## Бонди (Frontend + Дизайн)
 
+### 2026-04-14 — Сессия: F24 — барьер-испытание (параллельная сборка)
+
+**Время:** ~0.5 часа
+**Статус:** Завершена
+
+**Что сделано:**
+- 3 агента в worktree параллельно собрали 6 компонентов барьера (F24.2–F24.8); 4-й агент на F25 остановлен по просьбе Никиты (его делают в другом окне)
+- Интегрировал страницу-оркестратор `/learning/barrier` — конечный автомат 5 фаз (recall → connect → apply → defend → verdict) с подсчётом очков на каждом этапе и итоговым passed/failed
+- Бордовая aurora-атмосфера (cold-blood) отличает барьер от обычного урока
+- Демо-стабы AI-оценки: эвристика по длине ответа, до готовности L24 эндпоинтов
+- Typecheck чист, SSR /learning/barrier → HTTP 200
+
+**Файлы созданы:**
+- `apps/web/components/learning/barrier/RecallStage.tsx` (F24.2)
+- `apps/web/components/learning/barrier/ConnectStage.tsx` (F24.3)
+- `apps/web/components/learning/barrier/ApplyStage.tsx` (F24.4)
+- `apps/web/components/learning/barrier/DefendStage.tsx` (F24.5)
+- `apps/web/components/learning/barrier/ResultScreen.tsx` (F24.6 + F24.7)
+- `apps/web/components/learning/barrier/BarrierProgress.tsx` (F24.8)
+- `apps/web/app/(main)/learning/barrier/page.tsx` (F24.1)
+
+**Задачи из SPRINT.md закрыты:** F24.1, F24.2, F24.3, F24.4, F24.5, F24.6, F24.7, F24.8
+
+**Коммиты:**
+- `feat(learning): add RecallStage + ConnectStage for barrier (F24.2, F24.3)`
+- `feat(learning): add ApplyStage + DefendStage for barrier (F24.4, F24.5)`
+- `feat(learning): add barrier ResultScreen + BarrierProgress (F24.6, F24.7, F24.8)`
+- `464e1f7` — feat(learning): add barrier orchestrator page (F24.1)
+
+---
+
 ### 2026-04-14 — Сессия: F22 — лента карточек урока (параллельная сборка)
 
 **Время:** ~0.5 часа
