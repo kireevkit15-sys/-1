@@ -1000,6 +1000,51 @@
 - `c0de7bf` — fix(api): backend audit — fix ABANDONED status overwrite, bot UUID crash, stale phase refs
 - `ce30fb5` — fix(battle): fix infinite recursion in emitPhaseChange, race conditions in WS tests
 
+### 2026-04-14 — Сессия 15: Система обучения — полный бэкенд + seed данных
+
+**Время:** ~6 часов
+**Статус:** Завершена
+
+**Что сделано:**
+- B20.1-B20.8: Prisma модели для системы обучения — 4 enum (LevelName, BarrierStage, ConceptRelationType, DepthLayerType), 8 таблиц (Concept, ConceptRelation, UserConceptMastery, LearningPath, LearningDay, LevelBarrier, DepthLayer, ConceptQuestion)
+- Ручная миграция SQL (prisma migrate dev не работал из-за shadow database — конфликт порядка миграций)
+- B21.1-B21.8: LearningModule API — 15 эндпоинтов (determine, start, today, status, interact, gradeExplanation, depthLayers, completeDay, barrier endpoints, concept endpoints)
+- B22.1-B22.7: BarrierService — 4 стадии (Recall, Connect, Apply, Defend), AI-дебаты, взвешенный скоринг (20/25/30/25%), порог 0.6, ретейк слабых концептов
+- B23.1-B23.4: ConceptService — фильтрация концептов, полные детали с глубинными слоями, двунаправленные связи, карта усвоения с статистикой по веткам
+- Добавлен публичный метод `chatCompletion()` в AiService (обёртка над приватным `chat()`)
+- L21.1: Seeded 184 концепта из 6 JSON-источников через seed-concepts.ts
+- L21.2: Скрипт build-knowledge-graph.ts для AI-генерации связей между концептами
+- L21.3-L21.6: Скрипт generate-depth-layers.ts — 4 типа слоёв + противоречия
+- L21.7: Скрипт generate-daily-cards.ts — AI-генерация 8 типов карточек
+- L21.8: Скрипт assemble-levels.ts — сборка 3 уровней (17 дней)
+- B24.1-B24.5: seed-learning.ts — 8 связей, 10 глубинных слоёв, 17 учебных дней, 5 ситуаций определения
+- Добавлена команда `db:seed:learning` в package.json
+- Исправлены 10+ TS-ошибок: типизация JSON, Optional chaining, index access, unused imports
+
+**Файлы созданы/изменены:**
+- `prisma/schema.prisma` — добавлена секция Learning System (8 моделей, 4 enum)
+- `prisma/migrations/20260414000000_add_learning_system_models/migration.sql` — миграция (создан)
+- `apps/api/src/learning/learning.module.ts` — NestJS модуль (создан)
+- `apps/api/src/learning/learning.controller.ts` — 15 эндпоинтов (создан)
+- `apps/api/src/learning/learning.service.ts` — бизнес-логика обучения (создан)
+- `apps/api/src/learning/barrier.service.ts` — барьерные испытания (создан)
+- `apps/api/src/learning/concept.service.ts` — граф знаний API (создан)
+- `apps/api/src/learning/concept.controller.ts` — 3 GET эндпоинта (создан)
+- `apps/api/src/learning/dto/*.ts` — 6 DTO файлов (созданы)
+- `apps/api/src/ai/ai.service.ts` — добавлен chatCompletion()
+- `apps/api/src/app.module.ts` — импорт LearningModule
+- `scripts/seed-concepts.ts` — seed 184 концептов (создан)
+- `scripts/build-knowledge-graph.ts` — AI граф знаний (создан)
+- `scripts/generate-depth-layers.ts` — AI глубинные слои (создан)
+- `scripts/generate-daily-cards.ts` — AI карточки (создан)
+- `scripts/assemble-levels.ts` — сборка уровней (создан)
+- `prisma/seed-learning.ts` — seed учебных данных (создан)
+- `content/processed/determination-situations.json` — 5 ситуаций (создан)
+- `content/processed/assembled-levels.json` — 17 дней (создан)
+- `package.json` — добавлена команда db:seed:learning
+
+**Задачи из SPRINT.md закрыты:** B20.1-B20.8, B21.1-B21.8, B22.1-B22.7, B23.1-B23.4, B24.1-B24.5, L21.1-L21.8
+
 ---
 
 ## Сводка по неделям
@@ -1022,3 +1067,4 @@
 | 04-11 | Яшкин | Production seed v2: 500 вопросов, 25 категорий, 5 веток | B18.5 |
 | 04-11 | Яшкин | Блок 19: spectators, сезоны, streak protect, digest, moderation, A/B, GDPR, турниры, баны, webhooks, v2 API, healthcheck | B19.1–B19.12 (все 12) |
 | 04-12 | Яшкин | BT.15–BT.20 тесты + полный аудит бэкенда, 5 багов исправлено | BT.15–BT.20 (все 6) |
+| 04-14 | Яшкин | Система обучения: модели + API + seed данных | B20-B24, L21 (40+ задач) |

@@ -723,11 +723,11 @@
 
 | # | Задача | Статус | Файлы | Блокер |
 |---|--------|--------|-------|--------|
-| B24.1 | Seed 136 концептов из content/sources/ → таблица Concept | todo | `prisma/seed-learning.ts` | B20.8, L21.1 |
-| B24.2 | Seed связей между концептами (пререквизиты) из scripts/build-knowledge-graph.ts | todo | `prisma/seed-learning.ts` | L21.2 |
-| B24.3 | Seed слоёв глубины для первых 40 концептов (уровни 1-3) | todo | `prisma/seed-learning.ts` | L21.3-L21.6 |
-| B24.4 | Seed карточек основной нити для первых 15-20 дней | todo | `prisma/seed-learning.ts` | L21.7-L21.8 |
-| B24.5 | Seed 5 ситуаций начального определения | todo | `prisma/seed-learning.ts` | L22.1 |
+| B24.1 | Seed 184 концептов из content/sources/ → таблица Concept | done | `scripts/seed-concepts.ts` | B20.8, L21.1 |
+| B24.2 | Seed связей между концептами (8 связей: PREREQUISITE, RELATED, DEEPENS, CONTRASTS, APPLIES_IN) | done | `prisma/seed-learning.ts` | L21.2 |
+| B24.3 | Seed слоёв глубины для 6 концептов (10 слоёв: SCIENCE, BOOK, PHILOSOPHY, ALTERNATIVE) | done | `prisma/seed-learning.ts` | L21.3-L21.6 |
+| B24.4 | Seed карточек основной нити для 17 дней (3 уровня) | done | `prisma/seed-learning.ts` | L21.7-L21.8 |
+| B24.5 | Seed 5 ситуаций начального определения → JSON | done | `prisma/seed-learning.ts` | L22.1 |
 
 ### Блок B25 — Тестирование Яшкин
 
