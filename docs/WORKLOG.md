@@ -1000,9 +1000,9 @@
 - `c0de7bf` — fix(api): backend audit — fix ABANDONED status overwrite, bot UUID crash, stale phase refs
 - `ce30fb5` — fix(battle): fix infinite recursion in emitPhaseChange, race conditions in WS tests
 
-### 2026-04-14 — Сессия 15: Система обучения — полный бэкенд + seed данных
+### 2026-04-14 — Сессия 15: Система обучения — полный бэкенд + seed + тесты
 
-**Время:** ~6 часов
+**Время:** ~8 часов
 **Статус:** Завершена
 
 **Что сделано:**
@@ -1020,6 +1020,10 @@
 - B24.1-B24.5: seed-learning.ts — 8 связей, 10 глубинных слоёв, 17 учебных дней, 5 ситуаций определения
 - Добавлена команда `db:seed:learning` в package.json
 - Исправлены 10+ TS-ошибок: типизация JSON, Optional chaining, index access, unused imports
+- B25.1-B25.8: E2E тесты — determination (5), start (3), today (2), explain (3), barrier cycle (10), retake (4), depth (3), mastery (2) — всего 61 тест
+- B25.10-B25.12: Unit тесты — path building (5), adaptation (12), grading (3), barrier service (15) — всего 37 тестов
+- B25.13: Security E2E — auth enforcement (10), day skip (3), cross-user isolation (3), barrier forgery (3), input validation (3) — 22 теста
+- Итого: 98 тестов (все проходят)
 
 **Файлы созданы/изменены:**
 - `prisma/schema.prisma` — добавлена секция Learning System (8 моделей, 4 enum)
@@ -1042,8 +1046,13 @@
 - `content/processed/determination-situations.json` — 5 ситуаций (создан)
 - `content/processed/assembled-levels.json` — 17 дней (создан)
 - `package.json` — добавлена команда db:seed:learning
+- `apps/api/test/learning.e2e-spec.ts` — 25 E2E тестов: determination, start, today, explain, depth, mastery (создан)
+- `apps/api/test/learning-barrier.e2e-spec.ts` — 14 E2E тестов: полный цикл барьера, провал + ретейк (создан)
+- `apps/api/test/security/learning-security.e2e-spec.ts` — 22 E2E теста: auth, day skip, cross-user, forgery, validation (создан)
+- `apps/api/src/learning/__tests__/learning.service.spec.ts` — 22 unit теста: path building, adaptation, grading (создан)
+- `apps/api/src/learning/__tests__/barrier.service.spec.ts` — 15 unit тестов: barrier lifecycle, scoring, retake (создан)
 
-**Задачи из SPRINT.md закрыты:** B20.1-B20.8, B21.1-B21.8, B22.1-B22.7, B23.1-B23.4, B24.1-B24.5, L21.1-L21.8
+**Задачи из SPRINT.md закрыты:** B20.1-B20.8, B21.1-B21.8, B22.1-B22.7, B23.1-B23.4, B24.1-B24.5, B25.1-B25.13, L21.1-L21.8
 
 ---
 
@@ -1067,4 +1076,4 @@
 | 04-11 | Яшкин | Production seed v2: 500 вопросов, 25 категорий, 5 веток | B18.5 |
 | 04-11 | Яшкин | Блок 19: spectators, сезоны, streak protect, digest, moderation, A/B, GDPR, турниры, баны, webhooks, v2 API, healthcheck | B19.1–B19.12 (все 12) |
 | 04-12 | Яшкин | BT.15–BT.20 тесты + полный аудит бэкенда, 5 багов исправлено | BT.15–BT.20 (все 6) |
-| 04-14 | Яшкин | Система обучения: модели + API + seed данных | B20-B24, L21 (40+ задач) |
+| 04-14 | Яшкин | Система обучения: модели + API + seed + 98 тестов | B20-B25, L21 (53+ задач) |

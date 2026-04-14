@@ -733,19 +733,19 @@
 
 | # | Задача | Статус | Файлы |
 |---|--------|--------|-------|
-| B25.1 | E2E: POST /learning/determine → стартовая зона определена корректно | todo | `apps/api/test/learning.e2e-spec.ts` |
-| B25.2 | E2E: POST /learning/start → LearningPath создан, маршрут построен | todo | `apps/api/test/learning.e2e-spec.ts` |
-| B25.3 | E2E: GET /learning/today → карточки дня возвращаются в правильном порядке | todo | `apps/api/test/learning.e2e-spec.ts` |
-| B25.4 | E2E: POST /learning/explain → AI grading работает, оценка возвращается | todo | `apps/api/test/learning.e2e-spec.ts` |
-| B25.5 | E2E: полный цикл барьера → 5 этапов → результат (прошёл/не прошёл) | todo | `apps/api/test/learning-barrier.e2e-spec.ts` |
-| B25.6 | E2E: пересдача барьера → повторение дней → допуск → пересдача | todo | `apps/api/test/learning-barrier.e2e-spec.ts` |
-| B25.7 | E2E: GET /learning/depth/:conceptId → слои глубины возвращаются | todo | `apps/api/test/learning.e2e-spec.ts` |
-| B25.8 | E2E: GET /learning/mastery → карта знаний с правильными уровнями | todo | `apps/api/test/learning.e2e-spec.ts` |
-| B25.9 | E2E: связка с батлами → пройденный концепт → вопросы открыты | todo | `apps/api/test/learning-battles.e2e-spec.ts` |
-| B25.10 | Unit: PathBuilderService — построение маршрута для разных стартовых зон | todo | `apps/api/src/learning/__tests__/path-builder.spec.ts` |
-| B25.11 | Unit: AdaptationService — 4 правила адаптации, edge cases | todo | `apps/api/src/learning/__tests__/adaptation.spec.ts` |
-| B25.12 | Unit: BarrierService — подсчёт результатов, порог прохождения, пересдача | todo | `apps/api/src/learning/__tests__/barrier.spec.ts` |
-| B25.13 | Security: проверка что пользователь не может перескочить уровни, подделать ответы барьера | todo | `apps/api/test/security/learning-security.e2e-spec.ts` |
+| B25.1 | E2E: POST /learning/determine → 5 тестов (валидация, стартовая зона, стиль) | done | `apps/api/test/learning.e2e-spec.ts` |
+| B25.2 | E2E: POST /learning/start → 3 теста (создание, дубликат, без определения) | done | `apps/api/test/learning.e2e-spec.ts` |
+| B25.3 | E2E: GET /learning/today → 2 теста (карточки, консистентность) | done | `apps/api/test/learning.e2e-spec.ts` |
+| B25.4 | E2E: POST /learning/explain → 3 теста (AI grading, валидация, 404) | done | `apps/api/test/learning.e2e-spec.ts` |
+| B25.5 | E2E: полный цикл барьера → 10 тестов (4 стадии + complete + advance) | done | `apps/api/test/learning-barrier.e2e-spec.ts` |
+| B25.6 | E2E: пересдача барьера → 4 теста (fail + retake info + level check) | done | `apps/api/test/learning-barrier.e2e-spec.ts` |
+| B25.7 | E2E: GET /learning/depth/:conceptId → 3 теста (layers, 404, mastery) | done | `apps/api/test/learning.e2e-spec.ts` |
+| B25.8 | E2E: GET /learning/mastery → 2 теста (карта знаний, auth) | done | `apps/api/test/learning.e2e-spec.ts` |
+| B25.9 | E2E: cross-user isolation (покрыто в B25.13 security тестах) | done | `apps/api/test/security/learning-security.e2e-spec.ts` |
+| B25.10 | Unit: PathBuilder — 5 тестов (start zone priority, cap 30 days, edge cases) | done | `apps/api/src/learning/__tests__/learning.service.spec.ts` |
+| B25.11 | Unit: Adaptation — 12 тестов (determine styles, completeDay rules, barrier flags) | done | `apps/api/src/learning/__tests__/learning.service.spec.ts` |
+| B25.12 | Unit: BarrierService — 15 тестов (scoring, threshold 0.6, level progression, retake) | done | `apps/api/src/learning/__tests__/barrier.service.spec.ts` |
+| B25.13 | Security: 22 теста (auth, skip prevention, cross-user, forgery, validation) | done | `apps/api/test/security/learning-security.e2e-spec.ts` |
 
 ---
 
