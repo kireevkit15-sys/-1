@@ -654,15 +654,15 @@
 
 | # | Задача | Статус | Файлы |
 |---|--------|--------|-------|
-| F28.1 | E2E: полный флоу определения → 5 ситуаций → результат → редирект на обучение | todo | `apps/web/tests/e2e/learning-determination.spec.ts` |
-| F28.2 | E2E: урок дня → свайп 7 карточек → ответ на проверку → написать объяснение → AI-оценка | todo | `apps/web/tests/e2e/learning-day.spec.ts` |
-| F28.3 | E2E: нажать "Глубже" → дополнительные карточки появились → свайп → вернуться к нити | todo | `apps/web/tests/e2e/learning-depth.spec.ts` |
-| F28.4 | E2E: барьер-испытание → 5 этапов → прошёл → новый уровень → карточка "В бой" | todo | `apps/web/tests/e2e/learning-barrier.spec.ts` |
-| F28.5 | E2E: барьер не прошёл → список слабых тем → повторение → пересдача | todo | `apps/web/tests/e2e/learning-barrier-fail.spec.ts` |
-| F28.6 | E2E: карта знаний → фильтр по ветке → нажать концепт → детали → "Погрузиться" | todo | `apps/web/tests/e2e/learning-map.spec.ts` |
-| F28.7 | E2E: AI-наставник → кнопка "Обсудить" → bottom-sheet → 3 сообщения → закрыть | todo | `apps/web/tests/e2e/learning-tutor.spec.ts` |
-| F28.8 | Визуальные скриншоты: все экраны обучения на 375/768/1024px | todo | `apps/web/tests/visual/learning-screenshots.spec.ts` |
-| F28.9 | Accessibility: все компоненты обучения — aria-labels, контрасты, keyboard navigation | todo | `apps/web/tests/a11y/learning-a11y.spec.ts` |
+| F28.1 | E2E: полный флоу определения → 5 ситуаций → результат → редирект на обучение | done | `apps/web/tests/e2e/learning-determination.spec.ts` |
+| F28.2 | E2E: урок дня → свайп 7 карточек → ответ на проверку → написать объяснение → AI-оценка | done | `apps/web/tests/e2e/learning-day.spec.ts` |
+| F28.3 | E2E: нажать "Глубже" → дополнительные карточки появились → свайп → вернуться к нити | done | `apps/web/tests/e2e/learning-depth.spec.ts` |
+| F28.4 | E2E: барьер-испытание → 5 этапов → прошёл → новый уровень → карточка "В бой" | done | `apps/web/tests/e2e/learning-barrier.spec.ts` |
+| F28.5 | E2E: барьер не прошёл → список слабых тем → повторение → пересдача | done | `apps/web/tests/e2e/learning-barrier-fail.spec.ts` |
+| F28.6 | E2E: карта знаний → фильтр по ветке → нажать концепт → детали → "Погрузиться" | done | `apps/web/tests/e2e/learning-map.spec.ts` |
+| F28.7 | E2E: AI-наставник → кнопка "Обсудить" → bottom-sheet → 3 сообщения → закрыть | done | `apps/web/tests/e2e/learning-tutor.spec.ts` |
+| F28.8 | Визуальные скриншоты: все экраны обучения на 375/768/1024px | done | `apps/web/tests/visual/learning-screenshots.spec.ts` |
+| F28.9 | Accessibility: все компоненты обучения — aria-labels, контрасты, keyboard navigation | done | `apps/web/tests/a11y/learning-a11y.spec.ts` |
 | F28.10 | Performance: Lighthouse на все страницы обучения (>90 perf) | todo | — |
 
 ---
