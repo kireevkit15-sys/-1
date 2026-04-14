@@ -21,6 +21,13 @@ import { QuizCard } from "@/components/learning/QuizCard";
 import { ExplainCard, type ExplainResult } from "@/components/learning/ExplainCard";
 import { ThreadCard } from "@/components/learning/ThreadCard";
 import { WisdomLearningCard } from "@/components/learning/WisdomLearningCard";
+// F23 — карточки «Глубже»
+import { AlternativeCard } from "@/components/learning/AlternativeCard";
+import { ScienceCard } from "@/components/learning/ScienceCard";
+import { BookCard } from "@/components/learning/BookCard";
+import { PhilosophyCard } from "@/components/learning/PhilosophyCard";
+import { ContradictionCard } from "@/components/learning/ContradictionCard";
+import { ConnectionsCard } from "@/components/learning/ConnectionsCard";
 
 type CardKind =
   | "hook"
@@ -30,7 +37,14 @@ type CardKind =
   | "quiz"
   | "explain"
   | "thread"
-  | "wisdom";
+  | "wisdom"
+  // F23
+  | "alternative"
+  | "science"
+  | "book"
+  | "philosophy"
+  | "contradiction"
+  | "connections";
 
 interface LessonCard {
   id: string;
@@ -159,10 +173,31 @@ const DEMO_LESSON: Lesson = {
 
 export default function LearningDayPage() {
   const router = useRouter();
-  const lesson = DEMO_LESSON;
+  const [lesson, setLesson] = useState<Lesson>(DEMO_LESSON);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
   const containerRef = useRef<HTMLDivElement | null>(null);
   const sectionRefs = useRef<Array<HTMLElement | null>>([]);
+
+  // F23.1 — Клик «Глубже» вставляет 6 доп-карточек (другой угол, наука,
+  // книга, философия, противоречие, связи) сразу после карточки-триггера.
+  // Работает как продолжение ленты — не переход на новую страницу.
+  // Повторный клик на ту же карточку не вставляет дубли (Set триггеров).
+  function handleDeeper(triggerId: string) {
+    if (expandedIds.has(triggerId)) return;
+    setExpandedIds((prev) => new Set(prev).add(triggerId));
+    setLesson((prev) => {
+      const idx = prev.cards.findIndex((c) => c.id === triggerId);
+      if (idx === -1) return prev;
+      const deeperCards = buildDeeperCards(triggerId);
+      const newCards = [
+        ...prev.cards.slice(0, idx + 1),
+        ...deeperCards,
+        ...prev.cards.slice(idx + 1),
+      ];
+      return { ...prev, cards: newCards };
+    });
+  }
 
   // Отслеживаем активную карточку по пересечению с центром вьюпорта.
   useEffect(() => {
@@ -186,7 +221,8 @@ export default function LearningDayPage() {
       if (el) observer.observe(el);
     });
     return () => observer.disconnect();
-  }, []);
+    // Пересоздаём observer при изменении длины ленты (вставка F23 карточек).
+  }, [lesson.cards.length]);
 
   const total = lesson.cards.length;
   const progressLabel = `${activeIndex + 1} / ${total}`;
@@ -274,11 +310,11 @@ export default function LearningDayPage() {
         </div>
       </header>
 
-      {/* Лента карточек — scroll-snap по вертикали */}
+      {/* Лента карточек — scroll-snap по вертикали, скролл стилизован под нашу палитру */}
       <div
         ref={containerRef}
-        className="relative z-10 h-screen overflow-y-auto snap-y snap-mandatory pt-20 sm:pt-24"
-        style={{ scrollBehavior: "smooth" }}
+        className="learning-feed relative z-10 h-screen overflow-y-auto snap-y snap-mandatory"
+        style={{ scrollBehavior: "smooth", scrollPaddingTop: "4.5rem" }}
       >
         {lesson.cards.map((card, i) => (
           <section
@@ -287,16 +323,20 @@ export default function LearningDayPage() {
             ref={(el) => {
               sectionRefs.current[i] = el;
             }}
-            className="snap-start min-h-[calc(100vh-5rem)] sm:min-h-[calc(100vh-6rem)] flex items-center justify-center px-4 sm:px-6 py-10"
+            className="snap-start min-h-screen flex items-start justify-center px-4 sm:px-6 pt-20 sm:pt-24 pb-10"
           >
             <div className="w-full max-w-2xl mx-auto">
-              <CardRenderer card={card} onExplain={explainStub} />
+              <CardRenderer
+                card={card}
+                onExplain={explainStub}
+                onDeeper={() => handleDeeper(card.id)}
+              />
             </div>
           </section>
         ))}
 
         {/* Завершение дня */}
-        <section className="snap-start min-h-[calc(100vh-5rem)] flex items-center justify-center px-6 py-12">
+        <section className="snap-start min-h-screen flex items-start justify-center px-6 pt-32 pb-12">
           <div className="text-center animate-[slide-up_0.5s_ease-out]">
             <div className="font-ritual text-[10px] tracking-[0.4em] uppercase text-cold-steel mb-6">
               — День пройден —
@@ -319,9 +359,10 @@ export default function LearningDayPage() {
 interface CardRendererProps {
   card: LessonCard;
   onExplain: (text: string) => Promise<ExplainResult>;
+  onDeeper: () => void;
 }
 
-function CardRenderer({ card, onExplain }: CardRendererProps) {
+function CardRenderer({ card, onExplain, onDeeper }: CardRendererProps) {
   switch (card.kind) {
     case "hook": {
       const d = card.data as { text: string };
@@ -329,9 +370,7 @@ function CardRenderer({ card, onExplain }: CardRendererProps) {
     }
     case "explanation": {
       const d = card.data as { title: string; body: string };
-      // F22.10 — «Глубже» доступно в Раскрытии; пока handler — no-op stub,
-      // инлайн-вставку доп-карточек F23 подключит L23/F23 блок.
-      return <ExplanationCard title={d.title} body={d.body} onDeeper={() => {}} />;
+      return <ExplanationCard title={d.title} body={d.body} onDeeper={onDeeper} />;
     }
     case "evidence": {
       const d = card.data as {
@@ -344,7 +383,7 @@ function CardRenderer({ card, onExplain }: CardRendererProps) {
           statistic={d.statistic}
           source={d.source}
           description={d.description}
-          onDeeper={() => {}}
+          onDeeper={onDeeper}
         />
       );
     }
@@ -374,5 +413,128 @@ function CardRenderer({ card, onExplain }: CardRendererProps) {
       const d = card.data as { quote: string; author: string };
       return <WisdomLearningCard quote={d.quote} author={d.author} />;
     }
+    // ── F23: карточки «Глубже» ──────────────────────────────────────
+    case "alternative": {
+      const d = card.data as React.ComponentProps<typeof AlternativeCard>;
+      return <AlternativeCard {...d} />;
+    }
+    case "science": {
+      const d = card.data as React.ComponentProps<typeof ScienceCard>;
+      return <ScienceCard {...d} />;
+    }
+    case "book": {
+      const d = card.data as React.ComponentProps<typeof BookCard>;
+      return <BookCard {...d} />;
+    }
+    case "philosophy": {
+      const d = card.data as React.ComponentProps<typeof PhilosophyCard>;
+      return <PhilosophyCard {...d} />;
+    }
+    case "contradiction": {
+      const d = card.data as React.ComponentProps<typeof ContradictionCard>;
+      return <ContradictionCard {...d} />;
+    }
+    case "connections": {
+      const d = card.data as React.ComponentProps<typeof ConnectionsCard>;
+      return <ConnectionsCard {...d} />;
+    }
   }
+}
+
+// ── F23.1 — Фабрика доп-карточек ─────────────────────────────────────
+// При клике «Глубже» вставляем 6 карточек разных типов. Пока демо-контент,
+// привязанный к теме дневного урока («Решение без полной информации»).
+// Когда будет готов бэкенд depth-layers (L23), контент будет подтягиваться
+// через GET /learning/depth/:conceptId (эндпоинт уже сделан Яшкиным).
+function buildDeeperCards(triggerId: string): LessonCard[] {
+  const prefix = `${triggerId}-deeper`;
+  return [
+    {
+      id: `${prefix}-alt`,
+      kind: "alternative",
+      data: {
+        originalAuthor: "Стратегический взгляд",
+        originalView:
+          "Решение принимается при минимуме, достаточном для движения. Всё сверх — повод промедлить.",
+        alternativeAuthor: "Восточная мудрость · Лао-цзы",
+        alternativeView:
+          "Дао не торопится. Мудрый не действует — но всё сделано. Действие без действия — высшая форма решения.",
+      },
+    },
+    {
+      id: `${prefix}-sci`,
+      kind: "science",
+      data: {
+        title: "Когнитивная стоимость промедления",
+        context:
+          "Исследование Клейна (Recognition-Primed Decision model) показало, что эксперты в условиях давления не перебирают варианты — они распознают паттерн и действуют. Неполнота данных заменяется опытом распознавания.",
+        metrics: [
+          { value: "87%", label: "экспертных решений — первая мысль" },
+          { value: "3,4×", label: "реже ошибаются решающие на 40% данных" },
+          { value: "12 мин", label: "средний порог «достаточности» у профи" },
+        ],
+        source: "Klein, G. — Sources of Power (1998)",
+      },
+    },
+    {
+      id: `${prefix}-book`,
+      kind: "book",
+      data: {
+        bookTitle: "Государь",
+        author: "Никколо Макиавелли",
+        year: 1513,
+        quote:
+          "Фортуна — женщина, и, чтобы удержать её, надо действовать: она уходит от тех, кто выжидает.",
+        keyIdea:
+          "Макиавелли пишет не о решимости ради решимости. Он пишет о том, что мир не делает паузу, пока ты собираешь данные. Реальность течёт — и тот, кто не входит в поток, остаётся на берегу. Неполнота информации в «Государе» — не проблема, а условие работы власти.",
+      },
+    },
+    {
+      id: `${prefix}-phil`,
+      kind: "philosophy",
+      data: {
+        era: "Древняя Греция, V в. до н.э.",
+        thinker: "Гераклит",
+        school: "Досократики",
+        idea:
+          "Всё течёт, всё меняется. В одну и ту же реку нельзя войти дважды. Мир — не набор фактов, а процесс, где каждая секунда уже другая.",
+        legacy:
+          "Если реальность течёт, то «полная информация» — иллюзия. К моменту, когда ты соберёшь все данные, они уже устарели. Решать приходится в потоке — и это не ограничение, а условие бытия.",
+      },
+    },
+    {
+      id: `${prefix}-contra`,
+      kind: "contradiction",
+      data: {
+        question: "Решать быстро или точно?",
+        viewA: {
+          label: "Макиавелли · Наполеон · Стратеги",
+          thesis: "Темп важнее точности.",
+          argument:
+            "Окно возможности закрывается. Точное решение принятое поздно — это уже неправильное решение. Лучше быть 70% правым и быстрым, чем 100% правым и опоздавшим.",
+        },
+        viewB: {
+          label: "Канеман · Аналитики · Учёные",
+          thesis: "Быстрое мышление — ловушка.",
+          argument:
+            "Система 1 (быстрая) подвержена когнитивным искажениям. Эвристики ведут в систематические ошибки. Темп без проверки = катастрофа в сложных системах.",
+        },
+      },
+    },
+    {
+      id: `${prefix}-conn`,
+      kind: "connections",
+      data: {
+        centralConcept: "Решение без полной информации",
+        connections: [
+          { id: "c-price-delay", nameRu: "Цена промедления", relation: "основа" },
+          { id: "c-reversibility", nameRu: "Обратимость решения", relation: "развивает" },
+          { id: "c-pattern", nameRu: "Распознавание паттернов", relation: "дополняет" },
+          { id: "c-intuition", nameRu: "Интуиция эксперта", relation: "связано" },
+          { id: "c-analysis-paralysis", nameRu: "Паралич анализа", relation: "противоположность" },
+          { id: "c-bayes", nameRu: "Байесовский подход", relation: "альтернатива" },
+        ],
+      },
+    },
+  ];
 }

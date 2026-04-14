@@ -128,6 +128,19 @@ const config: Config = {
           "0%": { opacity: "0" },
           "100%": { opacity: "1" },
         },
+        "breathe": {
+          "0%, 100%": { opacity: "0.45", transform: "scale(1)" },
+          "50%": { opacity: "0.75", transform: "scale(1.05)" },
+        },
+        "reveal-up": {
+          "0%": { opacity: "0", transform: "translateY(24px)", filter: "blur(4px)" },
+          "100%": { opacity: "1", transform: "translateY(0)", filter: "blur(0)" },
+        },
+        "reveal-from-dark": {
+          "0%": { opacity: "0", transform: "translateY(40px) scale(0.98)", filter: "blur(8px) brightness(0.4)" },
+          "40%": { opacity: "0.5", filter: "blur(3px) brightness(0.7)" },
+          "100%": { opacity: "1", transform: "translateY(0) scale(1)", filter: "blur(0) brightness(1)" },
+        },
       },
       animation: {
         "shake": "shake 0.5s ease-in-out",
@@ -147,6 +160,9 @@ const config: Config = {
         "shimmer-flicker":
           "steel-shimmer 4s ease-in-out infinite, text-flicker 3s ease-in-out infinite",
         "fade-in": "fade-in 0.3s ease-out forwards",
+        "breathe": "breathe 8s ease-in-out infinite",
+        "reveal-up": "reveal-up 0.9s cubic-bezier(0.22,1,0.36,1) forwards",
+        "reveal-from-dark": "reveal-from-dark 1.4s cubic-bezier(0.22,1,0.36,1) forwards",
       },
     },
   },

@@ -470,3 +470,38 @@
 .hover-tilt:active {
   transform: perspective(600px) rotateY(0deg) rotateX(0deg) scale(0.97);
 }
+
+/* ──────────────────────────────────────────────────────────────────────
+ * Стилизованный скроллбар для ленты обучения (F23 полировка)
+ * Тонкий, медный, прячется при бездействии.
+ * ────────────────────────────────────────────────────────────────────── */
+
+.learning-feed::-webkit-scrollbar {
+  width: 4px;
+}
+.learning-feed::-webkit-scrollbar-track {
+  background: transparent;
+}
+.learning-feed::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, rgba(207, 157, 123, 0.55), rgba(185, 141, 52, 0.35));
+  border-radius: 4px;
+  transition: background 0.3s ease;
+}
+.learning-feed::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(to bottom, rgba(207, 157, 123, 0.9), rgba(185, 141, 52, 0.65));
+}
+
+/* Firefox */
+.learning-feed {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(207, 157, 123, 0.55) transparent;
+}
+
+/* scrollbar-hide утилита для горизонтальных скроллов (чипы фильтров и т.п.) */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
