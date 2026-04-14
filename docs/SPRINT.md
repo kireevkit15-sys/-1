@@ -702,13 +702,13 @@
 
 | # | Задача | Статус | Файлы | Блокер |
 |---|--------|--------|-------|--------|
-| B22.1 | GET /learning/barrier — получить испытание для текущего уровня: 6 вопросов "Вспомни" + 3 пары "Свяжи" + 2 ситуации "Примени" | todo | `apps/api/src/learning/barrier.service.ts` | B20.8 |
-| B22.2 | POST /learning/barrier/recall — принять ответы на "Вспомни", оценить через AI, вернуть результаты по каждому | todo | `apps/api/src/learning/barrier.service.ts` | B22.1 |
-| B22.3 | POST /learning/barrier/connect — принять объяснения связей, оценить через AI | todo | `apps/api/src/learning/barrier.service.ts` | B22.1 |
-| B22.4 | POST /learning/barrier/apply — принять ответы на ситуации, оценить применение концептов через AI | todo | `apps/api/src/learning/barrier.service.ts` | B22.1 |
-| B22.5 | POST /learning/barrier/defend — начать диалог с AI-наставником (оппонент), 3-4 раунда | todo | `apps/api/src/learning/barrier.service.ts` | L24.2, L24.5 |
-| B22.6 | POST /learning/barrier/complete — подсчитать общий результат, прошёл/не прошёл, обновить LearningPath уровень или отправить на повторение | todo | `apps/api/src/learning/barrier.service.ts` | B22.2-B22.5 |
-| B22.7 | Логика пересдачи: определить слабые темы → отправить на повторение конкретных дней → допуск к пересдаче | todo | `apps/api/src/learning/barrier.service.ts` | B22.6 |
+| B22.1 | GET /learning/barrier — получить испытание для текущего уровня: 6 вопросов "Вспомни" + 3 пары "Свяжи" + 2 ситуации "Примени" | done | `apps/api/src/learning/barrier.service.ts` | B20.8 |
+| B22.2 | POST /learning/barrier/recall — принять ответы на "Вспомни", оценить через AI, вернуть результаты по каждому | done | `apps/api/src/learning/barrier.service.ts` | B22.1 |
+| B22.3 | POST /learning/barrier/connect — принять объяснения связей, оценить через AI | done | `apps/api/src/learning/barrier.service.ts` | B22.1 |
+| B22.4 | POST /learning/barrier/apply — принять ответы на ситуации, оценить применение концептов через AI | done | `apps/api/src/learning/barrier.service.ts` | B22.1 |
+| B22.5 | POST /learning/barrier/defend — начать диалог с AI-наставником (оппонент), 3-4 раунда | done | `apps/api/src/learning/barrier.service.ts` | L24.2, L24.5 |
+| B22.6 | POST /learning/barrier/complete — подсчитать общий результат, прошёл/не прошёл, обновить LearningPath уровень или отправить на повторение | done | `apps/api/src/learning/barrier.service.ts` | B22.2-B22.5 |
+| B22.7 | Логика пересдачи: определить слабые темы → отправить на повторение конкретных дней → допуск к пересдаче | done | `apps/api/src/learning/barrier.service.ts` | B22.6 |
 
 ### Блок B23 — Граф знаний (API)
 

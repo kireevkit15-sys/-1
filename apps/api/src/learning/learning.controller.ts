@@ -16,17 +16,22 @@ import {
   ApiParam,
 } from '@nestjs/swagger';
 import { LearningService } from './learning.service';
+import { BarrierService } from './barrier.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { DetermineDto } from './dto/determine.dto';
 import { InteractDto } from './dto/interact.dto';
 import { ExplainDto } from './dto/explain.dto';
+import { BarrierRecallDto, BarrierConnectDto, BarrierApplyDto, BarrierDefendDto } from './dto/barrier.dto';
 
 @ApiTags('Learning')
 @ApiBearerAuth()
 @Controller('learning')
 @UseGuards(JwtAuthGuard)
 export class LearningController {
-  constructor(private readonly learningService: LearningService) {}
+  constructor(
+    private readonly learningService: LearningService,
+    private readonly barrierService: BarrierService,
+  ) {}
 
   @Post('determine')
   @ApiOperation({ summary: 'Initial determination — 5 situations to set start zone, pain point, style' })
@@ -97,5 +102,61 @@ export class LearningController {
     @Param('dayNumber', ParseIntPipe) dayNumber: number,
   ) {
     return this.learningService.completeDay(req.user.sub, dayNumber);
+  }
+
+  // ── Barrier endpoints (B22) ─────────────────────────────────────────
+
+  @Get('barrier')
+  @ApiOperation({ summary: 'Get or create barrier challenge for current level' })
+  async getBarrier(@Request() req: { user: { sub: string } }) {
+    return this.barrierService.getBarrier(req.user.sub);
+  }
+
+  @Post('barrier/recall')
+  @ApiOperation({ summary: 'Submit recall stage answers (6 short answers)' })
+  async submitRecall(
+    @Request() req: { user: { sub: string } },
+    @Body() dto: BarrierRecallDto,
+  ) {
+    return this.barrierService.submitRecall(req.user.sub, dto);
+  }
+
+  @Post('barrier/connect')
+  @ApiOperation({ summary: 'Submit connect stage — explain connections between concept pairs' })
+  async submitConnect(
+    @Request() req: { user: { sub: string } },
+    @Body() dto: BarrierConnectDto,
+  ) {
+    return this.barrierService.submitConnect(req.user.sub, dto);
+  }
+
+  @Post('barrier/apply')
+  @ApiOperation({ summary: 'Submit apply stage — apply concepts to new situations' })
+  async submitApply(
+    @Request() req: { user: { sub: string } },
+    @Body() dto: BarrierApplyDto,
+  ) {
+    return this.barrierService.submitApply(req.user.sub, dto);
+  }
+
+  @Post('barrier/defend')
+  @ApiOperation({ summary: 'Submit defend stage — debate with AI opponent (3-4 rounds)' })
+  async submitDefend(
+    @Request() req: { user: { sub: string } },
+    @Body() dto: BarrierDefendDto,
+  ) {
+    return this.barrierService.submitDefend(req.user.sub, dto);
+  }
+
+  @Post('barrier/complete')
+  @ApiOperation({ summary: 'Complete barrier — calculate total score, pass/fail, advance level' })
+  async completeBarrier(@Request() req: { user: { sub: string } }) {
+    return this.barrierService.completeBarrier(req.user.sub);
+  }
+
+  @Get('barrier/retake')
+  @ApiOperation({ summary: 'Get retake info — weak concepts, days to review' })
+  async getRetakeInfo(@Request() req: { user: { sub: string } }) {
+    return this.barrierService.getRetakeInfo(req.user.sub);
   }
 }
