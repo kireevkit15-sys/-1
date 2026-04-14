@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>РАЗУМ — Определение (F20)</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cinzel:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* наши цвета — база */
+    --bg: #050505;
+    --bg-subtle: #0A0A0C;
+    --surface: #111114;
+    --surface-light: #1A1A1F;
+    --surface-elevated: #222228;
+    --border: #1E1E22;
+    --text-primary: #E8DDD3;
+    --text-secondary: #87756A;
+    --text-muted: #56453A;
+    --accent: #CF9D7B;
+    --accent-red: #C0392B;
+
+    /* холодные акценты — только для экранов инициации/испытаний */
+    --cold-steel: #6B7D8C;
+    --cold-steel-dim: #3A4550;
+    --cold-blood: #8B2E2E;
+
+    /* типографическая иерархия */
+    --font-body: 'Inter', system-ui, sans-serif;        /* 90% интерфейса */
+    --font-ritual: 'Cinzel', serif;                     /* названия уровней, метки ритуала */
+    --font-verse: 'Cormorant Garamond', serif;          /* цитаты, эпиграфы, ситуации */
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { color-scheme: dark; }
+  body {
+    background: var(--bg);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    font-weight: 400;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    background-size: 256px 256px;
+  }
+  ::selection { background-color: rgba(107, 125, 140, 0.25); }
+
+  .wrap { max-width: 1200px; margin: 0 auto; padding: 48px 24px; }
+
+  /* заголовки страницы */
+  h1 {
+    font-family: var(--font-ritual);
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+  }
+  .sub {
+    font-family: var(--font-verse);
+    font-style: italic;
+    font-size: 18px;
+    color: var(--text-muted);
+    margin-bottom: 48px;
+  }
+  section { margin-bottom: 64px; }
+  section > h2 {
+    font-family: var(--font-ritual);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--cold-steel);
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* ======== ТИПОГРАФИЧЕСКАЯ ЛЕСТНИЦА ======== */
+  .type-demo { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .type-card {
+    padding: 24px;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    background: rgba(17, 17, 20, 0.6);
+  }
+  .type-card .tag {
+    font-family: var(--font-body);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--cold-steel);
+    margin-bottom: 12px;
+  }
+  .type-card .example { margin-bottom: 8px; }
+  .type-card .usage { font-size: 12px; color: var(--text-muted); font-style: italic; }
+  .type-inter { font-family: var(--font-body); font-size: 16px; color: var(--text-primary); font-weight: 400; }
+  .type-cinzel { font-family: var(--font-ritual); font-size: 20px; color: var(--text-primary); letter-spacing: 0.15em; font-weight: 500; text-transform: uppercase; }
+  .type-cormorant { font-family: var(--font-verse); font-size: 22px; color: var(--text-primary); font-weight: 400; line-height: 1.4; }
+  .type-cormorant-i { font-family: var(--font-verse); font-style: italic; font-size: 20px; color: var(--text-secondary); }
+
+  /* палитра */
+  .palette { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; }
+  .swatch {
+    aspect-ratio: 3/2;
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.05);
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    transition: transform 200ms ease;
+  }
+  .swatch:hover { transform: translateY(-2px); }
+  .swatch .name { font-family: var(--font-ritual); font-size: 10px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 4px; opacity: 0.95; }
+  .swatch .hex { font-family: 'SF Mono', Menlo, monospace; font-size: 11px; opacity: 0.6; }
+
+  /* glass-card — наш */
+  .glass-card {
+    background: rgba(17, 17, 20, 0.7);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 16px;
+    box-shadow:
+      0 8px 32px rgba(0, 0, 0, 0.4),
+      inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  }
+
+  /* карточка определения */
+  .demo { display: flex; gap: 32px; align-items: stretch; }
+  .situation-card {
+    flex: 1;
+    max-width: 560px;
+    padding: 48px 36px;
+    min-height: 560px;
+    display: flex;
+    flex-direction: column;
+  }
+  .progress-dots {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin-bottom: 36px;
+  }
+  .dot {
+    width: 28px;
+    height: 3px;
+    border-radius: 2px;
+    background: var(--surface-light);
+  }
+  .dot.passed { background: var(--cold-steel); }
+  .dot.active { background: var(--cold-blood); }
+
+  /* метка ситуации — Cinzel, ритуально */
+  .card-label {
+    font-family: var(--font-ritual);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--cold-steel);
+    margin-bottom: 32px;
+    text-align: center;
+  }
+  /* сама ситуация — Cormorant, как страница книги */
+  .scenario {
+    font-family: var(--font-verse);
+    font-size: 24px;
+    font-weight: 400;
+    line-height: 1.5;
+    color: var(--text-primary);
+    text-align: center;
+    margin-bottom: 12px;
+  }
+  .scenario-hint {
+    font-family: var(--font-verse);
+    font-style: italic;
+    font-size: 17px;
+    color: var(--text-secondary);
+    text-align: center;
+    margin-bottom: 40px;
+    flex-grow: 1;
+  }
+  /* варианты — Inter, рабочий UI */
+  .options { display: flex; flex-direction: column; gap: 10px; }
+  .option {
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--text-primary);
+    padding: 14px 18px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 200ms ease;
+    line-height: 1.45;
+    text-align: left;
+    background: rgba(26, 26, 31, 0.4);
+  }
+  .option:hover {
+    border-color: var(--cold-steel);
+    background: rgba(107, 125, 140, 0.08);
+    transform: translateX(2px);
+  }
+  .option:active {
+    border-color: var(--cold-blood);
+    background: rgba(139, 46, 46, 0.1);
+  }
+  .card-hint {
+    margin-top: 24px;
+    text-align: center;
+    font-family: var(--font-ritual);
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+  }
+
+  /* цитата */
+  .quote-break {
+    flex: 0 0 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 32px 16px;
+  }
+  .quote {
+    font-family: var(--font-verse);
+    font-style: italic;
+    font-size: 22px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    text-align: center;
+  }
+  .quote-author {
+    font-family: var(--font-ritual);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.3em;
+    color: var(--text-muted);
+    text-align: center;
+    margin-top: 20px;
+    text-transform: uppercase;
+  }
+
+  /* финал */
+  .final {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 64px 32px;
+    text-align: center;
+  }
+  .final-small {
+    font-family: var(--font-verse);
+    font-style: italic;
+    font-size: 16px;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+  }
+  .final-med {
+    font-family: var(--font-verse);
+    font-size: 20px;
+    color: var(--text-primary);
+    margin-bottom: 16px;
+  }
+  .level-name {
+    font-family: var(--font-ritual);
+    font-size: 36px;
+    font-weight: 600;
+    letter-spacing: 0.25em;
+    color: var(--cold-blood);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .final-closer {
+    font-family: var(--font-verse);
+    font-style: italic;
+    font-size: 15px;
+    color: var(--text-secondary);
+    margin-bottom: 48px;
+  }
+  .enter-btn {
+    font-family: var(--font-ritual);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.4em;
+    color: var(--text-primary);
+    background: transparent;
+    border: 1px solid var(--cold-steel);
+    border-radius: 12px;
+    padding: 14px 44px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: all 250ms ease;
+  }
+  .enter-btn:hover {
+    background: var(--cold-steel);
+    color: var(--bg);
+    letter-spacing: 0.55em;
+  }
+
+  /* сравнение */
+  .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .compare-label {
+    font-family: var(--font-ritual);
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+    text-align: center;
+  }
+  .compare-card { padding: 24px; }
+  .compare-card h3 { font-family: var(--font-body); font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+  .compare-card p { font-family: var(--font-body); font-size: 14px; color: var(--text-secondary); line-height: 1.5; }
+  .accent-chip {
+    display: inline-block;
+    font-family: var(--font-ritual);
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 6px;
+    margin-bottom: 12px;
+  }
+  .chip-warm { background: rgba(207, 157, 123, 0.12); color: var(--accent); border: 1px solid rgba(207, 157, 123, 0.25); }
+  .chip-cold { background: rgba(107, 125, 140, 0.12); color: var(--cold-steel); border: 1px solid rgba(107, 125, 140, 0.25); }
+
+  /* уровни (пример применения ритуальной типографики) */
+  .levels { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; }
+  .level-card {
+    padding: 24px 16px;
+    text-align: center;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: rgba(17, 17, 20, 0.5);
+    transition: all 250ms ease;
+  }
+  .level-card:hover { border-color: var(--cold-steel); transform: translateY(-2px); }
+  .level-card.current { border-color: var(--cold-blood); background: rgba(139, 46, 46, 0.05); }
+  .level-card .num {
+    font-family: var(--font-verse);
+    font-style: italic;
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+  .level-card .name {
+    font-family: var(--font-ritual);
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-primary);
+  }
+  .level-card.current .name { color: var(--cold-blood); }
+
+  .note { font-family: var(--font-body); font-size: 14px; color: var(--text-secondary); line-height: 1.75; max-width: 760px; }
+  .note strong { color: var(--text-primary); font-weight: 600; }
+  .note code { background: var(--surface-light); padding: 2px 8px; border-radius: 4px; font-size: 12px; font-family: 'SF Mono', Menlo, monospace; color: var(--accent); }
+
+  @media (max-width: 900px) {
+    .demo { flex-direction: column; }
+    .quote-break { flex: 0; padding: 16px 0; }
+    .situation-card { padding: 32px 20px; min-height: auto; }
+    .scenario { font-size: 20px; }
+    .compare, .type-demo { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>РАЗУМ · Определение пути</h1>
+  <div class="sub">Гибрид: наша основа + ритуальная типографика для моментов истины</div>
+
+  <section>
+    <h2>Принцип · три шрифта, три роли</h2>
+    <div class="type-demo">
+      <div class="type-card">
+        <div class="tag">Inter · основа · 90% интерфейса</div>
+        <div class="example type-inter">Проанализирую аргументы каждого: данные, методология, конфликты интересов.</div>
+        <div class="usage">варианты ответов, кнопки, UI, навигация, все «рабочие» тексты</div>
+      </div>
+      <div class="type-card">
+        <div class="tag">Cinzel · ритуал · редко, акцентно</div>
+        <div class="example type-cinzel">Испытание · Спящий · Войти</div>
+        <div class="usage">названия уровней, метки ритуальных экранов, кнопки входа в испытание</div>
+      </div>
+      <div class="type-card">
+        <div class="tag">Cormorant · стих · только для смысла</div>
+        <div class="example type-cormorant">Ты застрял на одной позиции три года. Зарплата не растёт.</div>
+        <div class="usage">сами ситуации, эпиграфы, тексты на финальных экранах</div>
+      </div>
+      <div class="type-card">
+        <div class="tag">Cormorant Italic · голос</div>
+        <div class="example type-cormorant-i">«Надо носить в себе хаос, чтобы родить танцующую звезду.»</div>
+        <div class="usage">цитаты философов, подсказки, мягкие комментарии системы</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Палитра · наша база + 2 холодных акцента</h2>
+    <div class="palette">
+      <div class="swatch" style="background:#050505"><div class="name">Background</div><div class="hex">#050505</div></div>
+      <div class="swatch" style="background:#111114"><div class="name">Surface</div><div class="hex">#111114</div></div>
+      <div class="swatch" style="background:#1A1A1F"><div class="name">Surface Light</div><div class="hex">#1A1A1F</div></div>
+      <div class="swatch" style="background:#CF9D7B;color:#050505"><div class="name">Медь</div><div class="hex">#CF9D7B</div></div>
+      <div class="swatch" style="background:#6B7D8C;color:#050505"><div class="name">Сталь</div><div class="hex">#6B7D8C</div></div>
+      <div class="swatch" style="background:#8B2E2E"><div class="name">Кровь</div><div class="hex">#8B2E2E</div></div>
+      <div class="swatch" style="background:#E8DDD3;color:#050505"><div class="name">Text</div><div class="hex">#E8DDD3</div></div>
+      <div class="swatch" style="background:#87756A;color:#050505"><div class="name">Text 2</div><div class="hex">#87756A</div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Как это сочетается с обычным приложением</h2>
+    <div class="compare">
+      <div>
+        <div class="compare-label">Обычный экран · медь · Inter</div>
+        <div class="glass-card compare-card">
+          <span class="accent-chip chip-warm">Стратегия</span>
+          <h3>Вопрос дня</h3>
+          <p>Обычные карточки приложения. Inter везде, медный акцент, rounded-2xl, glass-эффект.</p>
+        </div>
+      </div>
+      <div>
+        <div class="compare-label">Определение · сталь · Cinzel+Cormorant</div>
+        <div class="glass-card compare-card">
+          <span class="accent-chip chip-cold">Испытание</span>
+          <h3>Вопрос дня</h3>
+          <p>Та же форма, тот же glass, та же структура. Меняется акцент + ритуальные шрифты на заголовках.</p>
+        </div>
+      </div>
+    </div>
+    <div class="note" style="margin-top:16px">
+      Та же компонентная база (<code>glass-card</code>, <code>rounded-2xl</code>, наши тени и бордеры). Inter — скелет, Cinzel и Cormorant — наряд для особых случаев. Приложение остаётся одним целым.
+    </div>
+  </section>
+
+  <section>
+    <h2>Карточка ситуации · 2 из 5</h2>
+    <div class="demo">
+      <div class="glass-card situation-card">
+        <div class="progress-dots">
+          <span class="dot passed"></span>
+          <span class="dot active"></span>
+          <span class="dot"></span>
+          <span class="dot"></span>
+          <span class="dot"></span>
+        </div>
+        <div class="card-label">Информационный шум</div>
+        <div class="scenario">
+          Ты читаешь противоречивые советы от экспертов: один говорит инвестировать в крипту, другой — что это пузырь.
+        </div>
+        <div class="scenario-hint">Оба приводят убедительные аргументы.</div>
+        <div class="options">
+          <button class="option">Разберу аргументы каждого: какие данные, какая методология, какие конфликты интересов</button>
+          <button class="option">Посмотрю, кто из них показал лучший трек-рекорд предсказаний</button>
+          <button class="option">Подумаю: почему люди вообще доверяют «экспертам»?</button>
+          <button class="option">Вложу маленькую сумму и проверю на практике</button>
+        </div>
+        <div class="card-hint">Выбери своё</div>
+      </div>
+
+      <div class="quote-break">
+        <div class="quote">«Тот, кто сражается с чудовищами, должен следить, чтобы сам не стать чудовищем.»</div>
+        <div class="quote-author">Ф. Ницше</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Уровни пути · Cinzel в деле</h2>
+    <div class="levels">
+      <div class="level-card current">
+        <div class="num">I</div>
+        <div class="name">Спящий</div>
+      </div>
+      <div class="level-card">
+        <div class="num">II</div>
+        <div class="name">Пробуждённый</div>
+      </div>
+      <div class="level-card">
+        <div class="num">III</div>
+        <div class="name">Наблюдатель</div>
+      </div>
+      <div class="level-card">
+        <div class="num">IV</div>
+        <div class="name">Воин</div>
+      </div>
+      <div class="level-card">
+        <div class="num">V</div>
+        <div class="name">Стратег</div>
+      </div>
+      <div class="level-card">
+        <div class="num">VI</div>
+        <div class="name">Мастер</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Финал определения</h2>
+    <div class="glass-card">
+      <div class="final">
+        <div class="final-small">Ты назван.</div>
+        <div class="final-med">Твой уровень —</div>
+        <div class="level-name">Спящий</div>
+        <div class="final-closer">Пробуждение начинается.</div>
+        <button class="enter-btn">Войти</button>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Правила использования</h2>
+    <div class="note">
+      <p style="margin-bottom:14px"><strong>Inter</strong> — везде по умолчанию. UI, навигация, кнопки, варианты ответов, статистика, обычные заголовки, весь «рабочий» текст.</p>
+      <p style="margin-bottom:14px"><strong>Cinzel</strong> — только для <em>ритуальных акцентов</em>: названия уровней (Спящий, Воин, Мастер), метки экранов-инициаций («Испытание», «Определение»), кнопка «Войти» в барьере, имена рангов. Строго заглавными, с большим letter-spacing.</p>
+      <p style="margin-bottom:14px"><strong>Cormorant Garamond</strong> — для <em>смыслового текста</em>: сами ситуации в определении, эпиграфы, тексты на финальных экранах («Ты назван», «Пробуждение начинается»), мудрости-карточки в уроке дня (F22.9).</p>
+      <p style="margin-bottom:14px"><strong>Cormorant Italic</strong> — только для цитат философов и редких подсказок системы («Оба приводят убедительные аргументы»).</p>
+      <p><strong>Пропорция в обычных экранах:</strong> 95% Inter, 5% Cinzel (названия рангов). <strong>В определении/барьере:</strong> 40% Inter (варианты, кнопки), 40% Cormorant (ситуации, тексты), 20% Cinzel (метки, уровни).</p>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

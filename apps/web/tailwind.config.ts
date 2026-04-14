@@ -33,6 +33,16 @@ const config: Config = {
         "branch-erudition": "#A855F7",
         "branch-rhetoric": "#F97316",
         "branch-intuition": "#EC4899",
+
+        // Холодные акценты — только для ритуальных экранов (определение, барьер) — F20+
+        "cold-steel": "#6B7D8C",
+        "cold-steel-dim": "#3A4550",
+        "cold-blood": "#8B2E2E",
+      },
+      fontFamily: {
+        sans: ["var(--font-inter)", "system-ui", "sans-serif"],
+        ritual: ["var(--font-cinzel)", "serif"],
+        verse: ["var(--font-cormorant)", "serif"],
       },
       backgroundImage: {
         "metallic": "linear-gradient(135deg, #CF9D7B 0%, #B98D34 40%, #CF9D7B 60%, #E8C89E 100%)",
@@ -49,6 +59,9 @@ const config: Config = {
         "neon-rhetoric": "0 0 20px rgba(249,115,22,0.3), 0 0 60px rgba(249,115,22,0.1)",
         "neon-intuition": "0 0 20px rgba(236,72,153,0.3), 0 0 60px rgba(236,72,153,0.1)",
         "glass": "0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05)",
+        "neon-steel": "0 0 20px rgba(107,125,140,0.4), 0 0 50px rgba(107,125,140,0.15)",
+        "neon-blood": "0 0 24px rgba(139,46,46,0.55), 0 0 60px rgba(139,46,46,0.2)",
+        "neon-steel-inset": "inset 0 0 20px rgba(107,125,140,0.15), 0 0 30px rgba(107,125,140,0.25)",
       },
       keyframes: {
         "shake": {
@@ -94,6 +107,23 @@ const config: Config = {
           "40%": { opacity: "1" },
           "100%": { opacity: "0", transform: "scale(2.5)" },
         },
+        "blood-pulse": {
+          "0%, 100%": { boxShadow: "0 0 8px rgba(139,46,46,0.4), 0 0 20px rgba(139,46,46,0.1)", opacity: "0.85" },
+          "50%": { boxShadow: "0 0 20px rgba(139,46,46,0.7), 0 0 45px rgba(139,46,46,0.25)", opacity: "1" },
+        },
+        "steel-shimmer": {
+          "0%, 100%": { backgroundPosition: "0% 50%" },
+          "50%": { backgroundPosition: "100% 50%" },
+        },
+        "aurora-drift": {
+          "0%, 100%": { transform: "translate(0%, 0%) scale(1)", opacity: "0.35" },
+          "33%": { transform: "translate(10%, -8%) scale(1.1)", opacity: "0.5" },
+          "66%": { transform: "translate(-8%, 6%) scale(0.95)", opacity: "0.4" },
+        },
+        "text-flicker": {
+          "0%, 100%": { textShadow: "0 0 12px rgba(139,46,46,0.5), 0 0 28px rgba(139,46,46,0.25)" },
+          "50%": { textShadow: "0 0 22px rgba(139,46,46,0.8), 0 0 55px rgba(139,46,46,0.4)" },
+        },
       },
       animation: {
         "shake": "shake 0.5s ease-in-out",
@@ -106,6 +136,10 @@ const config: Config = {
         "correct-glow": "correct-glow 1.5s ease-in-out infinite",
         "slide-up": "slide-up 0.4s ease-out forwards",
         "ripple-out": "ripple-out 0.8s ease-out forwards",
+        "blood-pulse": "blood-pulse 2.2s ease-in-out infinite",
+        "steel-shimmer": "steel-shimmer 4s ease-in-out infinite",
+        "aurora-drift": "aurora-drift 18s ease-in-out infinite",
+        "text-flicker": "text-flicker 3s ease-in-out infinite",
       },
     },
   },
