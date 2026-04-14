@@ -111,3 +111,51 @@ export function determine(
     accessToken,
   );
 }
+
+// ── Карта знаний (F25) ──────────────────────────────────────────────
+
+export type BranchKey =
+  | "STRATEGY"
+  | "LOGIC"
+  | "ERUDITION"
+  | "RHETORIC"
+  | "INTUITION";
+
+export type DifficultyKey = "BRONZE" | "SILVER" | "GOLD";
+
+export interface ConceptMastery {
+  id: string;
+  slug: string;
+  nameRu: string;
+  branch: BranchKey;
+  category: string;
+  difficulty: DifficultyKey;
+  mastery: number; // 0..1
+  bloomReached: number; // 0..6 (таксономия Блума)
+  lastTestedAt: string | null;
+}
+
+export interface BranchStats {
+  total: number;
+  mastered: number;
+  avgMastery: number;
+}
+
+export interface MasteryMapResponse {
+  map: ConceptMastery[];
+  totalConcepts: number;
+  masteredCount: number;
+  partialCount: number;
+  unlearnedCount: number;
+  branchStats: Partial<Record<BranchKey, BranchStats>>;
+}
+
+export function getMasteryMap(
+  accessToken: string | null,
+): Promise<MasteryMapResponse> {
+  return request<MasteryMapResponse>(
+    "/learning/mastery",
+    { method: "GET" },
+    accessToken,
+  );
+}
