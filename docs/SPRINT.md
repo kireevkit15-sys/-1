@@ -688,15 +688,15 @@
 
 | # | Задача | Статус | Файлы | Блокер |
 |---|--------|--------|-------|--------|
-| B21.1 | LearningModule + LearningController + LearningService (NestJS модуль) | todo | `apps/api/src/learning/` | B20.8 |
-| B21.2 | POST /learning/determine — принять 5 ответов, вернуть результат определения (стартовая зона, болевая точка, стиль) | todo | `apps/api/src/learning/learning.controller.ts` | B21.1 |
-| B21.3 | POST /learning/start — создать LearningPath, построить персональный маршрут (вызвать path-builder) | todo | `apps/api/src/learning/learning.controller.ts` | B21.1, L22.2 |
-| B21.4 | GET /learning/today — вернуть карточки сегодняшнего дня (основная нить) | todo | `apps/api/src/learning/learning.controller.ts` | B21.3 |
-| B21.5 | GET /learning/status — текущий уровень, день, прогресс, название уровня | todo | `apps/api/src/learning/learning.controller.ts` | B21.1 |
-| B21.6 | POST /learning/interact — взаимодействие с карточкой (просмотр, ответ, время на карточке, нажатие "Глубже") | todo | `apps/api/src/learning/learning.controller.ts` | B21.1 |
-| B21.7 | POST /learning/explain — отправить ответ "Своими словами" → вызвать AI grading → вернуть оценку | todo | `apps/api/src/learning/learning.controller.ts` | L24.1, L24.4 |
-| B21.8 | GET /learning/depth/:conceptId — вернуть слои глубины для концепта (наука, книги, философия, противоречия, связи) | todo | `apps/api/src/learning/learning.controller.ts` | B20.7 |
-| B21.9 | POST /learning/day/:dayNumber/complete — завершить день, обновить UserConceptMastery, проверить готовность к барьеру | todo | `apps/api/src/learning/learning.controller.ts` | B21.1 |
+| B21.1 | LearningModule + LearningController + LearningService (NestJS модуль) | done | `apps/api/src/learning/` | B20.8 |
+| B21.2 | POST /learning/determine — принять 5 ответов, вернуть результат определения (стартовая зона, болевая точка, стиль) | done | `apps/api/src/learning/learning.controller.ts` | B21.1 |
+| B21.3 | POST /learning/start — создать LearningPath, построить персональный маршрут (вызвать path-builder) | done | `apps/api/src/learning/learning.controller.ts` | B21.1, L22.2 |
+| B21.4 | GET /learning/today — вернуть карточки сегодняшнего дня (основная нить) | done | `apps/api/src/learning/learning.controller.ts` | B21.3 |
+| B21.5 | GET /learning/status — текущий уровень, день, прогресс, название уровня | done | `apps/api/src/learning/learning.controller.ts` | B21.1 |
+| B21.6 | POST /learning/interact — взаимодействие с карточкой (просмотр, ответ, время на карточке, нажатие "Глубже") | done | `apps/api/src/learning/learning.controller.ts` | B21.1 |
+| B21.7 | POST /learning/explain — отправить ответ "Своими словами" → вызвать AI grading → вернуть оценку | done | `apps/api/src/learning/learning.controller.ts` | L24.1, L24.4 |
+| B21.8 | GET /learning/depth/:conceptId — вернуть слои глубины для концепта (наука, книги, философия, противоречия, связи) | done | `apps/api/src/learning/learning.controller.ts` | B20.7 |
+| B21.9 | POST /learning/day/:dayNumber/complete — завершить день, обновить UserConceptMastery, проверить готовность к барьеру | done | `apps/api/src/learning/learning.controller.ts` | B21.1 |
 
 ### Блок B22 — Барьер-испытание (API)
 

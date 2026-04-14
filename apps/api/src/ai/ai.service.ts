@@ -141,6 +141,20 @@ export class AiService {
   }
 
   /**
+   * Public chat method for arbitrary AI calls (learning grading, barrier challenges, etc.)
+   */
+  async chatCompletion(
+    messages: { role: 'system' | 'user' | 'assistant'; content: string }[],
+    options: { userId?: string; operation?: string; maxTokens?: number } = {},
+  ): Promise<string> {
+    return this.chat(messages, {
+      userId: options.userId,
+      operation: options.operation ?? 'chat_completion',
+      maxTokens: options.maxTokens ?? 1024,
+    });
+  }
+
+  /**
    * B17.4 — Record token usage to DB.
    */
   private async trackTokenUsage(params: {

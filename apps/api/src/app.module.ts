@@ -30,6 +30,7 @@ import { TournamentModule } from './tournament/tournament.module';
 import { BanModule } from './ban/ban.module';
 import { WebhookModule } from './webhook/webhook.module';
 import { CampaignModule } from './campaign/campaign.module';
+import { LearningModule } from './learning/learning.module';
 import { V2Module } from './v2/v2.module';
 import { FeedModule } from './feed/feed.module';
 import { AppController } from './app.controller';
@@ -111,6 +112,7 @@ import { AppController } from './app.controller';
     BanModule,
     WebhookModule,
     CampaignModule,
+    LearningModule,
     FeedModule,
     V2Module,
     RouterModule.register([
