@@ -111,6 +111,87 @@
 
 ## Бонди (Frontend + Дизайн)
 
+### 2026-04-14/15 — Сессия: Система обучения — F20, F21, F23, F25, F26, F27, F28
+
+**Время:** ~8 часов
+**Статус:** Завершена
+
+**Что сделано:**
+- F20 (4) Определение пути: холодный пролог, 5 ситуаций, Cinzel→Philosopher (кириллица), мок-флоу без бэка
+- F21 (5) Мой путь: вертикальная линия 6 уровней (Спящий→Мастер), иконки в едином геометрическом стиле, шиммер-флик на активном уровне
+- F23 (7) «Глубже» слои: инлайн-вставка 6 карточек (Alternative, Science, Book, Philosophy, Contradiction, Connections), без дублей
+- F25 (4) Карта знаний: сетка концептов с 4 уровнями усвоения, чипы по 5 веткам, поиск, bottom-sheet с деталями
+- F26 (4) TutorSheet: bottom-sheet чат с наставником, 5 сократических реплик мока, Cormorant/Inter для голосов
+- F27 (3) Интеграция с батлами: BottomNav/SideNav → /learning, BattleUnlockCard, QuestionSourceIndicator в battle screen
+- F28 (9) Тестирование: 25 E2E + 15 visual baselines + 10 a11y. 55/55 passed за ~4 минуты
+
+**Рефакторинг по критическому аудиту:**
+- Заменил Cinzel на Philosopher (Cinzel не поддерживает кириллицу — ритуальные метки ломались)
+- Создан типизированный API-клиент `lib/api/learning.ts` с LearningApiError (network/auth/server/client/parse)
+- Демо-режим теперь срабатывает только на `network`, не на любых ошибках
+- Вынесены общие модули: RitualShell, LevelIcon, lib/learning/levels.ts
+- Tailwind: холодные цвета (cold-steel, cold-blood), анимации (blood-pulse, shimmer-flicker, aurora-drift, breathe), шрифты (font-ritual, font-verse)
+
+**Полировка атмосферы по фидбеку пользователя:**
+- ExplanationCard: тёплое свечение над заголовком, медный корешок слева, glow за иконкой, драматичный заголовок, кнопка «Спуститься глубже» с shimmer при hover (без reveal-анимаций — были пустые слайды из-за JIT Tailwind)
+- ThreadCard: путь солнца — рассвет (вчера) / зенит с 8 лучами (сегодня) / закат (завтра), линия горизонта градиентом
+- Стилизованный медный scrollbar для .learning-feed
+- Убран пустой промежуток сверху карточек (items-start вместо items-center)
+
+**Файлы созданы:**
+- `apps/web/app/(main)/learning/page.tsx`
+- `apps/web/app/(main)/learning/determination/page.tsx`
+- `apps/web/app/(main)/learning/map/page.tsx`
+- `apps/web/components/learning/RitualShell.tsx`
+- `apps/web/components/learning/LevelIcon.tsx`
+- `apps/web/components/learning/TutorSheet.tsx`
+- `apps/web/components/learning/BattleUnlockCard.tsx`
+- `apps/web/components/learning/AlternativeCard.tsx`
+- `apps/web/components/learning/ScienceCard.tsx`
+- `apps/web/components/learning/BookCard.tsx`
+- `apps/web/components/learning/PhilosophyCard.tsx`
+- `apps/web/components/learning/ContradictionCard.tsx`
+- `apps/web/components/learning/ConnectionsCard.tsx`
+- `apps/web/components/battle/QuestionSourceIndicator.tsx`
+- `apps/web/lib/api/learning.ts`
+- `apps/web/lib/learning/levels.ts`
+- `apps/web/lib/learning/determination-situations.json`
+- `apps/web/tests/e2e/learning-{determination,depth,map,tutor,day,barrier,barrier-fail}.spec.ts` (7)
+- `apps/web/tests/visual/learning-screenshots.spec.ts` + 15 baseline PNG
+- `apps/web/tests/a11y/learning-a11y.spec.ts`
+- `apps/web/public/preview/cold-palette.html` (превью палитры)
+
+**Файлы изменены:**
+- `apps/web/app/layout.tsx` — Philosopher + Cormorant Garamond
+- `apps/web/tailwind.config.ts` — холодные цвета, 4 новых анимации, font-ritual/verse
+- `apps/web/app/globals.css` — медный scrollbar
+- `apps/web/components/layout/BottomNav.tsx` + `SideNav.tsx` — /learning
+- `apps/web/components/learning/ExplanationCard.tsx` + `ThreadCard.tsx` — атмосферная полировка
+- `apps/web/app/(main)/learning/day/page.tsx` — F23.1 инлайн-вставка, items-start, scrollbar
+- `apps/web/app/(main)/battle/[id]/page.tsx` — QuestionSourceIndicator
+
+**Задачи из SPRINT.md закрыты:** F20.1-4, F21.1-5, F23.1-7, F25.1-4, F26.1-4, F27.1-3, F28.1-9 (36 задач)
+
+**Коммиты:**
+- `8bb042e` — feat(learning): F20 determination flow
+- `58a526f` — feat(learning): F21 Мой путь + демо-режим
+- `f715b0b` — feat(learning): F27 интеграция с батлами
+- `fc1a3a7` — refactor(learning): fix critical issues (Cyrillic fonts, error handling)
+- `2a22d9c` — feat(learning): F25 Карта знаний
+- `1296c3b` — feat(learning): F26 AI-наставник
+- `767b6af` — feat(learning): F23 «Глубже» + полировка атмосферы
+- `2064925` — test(learning): F28 полный тестовый пул
+
+**Бэклог (улучшения):**
+- data-testid вместо Tailwind arbitrary selectors в тестах
+- page.route() mocks вместо демо-данных
+- Mobile Chrome прогон тестов
+- Интегрировать BattleUnlockCard в реальный флоу после F24
+- Заменить мок в TutorSheet на реальный /ai/tutor/chat когда появится
+- Вынести FAILURE_QUOTES в content/processed/failure-quotes.json
+
+---
+
 ### 2026-04-14 — Сессия: F24 — барьер-испытание (параллельная сборка)
 
 **Время:** ~0.5 часа
