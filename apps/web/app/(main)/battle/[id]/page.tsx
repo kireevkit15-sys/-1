@@ -9,6 +9,7 @@ import type { BattleState } from "@razum/shared";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import DifficultyPicker from "@/components/battle/DifficultyPicker";
+import QuestionSourceIndicator from "@/components/battle/QuestionSourceIndicator";
 
 const difficultyLabels: Record<string, string> = {
   [Difficulty.BRONZE]: "Бронза",
@@ -937,6 +938,7 @@ export default function BattlePage() {
     return (
       <div className="px-4 pt-8 pb-24 space-y-6">
         <ScoreBar battle={battle} />
+        <QuestionSourceIndicator />
         {disconnectBanner}
 
         <div className="flex items-center justify-between">

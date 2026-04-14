@@ -13,6 +13,8 @@ interface EvidenceCardProps {
   source: string;
   /** Пояснение факта в 1–3 предложения. */
   description: string;
+  /** Если задан — показать кнопку «Глубже» внизу карточки. */
+  onDeeper?: () => void;
 }
 
 const DEFAULT_BRANCH_COLOR = "#CF9D7B";
@@ -22,6 +24,7 @@ export function EvidenceCard({
   statistic,
   source,
   description,
+  onDeeper,
 }: EvidenceCardProps) {
   return (
     <article
@@ -70,6 +73,18 @@ export function EvidenceCard({
       <p className="font-verse text-base sm:text-lg leading-relaxed text-text-primary">
         {description}
       </p>
+
+      {onDeeper && (
+        <div className="mt-5 sm:mt-6 flex justify-start">
+          <button
+            type="button"
+            onClick={onDeeper}
+            className="font-ritual text-xs tracking-[0.3em] uppercase text-text-secondary border-b border-border pb-0.5 transition-colors duration-200 hover:text-accent hover:border-accent"
+          >
+            Глубже
+          </button>
+        </div>
+      )}
     </article>
   );
 }

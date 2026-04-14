@@ -23,6 +23,16 @@ const mainTabs = [
     ),
   },
   {
+    href: "/learning",
+    label: "Путь",
+    icon: (
+      <svg className="w-[22px] h-[22px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="12" r="9" />
+        <path d="M12 5 L19 18 L5 18 Z" />
+      </svg>
+    ),
+  },
+  {
     href: "/battle/new",
     label: "Баттл",
     icon: (
