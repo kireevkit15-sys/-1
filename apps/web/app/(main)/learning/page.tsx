@@ -1,179 +1,145 @@
 "use client";
 
 /**
- * F21 — Экран «Мой путь»
- * Минималистичный хаб системы обучения: текущий уровень, текущий день,
- * одна кнопка «Продолжить» + вертикальная линия пути с 6 уровнями.
- * Использует ритуальную типографику (Cinzel/Cormorant) и холодные акценты.
+ * F21 — Экран «Мой путь».
+ * Хаб системы обучения: текущий уровень, день, кнопка «Продолжить»
+ * + вертикальная линия пути с 6 уровнями.
  */
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/hooks/useAuth";
+import RitualShell from "@/components/learning/RitualShell";
+import LevelIcon from "@/components/learning/LevelIcon";
+import { LEVELS, getLevelName } from "@/lib/learning/levels";
+import {
+  getStatus,
+  LearningApiError,
+  type LearningStatus,
+} from "@/lib/api/learning";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
-
-type LevelKey =
-  | "SLEEPING"
-  | "AWAKENING"
-  | "OBSERVER"
-  | "WARRIOR"
-  | "STRATEGIST"
-  | "MASTER";
-
-interface LearningStatus {
-  hasPath: boolean;
-  pathId?: string;
-  currentLevel?: LevelKey;
-  currentLevelName?: string;
-  currentDay?: number;
-  completedDays?: number;
-  totalDays?: number;
-  message?: string;
-}
-
-const LEVELS: Array<{ key: LevelKey; name: string; index: number }> = [
-  { key: "SLEEPING", name: "Спящий", index: 1 },
-  { key: "AWAKENING", name: "Пробуждённый", index: 2 },
-  { key: "OBSERVER", name: "Наблюдатель", index: 3 },
-  { key: "WARRIOR", name: "Воин", index: 4 },
-  { key: "STRATEGIST", name: "Стратег", index: 5 },
-  { key: "MASTER", name: "Мастер", index: 6 },
-];
-
-// Римские цифры для подписей
-const ROMAN = ["I", "II", "III", "IV", "V", "VI"];
-
-// ── Иконки уровней — единый геометрический стиль ─────────────────────
-// Концепция: от тёмного спящего круга через пробуждение к полной мандале.
-// Все на круге 10px радиуса, stroke 1.25, чтобы смотрелись как серия.
-function LevelIcon({ level, className = "" }: { level: LevelKey; className?: string }) {
-  const props = {
-    className,
-    width: 24,
-    height: 24,
-    viewBox: "0 0 24 24",
-    fill: "none",
-    stroke: "currentColor",
-    strokeWidth: 1.25,
-    strokeLinecap: "round" as const,
-    strokeLinejoin: "round" as const,
-  };
-  switch (level) {
-    case "SLEEPING":
-      // замкнутый круг — мир в себе, непробуждённый
-      return (
-        <svg {...props}>
-          <circle cx="12" cy="12" r="9" opacity="0.6" />
-          <circle cx="12" cy="12" r="2" fill="currentColor" opacity="0.4" />
-        </svg>
-      );
-    case "AWAKENING":
-      // круг с разрывом сверху — первый свет
-      return (
-        <svg {...props}>
-          <path d="M3 12a9 9 0 1 0 9-9" />
-          <circle cx="12" cy="12" r="2.5" />
-        </svg>
-      );
-    case "OBSERVER":
-      // круг с линиями-лучами — внимание
-      return (
-        <svg {...props}>
-          <circle cx="12" cy="12" r="6.5" />
-          <circle cx="12" cy="12" r="1.8" fill="currentColor" />
-          <path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
-        </svg>
-      );
-    case "WARRIOR":
-      // круг, рассечённый вертикалью — воля, клинок
-      return (
-        <svg {...props}>
-          <circle cx="12" cy="12" r="9" />
-          <path d="M12 2v20" strokeWidth="1.8" />
-        </svg>
-      );
-    case "STRATEGIST":
-      // круг с треугольником внутри — разум над хаосом
-      return (
-        <svg {...props}>
-          <circle cx="12" cy="12" r="9" />
-          <path d="M12 5 L19 18 L5 18 Z" />
-        </svg>
-      );
-    case "MASTER":
-      // мандала — круг, два треугольника, звезда Давида
-      return (
-        <svg {...props}>
-          <circle cx="12" cy="12" r="9" />
-          <path d="M12 3 L20 17 L4 17 Z" />
-          <path d="M12 21 L4 7 L20 7 Z" />
-        </svg>
-      );
-  }
-}
+type LoadState =
+  | { phase: "loading" }
+  | { phase: "ready"; status: LearningStatus; isDemo: boolean }
+  | { phase: "auth-required" }
+  | { phase: "error"; message: string };
 
 export default function LearningHubPage() {
   const router = useRouter();
   const { accessToken, isLoading: authLoading } = useAuth();
-  const [status, setStatus] = useState<LearningStatus | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [isDemo, setIsDemo] = useState(false);
+  const [state, setState] = useState<LoadState>({ phase: "loading" });
 
   useEffect(() => {
     if (authLoading) return;
     let cancelled = false;
 
-    async function load() {
+    (async () => {
       try {
-        const res = await fetch(`${API_BASE}/learning/status`, {
-          headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : {},
-        });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const data = (await res.json()) as LearningStatus;
-        if (!cancelled) setStatus(data);
-      } catch {
-        // API недоступен — демо-режим: показываем пример UI
-        if (!cancelled) {
-          setIsDemo(true);
-          setStatus({
-            hasPath: true,
-            pathId: "demo",
-            currentLevel: "OBSERVER",
-            currentLevelName: "Наблюдатель",
-            currentDay: 14,
-            completedDays: 13,
-            totalDays: 42,
-          });
+        const status = await getStatus(accessToken);
+        if (!cancelled) setState({ phase: "ready", status, isDemo: false });
+      } catch (e) {
+        if (cancelled) return;
+        if (e instanceof LearningApiError) {
+          if (e.kind === "network") {
+            // Бэкенд недоступен — демо-режим с мок-данными
+            setState({
+              phase: "ready",
+              isDemo: true,
+              status: {
+                hasPath: true,
+                pathId: "demo",
+                currentLevel: "OBSERVER",
+                currentLevelName: "Наблюдатель",
+                currentDay: 14,
+                completedDays: 13,
+                totalDays: 42,
+              },
+            });
+            return;
+          }
+          if (e.kind === "auth") {
+            setState({ phase: "auth-required" });
+            return;
+          }
+          setState({ phase: "error", message: e.message });
+          return;
         }
-      } finally {
-        if (!cancelled) setLoading(false);
+        setState({
+          phase: "error",
+          message: e instanceof Error ? e.message : "Неизвестная ошибка",
+        });
       }
-    }
-    load();
+    })();
+
     return () => {
       cancelled = true;
     };
   }, [accessToken, authLoading]);
 
   // ── LOADING ────────────────────────────────────────────────────────
-  if (loading || authLoading) {
+  if (authLoading || state.phase === "loading") {
     return (
-      <Shell>
+      <RitualShell>
         <div className="max-w-md mx-auto text-center py-24 px-6">
           <div className="font-ritual text-[10px] tracking-[0.4em] uppercase text-cold-steel animate-pulse">
             Загрузка пути
           </div>
         </div>
-      </Shell>
+      </RitualShell>
     );
   }
 
-  // ── NO PATH — нужно пройти определение ─────────────────────────────
-  if (!status?.hasPath) {
+  // ── AUTH REQUIRED ──────────────────────────────────────────────────
+  if (state.phase === "auth-required") {
     return (
-      <Shell>
+      <RitualShell>
+        <div className="max-w-md mx-auto text-center py-24 px-6">
+          <div className="font-ritual text-[10px] tracking-[0.4em] uppercase text-cold-steel mb-6">
+            — Требуется вход —
+          </div>
+          <p className="font-verse italic text-base text-text-secondary mb-8">
+            Чтобы увидеть свой путь, нужно войти.
+          </p>
+          <Link
+            href="/login"
+            className="inline-block font-ritual text-xs tracking-[0.3em] uppercase text-text-primary border border-cold-steel rounded-xl px-8 py-3 shadow-neon-steel hover:bg-cold-steel hover:text-background transition-all duration-300"
+          >
+            Войти
+          </Link>
+        </div>
+      </RitualShell>
+    );
+  }
+
+  // ── SERVER / CLIENT ERROR ──────────────────────────────────────────
+  if (state.phase === "error") {
+    return (
+      <RitualShell>
+        <div className="max-w-md mx-auto text-center py-24 px-6">
+          <div className="font-ritual text-[10px] tracking-[0.4em] uppercase text-cold-blood mb-4">
+            — Ошибка сервера —
+          </div>
+          <p className="font-verse italic text-sm text-text-secondary mb-8 opacity-70">
+            {state.message}
+          </p>
+          <button
+            onClick={() => window.location.reload()}
+            className="font-ritual text-xs tracking-[0.3em] uppercase text-text-primary border border-cold-steel rounded-xl px-8 py-3 shadow-neon-steel hover:bg-cold-steel hover:text-background transition-all duration-300"
+          >
+            Повторить
+          </button>
+        </div>
+      </RitualShell>
+    );
+  }
+
+  const { status, isDemo } = state;
+
+  // ── NO PATH ────────────────────────────────────────────────────────
+  if (!status.hasPath) {
+    return (
+      <RitualShell>
         <div className="max-w-lg mx-auto text-center py-20 sm:py-28 px-6 animate-[slide-up_0.5s_ease-out]">
           <div className="font-ritual text-[10px] sm:text-xs tracking-[0.4em] uppercase text-cold-steel mb-8">
             — Путь не начат —
@@ -182,7 +148,7 @@ export default function LearningHubPage() {
             Твой путь ещё не определён.
           </h1>
           <p className="font-verse italic text-base sm:text-lg text-text-secondary mb-14">
-            {status?.message ?? "Пройди определение, чтобы начать."}
+            {status.message ?? "Пройди определение, чтобы начать."}
           </p>
           <Link
             href="/learning/determination"
@@ -191,23 +157,20 @@ export default function LearningHubPage() {
             Начать определение
           </Link>
         </div>
-      </Shell>
+      </RitualShell>
     );
   }
 
   // ── PATH EXISTS ────────────────────────────────────────────────────
-  const currentLevelKey = (status.currentLevel ?? "SLEEPING") as LevelKey;
-  const currentIndex = LEVELS.findIndex((l) => l.key === currentLevelKey);
-  const currentName =
-    status.currentLevelName ??
-    LEVELS[currentIndex]?.name ??
-    "Спящий";
+  const currentKey = status.currentLevel ?? "SLEEPING";
+  const currentIndex = LEVELS.findIndex((l) => l.key === currentKey);
+  const currentName = status.currentLevelName ?? getLevelName(currentKey);
   const currentDay = status.currentDay ?? 1;
   const completedDays = status.completedDays ?? 0;
   const totalDays = status.totalDays ?? 0;
 
   return (
-    <Shell>
+    <RitualShell>
       {isDemo && (
         <div className="relative z-20 max-w-2xl mx-auto mt-6 px-5 sm:px-6">
           <div className="font-ritual text-[10px] tracking-[0.35em] uppercase text-center text-text-muted border border-border rounded-lg py-2 px-4 bg-surface/60">
@@ -216,7 +179,6 @@ export default function LearningHubPage() {
         </div>
       )}
       <div className="max-w-2xl mx-auto py-12 sm:py-20 px-5 sm:px-6">
-        {/* Заголовок — текущий уровень */}
         <div className="text-center mb-14 sm:mb-20 animate-[slide-up_0.5s_ease-out]">
           <div className="font-ritual text-[10px] sm:text-xs tracking-[0.4em] uppercase text-cold-steel mb-6">
             — Мой путь —
@@ -225,7 +187,7 @@ export default function LearningHubPage() {
             Твой уровень —
           </p>
           <h1
-            className="inline-block font-ritual text-[28px] sm:text-[44px] font-semibold tracking-[0.18em] pl-[0.18em] uppercase mb-8 animate-text-flicker"
+            className="inline-block font-ritual text-[28px] sm:text-[44px] font-bold tracking-[0.18em] pl-[0.18em] uppercase mb-8 animate-shimmer-flicker"
             style={{
               backgroundImage:
                 "linear-gradient(110deg, #8B2E2E 0%, #C0392B 25%, #E8DDD3 50%, #C0392B 75%, #8B2E2E 100%)",
@@ -233,8 +195,6 @@ export default function LearningHubPage() {
               WebkitBackgroundClip: "text",
               backgroundClip: "text",
               WebkitTextFillColor: "transparent",
-              animation:
-                "steel-shimmer 4s ease-in-out infinite, text-flicker 3s ease-in-out infinite",
             }}
           >
             {currentName}
@@ -246,7 +206,6 @@ export default function LearningHubPage() {
             )}
           </p>
 
-          {/* Одна кнопка — «Продолжить» */}
           <button
             onClick={() => router.push("/learning/day")}
             className="mt-10 font-ritual text-xs sm:text-sm tracking-[0.4em] uppercase text-text-primary border border-cold-steel rounded-xl px-12 py-4 shadow-neon-steel hover:bg-cold-steel hover:text-background hover:tracking-[0.55em] hover:shadow-[0_0_30px_rgba(107,125,140,0.8),0_0_80px_rgba(107,125,140,0.25)] transition-all duration-300"
@@ -255,27 +214,23 @@ export default function LearningHubPage() {
           </button>
         </div>
 
-        {/* Вертикальная линия пути */}
         <PathLine currentIndex={currentIndex >= 0 ? currentIndex : 0} />
 
-        {/* Мелкая статистика снизу */}
         {totalDays > 0 && (
           <div className="mt-16 text-center font-ritual text-[10px] tracking-[0.35em] uppercase text-text-muted">
             Пройдено дней · {completedDays} / {totalDays}
           </div>
         )}
       </div>
-    </Shell>
+    </RitualShell>
   );
 }
 
-// ── Вертикальная линия пути ──────────────────────────────────────────
 function PathLine({ currentIndex }: { currentIndex: number }) {
-  // размер узла: 44 mobile / 52 desktop; центр линии = половина размера
   return (
     <div className="relative">
-      {/* вертикальная линия — идёт через центр иконок */}
       <div
+        aria-hidden
         className="absolute top-6 bottom-6 w-px left-[22px] sm:left-[26px]"
         style={{
           background:
@@ -290,7 +245,6 @@ function PathLine({ currentIndex }: { currentIndex: number }) {
 
           return (
             <li key={level.key} className="flex items-center gap-5 sm:gap-7">
-              {/* Узел — круг с иконкой */}
               <div
                 className={`relative z-10 shrink-0 w-11 h-11 sm:w-[52px] sm:h-[52px] rounded-full flex items-center justify-center border transition-all duration-500 ${
                   state === "passed"
@@ -303,14 +257,13 @@ function PathLine({ currentIndex }: { currentIndex: number }) {
                 <LevelIcon level={level.key} className="w-5 h-5 sm:w-6 sm:h-6" />
               </div>
 
-              {/* Текст — римская цифра + название */}
               <div className="flex-1 min-w-0">
                 <div
                   className={`font-verse italic text-xs sm:text-sm mb-0.5 leading-none ${
                     state === "future" ? "text-text-muted/50" : "text-text-muted"
                   }`}
                 >
-                  {ROMAN[i]}
+                  {level.roman}
                 </div>
                 <div
                   className={`font-ritual text-sm sm:text-base tracking-[0.18em] uppercase transition-colors duration-300 ${
@@ -328,37 +281,6 @@ function PathLine({ currentIndex }: { currentIndex: number }) {
           );
         })}
       </ol>
-    </div>
-  );
-}
-
-// ── Оболочка с aurora-фоном ──────────────────────────────────────────
-function Shell({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="min-h-screen bg-background relative overflow-hidden">
-      <div
-        className="pointer-events-none fixed -top-40 -left-40 w-[520px] h-[520px] rounded-full blur-[120px] z-0 animate-aurora-drift"
-        style={{
-          background:
-            "radial-gradient(circle, rgba(107,125,140,0.32) 0%, rgba(107,125,140,0) 70%)",
-        }}
-      />
-      <div
-        className="pointer-events-none fixed -bottom-40 -right-32 w-[560px] h-[560px] rounded-full blur-[140px] z-0 animate-aurora-drift"
-        style={{
-          background:
-            "radial-gradient(circle, rgba(139,46,46,0.22) 0%, rgba(139,46,46,0) 70%)",
-          animationDelay: "-9s",
-        }}
-      />
-      <div
-        className="pointer-events-none fixed inset-0 z-0"
-        style={{
-          background:
-            "radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.6) 100%)",
-        }}
-      />
-      <div className="relative z-10">{children}</div>
     </div>
   );
 }

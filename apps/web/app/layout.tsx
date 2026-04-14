@@ -1,10 +1,18 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Cinzel, Cormorant_Garamond } from "next/font/google";
+import { Inter, Philosopher, Cormorant_Garamond } from "next/font/google";
 import SessionProvider from "@/lib/SessionProvider";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin", "cyrillic"], variable: "--font-inter" });
-const cinzel = Cinzel({ subsets: ["latin"], weight: ["400", "500", "600"], variable: "--font-cinzel" });
+// Philosopher — шрифт с поддержкой кириллицы, ритуальный / славяно-антик, для меток.
+// Заменил Cinzel (только латиница) после аудита — на кириллических «СПЯЩИЙ» и т.п.
+// Cinzel падал в fallback-serif, из-за чего вся «ритуальная» типографика ломалась.
+const philosopher = Philosopher({
+  subsets: ["latin", "cyrillic"],
+  weight: ["400", "700"],
+  style: ["normal", "italic"],
+  variable: "--font-ritual",
+});
 const cormorant = Cormorant_Garamond({
   subsets: ["latin", "cyrillic"],
   weight: ["400", "500"],
@@ -38,7 +46,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="ru" className={`dark ${inter.variable} ${cinzel.variable} ${cormorant.variable}`}>
+    <html lang="ru" className={`dark ${inter.variable} ${philosopher.variable} ${cormorant.variable}`}>
       <body className={inter.className}>
           <SessionProvider>{children}</SessionProvider>
         </body>

@@ -41,7 +41,7 @@ const config: Config = {
       },
       fontFamily: {
         sans: ["var(--font-inter)", "system-ui", "sans-serif"],
-        ritual: ["var(--font-cinzel)", "serif"],
+        ritual: ["var(--font-ritual)", "serif"],
         verse: ["var(--font-cormorant)", "serif"],
       },
       backgroundImage: {
@@ -140,6 +140,8 @@ const config: Config = {
         "steel-shimmer": "steel-shimmer 4s ease-in-out infinite",
         "aurora-drift": "aurora-drift 18s ease-in-out infinite",
         "text-flicker": "text-flicker 3s ease-in-out infinite",
+        "shimmer-flicker":
+          "steel-shimmer 4s ease-in-out infinite, text-flicker 3s ease-in-out infinite",
       },
     },
   },

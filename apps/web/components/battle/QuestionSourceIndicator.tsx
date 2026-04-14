@@ -7,46 +7,39 @@
 
 import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
+import { getStatus } from "@/lib/api/learning";
+import { getLevelName } from "@/lib/learning/levels";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
-
-const LEVEL_LABELS: Record<string, string> = {
-  SLEEPING: "Спящий",
-  AWAKENING: "Пробуждённый",
-  OBSERVER: "Наблюдатель",
-  WARRIOR: "Воин",
-  STRATEGIST: "Стратег",
-  MASTER: "Мастер",
-};
+// Кеш на сессию: уровень меняется редко, нет смысла дергать API
+// при каждом монтировании компонента батла.
+const STORAGE_KEY = "learning:level-name";
 
 export default function QuestionSourceIndicator() {
   const { accessToken } = useAuth();
-  const [levelName, setLevelName] = useState<string | null>(null);
+  const [levelName, setLevelName] = useState<string | null>(() => {
+    if (typeof window === "undefined") return null;
+    return sessionStorage.getItem(STORAGE_KEY);
+  });
 
   useEffect(() => {
     let cancelled = false;
 
-    async function load() {
+    (async () => {
       try {
-        const res = await fetch(`${API_BASE}/learning/status`, {
-          headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : {},
-        });
-        if (!res.ok) return;
-        const data = await res.json();
+        const data = await getStatus(accessToken);
         if (cancelled) return;
         if (data.hasPath) {
           const label =
-            data.currentLevelName ??
-            LEVEL_LABELS[data.currentLevel as string] ??
-            null;
+            data.currentLevelName ?? getLevelName(data.currentLevel);
           setLevelName(label);
+          sessionStorage.setItem(STORAGE_KEY, label);
         }
       } catch {
-        // бэкенд недоступен — индикатор просто не показывается
+        // Бэкенд недоступен или ошибка — тихо не показываем индикатор.
+        // Если был кеш — оставляем последнее известное значение.
       }
-    }
+    })();
 
-    load();
     return () => {
       cancelled = true;
     };
@@ -55,13 +48,16 @@ export default function QuestionSourceIndicator() {
   if (!levelName) return null;
 
   return (
-    <div className="flex items-center justify-center gap-2 text-[10px] sm:text-xs font-ritual tracking-[0.3em] uppercase text-text-muted py-1.5">
-      <span className="w-6 h-px bg-cold-steel/40" />
+    <div
+      className="flex items-center justify-center gap-2 text-[10px] sm:text-xs font-ritual tracking-[0.3em] uppercase text-text-muted py-1.5"
+      aria-label={`Вопросы из уровня ${levelName}`}
+    >
+      <span aria-hidden className="w-6 h-px bg-cold-steel/40" />
       <span>
         Вопросы из уровня{" "}
         <span className="text-cold-steel">«{levelName}»</span>
       </span>
-      <span className="w-6 h-px bg-cold-steel/40" />
+      <span aria-hidden className="w-6 h-px bg-cold-steel/40" />
     </div>
   );
 }
