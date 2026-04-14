@@ -629,6 +629,25 @@ enum WarriorRank {
   SPARTAN
 }
 
+// ── Learning System ──────────────────────────────
+
+enum LevelName {
+  SLEEPING
+  AWAKENED
+  OBSERVER
+  WARRIOR
+  STRATEGIST
+  MASTER
+}
+
+enum BarrierStage {
+  RECALL
+  CONNECT
+  APPLY
+  DEFEND
+  VERDICT
+}
+
 // ── Campaign ──────────────────────────────────
 
 model Campaign {

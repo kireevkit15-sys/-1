@@ -681,8 +681,8 @@
 | B20.6 | Prisma модели: LevelBarrier (pathId, level, stages JSON, score, passed, attemptNumber, attemptedAt) | todo | `prisma/schema.prisma` | L20.3 |
 | B20.7 | Prisma модели: DepthLayer (conceptId, layerType ENUM: ALTERNATIVE/SCIENCE/BOOK/PHILOSOPHY/CONTRADICTION/CONNECTIONS, content JSON, sourceRef) | todo | `prisma/schema.prisma` | L20.1 |
 | B20.8 | Prisma миграция: все модели B20.1-B20.7 + индексы | todo | `prisma/migrations/` | B20.1-B20.7 |
-| B20.9 | Enum LevelName: SLEEPING, AWAKENED, OBSERVER, WARRIOR, STRATEGIST, MASTER | todo | `prisma/schema.prisma` | — |
-| B20.10 | Enum BarrierStage: RECALL, CONNECT, APPLY, DEFEND, VERDICT | todo | `prisma/schema.prisma` | — |
+| B20.9 | Enum LevelName: SLEEPING, AWAKENED, OBSERVER, WARRIOR, STRATEGIST, MASTER | done | `prisma/schema.prisma` | — |
+| B20.10 | Enum BarrierStage: RECALL, CONNECT, APPLY, DEFEND, VERDICT | done | `prisma/schema.prisma` | — |
 
 ### Блок B21 — LearningModule (API)
 
