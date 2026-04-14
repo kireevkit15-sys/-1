@@ -17,6 +17,7 @@ import {
 } from '@nestjs/swagger';
 import { LearningService } from './learning.service';
 import { BarrierService } from './barrier.service';
+import { ConceptService } from './concept.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { DetermineDto } from './dto/determine.dto';
 import { InteractDto } from './dto/interact.dto';
@@ -31,6 +32,7 @@ export class LearningController {
   constructor(
     private readonly learningService: LearningService,
     private readonly barrierService: BarrierService,
+    private readonly conceptService: ConceptService,
   ) {}
 
   @Post('determine')
@@ -158,5 +160,13 @@ export class LearningController {
   @ApiOperation({ summary: 'Get retake info — weak concepts, days to review' })
   async getRetakeInfo(@Request() req: { user: { sub: string } }) {
     return this.barrierService.getRetakeInfo(req.user.sub);
+  }
+
+  // ── Knowledge map (B23.4) ───────────────────────────────────────────
+
+  @Get('mastery')
+  @ApiOperation({ summary: 'Get knowledge map — all concepts with user mastery levels and branch stats' })
+  async getMasteryMap(@Request() req: { user: { sub: string } }) {
+    return this.conceptService.getMasteryMap(req.user.sub);
   }
 }

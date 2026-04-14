@@ -714,10 +714,10 @@
 
 | # | Задача | Статус | Файлы | Блокер |
 |---|--------|--------|-------|--------|
-| B23.1 | GET /concepts — список концептов с фильтрами (ветка, категория, уровень усвоения) | todo | `apps/api/src/learning/concept.controller.ts` | B20.8 |
-| B23.2 | GET /concepts/:id — детали концепта: описание, связи, уровень усвоения пользователя, слои глубины | todo | `apps/api/src/learning/concept.controller.ts` | B20.8 |
-| B23.3 | GET /concepts/:id/related — связанные концепты с типами связей | todo | `apps/api/src/learning/concept.controller.ts` | B20.8 |
-| B23.4 | GET /learning/mastery — карта знаний пользователя: все концепты с уровнем усвоения, статистика | todo | `apps/api/src/learning/learning.controller.ts` | B20.8 |
+| B23.1 | GET /concepts — список концептов с фильтрами (ветка, категория, уровень усвоения) | done | `apps/api/src/learning/concept.controller.ts` | B20.8 |
+| B23.2 | GET /concepts/:id — детали концепта: описание, связи, уровень усвоения пользователя, слои глубины | done | `apps/api/src/learning/concept.controller.ts` | B20.8 |
+| B23.3 | GET /concepts/:id/related — связанные концепты с типами связей | done | `apps/api/src/learning/concept.controller.ts` | B20.8 |
+| B23.4 | GET /learning/mastery — карта знаний пользователя: все концепты с уровнем усвоения, статистика | done | `apps/api/src/learning/learning.controller.ts` | B20.8 |
 
 ### Блок B24 — Данные и сиды
 
