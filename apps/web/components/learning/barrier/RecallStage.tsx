@@ -117,7 +117,10 @@ export function RecallStage({ questions, grade, onComplete }: RecallStageProps) 
               : "none",
         }}
       >
-        <h3 className="font-ritual text-lg sm:text-xl leading-snug text-text-primary mb-6 tracking-wide">
+        <h3
+          id={`recall-prompt-${question.id}`}
+          className="font-ritual text-lg sm:text-xl leading-snug text-text-primary mb-6 tracking-wide"
+        >
           {question.prompt}
         </h3>
 
@@ -126,7 +129,7 @@ export function RecallStage({ questions, grade, onComplete }: RecallStageProps) 
           onChange={(e) => setText(e.target.value)}
           disabled={phase !== "idle"}
           placeholder="Коротко — 1–2 предложения…"
-          aria-label="Ответ на вопрос"
+          aria-labelledby={`recall-prompt-${question.id}`}
           rows={3}
           className="w-full bg-transparent resize-none outline-none font-verse text-base leading-relaxed text-text-primary placeholder:text-text-muted placeholder:italic border-0 border-b border-border focus:border-cold-blood transition-colors duration-300 pb-3 pt-1 px-0 disabled:opacity-70"
         />

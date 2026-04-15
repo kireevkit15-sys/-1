@@ -3,7 +3,7 @@
     "collect": {
       "startServerCommand": "pnpm --filter @razum/web start",
       "startServerReadyPattern": "ready on",
-      "numberOfRuns": 1
+      "numberOfRuns": 3
     },
     "assert": {
       "assertions": {

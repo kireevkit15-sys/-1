@@ -11,10 +11,10 @@ async function openTutorFromMap(page: import('@playwright/test').Page) {
   await page.waitForLoadState('domcontentloaded');
   await page.waitForTimeout(1000);
 
-  // Filter to logic and open a known concept
-  await page.getByText('Логика', { exact: false }).first().click();
-  await page.waitForTimeout(400);
-  await page.getByText('Байесовский подход', { exact: false }).first().click();
+  // Открываем первую доступную ячейку концепта — не зависим от конкретного названия.
+  const firstCell = page.locator('[data-testid="concept-cell"]').first();
+  await expect(firstCell).toBeVisible({ timeout: 6000 });
+  await firstCell.click();
   await page.waitForTimeout(500);
 
   await expect(page.getByRole('dialog').first()).toBeVisible({ timeout: 5000 });
@@ -36,7 +36,10 @@ test.describe('Learning · Tutor', () => {
   test('initial tutor message greets the user about the concept', async ({ page }) => {
     await openTutorFromMap(page);
 
-    await expect(page.getByText(/Ты выбрал обсудить/i).first()).toBeVisible({ timeout: 5000 });
+    // Наставник начинает диалог — любая реплика уже видна
+    await expect(
+      page.locator('[data-testid="tutor-bubble"][data-role="tutor"]').first(),
+    ).toBeVisible({ timeout: 5000 });
   });
 
   test('sending a message shows it then produces a tutor reply', async ({ page }) => {
@@ -57,11 +60,9 @@ test.describe('Learning · Tutor', () => {
     // Tutor replies within ~2s (demo delay 900-1600ms)
     await page.waitForTimeout(2200);
 
-    // After reply, more than just the initial greeting exists — count messages or look for another tutor bubble.
-    // Loose assertion: there must be at least one non-user message beyond the greeting.
-    const bubbles = page.locator('[class*="rounded"]').filter({ hasText: /./ });
-    const count = await bubbles.count();
-    expect(count).toBeGreaterThan(2);
+    // Приветствие + ответ наставника = 2 «tutor»-пузыря; пользовательский — 1.
+    await expect(page.locator('[data-testid="tutor-bubble"][data-role="tutor"]')).toHaveCount(2);
+    await expect(page.locator('[data-testid="tutor-bubble"][data-role="user"]')).toHaveCount(1);
   });
 
   test('two consecutive messages both receive responses', async ({ page }) => {

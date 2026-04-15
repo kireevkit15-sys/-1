@@ -26,7 +26,7 @@ test.describe('Learning · Determination', () => {
     await page.waitForTimeout(500);
 
     // 5 progress dots
-    const dots = page.locator('.h-\\[3px\\].w-7');
+    const dots = page.locator('[data-testid="progress-dot"]');
     await expect(dots.first()).toBeVisible({ timeout: 5000 });
     await expect(dots).toHaveCount(5);
 
@@ -58,12 +58,10 @@ test.describe('Learning · Determination', () => {
     await page.getByRole('button', { name: 'Начать' }).click();
     await page.waitForTimeout(500);
 
-    // 4 option buttons — filter out "Начать"/navigation by looking for interactive option buttons.
-    // Options are large buttons in the options list; the "Выбери своё" label is above them.
+    // Ровно 4 опции на ситуацию — селектор детерминированный.
     await page.waitForSelector('text=Выбери своё', { timeout: 5000 });
-    const optionButtons = page.locator('button').filter({ hasNot: page.locator('text=Начать') });
-    const count = await optionButtons.count();
-    expect(count).toBeGreaterThanOrEqual(4);
+    const optionButtons = page.locator('[data-testid="determination-option"]');
+    await expect(optionButtons).toHaveCount(4);
   });
 
   test('clicking an option advances through all 5 situations to the final screen', async ({ page }) => {
@@ -84,12 +82,7 @@ test.describe('Learning · Determination', () => {
 
     for (let i = 0; i < 5; i++) {
       await page.waitForSelector('text=Выбери своё', { timeout: 5000 });
-
-      // Click the first option button (after "Начать" which is already gone on step 1)
-      const options = page.locator('button').filter({ hasNot: page.locator('text=Войти') });
-      const target = options.first();
-      await target.click();
-
+      await page.locator('[data-testid="determination-option"]').first().click();
       // Exit animation ~400ms, then next situation
       await page.waitForTimeout(650);
     }
@@ -111,7 +104,7 @@ test.describe('Learning · Determination', () => {
 
     for (let i = 0; i < 5; i++) {
       await page.waitForSelector('text=Выбери своё', { timeout: 5000 });
-      await page.locator('button').first().click();
+      await page.locator('[data-testid="determination-option"]').first().click();
       await page.waitForTimeout(650);
     }
 

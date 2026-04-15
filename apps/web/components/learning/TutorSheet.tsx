@@ -221,7 +221,7 @@ export default function TutorSheet({
 // ── Сообщение наставника (левое, с аватаром, Cormorant) ──────────────
 function TutorMessage({ text }: { text: string }) {
   return (
-    <div className="flex gap-3 animate-[slide-up_0.3s_ease-out]">
+    <div className="flex gap-3 animate-[slide-up_0.3s_ease-out]" data-testid="tutor-bubble" data-role="tutor">
       <TutorAvatar small />
       <div className="flex-1 max-w-[85%]">
         <div className="inline-block bg-surface-light/70 border border-accent/15 rounded-2xl rounded-tl-sm px-4 py-3">
@@ -237,7 +237,7 @@ function TutorMessage({ text }: { text: string }) {
 // ── Сообщение пользователя (правое, Inter) ───────────────────────────
 function UserMessage({ text }: { text: string }) {
   return (
-    <div className="flex justify-end animate-[slide-up_0.3s_ease-out]">
+    <div className="flex justify-end animate-[slide-up_0.3s_ease-out]" data-testid="tutor-bubble" data-role="user">
       <div className="max-w-[85%]">
         <div className="inline-block bg-accent/15 border border-accent/25 rounded-2xl rounded-tr-sm px-4 py-2.5">
           <p className="text-sm leading-relaxed text-text-primary whitespace-pre-wrap">

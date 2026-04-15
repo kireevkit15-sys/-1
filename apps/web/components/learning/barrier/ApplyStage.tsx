@@ -195,7 +195,10 @@ export function ApplyStage({ situations, grade, onComplete }: ApplyStageProps) {
         className="mx-auto mb-5 bg-surface-light rounded-lg px-5 sm:px-6 py-5 sm:py-6 border-l-2 border-cold-blood animate-[slide-up_0.5s_ease-out]"
         style={{ maxWidth: "60ch" }}
       >
-        <p className="font-verse italic text-base sm:text-lg leading-relaxed text-text-primary">
+        <p
+          id={`apply-scenario-${situation.id}`}
+          className="font-verse italic text-base sm:text-lg leading-relaxed text-text-primary"
+        >
           {situation.scenario}
         </p>
       </div>
@@ -217,7 +220,7 @@ export function ApplyStage({ situations, grade, onComplete }: ApplyStageProps) {
               onChange={(e) => setText(e.target.value)}
               disabled={phase === "loading"}
               placeholder="Как ты применишь это здесь?"
-              aria-label="Ответ на ситуацию"
+              aria-labelledby={`apply-scenario-${situation.id}`}
               rows={6}
               className="w-full bg-transparent resize-none outline-none font-verse text-base sm:text-lg leading-relaxed text-text-primary placeholder:text-text-muted placeholder:italic border-0 border-b border-border focus:border-cold-blood transition-colors duration-300 pb-3 pt-1 px-0 disabled:opacity-70"
             />

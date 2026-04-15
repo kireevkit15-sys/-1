@@ -291,6 +291,7 @@ export default function DeterminationPage() {
             {situations.map((_, i) => (
               <span
                 key={i}
+                data-testid="progress-dot"
                 className={`h-[3px] w-7 rounded-sm transition-all duration-300 ${
                   i < current
                     ? "bg-cold-steel shadow-neon-steel"
@@ -314,6 +315,7 @@ export default function DeterminationPage() {
             {situation!.options.map((opt, i) => (
               <button
                 key={i}
+                data-testid="determination-option"
                 onClick={() => handleChoose(i)}
                 disabled={exiting}
                 className="text-left text-sm sm:text-[15px] leading-snug text-text-primary border border-border rounded-xl px-4 sm:px-5 py-3.5 bg-surface-light/40 transition-all duration-200 hover:border-cold-steel hover:bg-cold-steel/10 hover:translate-x-0.5 hover:shadow-neon-steel active:border-cold-blood active:bg-cold-blood/10 active:shadow-neon-blood disabled:opacity-50"

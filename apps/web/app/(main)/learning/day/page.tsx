@@ -49,6 +49,8 @@ type CardKind =
 interface LessonCard {
   id: string;
   kind: CardKind;
+  /** true для карточек, вставленных нажатием «Глубже» — используется в data-testid */
+  isDepth?: boolean;
   // Данные для каждого типа — в демо задаём литералами.
   data: unknown;
 }
@@ -320,6 +322,8 @@ export default function LearningDayPage() {
           <section
             key={card.id}
             data-card-index={i}
+            data-card-kind={card.kind}
+            data-depth={card.isDepth ? "true" : undefined}
             ref={(el) => {
               sectionRefs.current[i] = el;
             }}
@@ -451,6 +455,7 @@ function buildDeeperCards(triggerId: string): LessonCard[] {
   return [
     {
       id: `${prefix}-alt`,
+      isDepth: true,
       kind: "alternative",
       data: {
         originalAuthor: "Стратегический взгляд",
@@ -463,6 +468,7 @@ function buildDeeperCards(triggerId: string): LessonCard[] {
     },
     {
       id: `${prefix}-sci`,
+      isDepth: true,
       kind: "science",
       data: {
         title: "Когнитивная стоимость промедления",
@@ -478,6 +484,7 @@ function buildDeeperCards(triggerId: string): LessonCard[] {
     },
     {
       id: `${prefix}-book`,
+      isDepth: true,
       kind: "book",
       data: {
         bookTitle: "Государь",
@@ -491,6 +498,7 @@ function buildDeeperCards(triggerId: string): LessonCard[] {
     },
     {
       id: `${prefix}-phil`,
+      isDepth: true,
       kind: "philosophy",
       data: {
         era: "Древняя Греция, V в. до н.э.",
@@ -504,6 +512,7 @@ function buildDeeperCards(triggerId: string): LessonCard[] {
     },
     {
       id: `${prefix}-contra`,
+      isDepth: true,
       kind: "contradiction",
       data: {
         question: "Решать быстро или точно?",
@@ -523,6 +532,7 @@ function buildDeeperCards(triggerId: string): LessonCard[] {
     },
     {
       id: `${prefix}-conn`,
+      isDepth: true,
       kind: "connections",
       data: {
         centralConcept: "Решение без полной информации",

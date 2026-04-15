@@ -280,6 +280,8 @@ function ConceptCell({
 
   return (
     <button
+      data-testid="concept-cell"
+      data-concept-id={concept.id}
       onClick={onClick}
       className={`group relative text-left p-3 sm:p-4 rounded-xl border transition-all duration-200 hover:-translate-y-0.5 ${TIER_STYLES[tier].border} ${TIER_STYLES[tier].bg}`}
       style={

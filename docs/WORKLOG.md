@@ -111,23 +111,62 @@
 
 ## Бонди (Frontend + Дизайн)
 
-### 2026-04-15 — Сессия: F28.10 Lighthouse + a11y полировка
+### 2026-04-15 — Сессия: F28.10 Lighthouse + a11y + тесты качественно
 
-**Время:** ~30 минут
+**Время:** ~2 часа
 **Статус:** Завершена
 
 **Что сделано:**
-- F28.10: добавлены 5 URL `/learning/*` в Lighthouse CI workflow (hub, determination, day, barrier, map)
-- A11y недочёт: убран `maximumScale: 1` и `userScalable: false` из root viewport — это WCAG 1.4.4 fail, Lighthouse штрафовал аудит на всех страницах
-- A11y недочёт: добавлен `aria-label` к 6 `<textarea>` в learning-компонентах (RecallStage, ConnectStage, ApplyStage, DefendStage, ExplainCard, TutorSheet) — placeholder один не считается accessible name
-- Typecheck по изменённым файлам чистый; старые ошибки в `components/feed/*` не трогал (pre-existing, не мои)
+
+_Lighthouse CI:_
+- Добавлены 5 URL `/learning/*` в workflow (hub, determination, day, barrier, map)
+- `lighthouserc.json`: `numberOfRuns: 1 → 3` (стабильность метрик, ±5 баллов на одном прогоне)
+
+_A11y фиксы:_
+- Убраны `maximumScale: 1` и `userScalable: false` из root viewport — WCAG 1.4.4 fail, Lighthouse a11y пенальти на всех страницах
+- 4 textarea получили `aria-labelledby` вместо `aria-label` — теперь указывают на видимый `<h3>`/`<p>` рядом, а не дублируют текст (RecallStage, ConnectStage, ApplyStage, ExplainCard)
+- DefendStage и TutorSheet оставлены с `aria-label` — нет подходящего heading рядом
+
+_Стабилизация тестов:_
+- `data-testid="progress-dot"` на dots в DeterminationPage (было `.h-\\[3px\\].w-7`)
+- `data-testid="determination-option"` на option buttons → тест с ровным `toHaveCount(4)`
+- `data-testid="concept-cell"` + `data-concept-id` на ConceptCell в map
+- Tutor тест: убрана зависимость от «Байесовский подход» → первый `[data-testid="concept-cell"]`
+- Tutor тест: «initial greeting» больше не ищет конкретный текст → структурный `[data-role="tutor"]`
+- Depth тест: убрана зависимость от «Решение без полной информации» → проверка меток «Нить» + «Сегодня»
+- Depth тест: подсчёт через `[data-depth="true"]` (ровно 6) вместо `feed > *` count с допуском ±1
+- `data-testid="tutor-bubble"` + `data-role="tutor|user"` на сообщения в TutorSheet → детерминированный count
+
+_Playwright конфиг:_
+- `snapshotPathTemplate` теперь включает `{platform}` — Windows (`-win32`) и Linux CI (`-linux`) snapshots не конфликтуют
+- Mobile Chrome проект исключён из visual snapshots (`testIgnore: ['**/visual/**']`) — требует отдельного запуска на реальном устройстве/CI
+- Добавлен комментарий: регенерировать baselines на CI, не локально
 
 **Файлы изменены:**
-- `.github/workflows/lighthouse.yml` — добавлены 5 URL обучения
+- `.github/workflows/lighthouse.yml` — 5 URL обучения
+- `apps/web/lighthouserc.json` — numberOfRuns: 3
+- `apps/web/playwright.config.ts` — snapshotPathTemplate, mobile testIgnore
 - `apps/web/app/layout.tsx` — viewport без блокировки zoom
-- `apps/web/components/learning/ExplainCard.tsx`, `TutorSheet.tsx` + 4 barrier stages — aria-label на textarea
+- `apps/web/app/(main)/learning/determination/page.tsx` — data-testid progress-dot, determination-option
+- `apps/web/app/(main)/learning/map/page.tsx` — data-testid concept-cell
+- `apps/web/app/(main)/learning/day/page.tsx` — data-card-kind, data-depth
+- `apps/web/components/learning/ExplainCard.tsx` — aria-labelledby
+- `apps/web/components/learning/TutorSheet.tsx` — aria-label + data-testid tutor-bubble
+- `apps/web/components/learning/barrier/RecallStage.tsx` — aria-labelledby
+- `apps/web/components/learning/barrier/ConnectStage.tsx` — aria-labelledby
+- `apps/web/components/learning/barrier/ApplyStage.tsx` — aria-labelledby
+- `apps/web/components/learning/barrier/DefendStage.tsx` — aria-label
+- `apps/web/tests/e2e/learning-determination.spec.ts` — data-testid селекторы
+- `apps/web/tests/e2e/learning-tutor.spec.ts` — убран хардкод концепта
+- `apps/web/tests/e2e/learning-depth.spec.ts` — убран хардкод текста
+- `docs/SPRINT.md` — F28.10 → done
 
 **Задачи из SPRINT.md закрыты:** F28.10
+
+**Известные остаточные риски (задокументированы, не заблокируют CI):**
+- Color-contrast отключён в axe: `text-muted` (#56453A) и `cold-blood` (#8B2E2E) дают 2.3–2.5:1 на тёмных фонах. Декоративные элементы намеренно приглушены. Нужен ручной аудит критических текстовых пар.
+- Visual baselines сгенерированы на Windows. При первом CI-прогоне нужно `--update-snapshots`.
+- Тесты determination привязаны к demo-situations.json (bundled). Если содержимое сменится — упадут. Правильный fix: выносить в `page.route()` + fixtures.
 
 ---
 
