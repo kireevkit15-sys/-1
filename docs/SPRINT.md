@@ -663,7 +663,7 @@
 | F28.7 | E2E: AI-наставник → кнопка "Обсудить" → bottom-sheet → 3 сообщения → закрыть | done | `apps/web/tests/e2e/learning-tutor.spec.ts` |
 | F28.8 | Визуальные скриншоты: все экраны обучения на 375/768/1024px | done | `apps/web/tests/visual/learning-screenshots.spec.ts` |
 | F28.9 | Accessibility: все компоненты обучения — aria-labels, контрасты, keyboard navigation | done | `apps/web/tests/a11y/learning-a11y.spec.ts` |
-| F28.10 | Performance: Lighthouse на все страницы обучения (>90 perf) | todo | — |
+| F28.10 | Performance: Lighthouse на все страницы обучения (>90 perf) | done | `.github/workflows/lighthouse.yml` |
 
 ---
 

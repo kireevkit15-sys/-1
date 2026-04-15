@@ -136,6 +136,7 @@ export function ExplainCard({ prompt, onSubmit, onDiscuss }: ExplainCardProps) {
           onChange={(e) => setText(e.target.value)}
           disabled={phase !== "idle"}
           placeholder="Объясни своими словами…"
+          aria-label="Объяснение своими словами"
           rows={8}
           className="w-full bg-transparent resize-none outline-none font-verse text-base sm:text-lg leading-relaxed text-text-primary placeholder:text-text-muted placeholder:italic border-0 border-b border-border focus:border-accent transition-colors duration-300 pb-3 pt-1 px-0 disabled:opacity-70"
         />

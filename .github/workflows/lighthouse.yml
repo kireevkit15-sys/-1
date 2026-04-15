@@ -26,6 +26,11 @@ jobs:
             http://localhost:3000/battle/new
             http://localhost:3000/learn
             http://localhost:3000/profile
+            http://localhost:3000/learning
+            http://localhost:3000/learning/determination
+            http://localhost:3000/learning/day
+            http://localhost:3000/learning/barrier
+            http://localhost:3000/learning/map
           budgetPath: ./apps/web/lighthouse-budget.json
           uploadArtifacts: true
           configPath: ./apps/web/lighthouserc.json

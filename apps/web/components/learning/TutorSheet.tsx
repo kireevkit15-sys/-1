@@ -192,6 +192,7 @@ export default function TutorSheet({
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Напиши наставнику…"
+              aria-label="Сообщение наставнику"
               rows={1}
               className="flex-1 bg-transparent px-4 py-3 text-sm text-text-primary placeholder:text-text-muted resize-none focus:outline-none max-h-32"
               disabled={loading}

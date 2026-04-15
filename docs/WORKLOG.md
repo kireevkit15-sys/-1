@@ -111,6 +111,26 @@
 
 ## Бонди (Frontend + Дизайн)
 
+### 2026-04-15 — Сессия: F28.10 Lighthouse + a11y полировка
+
+**Время:** ~30 минут
+**Статус:** Завершена
+
+**Что сделано:**
+- F28.10: добавлены 5 URL `/learning/*` в Lighthouse CI workflow (hub, determination, day, barrier, map)
+- A11y недочёт: убран `maximumScale: 1` и `userScalable: false` из root viewport — это WCAG 1.4.4 fail, Lighthouse штрафовал аудит на всех страницах
+- A11y недочёт: добавлен `aria-label` к 6 `<textarea>` в learning-компонентах (RecallStage, ConnectStage, ApplyStage, DefendStage, ExplainCard, TutorSheet) — placeholder один не считается accessible name
+- Typecheck по изменённым файлам чистый; старые ошибки в `components/feed/*` не трогал (pre-existing, не мои)
+
+**Файлы изменены:**
+- `.github/workflows/lighthouse.yml` — добавлены 5 URL обучения
+- `apps/web/app/layout.tsx` — viewport без блокировки zoom
+- `apps/web/components/learning/ExplainCard.tsx`, `TutorSheet.tsx` + 4 barrier stages — aria-label на textarea
+
+**Задачи из SPRINT.md закрыты:** F28.10
+
+---
+
 ### 2026-04-14/15 — Сессия: Система обучения — F20, F21, F23, F25, F26, F27, F28
 
 **Время:** ~8 часов

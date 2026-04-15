@@ -217,6 +217,7 @@ export function ApplyStage({ situations, grade, onComplete }: ApplyStageProps) {
               onChange={(e) => setText(e.target.value)}
               disabled={phase === "loading"}
               placeholder="Как ты применишь это здесь?"
+              aria-label="Ответ на ситуацию"
               rows={6}
               className="w-full bg-transparent resize-none outline-none font-verse text-base sm:text-lg leading-relaxed text-text-primary placeholder:text-text-muted placeholder:italic border-0 border-b border-border focus:border-cold-blood transition-colors duration-300 pb-3 pt-1 px-0 disabled:opacity-70"
             />

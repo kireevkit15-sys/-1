@@ -211,6 +211,7 @@ export function ConnectStage({ pairs, grade, onComplete }: ConnectStageProps) {
           onChange={(e) => setText(e.target.value)}
           disabled={phase !== "idle"}
           placeholder="Опиши связь своими словами…"
+          aria-label="Связь между концептами"
           rows={4}
           className="w-full bg-transparent resize-none outline-none font-verse text-base leading-relaxed text-text-primary placeholder:text-text-muted placeholder:italic border-0 border-b border-border focus:border-cold-blood transition-colors duration-300 pb-3 pt-1 px-0 disabled:opacity-70"
         />

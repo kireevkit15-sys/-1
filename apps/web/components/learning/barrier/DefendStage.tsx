@@ -260,6 +260,7 @@ export function DefendStage({
             onChange={(e) => setInput(e.target.value)}
             disabled={phase !== "user-turn"}
             placeholder="Ответь наставнику…"
+            aria-label="Ответ наставнику"
             rows={3}
             className="w-full bg-transparent resize-none outline-none font-verse text-base sm:text-lg leading-relaxed text-text-primary placeholder:text-text-muted placeholder:italic border-0 border-b border-border focus:border-cold-blood transition-colors duration-300 pb-2 pt-1 px-0 disabled:opacity-60"
           />
