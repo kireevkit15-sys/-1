@@ -5,6 +5,17 @@ export { buildSocraticTutorPrompt } from './socratic-tutor';
 export type { SocraticTutorParams } from './socratic-tutor';
 
 export {
+  buildConceptExplainPrompt,
+  buildBarrierHintPrompt,
+  buildMiniQuizPrompt,
+} from './learning-tutor';
+export type {
+  ConceptExplainParams,
+  BarrierHintParams,
+  MiniQuizParams,
+} from './learning-tutor';
+
+export {
   buildInsightPrompt,
   buildChallengePrompt,
   buildCasePrompt,

@@ -24,6 +24,8 @@ import { DetermineDto } from './dto/determine.dto';
 import { InteractDto } from './dto/interact.dto';
 import { ExplainDto } from './dto/explain.dto';
 import { BarrierRecallDto, BarrierConnectDto, BarrierApplyDto, BarrierDefendDto } from './dto/barrier.dto';
+import { ConceptExplainDto, BarrierHintDto, GenerateQuizDto } from './dto/learning-ai.dto';
+import { LearningAiService } from './learning-ai.service';
 
 @ApiTags('Learning')
 @ApiBearerAuth()
@@ -34,6 +36,7 @@ export class LearningController {
     private readonly learningService: LearningService,
     private readonly barrierService: BarrierService,
     private readonly conceptService: ConceptService,
+    private readonly learningAi: LearningAiService,
   ) {}
 
   @Post('determine')
@@ -169,5 +172,34 @@ export class LearningController {
   @ApiOperation({ summary: 'Get knowledge map — all concepts with user mastery levels and branch stats' })
   async getMasteryMap(@Request() req: AuthenticatedRequest) {
     return this.conceptService.getMasteryMap(req.user.sub);
+  }
+
+  // ── AI Learning endpoints (L24) ────────────────────────────────────────
+
+  @Post('ai/explain')
+  @ApiOperation({ summary: 'AI explanation of a concept (Socratic method, depth-adaptive)' })
+  async aiExplain(
+    @Request() req: AuthenticatedRequest,
+    @Body() dto: ConceptExplainDto,
+  ) {
+    return this.learningAi.explainConcept(req.user.sub, dto);
+  }
+
+  @Post('ai/hint')
+  @ApiOperation({ summary: 'AI hint during barrier — progressive, max 5 per barrier' })
+  async aiHint(
+    @Request() req: AuthenticatedRequest,
+    @Body() dto: BarrierHintDto,
+  ) {
+    return this.learningAi.getBarrierHint(req.user.sub, dto);
+  }
+
+  @Post('ai/quiz')
+  @ApiOperation({ summary: 'Generate AI mini-quiz (3-5 questions) for a concept' })
+  async aiQuiz(
+    @Request() req: AuthenticatedRequest,
+    @Body() dto: GenerateQuizDto,
+  ) {
+    return this.learningAi.generateQuiz(req.user.sub, dto);
   }
 }
