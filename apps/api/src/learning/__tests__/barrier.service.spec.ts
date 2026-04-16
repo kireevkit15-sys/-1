@@ -8,10 +8,19 @@ import { PrismaService } from '../../prisma/prisma.service';
 import { AiService } from '../../ai/ai.service';
 import { NotFoundException, BadRequestException, ConflictException } from '@nestjs/common';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type Mock = any;
+
 describe('BarrierService', () => {
   let service: BarrierService;
-  let mockPrisma: Record<string, Record<string, jest.Mock>>;
-  let mockAi: Record<string, jest.Mock>;
+  let mockPrisma: {
+    learningPath: { findUnique: Mock; update: Mock };
+    learningDay: { findMany: Mock };
+    levelBarrier: { findFirst: Mock; findUnique: Mock; create: Mock; update: Mock; count: Mock };
+    concept: { findUnique: Mock };
+    userConceptMastery: { upsert: Mock };
+  };
+  let mockAi: { chatCompletion: Mock };
 
   const userId = 'user-123';
   const pathId = 'path-123';
@@ -115,7 +124,7 @@ describe('BarrierService', () => {
       expect(result.resuming).toBe(false);
       expect(result.attemptNumber).toBe(1);
       expect(result.stages).toHaveProperty('recall');
-      expect(result.stages.recall.questions.length).toBeLessThanOrEqual(6);
+      expect((result.stages as { recall: { questions: unknown[] } }).recall.questions.length).toBeLessThanOrEqual(6);
     });
   });
 
@@ -340,8 +349,8 @@ describe('BarrierService', () => {
       const result = await service.getRetakeInfo(userId);
 
       expect(result.weakConcepts).toHaveLength(2);
-      expect(result.weakConcepts[0].conceptId).toBe('c1');
-      expect(result.weakConcepts[1].conceptId).toBe('c3');
+      expect(result.weakConcepts[0]!.conceptId).toBe('c1');
+      expect(result.weakConcepts[1]!.conceptId).toBe('c3');
       expect(result.canRetake).toBe(true);
     });
   });

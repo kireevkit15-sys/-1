@@ -30,7 +30,7 @@ interface InteractInput {
   timeTakenMs?: number;
 }
 
-interface InteractResult {
+export interface InteractResult {
   xpEarned: number;
   isCorrect?: boolean;
   feedStreak: number;
@@ -39,7 +39,7 @@ interface InteractResult {
   forgePromoted?: boolean;
 }
 
-interface FeedStatsResult {
+export interface FeedStatsResult {
   feedStreak: number;
   todayViewedCount: number;
   totalFeedXp: number;

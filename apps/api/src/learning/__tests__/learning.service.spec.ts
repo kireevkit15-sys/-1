@@ -9,10 +9,19 @@ import { PrismaService } from '../../prisma/prisma.service';
 import { AiService } from '../../ai/ai.service';
 import { NotFoundException, ConflictException, BadRequestException } from '@nestjs/common';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type Mock = any;
+
 describe('LearningService', () => {
   let service: LearningService;
-  let mockPrisma: Record<string, Record<string, jest.Mock>>;
-  let mockAi: Record<string, jest.Mock>;
+  let mockPrisma: {
+    learningPath: { findUnique: Mock; create: Mock; update: Mock };
+    learningDay: { findUnique: Mock; findMany: Mock; createMany: Mock; update: Mock };
+    concept: { findMany: Mock; findUnique: Mock };
+    userConceptMastery: { upsert: Mock; findUnique: Mock };
+    depthLayer: Record<string, unknown>;
+  };
+  let mockAi: { chatCompletion: Mock };
 
   const userId = 'user-456';
 
