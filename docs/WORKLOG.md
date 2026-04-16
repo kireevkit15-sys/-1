@@ -1416,6 +1416,39 @@ _Playwright конфиг:_
 
 ---
 
+### 2026-04-16 — Сессия 14: LC7 валидация вопросов + LC9 академические концепты + L20 маркировка
+
+**Время:** ~1 час
+**Статус:** Завершена
+
+**Что сделано:**
+- **LC7** — batch-валидация всех вопросов из `scripts/output/`:
+  - Скрипт `validate-questions.ts`: загрузка JSON, индивидуальная валидация, Jaccard-дубликаты (порог 0.7), проверка сложности, распределение по веткам
+  - Отчёт: 306 вопросов, 199 valid, 107 invalid (в основном короткий текст <20 символов), 2 дубликата, 172 inconsistencies по сложности
+  - Отчёт сохраняется в `scripts/output/validation-report.json`
+- **LC9** — извлечение академических концептов из 4 источников:
+  - Kahneman "Thinking, Fast and Slow": 8 концептов (System 1/2, anchoring, loss aversion, WYSIATI, peak-end rule, planning fallacy, framing, regression to mean)
+  - Taleb "Antifragile" + "Black Swan": 6 концептов (antifragility, Black Swan, skin in the game, barbell strategy, Lindy effect, via negativa)
+  - Cialdini "Influence": 6 концептов (reciprocity, social proof, scarcity, authority, commitment, liking)
+  - Drucker "Effective Executive": 5 концептов (time management, contribution focus, strengths, priorities, decision-making)
+  - Все с trust_level: validated, academic_sources, примерами, тегами
+- **L20.1-L20.5** — маркировка как done (были реализованы в сессии 11 вместе с B20-B25)
+
+**Файлы созданы/изменены:**
+- `scripts/validate-questions.ts` — скрипт batch-валидации (создан)
+- `scripts/output/validation-report.json` — отчёт валидации (создан)
+- `content/sources/academic/kahneman-thinking-fast-slow/concepts.json` — 8 концептов Канемана (создан)
+- `content/sources/academic/taleb-antifragile/concepts.json` — 6 концептов Талеба (создан)
+- `content/sources/academic/cialdini-influence/concepts.json` — 6 концептов Чалдини (создан)
+- `content/sources/academic/drucker-effective-executive/concepts.json` — 5 концептов Друкера (создан)
+
+**Задачи из SPRINT.md закрыты:** LC7, LC9, L20.1-L20.5
+
+**Коммиты:**
+- `34ce503` — feat(content): LC7 batch validation + LC9 academic concepts + L20 marking
+
+---
+
 ## Сводка по неделям
 
 ### Неделя 1 (2026-04-05 — 2026-04-11)
@@ -1441,3 +1474,4 @@ _Playwright конфиг:_
 | 04-16 | Яшкин | Тесты: 0 TS-ошибок, tsconfig.spec.json. L23 concept-battle linking, LC10 LLM Engine | L23.1-L23.3, LC10 |
 | 04-16 | Яшкин | L24: AI-эндпоинты обучения — explain, hint, quiz + rate limiting | L24.1-L24.5 |
 | 04-16 | Яшкин | L22: Алгоритмы обучения — determination, path builder, адаптация, метрики | L22.1-L22.4 |
+| 04-16 | Яшкин | LC7 валидация вопросов + LC9 академические концепты + L20 маркировка | LC7, LC9, L20.1-L20.5 |
