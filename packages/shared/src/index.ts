@@ -131,6 +131,35 @@ export {
   CRAFT_RECIPES,
 } from './cards/constants';
 
+// Learning (L22)
+export type {
+  LearningBranch,
+  LevelName as LearningLevelName,
+  DeliveryStyle,
+  DifficultyTier,
+  DeterminationAnswer,
+  DeterminationResult,
+  ConceptNode,
+  InteractionType as LearningInteractionType,
+  CardInteraction,
+  DayMetrics,
+  EngagementSignals,
+  ConceptConfidence,
+  AdaptationAction,
+  AdaptationContext,
+  BuildPathOptions,
+} from './learning';
+
+export {
+  analyzeDetermination,
+  buildLearningPath,
+  MAX_PATH_DAYS,
+  computeAdaptations,
+  computeMasteryDelta,
+  computeEngagement,
+  computeConceptConfidence,
+} from './learning';
+
 // Constants
 export {
   MAX_HP,

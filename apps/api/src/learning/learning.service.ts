@@ -3,10 +3,20 @@ import {
   NotFoundException,
   ConflictException,
   BadRequestException,
+  Logger,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { AiService } from '../ai/ai.service';
 import type { LevelName } from '@prisma/client';
+import {
+  analyzeDetermination,
+  buildLearningPath,
+  computeEngagement,
+  computeConceptConfidence,
+  computeAdaptations,
+  computeMasteryDelta,
+} from '@razum/shared';
+import type { ConceptNode, DeterminationResult, CardInteraction, AdaptationAction } from '@razum/shared';
 import type { DetermineDto } from './dto/determine.dto';
 import type { InteractDto } from './dto/interact.dto';
 import type { ExplainDto } from './dto/explain.dto';
@@ -22,6 +32,8 @@ const LEVEL_ORDER: LevelName[] = [
 
 @Injectable()
 export class LearningService {
+  private readonly logger = new Logger(LearningService.name);
+
   constructor(
     private readonly prisma: PrismaService,
     private readonly ai: AiService,
@@ -38,13 +50,14 @@ export class LearningService {
       throw new ConflictException('Learning path already exists. Use POST /learning/start to continue.');
     }
 
-    // Analyze answers to determine start zone, pain point, delivery style
-    const { startZone, painPoint, deliveryStyle } = this.analyzeDetermination(dto);
+    // L22.1: Use shared determination algorithm with cross-branch bonuses
+    const result = analyzeDetermination(dto.answers);
 
     return {
-      startZone,
-      painPoint,
-      deliveryStyle,
+      startZone: result.startZone,
+      painPoint: result.painPoint,
+      deliveryStyle: result.deliveryStyle,
+      branchScores: result.branchScores,
       message: 'Система настроена. Твой путь начинается.',
     };
   }
@@ -60,8 +73,8 @@ export class LearningService {
       throw new ConflictException('Learning path already exists');
     }
 
-    // Build personal route based on knowledge graph
-    const concepts = await this.prisma.concept.findMany({
+    // L22.2: Build personal route using shared path builder with knowledge graph
+    const rawConcepts = await this.prisma.concept.findMany({
       orderBy: [{ difficulty: 'asc' }, { bloomLevel: 'asc' }],
       select: {
         id: true,
@@ -78,12 +91,41 @@ export class LearningService {
       },
     });
 
-    if (concepts.length === 0) {
+    if (rawConcepts.length === 0) {
       throw new BadRequestException('No concepts available. Seed the database first.');
     }
 
-    // Sort concepts respecting prerequisites (topological sort)
-    const orderedConcepts = this.buildConceptOrder(concepts, determination?.startZone);
+    // Map to ConceptNode for shared algorithm
+    const conceptNodes: ConceptNode[] = rawConcepts.map((c) => ({
+      id: c.id,
+      slug: c.slug,
+      nameRu: c.nameRu,
+      branch: c.branch as ConceptNode['branch'],
+      difficulty: c.difficulty as ConceptNode['difficulty'],
+      bloomLevel: c.bloomLevel,
+      prerequisiteIds: c.relationsFrom.map((r) => r.targetId),
+    }));
+
+    // Build determination result for path builder
+    const det: DeterminationResult = determination
+      ? analyzeDetermination([
+          { situationIndex: 1, chosenOption: determination.startZone === 'STRATEGY' ? 0 : 2 },
+          { situationIndex: 2, chosenOption: determination.startZone === 'LOGIC' ? 0 : 2 },
+          { situationIndex: 3, chosenOption: determination.startZone === 'ERUDITION' ? 0 : 2 },
+          { situationIndex: 4, chosenOption: determination.startZone === 'RHETORIC' ? 0 : 2 },
+          { situationIndex: 5, chosenOption: determination.startZone === 'INTUITION' ? 0 : 2 },
+        ])
+      : analyzeDetermination([]);
+
+    // Override with actual determination values if provided
+    if (determination) {
+      det.startZone = determination.startZone as DeterminationResult['startZone'];
+      det.painPoint = determination.painPoint as DeterminationResult['painPoint'];
+      det.deliveryStyle = determination.deliveryStyle as DeterminationResult['deliveryStyle'];
+    }
+
+    const orderedConcepts = buildLearningPath({ concepts: conceptNodes, determination: det });
+    const conceptDescriptions = new Map(rawConcepts.map((c) => [c.id, { nameRu: c.nameRu, description: c.description, slug: c.slug }]));
 
     const path = await this.prisma.learningPath.create({
       data: {
@@ -97,12 +139,19 @@ export class LearningService {
     });
 
     // Create learning days from ordered concepts
-    const daysData = orderedConcepts.slice(0, 30).map((concept, idx) => ({
-      pathId: path.id,
-      dayNumber: idx + 1,
-      conceptId: concept.id,
-      cards: this.generateDefaultCards(concept),
-    }));
+    const daysData = orderedConcepts.slice(0, 30).map((concept, idx) => {
+      const desc = conceptDescriptions.get(concept.id);
+      return {
+        pathId: path.id,
+        dayNumber: idx + 1,
+        conceptId: concept.id,
+        cards: this.generateDefaultCards({
+          nameRu: desc?.nameRu ?? concept.nameRu,
+          description: desc?.description ?? '',
+          slug: desc?.slug ?? concept.slug,
+        }),
+      };
+    });
 
     if (daysData.length > 0) {
       await this.prisma.learningDay.createMany({ data: daysData });
@@ -408,20 +457,82 @@ export class LearningService {
       data: { completedAt: new Date() },
     });
 
-    // Update mastery for the concept
+    // L22.4: Compute engagement and confidence from interaction metrics
+    const dayMetrics = (day.metrics as Record<string, unknown> | null) ?? {};
+    const interactions = Array.isArray(dayMetrics.interactions)
+      ? (dayMetrics.interactions as CardInteraction[])
+      : [];
+
+    const cards = Array.isArray(day.cards) ? day.cards : [];
+    const engagement = computeEngagement(interactions, cards.length);
+    const confidence = computeConceptConfidence(day.conceptId, engagement);
+
+    // L22.3: Dynamic mastery delta based on confidence (replaces fixed +0.1)
+    const masteryDelta = computeMasteryDelta(confidence.confidence);
+
     await this.prisma.userConceptMastery.upsert({
       where: { userId_conceptId: { userId, conceptId: day.conceptId } },
       update: {
-        mastery: { increment: 0.1 },
+        mastery: { increment: masteryDelta },
         lastTestedAt: new Date(),
       },
       create: {
         userId,
         conceptId: day.conceptId,
-        mastery: 0.1,
+        mastery: masteryDelta,
         lastTestedAt: new Date(),
       },
     });
+
+    // L22.3: Run adaptation engine
+    const recentDays = await this.prisma.learningDay.findMany({
+      where: { pathId: path.id, completedAt: { not: null } },
+      orderBy: { dayNumber: 'desc' },
+      take: 5,
+      select: { conceptId: true, metrics: true, cards: true },
+    });
+
+    const recentEngagements = recentDays.map((d) => {
+      const m = (d.metrics as Record<string, unknown> | null) ?? {};
+      const ints = Array.isArray(m.interactions) ? (m.interactions as CardInteraction[]) : [];
+      const c = Array.isArray(d.cards) ? d.cards : [];
+      return computeEngagement(ints, c.length);
+    });
+
+    const recentConfidences = recentDays.map((d, i) =>
+      computeConceptConfidence(d.conceptId, recentEngagements[i]!),
+    );
+
+    const upcomingDays = await this.prisma.learningDay.findMany({
+      where: { pathId: path.id, completedAt: null },
+      select: { conceptId: true },
+    });
+
+    const concept = await this.prisma.concept.findUnique({
+      where: { id: day.conceptId },
+      select: { branch: true },
+    });
+
+    const adaptations = computeAdaptations({
+      currentConfidence: confidence,
+      currentEngagement: engagement,
+      recentConfidences,
+      recentEngagements,
+      upcomingConceptIds: upcomingDays.map((d) => d.conceptId),
+      currentBranch: (concept?.branch ?? 'STRATEGY') as ConceptNode['branch'],
+      currentStyle: (path.deliveryStyle ?? 'practical') as DeterminationResult['deliveryStyle'],
+      dayNumber,
+    });
+
+    // Apply style change if recommended
+    const styleChange = adaptations.find((a): a is Extract<AdaptationAction, { type: 'CHANGE_STYLE' }> => a.type === 'CHANGE_STYLE');
+    if (styleChange) {
+      await this.prisma.learningPath.update({
+        where: { id: path.id },
+        data: { deliveryStyle: styleChange.newStyle },
+      });
+      this.logger.log(`Adaptation: changed delivery style to ${styleChange.newStyle} for user ${userId}`);
+    }
 
     // Check if barrier is needed
     const nextDay = path.currentDay + 1;
@@ -438,6 +549,12 @@ export class LearningService {
       nextDay,
       barrierNeeded,
       barrierLevel: barrierNeeded ? this.getBarrierLevel(nextDay) : null,
+      metrics: {
+        confidence: confidence.confidence,
+        engagement: confidence.engagement,
+        masteryDelta,
+        adaptations: adaptations.map((a) => a.type),
+      },
     };
   }
 
@@ -453,61 +570,6 @@ export class LearningService {
     }
 
     return path;
-  }
-
-  private analyzeDetermination(dto: DetermineDto) {
-    // Map answers to branches/zones based on chosen options
-    const branchScores: { [key: string]: number } = {
-      STRATEGY: 0,
-      LOGIC: 0,
-      ERUDITION: 0,
-      RHETORIC: 0,
-      INTUITION: 0,
-    };
-
-    const branchMap: string[] = ['STRATEGY', 'LOGIC', 'ERUDITION', 'RHETORIC', 'INTUITION'];
-
-    for (const answer of dto.answers) {
-      const idx = answer.situationIndex - 1;
-      const branch = branchMap[idx];
-      if (branch != null && idx >= 0 && idx < branchMap.length) {
-        branchScores[branch] = (branchScores[branch] ?? 0) + (3 - answer.chosenOption);
-      }
-    }
-
-    // Find strongest and weakest branches
-    const sorted = Object.entries(branchScores).sort((a, b) => b[1] - a[1]);
-    const startZone = sorted[0]?.[0] ?? 'STRATEGY';
-    const painPoint = sorted[sorted.length - 1]?.[0] ?? 'LOGIC';
-
-    // Delivery style based on answer patterns
-    const avgOption = dto.answers.reduce((s, a) => s + a.chosenOption, 0) / dto.answers.length;
-    const deliveryStyle = avgOption < 1.5 ? 'analytical' : avgOption < 2.5 ? 'practical' : 'philosophical';
-
-    return { startZone, painPoint, deliveryStyle };
-  }
-
-  private buildConceptOrder(
-    concepts: Array<{ id: string; slug: string; nameRu: string; description: string; branch: string; difficulty: string; bloomLevel: number; relationsFrom: Array<{ targetId: string }> }>,
-    startZone?: string | null,
-  ) {
-    // Simple topological sort with preference for startZone branch
-    const sorted = [...concepts].sort((a, b) => {
-      // Prioritize start zone branch
-      if (startZone) {
-        if (a.branch === startZone && b.branch !== startZone) return -1;
-        if (b.branch === startZone && a.branch !== startZone) return 1;
-      }
-      // Then by difficulty
-      const diffOrder = { BRONZE: 0, SILVER: 1, GOLD: 2 };
-      const diffA = diffOrder[a.difficulty as keyof typeof diffOrder] ?? 0;
-      const diffB = diffOrder[b.difficulty as keyof typeof diffOrder] ?? 0;
-      if (diffA !== diffB) return diffA - diffB;
-      // Then by bloom level
-      return a.bloomLevel - b.bloomLevel;
-    });
-
-    return sorted;
   }
 
   private generateDefaultCards(concept: { nameRu: string; description: string; slug: string }) {
