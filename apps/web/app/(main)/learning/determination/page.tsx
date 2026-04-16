@@ -12,6 +12,7 @@ import RitualShell from "@/components/learning/RitualShell";
 import { getLevelName } from "@/lib/learning/levels";
 import {
   determine,
+  startLearning,
   LearningApiError,
   type DetermineAnswer,
   type DetermineResult,
@@ -114,6 +115,23 @@ export default function DeterminationPage() {
     try {
       const data = await determine(finalAnswers, accessToken);
       setResult(data);
+
+      // Create learning path based on determination results
+      if (data.startZone && data.painPoint && data.deliveryStyle) {
+        try {
+          await startLearning(
+            {
+              startZone: data.startZone,
+              painPoint: data.painPoint,
+              deliveryStyle: data.deliveryStyle,
+            },
+            accessToken,
+          );
+        } catch {
+          // Path creation may fail if no concepts are seeded — continue to result screen
+        }
+      }
+
       setPhase("result");
     } catch (e) {
       if (e instanceof LearningApiError) {

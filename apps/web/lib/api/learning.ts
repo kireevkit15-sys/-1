@@ -112,6 +112,24 @@ export function determine(
   );
 }
 
+export interface StartResult {
+  pathId: string;
+  totalDays: number;
+  currentLevel: string;
+  message?: string;
+}
+
+export function startLearning(
+  determination: { startZone: string; painPoint: string; deliveryStyle: string },
+  accessToken: string | null,
+): Promise<StartResult> {
+  return request<StartResult>(
+    "/v1/learning/start",
+    { method: "POST", body: JSON.stringify(determination) },
+    accessToken,
+  );
+}
+
 // ── Карта знаний (F25) ──────────────────────────────────────────────
 
 export type BranchKey =
