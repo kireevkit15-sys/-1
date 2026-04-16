@@ -436,8 +436,8 @@
 | LC4 | AI service — реальная интеграция Claude API (L6.2) | done | `apps/api/src/ai/ai.service.ts` |
 | LC5 | AI сократический промпт для обучения (L6.1) | done | `apps/api/src/ai/prompts/socratic-tutor.ts` |
 | LC6 | Обработать транскрипты Маркаряна → structured JSON (первый блогерский источник) | done | `content/sources/bloggers/markaryan/concepts.json` |
-| LC7 | Ревью и валидация первого батча 2000 вопросов | todo | — |
-| LC9 | Генерация вопросов из академических концептов (Дёрнер и др.) → JSON для seed/bulk загрузки | todo | `content/sources/academic/`, `content/processed/` |
+| LC7 | Batch-валидация вопросов: validate-questions.ts, report (306 q, 199 valid, 2 dupes) | done | `scripts/validate-questions.ts` |
+| LC9 | 4 академических источника: Канеман (8), Талеб (6), Чалдини (6), Друкер (5) = 25 концептов | done | `content/sources/academic/` |
 | LC8 | Система контроля качества вопросов (автопроверки, правила валидации) | done | `packages/shared/src/content/validation.ts` |
 | LC10 | 🧠 LLM-машина — автономный AI-движок: очередь генерации, gap-анализ, роутинг моделей, бюджет токенов, feedback loop, авторотация вопросов | done | `apps/api/src/ai/llm-engine.service.ts`, `apps/api/src/cron/cron.service.ts` |
 
