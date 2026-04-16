@@ -1310,6 +1310,49 @@ _Playwright конфиг:_
 - `db6aa30` — refactor(api): eliminate remaining `any` types in battle and achievements services
 - `57bcb8b` — fix(feed): align feed services with Prisma schema, fix all TypeScript errors
 
+### 2026-04-16 — Сессия 11: Юнит/E2E тесты + L23 + LC10
+
+**Время:** ~2 часа
+**Статус:** Завершена
+
+**Что сделано:**
+- Разделён tsconfig: `tsconfig.json` (прод) и `tsconfig.spec.json` (тесты с Jest типами)
+- Исправлены все TS-ошибки в юнит-тестах (barrier + learning — 37 тестов, все проходят)
+- Исправлены 31 TS-ошибка в 11 E2E-тестовых файлах
+- **Результат: 0 ошибок TypeScript во всём проекте (прод + тесты)**
+- L23.1: Фильтр вопросов батлов по concept mastery (mastery >= 0.3)
+- L23.2: canPlayPvP() — PvP доступен с уровня AWAKENED, до этого только боты
+- L23.3: После барьера — подсчёт и отображение открытых вопросов для батлов
+- LC10: LlmEngineService — автономный AI-движок генерации контента:
+  - Gap-анализ: находит ячейки branch/category/difficulty с < 10 вопросов
+  - AI-генерация с RAG-контекстом из KnowledgeService
+  - Авто-привязка вопросов к концептам
+  - Redis-блокировка от параллельных запусков
+  - Бюджет 500K токенов/день
+  - Cron-задача каждый день в 03:00 UTC
+
+**Файлы созданы/изменены:**
+- `apps/api/tsconfig.spec.json` — новый tsconfig для тестов (создан)
+- `apps/api/tsconfig.json` — исключены тесты из продакшн-компиляции
+- `apps/api/jest.config.ts` — ссылка на tsconfig.spec.json
+- `apps/api/src/learning/__tests__/*.spec.ts` — типы моков
+- `apps/api/test/*.e2e-spec.ts` — 11 файлов, non-null assertions
+- `apps/api/src/feed/feed.service.ts` — экспорт InteractResult, FeedStatsResult
+- `apps/api/src/question/question.service.ts` — L23.1 concept mastery фильтр
+- `apps/api/src/battle/matchmaking.service.ts` — L23.2 canPlayPvP()
+- `apps/api/src/learning/barrier.service.ts` — L23.3 unlockedQuestions
+- `apps/api/src/ai/llm-engine.service.ts` — LC10 LLM Engine (создан)
+- `apps/api/src/ai/ai.module.ts` — регистрация LlmEngineService
+- `apps/api/src/cron/cron.service.ts` — cron-задача LLM Engine
+- `apps/api/src/cron/cron.module.ts` — импорт AiModule
+
+**Задачи из SPRINT.md закрыты:** L23.1, L23.2, L23.3, LC10
+
+**Коммиты:**
+- `0f3e8ea` — fix(api): separate test tsconfig, fix all unit test type errors
+- `0624f56` — fix(test): resolve all TypeScript errors in E2E test files
+- `d85bad5` — feat(api): L23 concept-battle linking + LC10 autonomous LLM engine
+
 ---
 
 ## Сводка по неделям
@@ -1334,3 +1377,4 @@ _Playwright конфиг:_
 | 04-12 | Яшкин | BT.15–BT.20 тесты + полный аудит бэкенда, 5 багов исправлено | BT.15–BT.20 (все 6) |
 | 04-14 | Яшкин | Система обучения: модели + API + seed + 98 тестов | B20-B25, L21 (53+ задач) |
 | 04-16 | Яшкин | Техдолг: 0 TS-ошибок в проде, 20 контроллеров, 28 catch, enums, feed fix | Рефакторинг (5 коммитов) |
+| 04-16 | Яшкин | Тесты: 0 TS-ошибок, tsconfig.spec.json. L23 concept-battle linking, LC10 LLM Engine | L23.1-L23.3, LC10 |
