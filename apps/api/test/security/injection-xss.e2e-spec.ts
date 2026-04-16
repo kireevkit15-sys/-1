@@ -81,7 +81,7 @@ describe('Security — Injection, XSS, JWT forgery, Rate limiting (e2e)', () => 
       .send({ email: userEmail, password, name: 'Security User' });
     userToken = userRes.body.accessToken;
     userId = JSON.parse(
-      Buffer.from(userToken.split('.')[1], 'base64').toString(),
+      Buffer.from(userToken.split('.')[1]!, 'base64').toString(),
     ).sub;
   });
 
@@ -406,7 +406,7 @@ describe('Security — Injection, XSS, JWT forgery, Rate limiting (e2e)', () => 
     it('should reject tampered JWT payload (modified role)', async () => {
       // Take a valid token and tamper with the payload
       const parts = userToken.split('.');
-      const payload = JSON.parse(Buffer.from(parts[1], 'base64').toString());
+      const payload = JSON.parse(Buffer.from(parts[1]!, 'base64').toString());
       payload.role = 'ADMIN'; // tamper
       const tamperedPayload = Buffer.from(JSON.stringify(payload)).toString(
         'base64url',

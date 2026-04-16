@@ -59,7 +59,7 @@ describe('Learn E2E (BT.4)', () => {
 
     userToken = userRes.body.accessToken;
     const payload = JSON.parse(
-      Buffer.from(userToken.split('.')[1], 'base64').toString(),
+      Buffer.from(userToken.split('.')[1]!, 'base64').toString(),
     );
     userId = payload.sub;
 
@@ -96,7 +96,7 @@ describe('Learn E2E (BT.4)', () => {
         orderIndex: 1,
         title: 'E2E Test Module 1',
         description: 'First test module',
-        questionIds: [questionIds[0], questionIds[1]],
+        questionIds: [questionIds[0]!, questionIds[1]!],
       },
     });
     module1Id = mod1.id;
@@ -107,7 +107,7 @@ describe('Learn E2E (BT.4)', () => {
         orderIndex: 2,
         title: 'E2E Test Module 2',
         description: 'Second test module (locked until module 1 complete)',
-        questionIds: [questionIds[2], questionIds[3]],
+        questionIds: [questionIds[2]!, questionIds[3]!],
       },
     });
     module2Id = mod2.id;

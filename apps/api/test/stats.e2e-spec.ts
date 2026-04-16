@@ -55,7 +55,7 @@ describe('Stats + Leaderboard E2E (BT.5 + BT.6)', () => {
 
     userToken = userRes.body.accessToken;
     const payload = JSON.parse(
-      Buffer.from(userToken.split('.')[1], 'base64').toString(),
+      Buffer.from(userToken.split('.')[1]!, 'base64').toString(),
     );
     userId = payload.sub;
   });

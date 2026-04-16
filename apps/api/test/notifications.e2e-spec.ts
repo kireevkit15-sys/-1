@@ -56,7 +56,7 @@ describe('Notifications E2E (BT.10)', () => {
 
     userToken = userRes.body.accessToken;
     const payload = JSON.parse(
-      Buffer.from(userToken.split('.')[1], 'base64').toString(),
+      Buffer.from(userToken.split('.')[1]!, 'base64').toString(),
     );
     userId = payload.sub;
   });
@@ -107,7 +107,7 @@ describe('Notifications E2E (BT.10)', () => {
         where: { userId, endpoint: testEndpoint },
       });
       expect(subs.length).toBe(1);
-      expect(subs[0].auth).toBe(newAuth);
+      expect(subs[0]!.auth).toBe(newAuth);
     });
 
     it('POST /notifications/subscribe — should reject without auth', async () => {

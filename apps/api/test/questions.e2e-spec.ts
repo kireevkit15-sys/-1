@@ -404,7 +404,7 @@ describe('Questions E2E (BT.3)', () => {
     it('submitFeedback (service) — should submit a like', async () => {
       const questionService = app.get(QuestionService);
       const userPayload = JSON.parse(
-        Buffer.from(userToken.split('.')[1], 'base64').toString(),
+        Buffer.from(userToken.split('.')[1]!, 'base64').toString(),
       );
       const result = await questionService.submitFeedback(
         feedbackQuestionId, userPayload.sub, 'LIKE',
@@ -415,7 +415,7 @@ describe('Questions E2E (BT.3)', () => {
     it('submitFeedback (service) — should submit a report', async () => {
       const questionService = app.get(QuestionService);
       const adminPayload = JSON.parse(
-        Buffer.from(adminToken.split('.')[1], 'base64').toString(),
+        Buffer.from(adminToken.split('.')[1]!, 'base64').toString(),
       );
       const result = await questionService.submitFeedback(
         feedbackQuestionId, adminPayload.sub, 'REPORT', 'incorrect_answer', 'Wrong answer',

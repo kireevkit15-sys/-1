@@ -337,11 +337,11 @@ describe('Battle V2 — 5 Branches E2E', () => {
       expect(statsAfter).toBeDefined();
 
       const totalXpBefore =
-        statsBefore.strategyXp +
-        statsBefore.logicXp +
-        statsBefore.eruditionXp +
-        statsBefore.rhetoricXp +
-        statsBefore.intuitionXp;
+        (statsBefore.strategyXp ?? 0) +
+        (statsBefore.logicXp ?? 0) +
+        (statsBefore.eruditionXp ?? 0) +
+        (statsBefore.rhetoricXp ?? 0) +
+        (statsBefore.intuitionXp ?? 0);
 
       const totalXpAfter =
         (statsAfter?.strategyXp ?? 0) +

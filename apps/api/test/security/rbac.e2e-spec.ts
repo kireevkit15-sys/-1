@@ -81,7 +81,7 @@ describe('Security — RBAC, Auth Guards, Token Lifecycle (e2e)', () => {
     userToken = userRes.body.accessToken;
     userRefreshToken = userRes.body.refreshToken;
     userId = JSON.parse(
-      Buffer.from(userToken.split('.')[1], 'base64').toString(),
+      Buffer.from(userToken.split('.')[1]!, 'base64').toString(),
     ).sub;
 
     // Create a test question as admin

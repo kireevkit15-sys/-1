@@ -121,7 +121,7 @@ describe('Learning Barrier (e2e)', () => {
         where: { id: barrierId },
       });
       const stages = barrier!.stages as Record<string, { questions: Array<{ conceptId: string }> }>;
-      const questions = stages.recall.questions;
+      const questions = stages.recall!.questions;
 
       // Mock AI grading
       for (const _q of questions) {
@@ -152,7 +152,7 @@ describe('Learning Barrier (e2e)', () => {
       // Get a real concept ID from the barrier
       const barrier = await prisma.levelBarrier.findUnique({ where: { id: barrierId } });
       const stages = barrier!.stages as Record<string, { questions: Array<{ conceptId: string }> }>;
-      const conceptId = stages.recall.questions[0]!.conceptId;
+      const conceptId = stages.recall!.questions[0]!.conceptId;
 
       jest.spyOn(aiService, 'chatCompletion').mockResolvedValue(
         JSON.stringify({ score: 0.5, feedback: 'ok' }),
@@ -170,7 +170,7 @@ describe('Learning Barrier (e2e)', () => {
         where: { id: barrierId },
       });
       const stages = barrier!.stages as Record<string, { pairs: Array<{ conceptA: string; conceptB: string }> }>;
-      const pairs = stages.connect.pairs;
+      const pairs = stages.connect!.pairs;
 
       for (const _p of pairs) {
         jest.spyOn(aiService, 'chatCompletion').mockResolvedValueOnce(
@@ -328,7 +328,7 @@ describe('Learning Barrier (e2e)', () => {
 
       // Submit all stages with low scores
       // Recall
-      const questions = stages.recall.questions!;
+      const questions = stages.recall!.questions!;
       for (const _q of questions) {
         jest.spyOn(aiService, 'chatCompletion').mockResolvedValueOnce(
           JSON.stringify({ score: 0.2, feedback: 'Poor recall' }),
@@ -341,7 +341,7 @@ describe('Learning Barrier (e2e)', () => {
         .expect(201);
 
       // Connect
-      const pairs = stages.connect.pairs!;
+      const pairs = stages.connect!.pairs!;
       for (const _p of pairs) {
         jest.spyOn(aiService, 'chatCompletion').mockResolvedValueOnce(
           JSON.stringify({ score: 0.3, feedback: 'Weak connection' }),

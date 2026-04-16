@@ -84,7 +84,7 @@ describe('Auth Full Cycle (e2e)', () => {
 
       // Extract userId from access token payload
       const payload = JSON.parse(
-        Buffer.from(accessToken.split('.')[1], 'base64').toString(),
+        Buffer.from(accessToken.split('.')[1]!, 'base64').toString(),
       );
       userId = payload.sub;
       expect(userId).toBeDefined();
@@ -157,7 +157,7 @@ describe('Auth Full Cycle (e2e)', () => {
       refreshToken = res.body.refreshToken;
 
       const payload = JSON.parse(
-        Buffer.from(accessToken.split('.')[1], 'base64').toString(),
+        Buffer.from(accessToken.split('.')[1]!, 'base64').toString(),
       );
       expect(payload.sub).toBe(userId);
       expect(payload.type).toBe('access');
@@ -423,7 +423,7 @@ describe('Auth Full Cycle (e2e)', () => {
   describe('Token Payload', () => {
     it('access token should contain sub, email, role, type=access', () => {
       const payload = JSON.parse(
-        Buffer.from(accessToken.split('.')[1], 'base64').toString(),
+        Buffer.from(accessToken.split('.')[1]!, 'base64').toString(),
       );
 
       expect(payload.sub).toBe(userId);
@@ -436,7 +436,7 @@ describe('Auth Full Cycle (e2e)', () => {
 
     it('refresh token should contain sub, email, role, type=refresh', () => {
       const payload = JSON.parse(
-        Buffer.from(refreshToken.split('.')[1], 'base64').toString(),
+        Buffer.from(refreshToken.split('.')[1]!, 'base64').toString(),
       );
 
       expect(payload.sub).toBe(userId);
@@ -448,10 +448,10 @@ describe('Auth Full Cycle (e2e)', () => {
 
     it('refresh token should have longer expiry than access token', () => {
       const accessPayload = JSON.parse(
-        Buffer.from(accessToken.split('.')[1], 'base64').toString(),
+        Buffer.from(accessToken.split('.')[1]!, 'base64').toString(),
       );
       const refreshPayload = JSON.parse(
-        Buffer.from(refreshToken.split('.')[1], 'base64').toString(),
+        Buffer.from(refreshToken.split('.')[1]!, 'base64').toString(),
       );
 
       expect(refreshPayload.exp).toBeGreaterThan(accessPayload.exp);

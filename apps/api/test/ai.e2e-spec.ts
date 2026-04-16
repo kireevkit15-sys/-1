@@ -63,7 +63,7 @@ describe('AI E2E (BT.7)', () => {
 
     userToken = userRes.body.accessToken;
     const payload = JSON.parse(
-      Buffer.from(userToken.split('.')[1], 'base64').toString(),
+      Buffer.from(userToken.split('.')[1]!, 'base64').toString(),
     );
     userId = payload.sub;
 
