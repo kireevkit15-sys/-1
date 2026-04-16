@@ -183,10 +183,10 @@ export class MetricsService {
       if (mastery >= 0.8) {
         // Strong — advance to next interval
         const advancedIndex = Math.min(index + 1, BASE_INTERVALS.length - 1);
-        intervalDays = BASE_INTERVALS[advancedIndex];
+        intervalDays = BASE_INTERVALS[advancedIndex] ?? BASE_INTERVALS[0]!;
       } else {
         // Moderate — stay at current interval
-        intervalDays = BASE_INTERVALS[index];
+        intervalDays = BASE_INTERVALS[index] ?? BASE_INTERVALS[0]!;
       }
     }
 

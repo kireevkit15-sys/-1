@@ -98,7 +98,7 @@ export interface DetermineResult {
 // ── Методы ──────────────────────────────────────────────────────────
 
 export function getStatus(accessToken: string | null): Promise<LearningStatus> {
-  return request<LearningStatus>("/learning/status", { method: "GET" }, accessToken);
+  return request<LearningStatus>("/v1/learning/status", { method: "GET" }, accessToken);
 }
 
 export function determine(
@@ -106,7 +106,7 @@ export function determine(
   accessToken: string | null,
 ): Promise<DetermineResult> {
   return request<DetermineResult>(
-    "/learning/determine",
+    "/v1/learning/determine",
     { method: "POST", body: JSON.stringify({ answers }) },
     accessToken,
   );
@@ -154,7 +154,7 @@ export function getMasteryMap(
   accessToken: string | null,
 ): Promise<MasteryMapResponse> {
   return request<MasteryMapResponse>(
-    "/learning/mastery",
+    "/v1/learning/mastery",
     { method: "GET" },
     accessToken,
   );

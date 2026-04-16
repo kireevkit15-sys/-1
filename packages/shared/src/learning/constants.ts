@@ -1,28 +1,28 @@
 // ── Learning System Constants ────────────────────────────────────────
 // Shared between frontend and backend — no Prisma dependency.
 
-import { LevelName } from './types';
+import type { LevelName } from './types';
 
 // ── Level progression ────────────────────────────────────────────────
 
 /** Levels in order of progression */
 export const LEVEL_ORDER: readonly LevelName[] = [
-  LevelName.SLEEPING,
-  LevelName.AWAKENED,
-  LevelName.OBSERVER,
-  LevelName.WARRIOR,
-  LevelName.STRATEGIST,
-  LevelName.MASTER,
+  'SLEEPING',
+  'AWAKENED',
+  'OBSERVER',
+  'WARRIOR',
+  'STRATEGIST',
+  'MASTER',
 ] as const;
 
 /** Russian display names for each level */
 export const LEVEL_DISPLAY_NAMES: Record<LevelName, string> = {
-  [LevelName.SLEEPING]: 'Спящий',
-  [LevelName.AWAKENED]: 'Пробудившийся',
-  [LevelName.OBSERVER]: 'Наблюдатель',
-  [LevelName.WARRIOR]: 'Воин',
-  [LevelName.STRATEGIST]: 'Стратег',
-  [LevelName.MASTER]: 'Мастер',
+  SLEEPING: 'Спящий',
+  AWAKENED: 'Пробудившийся',
+  OBSERVER: 'Наблюдатель',
+  WARRIOR: 'Воин',
+  STRATEGIST: 'Стратег',
+  MASTER: 'Мастер',
 };
 
 // ── Barrier (level gate exam) ────────────────────────────────────────
