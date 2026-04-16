@@ -112,7 +112,7 @@ export class FeedService {
     await this.prisma.userFeedState.update({
       where: { userId },
       data: {
-        todayCards: cards as unknown as Record<string, unknown>[],
+        todayCards: cards as unknown as Parameters<typeof this.prisma.userFeedState.update>[0]['data']['todayCards'],
         lastFeedDate: today,
         todayViewedCount: 0,
       },
@@ -289,7 +289,7 @@ export class FeedService {
     let forgePromoted = false;
 
     const feedState = await this.getOrCreateFeedState(userId);
-    const forgeQueue = (feedState.forgeQueue ?? []) as ForgeQueueItem[];
+    const forgeQueue = (feedState.forgeQueue ?? []) as unknown as ForgeQueueItem[];
 
     if (
       (interactionType === FeedInteractionType.ANSWERED_WRONG) &&
@@ -319,7 +319,7 @@ export class FeedService {
       const itemIdx = forgeQueue.findIndex((item) => item.cardId === originalCardId);
 
       if (itemIdx !== -1) {
-        const item = forgeQueue[itemIdx];
+        const item = forgeQueue[itemIdx]!;
         const nextIntervalIdx = item.attempt; // attempt is 1-based, SRS_INTERVALS is 0-based
 
         if (nextIntervalIdx >= SRS_INTERVALS.length) {
@@ -330,7 +330,7 @@ export class FeedService {
           // Schedule next SRS review
           forgeQueue[itemIdx] = {
             ...item,
-            nextReviewDate: this.addDays(today, SRS_INTERVALS[nextIntervalIdx]),
+            nextReviewDate: this.addDays(today, SRS_INTERVALS[nextIntervalIdx]!),
             attempt: item.attempt + 1,
           };
           forgePromoted = true;
@@ -345,8 +345,8 @@ export class FeedService {
 
       if (itemIdx !== -1) {
         forgeQueue[itemIdx] = {
-          ...forgeQueue[itemIdx],
-          nextReviewDate: this.addDays(today, SRS_INTERVALS[0]),
+          ...forgeQueue[itemIdx]!,
+          nextReviewDate: this.addDays(today, SRS_INTERVALS[0]!),
           attempt: 1, // Reset to beginning
         };
       }
@@ -373,7 +373,7 @@ export class FeedService {
       where: { userId },
       data: {
         todayViewedCount: newViewedCount,
-        forgeQueue: forgeQueue as unknown as Record<string, unknown>[],
+        forgeQueue: forgeQueue as unknown as Parameters<typeof this.prisma.userFeedState.update>[0]['data']['forgeQueue'],
         feedStreak: newStreak,
         lastFeedDate: today,
       },

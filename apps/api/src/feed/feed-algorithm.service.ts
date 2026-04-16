@@ -1,4 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { BattleStatus } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import {
   FeedCardType,
@@ -219,7 +220,7 @@ export class FeedAlgorithmService {
         .map((c) => ({
           id: c.id,
           type: c.type as FeedCardType,
-          content: c.content as FeedCard['content'],
+          content: c.content as unknown as FeedCard['content'],
           branch: c.branch as FeedCard['branch'],
           campaignId: c.campaignId,
           dayNumber: c.dayNumber,
@@ -312,23 +313,23 @@ export class FeedAlgorithmService {
     const sparringCards: FeedCard[] = [];
 
     try {
-      // Find recent battles where this user participated
+      // Find recent completed battles where this user participated
       const recentBattles = await this.prisma.battle.findMany({
         where: {
           OR: [
-            { challengerId: userId },
-            { opponentId: userId },
+            { player1Id: userId },
+            { player2Id: userId },
           ],
-          status: 'FINISHED',
+          status: BattleStatus.COMPLETED,
         },
-        orderBy: { finishedAt: 'desc' },
+        orderBy: { endedAt: 'desc' },
         take: 5,
         select: {
           id: true,
-          challengerId: true,
-          opponentId: true,
-          challenger: { select: { username: true } },
-          opponent: { select: { username: true } },
+          player1Id: true,
+          player2Id: true,
+          player1: { select: { name: true } },
+          player2: { select: { name: true } },
         },
       });
 
@@ -336,18 +337,18 @@ export class FeedAlgorithmService {
       for (const battle of recentBattles) {
         if (sparringCards.length >= 3) break;
 
-        const opponentId = battle.challengerId === userId
-          ? battle.opponentId
-          : battle.challengerId;
-        const opponentName = battle.challengerId === userId
-          ? battle.opponent?.username
-          : battle.challenger?.username;
+        const opponentId = battle.player1Id === userId
+          ? battle.player2Id
+          : battle.player1Id;
+        const opponentName = battle.player1Id === userId
+          ? battle.player2?.name
+          : battle.player1.name;
 
         if (!opponentId || !opponentName) continue;
 
-        // Get a round from this battle with a question
+        // Get an opponent's round from this battle with a question
         const round = await this.prisma.battleRound.findFirst({
-          where: { battleId: battle.id },
+          where: { battleId: battle.id, attackerId: opponentId },
           include: {
             question: {
               select: {
@@ -365,14 +366,6 @@ export class FeedAlgorithmService {
 
         if (!round?.question) continue;
 
-        // Determine opponent's answer performance
-        const opponentAnswer = battle.challengerId === userId
-          ? round.opponentAnswer
-          : round.challengerAnswer;
-        const opponentTime = battle.challengerId === userId
-          ? round.opponentTimeMs
-          : round.challengerTimeMs;
-
         const sparringContent: SparringContent = {
           questionId: round.question.id,
           text: round.question.text,
@@ -380,8 +373,8 @@ export class FeedAlgorithmService {
           correctIndex: round.question.correctIndex,
           explanation: round.question.explanation ?? '',
           opponentName,
-          opponentTimeMs: opponentTime ?? 5000,
-          opponentCorrect: opponentAnswer === round.question.correctIndex,
+          opponentTimeMs: round.timeTakenMs ?? 5000,
+          opponentCorrect: round.isCorrect ?? false,
         };
 
         sparringCards.push({
@@ -538,7 +531,7 @@ export class FeedAlgorithmService {
 
     for (let i = 0; i < sparringCards.length; i++) {
       const position = Math.min(insertPoint + i * 3, result.length);
-      result.splice(position, 0, sparringCards[i]);
+      result.splice(position, 0, sparringCards[i]!);
     }
 
     return result;
@@ -550,7 +543,7 @@ export class FeedAlgorithmService {
    */
   private interleaveBuckets(buckets: FeedCard[][]): FeedCard[] {
     if (buckets.length === 0) return [];
-    if (buckets.length === 1) return buckets[0];
+    if (buckets.length === 1) return buckets[0]!;
 
     const result: FeedCard[] = [];
     const iterators = buckets.map((b) => ({ cards: b, idx: 0 }));
@@ -560,7 +553,7 @@ export class FeedAlgorithmService {
       remaining = false;
       for (const iter of iterators) {
         if (iter.idx < iter.cards.length) {
-          result.push(iter.cards[iter.idx]);
+          result.push(iter.cards[iter.idx]!);
           iter.idx++;
           remaining = true;
         }
@@ -590,14 +583,14 @@ export class FeedAlgorithmService {
       contentCount++;
 
       if (contentCount % interval === 0 && extraIdx < extras.length) {
-        result.push(extras[extraIdx]);
+        result.push(extras[extraIdx]!);
         extraIdx++;
       }
     }
 
     // Append any remaining extras at the end
     while (extraIdx < extras.length) {
-      result.push(extras[extraIdx]);
+      result.push(extras[extraIdx]!);
       extraIdx++;
     }
 
@@ -639,7 +632,7 @@ export class FeedAlgorithmService {
   // ──────────────────────────────────────────────
 
   generateWisdomCard(): FeedCard {
-    const wisdom = WISDOM_POOL[Math.floor(Math.random() * WISDOM_POOL.length)];
+    const wisdom = WISDOM_POOL[Math.floor(Math.random() * WISDOM_POOL.length)]!;
     return {
       id: `wisdom-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
       type: FeedCardType.WISDOM,
