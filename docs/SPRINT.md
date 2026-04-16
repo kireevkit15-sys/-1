@@ -502,11 +502,11 @@
 
 | # | Задача | Статус | Файлы | Блокер |
 |---|--------|--------|-------|--------|
-| L20.1 | Спроектировать граф знаний: модели Concept, ConceptRelation, UserConceptMastery, ConceptQuestion — все связи, типы отношений (PREREQUISITE, RELATED, CONTRASTS, DEEPENS, APPLIES_IN) | todo | `prisma/schema.prisma` | — |
-| L20.2 | Спроектировать модель LearningPath — персональная нить для каждого пользователя: текущий уровень, текущий день, пройденные концепты, болевая точка, стиль подачи | todo | `prisma/schema.prisma` | — |
-| L20.3 | Спроектировать модель LevelBarrier — 5 этапов испытания (Вспомни, Свяжи, Примени, Защити, Вердикт), результат, пересдача | todo | `prisma/schema.prisma` | — |
-| L20.4 | Спроектировать систему уровней: Спящий → Пробудившийся → Наблюдатель → Воин → Стратег → Мастер — с привязкой к контенту и батлам | todo | `packages/shared/src/learning/` | — |
-| L20.5 | Prisma миграция всех новых моделей | todo | `prisma/migrations/` | L20.1-L20.4 |
+| L20.1 | Граф знаний: Concept, ConceptRelation, UserConceptMastery, ConceptQuestion | done | `prisma/schema.prisma` | — |
+| L20.2 | Модель LearningPath — уровень, день, startZone, painPoint, deliveryStyle | done | `prisma/schema.prisma` | — |
+| L20.3 | Модель LevelBarrier — 5 этапов, score, passed, attemptNumber | done | `prisma/schema.prisma` | — |
+| L20.4 | Система уровней: SLEEPING → AWAKENED → OBSERVER → WARRIOR → STRATEGIST → MASTER | done | `packages/shared/src/learning/` | — |
+| L20.5 | Prisma миграция всех моделей обучения | done | `prisma/migrations/` | — |
 
 ### Блок L21 — Контент: основная нить
 

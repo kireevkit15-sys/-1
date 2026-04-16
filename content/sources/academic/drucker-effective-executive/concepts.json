@@ -1,0 +1,67 @@
+[
+  {
+    "concept": "Управление временем — фиксируй, анализируй, консолидируй",
+    "source": "drucker/effective-executive",
+    "claim": "Эффективные руководители начинают не с задач, а с времени. Три шага: записывай реальное использование времени, убирай непродуктивное, консолидируй свободное время в крупные блоки",
+    "example": "Друкер попросил менеджеров записать, как они тратят время. Все были уверены, что проводят 60% времени с клиентами. Записи показали: 10-15%. Остальное — совещания, бумаги, мелкие прерывания",
+    "trust_level": "validated",
+    "academic_sources": [
+      { "title": "The Effective Executive", "doi": null, "source": "Peter Drucker, Harper & Row, 1967, Ch. 2" }
+    ],
+    "tags": ["time-management", "productivity", "leadership", "self-awareness"],
+    "branch": "STRATEGY",
+    "difficulty": "BRONZE"
+  },
+  {
+    "concept": "Фокус на вкладе, а не на усилиях",
+    "source": "drucker/effective-executive",
+    "claim": "Эффективный работник задаёт вопрос 'Какой вклад я могу внести?', а не 'Какие задачи мне делать?'. Фокус на результатах, а не на процессе — ключевое отличие эффективных от занятых",
+    "example": "Два врача в одной больнице: один проводит 60 операций в месяц, другой — 20. Но второй выбирает только те операции, где его навыки критичны, и тратит время на обучение хирургов. Его вклад выше",
+    "trust_level": "validated",
+    "academic_sources": [
+      { "title": "The Effective Executive", "doi": null, "source": "Peter Drucker, Harper & Row, 1967, Ch. 3" }
+    ],
+    "tags": ["productivity", "leadership", "management", "results-orientation"],
+    "branch": "STRATEGY",
+    "difficulty": "SILVER"
+  },
+  {
+    "concept": "Опирайся на силы, не исправляй слабости",
+    "source": "drucker/effective-executive",
+    "claim": "Эффективный руководитель строит на сильных сторонах — своих, подчинённых, коллег. Попытка устранить слабости даёт посредственность. Задача — сделать сильные стороны продуктивными",
+    "example": "Линкольн назначил Гранта командующим, зная о его пьянстве. Почему? Грант — единственный генерал, который побеждал. 'Выясните, что он пьёт, и пошлите ящик каждому генералу' — предположительная цитата Линкольна",
+    "trust_level": "validated",
+    "academic_sources": [
+      { "title": "The Effective Executive", "doi": null, "source": "Peter Drucker, Harper & Row, 1967, Ch. 4" }
+    ],
+    "tags": ["leadership", "management", "talent", "strengths"],
+    "branch": "STRATEGY",
+    "difficulty": "SILVER"
+  },
+  {
+    "concept": "Главное — прежде всего (first things first)",
+    "source": "drucker/effective-executive",
+    "claim": "Секрет эффективности — концентрация. Делай одну важную вещь за раз. Не расставляй приоритеты — устанавливай 'задние-приоритеты' (что НЕ делать). Мужество — в решении, что отложить",
+    "example": "Друкер: 'Нет ничего более бесполезного, чем эффективно делать то, что не нужно делать вообще'. Лучшие CEO говорят 'нет' 9 из 10 инициатив. Apple при Джобсе гордилась тем, ОТ ЧЕГО отказалась",
+    "trust_level": "validated",
+    "academic_sources": [
+      { "title": "The Effective Executive", "doi": null, "source": "Peter Drucker, Harper & Row, 1967, Ch. 5" }
+    ],
+    "tags": ["prioritization", "productivity", "leadership", "focus"],
+    "branch": "STRATEGY",
+    "difficulty": "GOLD"
+  },
+  {
+    "concept": "Эффективное решение начинается с мнений, а не фактов",
+    "source": "drucker/effective-executive",
+    "claim": "Традиционное 'сначала факты, потом мнения' — наивно. Опытный руководитель начинает с гипотез (мнений) и проверяет их фактами. Без гипотезы факты бессмысленны — мы не знаем, что искать",
+    "example": "Альфред Слоан (GM): 'Если все согласны с решением, предлагаю отложить его обсуждение. Нам нужно время для несогласия и понимания, о чём вообще это решение'. Несогласие — инструмент, не проблема",
+    "trust_level": "validated",
+    "academic_sources": [
+      { "title": "The Effective Executive", "doi": null, "source": "Peter Drucker, Harper & Row, 1967, Ch. 7" }
+    ],
+    "tags": ["decision-making", "critical-thinking", "leadership", "hypothesis-testing"],
+    "branch": "LOGIC",
+    "difficulty": "GOLD"
+  }
+]

@@ -1,0 +1,80 @@
+[
+  {
+    "concept": "Принцип взаимности (reciprocity)",
+    "source": "cialdini/influence",
+    "claim": "Люди чувствуют обязательство вернуть то, что получили. Даже незначительный подарок создаёт мощное давление к ответной услуге, часто непропорционально большей",
+    "example": "Официанты, оставляющие мятную конфету с чеком, получают на 3% больше чаевых. Две конфеты — на 14% больше. Если вернуться и сказать 'для вас — ещё одна' — на 23% больше. Персонализация усиливает взаимность",
+    "trust_level": "validated",
+    "academic_sources": [
+      { "title": "Influence: The Psychology of Persuasion", "doi": null, "source": "Robert Cialdini, Harper Business, 1984/2006" }
+    ],
+    "tags": ["persuasion", "negotiation", "social-psychology", "marketing"],
+    "branch": "RHETORIC",
+    "difficulty": "BRONZE"
+  },
+  {
+    "concept": "Социальное доказательство (social proof)",
+    "source": "cialdini/influence",
+    "claim": "В ситуации неопределённости люди ориентируются на поведение других. Чем больше людей делают что-то, тем более правильным это кажется. Эффект усиливается, когда 'другие' похожи на нас",
+    "example": "Отель: табличка 'большинство гостей повторно используют полотенца' увеличила повторное использование на 26%. Табличка 'большинство гостей ЭТОГО номера...' — на 33%. Конкретность и схожесть усиливают эффект",
+    "trust_level": "validated",
+    "academic_sources": [
+      { "title": "A Focus Theory of Normative Conduct", "doi": "10.1016/S0065-2601(08)60330-5", "source": "Cialdini, Reno & Kallgren, Advances in Experimental Social Psychology, 1990" }
+    ],
+    "tags": ["social-psychology", "marketing", "decision-making", "conformity"],
+    "branch": "RHETORIC",
+    "difficulty": "BRONZE"
+  },
+  {
+    "concept": "Принцип дефицита (scarcity)",
+    "source": "cialdini/influence",
+    "claim": "Люди ценят то, что ограничено. Дефицит увеличивает воспринимаемую ценность. Эффект усиливается, когда дефицит новый (было доступно, стало нет) и когда есть конкуренция за ресурс",
+    "example": "Печенье из почти пустой банки (2 шт.) оценивается вкуснее, чем из полной (10 шт.) — объективно одинаковое. 'Последние 3 билета!' и 'Предложение до конца дня' работают именно через дефицит",
+    "trust_level": "validated",
+    "academic_sources": [
+      { "title": "Influence: The Psychology of Persuasion", "doi": null, "source": "Robert Cialdini, Harper Business, 2006, Ch. 7" }
+    ],
+    "tags": ["persuasion", "marketing", "pricing", "behavioral-economics"],
+    "branch": "RHETORIC",
+    "difficulty": "SILVER"
+  },
+  {
+    "concept": "Принцип авторитета (authority)",
+    "source": "cialdini/influence",
+    "claim": "Люди подчиняются авторитетным фигурам даже когда это противоречит их собственным убеждениям. Атрибуты авторитета (титул, одежда, символы) влияют сильнее реальной экспертизы",
+    "example": "Эксперимент Милгрэма: 65% испытуемых били электрошоком до 450 вольт (смертельного), подчиняясь 'учёному в белом халате'. Медсёстры выполняли опасные назначения 'доктора' по телефону в 95% случаев",
+    "trust_level": "validated",
+    "academic_sources": [
+      { "title": "Obedience to Authority: An Experimental View", "doi": null, "source": "Stanley Milgram, Harper & Row, 1974" }
+    ],
+    "tags": ["social-psychology", "leadership", "persuasion", "ethics"],
+    "branch": "RHETORIC",
+    "difficulty": "SILVER"
+  },
+  {
+    "concept": "Последовательность и обязательство (commitment & consistency)",
+    "source": "cialdini/influence",
+    "claim": "После публичного обязательства люди стремятся быть последовательными, даже если первоначальное решение было неоптимальным. 'Нога в двери' — маленькая просьба открывает дорогу большим",
+    "example": "Жителей попросили повесить маленькую наклейку 'Безопасное вождение'. Через 2 недели 76% согласились установить огромный уродливый билборд на лужайке. В контрольной группе (без наклейки) согласились только 17%",
+    "trust_level": "validated",
+    "academic_sources": [
+      { "title": "Compliance without Pressure: The Foot-in-the-Door Technique", "doi": "10.1037/h0023552", "source": "Freedman & Fraser, Journal of Personality and Social Psychology, 1966" }
+    ],
+    "tags": ["persuasion", "negotiation", "sales", "behavioral-psychology"],
+    "branch": "RHETORIC",
+    "difficulty": "GOLD"
+  },
+  {
+    "concept": "Принцип симпатии (liking)",
+    "source": "cialdini/influence",
+    "claim": "Люди говорят 'да' тем, кто им нравится. Факторы симпатии: физическая привлекательность, сходство, комплименты, знакомство, ассоциация с приятным",
+    "example": "Tupperware-вечеринки: хозяйка приглашает друзей, и они покупают не из-за продукта, а из-за дружбы. Joe Girard — самый успешный продавец автомобилей (Книга Гиннесса) — отправлял 13 000 открыток 'Вы мне нравитесь' ежемесячно",
+    "trust_level": "validated",
+    "academic_sources": [
+      { "title": "Influence: The Psychology of Persuasion", "doi": null, "source": "Robert Cialdini, Harper Business, 2006, Ch. 5" }
+    ],
+    "tags": ["persuasion", "sales", "networking", "social-psychology"],
+    "branch": "RHETORIC",
+    "difficulty": "BRONZE"
+  }
+]

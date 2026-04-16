@@ -1,0 +1,80 @@
+[
+  {
+    "concept": "Антихрупкость — выгода от хаоса",
+    "source": "taleb/antifragile",
+    "claim": "Существует третья категория помимо хрупкого и устойчивого: антихрупкое — то, что становится сильнее от стресса, ошибок и хаоса. Мышцы, иммунная система, Кремниевая долина — антихрупкие системы",
+    "example": "Гидра из мифологии: отрубите голову — вырастут две. Кости человека укрепляются под нагрузкой, а в невесомости — разрушаются. Ресторанный бизнес антихрупок: банкротство одного улучшает систему в целом",
+    "trust_level": "validated",
+    "academic_sources": [
+      { "title": "Antifragile: Things That Gain from Disorder", "doi": null, "source": "Nassim Nicholas Taleb, Random House, 2012" }
+    ],
+    "tags": ["risk-management", "systems-thinking", "resilience", "strategy"],
+    "branch": "STRATEGY",
+    "difficulty": "SILVER"
+  },
+  {
+    "concept": "Чёрный лебедь — непредсказуемое с огромным влиянием",
+    "source": "taleb/antifragile",
+    "claim": "Самые важные события в истории, экономике и личной жизни — это редкие, непредсказуемые события с колоссальным влиянием. Люди систематически недооценивают их вероятность и переоценивают свою способность прогнозировать",
+    "example": "11 сентября, финансовый кризис 2008, COVID-19, изобретение интернета — ни одно из этих событий не было предсказано экспертами. При этом задним числом каждое кажется 'очевидным'",
+    "trust_level": "validated",
+    "academic_sources": [
+      { "title": "The Black Swan: The Impact of the Highly Improbable", "doi": null, "source": "Nassim Nicholas Taleb, Random House, 2007" }
+    ],
+    "tags": ["risk-management", "forecasting", "probability", "uncertainty"],
+    "branch": "STRATEGY",
+    "difficulty": "BRONZE"
+  },
+  {
+    "concept": "Эффект Линди — время как фильтр",
+    "source": "taleb/antifragile",
+    "claim": "Для нескоропортящихся вещей (идей, технологий, книг) ожидаемая продолжительность жизни пропорциональна текущему возрасту. Книга, которой 100 лет, проживёт ещё 100. Новая технология, скорее всего, исчезнет",
+    "example": "Стулу 5000 лет — он будет и через 5000. Twitter (2006) может не пережить следующее десятилетие. 'Илиада' Гомера (2800 лет) переживёт любой современный бестселлер. Фильтр времени безжалостен и честен",
+    "trust_level": "validated",
+    "academic_sources": [
+      { "title": "Antifragile: Things That Gain from Disorder", "doi": null, "source": "Nassim Nicholas Taleb, Random House, 2012" }
+    ],
+    "tags": ["forecasting", "decision-making", "investing", "longevity"],
+    "branch": "ERUDITION",
+    "difficulty": "SILVER"
+  },
+  {
+    "concept": "Via negativa — мудрость вычитания",
+    "source": "taleb/antifragile",
+    "claim": "Чаще полезнее убрать вредное, чем добавить полезное. Мудрость — это знать, чего не делать. Медицина больше выиграла от отмены кровопускания, чем от изобретения антибиотиков",
+    "example": "Стив Джобс не добавлял фичи в iPhone — он убирал кнопки. Уоррен Баффет отклоняет 99% инвестиционных возможностей. Лучший совет по здоровью: не курить, не переедать, не сидеть — всё через вычитание",
+    "trust_level": "validated",
+    "academic_sources": [
+      { "title": "Antifragile: Things That Gain from Disorder", "doi": null, "source": "Nassim Nicholas Taleb, Random House, 2012, Ch. 21" }
+    ],
+    "tags": ["decision-making", "minimalism", "strategy", "wisdom"],
+    "branch": "STRATEGY",
+    "difficulty": "GOLD"
+  },
+  {
+    "concept": "Skin in the game — шкура в деле",
+    "source": "taleb/antifragile",
+    "claim": "Системы работают правильно только когда принимающие решения несут последствия своих ошибок. Без личного риска возникает моральный хазард — люди принимают рискованные решения за чужой счёт",
+    "example": "Банкиры получали бонусы за рискованные ставки, но убытки покрывали налогоплательщики (кризис 2008). Кодекс Хаммурапи: если дом обрушился и убил хозяина — казнить строителя. Идеальный skin in the game",
+    "trust_level": "validated",
+    "academic_sources": [
+      { "title": "Skin in the Game: Hidden Asymmetries in Daily Life", "doi": null, "source": "Nassim Nicholas Taleb, Random House, 2018" }
+    ],
+    "tags": ["ethics", "risk-management", "accountability", "incentives"],
+    "branch": "STRATEGY",
+    "difficulty": "SILVER"
+  },
+  {
+    "concept": "Стратегия штанги (barbell strategy)",
+    "source": "taleb/antifragile",
+    "claim": "Оптимальная стратегия — не середина, а комбинация крайностей: 90% в безрисковых активах + 10% в агрессивных. Середина даёт средний результат, а штанга даёт защиту + upside",
+    "example": "Сенека был одновременно стоиком (готов потерять всё) и богатейшим человеком Рима. Штанга: пиши код днём (стабильный доход) + строй стартап вечером (большой upside). Не «средний» бизнес с «средним» риском",
+    "trust_level": "validated",
+    "academic_sources": [
+      { "title": "Antifragile: Things That Gain from Disorder", "doi": null, "source": "Nassim Nicholas Taleb, Random House, 2012, Ch. 11" }
+    ],
+    "tags": ["risk-management", "investing", "strategy", "portfolio"],
+    "branch": "STRATEGY",
+    "difficulty": "GOLD"
+  }
+]
