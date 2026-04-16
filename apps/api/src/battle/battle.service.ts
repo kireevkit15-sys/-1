@@ -1,6 +1,6 @@
 import { Injectable, HttpException, HttpStatus, Logger } from '@nestjs/common';
 import { BattleStatus } from '@prisma/client';
-import type { Prisma } from '@prisma/client';
+import type { Battle, Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { RedisService } from '../redis/redis.service';
 import { BotService } from './bot.service';
@@ -110,7 +110,7 @@ export class BattleService {
    * Create a SPARRING battle (friendly, no rating impact).
    * Returns the battle + a short invite code stored in Redis.
    */
-  async createSparringBattle(userId: string): Promise<{ battle: any; inviteCode: string }> {
+  async createSparringBattle(userId: string): Promise<{ battle: Battle; inviteCode: string }> {
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
     });

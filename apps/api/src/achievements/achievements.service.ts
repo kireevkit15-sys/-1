@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { TelegramNotificationService } from '../telegram/telegram-notification.service';
-import type { AchievementCategory } from '@prisma/client';
+import type { AchievementCategory, Prisma } from '@prisma/client';
 
 interface AchievementCondition {
   type:
@@ -88,7 +88,7 @@ export class AchievementsService {
     );
 
     const newlyUnlocked: string[] = [];
-    const upsertOps: ReturnType<typeof this.prisma.userAchievement.upsert>[] = [];
+    const upsertOps: Prisma.PrismaPromise<unknown>[] = [];
     let totalXpReward = 0;
 
     for (const achievement of achievements) {
@@ -142,7 +142,7 @@ export class AchievementsService {
           this.prisma.userStats.update({
             where: { userId },
             data: { eruditionXp: { increment: totalXpReward } },
-          }) as any,
+          }),
         );
       }
       await this.prisma.$transaction(ops);
@@ -182,7 +182,7 @@ export class AchievementsService {
     );
 
     const newlyUnlocked: string[] = [];
-    const upsertOps: ReturnType<typeof this.prisma.userAchievement.upsert>[] = [];
+    const upsertOps: Prisma.PrismaPromise<unknown>[] = [];
     let totalXpReward = 0;
 
     for (const achievement of achievements) {
@@ -235,7 +235,7 @@ export class AchievementsService {
           this.prisma.userStats.update({
             where: { userId },
             data: { eruditionXp: { increment: totalXpReward } },
-          }) as any,
+          }),
         );
       }
       await this.prisma.$transaction(ops);
