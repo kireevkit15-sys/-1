@@ -1,6 +1,13 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { RedisService } from '../redis/redis.service';
+import { PrismaService } from '../prisma/prisma.service';
 import type { Branch } from '@razum/shared';
+
+/**
+ * L23.2: Minimum learning level required for PvP matchmaking.
+ * Users below this level can only fight bots.
+ */
+const PVP_MIN_LEVELS = ['AWAKENED', 'OBSERVER', 'WARRIOR', 'STRATEGIST', 'MASTER'];
 
 const MATCHMAKING_QUEUE_KEY = 'matchmaking:queue';
 const INITIAL_RATING_RANGE = 100;
@@ -25,7 +32,10 @@ export interface QueueEntry {
 export class MatchmakingService {
   private readonly logger = new Logger(MatchmakingService.name);
 
-  constructor(private readonly redis: RedisService) {}
+  constructor(
+    private readonly redis: RedisService,
+    private readonly prisma: PrismaService,
+  ) {}
 
   /**
    * Build the Redis sorted-set key for matchmaking.
@@ -130,6 +140,22 @@ export class MatchmakingService {
     this.logger.log(`Match found [${branchLabel}]: ${userId} vs ${opponentId} (range: ±${ratingRange})`);
 
     return { opponentId, opponentRating };
+  }
+
+  /**
+   * L23.2: Check if user's learning level allows PvP matchmaking.
+   * Users at SLEEPING level can only fight bots.
+   */
+  async canPlayPvP(userId: string): Promise<boolean> {
+    const path = await this.prisma.learningPath.findUnique({
+      where: { userId },
+      select: { currentLevel: true },
+    });
+
+    // No learning path → allow PvP (legacy users / no learning system)
+    if (!path) return true;
+
+    return PVP_MIN_LEVELS.includes(path.currentLevel);
   }
 
   /**

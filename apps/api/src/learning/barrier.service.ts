@@ -393,6 +393,8 @@ ${round >= 4 ? 'В конце добавь JSON: {"score": 0-1, "feedback": "и�
       },
     });
 
+    let unlockedQuestions = 0;
+
     if (passed) {
       // Advance to next level
       const currentIdx = LEVEL_ORDER.indexOf(path.currentLevel);
@@ -404,17 +406,35 @@ ${round >= 4 ? 'В конце добавь JSON: {"score": 0-1, "feedback": "и�
           data: { currentLevel: nextLevel },
         });
       }
+
+      // L23.3: Count newly unlocked battle questions via concept mastery
+      const masteredConcepts = await this.prisma.userConceptMastery.findMany({
+        where: { userId, mastery: { gte: 0.3 } },
+        select: { conceptId: true },
+      });
+
+      if (masteredConcepts.length > 0) {
+        const result = await this.prisma.conceptQuestion.count({
+          where: {
+            conceptId: { in: masteredConcepts.map((c) => c.conceptId) },
+          },
+        });
+        unlockedQuestions = result;
+      }
     }
+
+    const newLevel = passed
+      ? LEVEL_ORDER[LEVEL_ORDER.indexOf(path.currentLevel) + 1] ?? path.currentLevel
+      : null;
 
     return {
       passed,
       totalScore,
       breakdown: verdict.breakdown,
-      newLevel: passed
-        ? LEVEL_ORDER[LEVEL_ORDER.indexOf(path.currentLevel) + 1] ?? path.currentLevel
-        : null,
+      newLevel,
+      unlockedQuestions,
       message: passed
-        ? 'Испытание пройдено. Ты поднялся на новый уровень.'
+        ? `Испытание пройдено. Ты поднялся на новый уровень.${unlockedQuestions > 0 ? ` Открыто ${unlockedQuestions} вопросов для батлов!` : ''}`
         : 'Испытание не пройдено. Повтори слабые темы и попробуй снова.',
     };
   }

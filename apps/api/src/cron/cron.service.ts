@@ -6,6 +6,7 @@ import { RedisService } from '../redis/redis.service';
 import { LeaderboardService } from '../stats/leaderboard.service';
 import { SeasonService } from '../stats/season.service';
 import { TelegramDigestService } from '../telegram/telegram-digest.service';
+import { LlmEngineService } from '../ai/llm-engine.service';
 import { getErrorMessage } from '../common/utils/error.util';
 
 @Injectable()
@@ -18,6 +19,7 @@ export class CronService {
     private readonly leaderboard: LeaderboardService,
     private readonly seasonService: SeasonService,
     private readonly digest: TelegramDigestService,
+    private readonly llmEngine: LlmEngineService,
   ) {}
 
   // ── Leaderboard warm-up: every 5 minutes ──────────────────────────
@@ -176,6 +178,24 @@ export class CronService {
       }
     } catch (err: unknown) {
       this.logger.error(`Cron: season end failed: ${getErrorMessage(err)}`);
+    }
+  }
+
+  // ── LC10: LLM Engine — autonomous content generation, 03:00 UTC ──
+
+  @Cron('0 3 * * *')
+  async runLlmEngine() {
+    this.logger.log('Cron: running LLM Engine');
+    try {
+      const result = await this.llmEngine.run();
+      this.logger.log(
+        `Cron: LLM Engine done — ${result.questionsGenerated} questions generated, ${result.questionsLinked} linked, ~${result.tokensUsed} tokens`,
+      );
+      if (result.errors.length > 0) {
+        this.logger.warn(`Cron: LLM Engine had ${result.errors.length} errors`);
+      }
+    } catch (err: unknown) {
+      this.logger.error(`Cron: LLM Engine failed: ${getErrorMessage(err)}`);
     }
   }
 

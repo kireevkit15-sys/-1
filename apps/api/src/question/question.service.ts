@@ -152,6 +152,11 @@ export class QuestionService {
     });
   }
 
+  /**
+   * L23.1: Minimum concept mastery required to unlock concept-linked questions.
+   */
+  private static readonly CONCEPT_MASTERY_THRESHOLD = 0.3;
+
   async getRandomForBattle(params: {
     branch?: string;
     difficulty?: string;
@@ -159,6 +164,7 @@ export class QuestionService {
     excludeIds?: string[];
     count?: number;
     throwOnEmpty?: boolean;
+    userId?: string;
   }): Promise<Question[]> {
     const count = params.count || 5;
 
@@ -185,6 +191,23 @@ export class QuestionService {
       conditions.push(`"id" NOT IN (${params.excludeIds.map((_, i) => `$${paramIndex + i}::uuid`).join(', ')})`);
       values.push(...params.excludeIds);
       paramIndex += params.excludeIds.length;
+    }
+
+    // L23.1: Only show concept-linked questions if user has mastered the concept.
+    // Questions without concept links are always available.
+    if (params.userId) {
+      conditions.push(
+        `(NOT EXISTS (SELECT 1 FROM concept_questions cq WHERE cq."questionId" = questions.id)
+          OR EXISTS (
+            SELECT 1 FROM concept_questions cq
+            JOIN user_concept_mastery ucm ON ucm."conceptId" = cq."conceptId"
+            WHERE cq."questionId" = questions.id
+              AND ucm."userId" = $${paramIndex}
+              AND ucm."mastery" >= ${QuestionService.CONCEPT_MASTERY_THRESHOLD}
+          ))`,
+      );
+      values.push(params.userId);
+      paramIndex++;
     }
 
     const whereClause = conditions.join(' AND ');
@@ -267,6 +290,7 @@ export class QuestionService {
       difficulty,
       count,
       throwOnEmpty: false,
+      userId: params.userId,
     });
 
     if (dbQuestions.length >= count) {
