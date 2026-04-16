@@ -1,4 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { BattleStatus } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { TelegramNotificationService } from './telegram-notification.service';
 import { getErrorMessage } from '../common/utils/error.util';
@@ -102,7 +103,7 @@ export class TelegramDigestService {
       where: {
         OR: [{ player1Id: userId }, { player2Id: userId }],
         startedAt: { gte: since },
-        status: 'COMPLETED',
+        status: BattleStatus.COMPLETED,
       },
       select: { winnerId: true },
     });

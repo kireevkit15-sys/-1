@@ -1,5 +1,6 @@
 import { Controller, Get, HttpCode, HttpStatus, Res, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import { BattleStatus } from '@prisma/client';
 import { SkipThrottle } from '@nestjs/throttler';
 import { ConfigService } from '@nestjs/config';
 import type { Response } from 'express';
@@ -125,7 +126,7 @@ export class HealthController {
           this.prisma.user.count(),
           this.prisma.battle.count(),
           this.prisma.question.count({ where: { isActive: true } }),
-          this.prisma.battle.count({ where: { status: 'ACTIVE' } }),
+          this.prisma.battle.count({ where: { status: BattleStatus.ACTIVE } }),
         ]);
       stats = { totalUsers, totalBattles, totalQuestions, activeBattles };
     } catch {

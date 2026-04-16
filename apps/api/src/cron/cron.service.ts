@@ -1,5 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
+import { BattleStatus } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { RedisService } from '../redis/redis.service';
 import { LeaderboardService } from '../stats/leaderboard.service';
@@ -60,7 +61,7 @@ export class CronService {
           select: { status: true },
         });
 
-        if (!battle || battle.status === 'COMPLETED' || battle.status === 'ABANDONED') {
+        if (!battle || battle.status === BattleStatus.COMPLETED || battle.status === BattleStatus.ABANDONED) {
           await this.redis.del(key);
           cleaned++;
         }
@@ -84,11 +85,11 @@ export class CronService {
 
       const result = await this.prisma.battle.updateMany({
         where: {
-          status: { in: ['WAITING', 'ACTIVE'] },
+          status: { in: [BattleStatus.WAITING, BattleStatus.ACTIVE] },
           startedAt: { lt: oneHourAgo },
         },
         data: {
-          status: 'ABANDONED',
+          status: BattleStatus.ABANDONED,
           endedAt: new Date(),
         },
       });

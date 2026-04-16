@@ -1,5 +1,6 @@
 import { Controller, Get, Param, Query, UseGuards, Request } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth, ApiParam, ApiQuery } from '@nestjs/swagger';
+import { BattleStatus } from '@prisma/client';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import type { AuthenticatedRequest } from '../auth/strategies/jwt.strategy';
 import { PrismaService } from '../prisma/prisma.service';
@@ -31,7 +32,7 @@ export class V2BattleController {
       this.prisma.battle.findMany({
         where: {
           OR: [{ player1Id: req.user.sub }, { player2Id: req.user.sub }],
-          status: 'COMPLETED',
+          status: BattleStatus.COMPLETED,
         },
         include: {
           player1: { select: { id: true, name: true, avatarUrl: true } },
@@ -44,7 +45,7 @@ export class V2BattleController {
       this.prisma.battle.count({
         where: {
           OR: [{ player1Id: req.user.sub }, { player2Id: req.user.sub }],
-          status: 'COMPLETED',
+          status: BattleStatus.COMPLETED,
         },
       }),
     ]);

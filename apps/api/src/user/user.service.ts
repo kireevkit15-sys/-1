@@ -1,4 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { BattleStatus } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { LeaderboardService } from '../stats/leaderboard.service';
 import type { UpdateUserDto } from './dto/update-user.dto';
@@ -216,7 +217,7 @@ export class UserService {
       this.prisma.battle.count({
         where: {
           winnerId: myId,
-          status: 'COMPLETED',
+          status: BattleStatus.COMPLETED,
           OR: [
             { player1Id: myId, player2Id: otherId },
             { player1Id: otherId, player2Id: myId },
@@ -226,7 +227,7 @@ export class UserService {
       this.prisma.battle.count({
         where: {
           winnerId: otherId,
-          status: 'COMPLETED',
+          status: BattleStatus.COMPLETED,
           OR: [
             { player1Id: myId, player2Id: otherId },
             { player1Id: otherId, player2Id: myId },
@@ -321,11 +322,11 @@ export class UserService {
       this.prisma.battle.count({
         where: {
           OR: [{ player1Id: userId }, { player2Id: userId }],
-          status: 'COMPLETED',
+          status: BattleStatus.COMPLETED,
         },
       }),
       this.prisma.battle.count({
-        where: { winnerId: userId, status: 'COMPLETED' },
+        where: { winnerId: userId, status: BattleStatus.COMPLETED },
       }),
     ]);
 
@@ -339,7 +340,7 @@ export class UserService {
     const battles = await this.prisma.battle.findMany({
       where: {
         OR: [{ player1Id: userId }, { player2Id: userId }],
-        status: 'COMPLETED',
+        status: BattleStatus.COMPLETED,
       },
       include: {
         player1: { select: { id: true, name: true, avatarUrl: true } },

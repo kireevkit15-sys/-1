@@ -1,4 +1,5 @@
 import { Injectable, BadRequestException, NotFoundException, ConflictException, Logger } from '@nestjs/common';
+import { TournamentStatus } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { StatsService } from '../stats/stats.service';
 
@@ -89,7 +90,7 @@ export class TournamentService {
     });
 
     if (!tournament) throw new NotFoundException('Tournament not found');
-    if (tournament.status !== 'REGISTRATION') {
+    if (tournament.status !== TournamentStatus.REGISTRATION) {
       throw new BadRequestException('Tournament is not accepting registrations');
     }
     if (tournament._count.participants >= tournament.maxPlayers) {
@@ -114,7 +115,7 @@ export class TournamentService {
     });
 
     if (!tournament) throw new NotFoundException('Tournament not found');
-    if (tournament.status !== 'REGISTRATION') {
+    if (tournament.status !== TournamentStatus.REGISTRATION) {
       throw new BadRequestException('Cannot leave after tournament started');
     }
 
@@ -139,7 +140,7 @@ export class TournamentService {
     });
 
     if (!tournament) throw new NotFoundException('Tournament not found');
-    if (tournament.status !== 'REGISTRATION') {
+    if (tournament.status !== TournamentStatus.REGISTRATION) {
       throw new BadRequestException('Tournament already started');
     }
     if (tournament.participants.length < 4) {
@@ -165,7 +166,7 @@ export class TournamentService {
     await this.prisma.tournament.update({
       where: { id: tournamentId },
       data: {
-        status: 'IN_PROGRESS',
+        status: TournamentStatus.IN_PROGRESS,
         bracket: bracket as any,
       },
     });
@@ -183,7 +184,7 @@ export class TournamentService {
     });
 
     if (!tournament) throw new NotFoundException('Tournament not found');
-    if (tournament.status !== 'IN_PROGRESS') {
+    if (tournament.status !== TournamentStatus.IN_PROGRESS) {
       throw new BadRequestException('Tournament is not in progress');
     }
 
@@ -232,7 +233,7 @@ export class TournamentService {
       where: { id: tournamentId },
       data: {
         bracket: bracket as any,
-        ...(isComplete ? { status: 'COMPLETED' } : {}),
+        ...(isComplete ? { status: TournamentStatus.COMPLETED } : {}),
       },
     });
 

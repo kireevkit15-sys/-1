@@ -1,4 +1,5 @@
 import { Injectable, BadRequestException, NotFoundException, ForbiddenException, Logger } from '@nestjs/common';
+import { AppealStatus } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
@@ -118,7 +119,7 @@ export class BanService {
       data: {
         appealText,
         appealedAt: new Date(),
-        appealStatus: 'PENDING',
+        appealStatus: AppealStatus.PENDING,
       },
     });
   }
@@ -129,7 +130,7 @@ export class BanService {
   async reviewAppeal(banId: string, decision: 'APPROVED' | 'REJECTED') {
     const ban = await this.prisma.userBan.findUnique({ where: { id: banId } });
     if (!ban) throw new NotFoundException('Ban not found');
-    if (ban.appealStatus !== 'PENDING') {
+    if (ban.appealStatus !== AppealStatus.PENDING) {
       throw new BadRequestException('No pending appeal for this ban');
     }
 
@@ -152,7 +153,7 @@ export class BanService {
    */
   async getPendingAppeals() {
     return this.prisma.userBan.findMany({
-      where: { appealStatus: 'PENDING' },
+      where: { appealStatus: AppealStatus.PENDING },
       include: {
         user: { select: { id: true, name: true, email: true } },
       },

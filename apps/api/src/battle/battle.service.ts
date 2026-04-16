@@ -1,4 +1,5 @@
 import { Injectable, HttpException, HttpStatus, Logger } from '@nestjs/common';
+import { BattleStatus } from '@prisma/client';
 import type { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { RedisService } from '../redis/redis.service';
@@ -65,7 +66,7 @@ export class BattleService {
         player1Id: userId,
         player2Id: null,
         mode: 'SIEGE',
-        status: 'ACTIVE',
+        status: BattleStatus.ACTIVE,
         category: null,
         state: { ...state, id: undefined } as unknown as Prisma.InputJsonValue,
         startedAt: new Date(),
@@ -97,7 +98,7 @@ export class BattleService {
       data: {
         player1Id: userId,
         mode: 'SIEGE',
-        status: 'WAITING',
+        status: BattleStatus.WAITING,
         state: {},
       },
     });
@@ -121,7 +122,7 @@ export class BattleService {
       data: {
         player1Id: userId,
         mode: 'SPARRING',
-        status: 'WAITING',
+        status: BattleStatus.WAITING,
         state: {},
       },
     });
@@ -212,7 +213,7 @@ export class BattleService {
       this.prisma.battle.findMany({
         where: {
           OR: [{ player1Id: userId }, { player2Id: userId }],
-          status: 'COMPLETED',
+          status: BattleStatus.COMPLETED,
         },
         include: {
           player1: { select: { id: true, name: true, avatarUrl: true } },
@@ -225,7 +226,7 @@ export class BattleService {
       this.prisma.battle.count({
         where: {
           OR: [{ player1Id: userId }, { player2Id: userId }],
-          status: 'COMPLETED',
+          status: BattleStatus.COMPLETED,
         },
       }),
     ]);
@@ -417,7 +418,7 @@ export class BattleService {
     await this.prisma.battle.update({
       where: { id: battleId },
       data: {
-        status: 'COMPLETED',
+        status: BattleStatus.COMPLETED,
         winnerId: result.winnerId,
         player1Score: result.player1Score,
         player2Score: result.player2Score,
@@ -494,7 +495,7 @@ export class BattleService {
     await this.prisma.battle.update({
       where: { id: battleId },
       data: {
-        status: 'ABANDONED',
+        status: BattleStatus.ABANDONED,
         winnerId: result.winnerId,
         player1Score: result.player1Score,
         player2Score: result.player2Score,

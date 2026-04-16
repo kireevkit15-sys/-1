@@ -1,4 +1,5 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { BattleStatus } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { RedisService } from '../redis/redis.service';
 import { AchievementsService } from '../achievements/achievements.service';
@@ -166,13 +167,13 @@ export class StatsService {
         this.prisma.battle.count({
           where: {
             OR: [{ player1Id: userId }, { player2Id: userId }],
-            status: 'COMPLETED',
+            status: BattleStatus.COMPLETED,
           },
         }),
         this.prisma.battle.count({
           where: {
             winnerId: userId,
-            status: 'COMPLETED',
+            status: BattleStatus.COMPLETED,
           },
         }),
       ]);
