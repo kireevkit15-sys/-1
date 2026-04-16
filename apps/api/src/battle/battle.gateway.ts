@@ -18,6 +18,7 @@ import { BotService } from './bot.service';
 import { QuestionService } from '../question/question.service';
 import { StatsService } from '../stats/stats.service';
 import { RedisService } from '../redis/redis.service';
+import { getErrorMessage, getErrorName } from '../common/utils/error.util';
 import type {
   BattleState,
   Branch,
@@ -60,7 +61,7 @@ interface AuthenticatedSocket extends Socket {
 @WebSocketGateway({
   namespace: '/battle',
   cors: {
-    origin: 'http://localhost:3000',
+    origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
     credentials: true,
   },
 })
@@ -176,8 +177,8 @@ export class BattleGateway
 
       // Check if this is a reconnection during an active battle
       await this.handleReconnect(payload.sub, client);
-    } catch (err: any) {
-      const isExpired = err?.name === 'TokenExpiredError';
+    } catch (err: unknown) {
+      const isExpired = getErrorName(err) === 'TokenExpiredError';
       if (isExpired) {
         this.logger.warn(
           `Connection rejected: JWT expired. ` +
@@ -393,7 +394,7 @@ export class BattleGateway
 
       client.emit('battle:token_refreshed', { success: true });
       this.logger.log(`Token refreshed for user ${payload.sub}`);
-    } catch (err: any) {
+    } catch (err: unknown) {
       client.emit('battle:auth_error', {
         reason: 'invalid_token',
         message: 'Token refresh failed. Please re-authenticate.',
@@ -453,8 +454,8 @@ export class BattleGateway
 
       client.emit('battle:started', state);
       this.logger.log(`Bot battle created: ${dbBattle.id} for user ${userId}, level: ${botLevel}`);
-    } catch (error: any) {
-      client.emit('battle:error', { message: error.message ?? 'Failed to create bot battle' });
+    } catch (error: unknown) {
+      client.emit('battle:error', { message: getErrorMessage(error) ?? 'Failed to create bot battle' });
     }
   }
 
@@ -523,8 +524,8 @@ export class BattleGateway
       if (this.isBotBattle(updated) && updated.currentAttackerId === BOT_PLAYER_ID) {
         this.scheduleBotAttack(data.battleId);
       }
-    } catch (error: any) {
-      client.emit('battle:error', { message: error.message ?? 'Failed to select branch' });
+    } catch (error: unknown) {
+      client.emit('battle:error', { message: getErrorMessage(error) ?? 'Failed to select branch' });
     }
   }
 
@@ -559,8 +560,8 @@ export class BattleGateway
       if (this.isBotBattle(updated) && updated.currentAttackerId === BOT_PLAYER_ID) {
         this.scheduleBotAttack(data.battleId);
       }
-    } catch (error: any) {
-      client.emit('battle:error', { message: error.message ?? 'Failed to select category' });
+    } catch (error: unknown) {
+      client.emit('battle:error', { message: getErrorMessage(error) ?? 'Failed to select category' });
     }
   }
 
@@ -628,8 +629,8 @@ export class BattleGateway
           this.startRoundTimer(data.battleId);
         }
       }
-    } catch (error: any) {
-      client.emit('battle:error', { message: error.message ?? 'Failed to process attack' });
+    } catch (error: unknown) {
+      client.emit('battle:error', { message: getErrorMessage(error) ?? 'Failed to process attack' });
     }
   }
 
@@ -688,8 +689,8 @@ export class BattleGateway
           this.scheduleBotBranchSelect(data.battleId);
         }
       }
-    } catch (error: any) {
-      client.emit('battle:error', { message: error.message ?? 'Failed to process defense' });
+    } catch (error: unknown) {
+      client.emit('battle:error', { message: getErrorMessage(error) ?? 'Failed to process defense' });
     }
   }
 
@@ -760,8 +761,8 @@ export class BattleGateway
         // Start matchmaking timeout — after 30 sec offer bot
         this.startMatchmakingTimer(userId, rating, client, branch);
       }
-    } catch (error: any) {
-      client.emit('battle:error', { message: error.message ?? 'Matchmaking failed' });
+    } catch (error: unknown) {
+      client.emit('battle:error', { message: getErrorMessage(error) ?? 'Matchmaking failed' });
     }
   }
 
@@ -799,8 +800,8 @@ export class BattleGateway
       });
 
       this.logger.log(`Sparring created: ${battle.id}, invite: ${inviteCode}, host: ${userId}`);
-    } catch (error: any) {
-      client.emit('battle:error', { message: error.message ?? 'Failed to create sparring' });
+    } catch (error: unknown) {
+      client.emit('battle:error', { message: getErrorMessage(error) ?? 'Failed to create sparring' });
     }
   }
 
@@ -855,8 +856,8 @@ export class BattleGateway
       this.server.to(`battle:${invite.battleId}`).emit('battle:started', state);
 
       this.logger.log(`Sparring ${invite.battleId}: ${userId} joined via code ${data.inviteCode}`);
-    } catch (error: any) {
-      client.emit('battle:error', { message: error.message ?? 'Failed to join sparring' });
+    } catch (error: unknown) {
+      client.emit('battle:error', { message: getErrorMessage(error) ?? 'Failed to join sparring' });
     }
   }
 
@@ -983,8 +984,8 @@ export class BattleGateway
       this.server.to(`battle:${dbBattle.id}`).emit('battle:started', state);
 
       this.logger.log(`Rematch accepted: new battle ${dbBattle.id} from ${data.battleId}`);
-    } catch (error: any) {
-      client.emit('battle:error', { message: error.message ?? 'Failed to create rematch' });
+    } catch (error: unknown) {
+      client.emit('battle:error', { message: getErrorMessage(error) ?? 'Failed to create rematch' });
     }
   }
 
@@ -1248,8 +1249,8 @@ export class BattleGateway
         // only as a fallback — the bot will clear it before acting)
         this.startRoundTimer(battleId);
         this.scheduleBotAttack(battleId);
-      } catch (err: any) {
-        this.logger.error(`Bot branch select failed: ${err.message}`);
+      } catch (err: unknown) {
+        this.logger.error(`Bot branch select failed: ${getErrorMessage(err)}`);
       }
     }, delay);
     this.botTimers.set(battleId, timer);
@@ -1291,8 +1292,8 @@ export class BattleGateway
           // Bot missed, advance round
           this.scheduleBotAdvanceRound(battleId);
         }
-      } catch (err: any) {
-        this.logger.error(`Bot attack failed: ${err.message}`);
+      } catch (err: unknown) {
+        this.logger.error(`Bot attack failed: ${getErrorMessage(err)}`);
       }
     }, delay);
     this.botTimers.set(battleId, timer);
@@ -1330,8 +1331,8 @@ export class BattleGateway
 
         // Advance to next phase
         this.scheduleBotAdvanceRound(battleId);
-      } catch (err: any) {
-        this.logger.error(`Bot defense failed: ${err.message}`);
+      } catch (err: unknown) {
+        this.logger.error(`Bot defense failed: ${getErrorMessage(err)}`);
       }
     }, delay);
     this.botTimers.set(battleId, timer);
@@ -1377,8 +1378,8 @@ export class BattleGateway
             this.logger.debug(`Waiting for human to select branch in battle ${battleId}`);
           }
         }
-      } catch (err: any) {
-        this.logger.error(`Bot advance round failed: ${err.message}`);
+      } catch (err: unknown) {
+        this.logger.error(`Bot advance round failed: ${getErrorMessage(err)}`);
       }
     }, delay);
     this.botTimers.set(battleId, timer);
@@ -1421,8 +1422,8 @@ export class BattleGateway
         } else if (this.isBotBattle(updated)) {
           this.scheduleBotAdvanceRound(battleId);
         }
-      } catch (err: any) {
-        this.logger.error(`Round timer handler failed: ${err.message}`);
+      } catch (err: unknown) {
+        this.logger.error(`Round timer handler failed: ${getErrorMessage(err)}`);
       }
     }, ROUND_TIME_LIMIT * 1000);
 
@@ -1489,8 +1490,8 @@ export class BattleGateway
       this.server.to(`battle:${battleId}`).emit('battle:complete', result);
 
       await this.persistBattleResult(battleId, state, result);
-    } catch (err: any) {
-      this.logger.error(`Failed to finalize battle ${battleId}: ${err.message}`);
+    } catch (err: unknown) {
+      this.logger.error(`Failed to finalize battle ${battleId}: ${getErrorMessage(err)}`);
     }
 
     this.cleanupBattle(battleId);
@@ -1515,8 +1516,8 @@ export class BattleGateway
           `Winner: ${result.winnerId ?? 'draw'}. Score: ${result.player1Score}-${result.player2Score}`,
         );
       }
-    } catch (err: any) {
-      this.logger.error(`Failed to persist battle result: ${err.message}`);
+    } catch (err: unknown) {
+      this.logger.error(`Failed to persist battle result: ${getErrorMessage(err)}`);
     }
   }
 
@@ -1553,8 +1554,8 @@ export class BattleGateway
             ratingChange: 0,
           });
         }
-      } catch (err: any) {
-        this.logger.error(`Shutdown: failed to close battle ${battleId}: ${err.message}`);
+      } catch (err: unknown) {
+        this.logger.error(`Shutdown: failed to close battle ${battleId}: ${getErrorMessage(err)}`);
       }
     }
 
@@ -1595,7 +1596,7 @@ export class BattleGateway
       if (bid === battleId) {
         this.userBattles.delete(uid);
         this.clearActiveBattle(uid).catch((err) =>
-          this.logger.warn(`Failed to clear active battle for ${uid}: ${err.message}`),
+          this.logger.warn(`Failed to clear active battle for ${uid}: ${getErrorMessage(err)}`),
         );
       }
     }

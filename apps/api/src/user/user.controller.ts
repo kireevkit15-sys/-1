@@ -23,6 +23,7 @@ import {
 import { UserService } from './user.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import type { UpdateUserDto } from './dto/update-user.dto';
+import type { AuthenticatedRequest } from '../auth/strategies/jwt.strategy';
 
 @ApiTags('Users')
 @Controller('users')
@@ -46,7 +47,7 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   @Get('me')
   async getMe(
-    @Request() req: any,
+    @Request() req: AuthenticatedRequest,
     @Query('battleLimit', new DefaultValuePipe(10), ParseIntPipe)
     battleLimit: number,
   ) {
@@ -59,7 +60,7 @@ export class UserController {
   @ApiResponse({ status: 401, description: 'Не авторизован' })
   @UseGuards(JwtAuthGuard)
   @Patch('me')
-  async updateMe(@Request() req: any, @Body() dto: UpdateUserDto) {
+  async updateMe(@Request() req: AuthenticatedRequest, @Body() dto: UpdateUserDto) {
     return this.userService.updateMe(req.user.sub, dto);
   }
 
@@ -72,7 +73,7 @@ export class UserController {
   @ApiResponse({ status: 401, description: 'Не авторизован' })
   @UseGuards(JwtAuthGuard)
   @Delete('me')
-  async deleteMe(@Request() req: any) {
+  async deleteMe(@Request() req: AuthenticatedRequest) {
     return this.userService.deleteMe(req.user.sub);
   }
 
@@ -101,7 +102,7 @@ export class UserController {
   @ApiResponse({ status: 404, description: 'Пользователь не найден' })
   @UseGuards(JwtAuthGuard)
   @Get(':id/compare')
-  async compareProfiles(@Request() req: any, @Param('id') id: string) {
+  async compareProfiles(@Request() req: AuthenticatedRequest, @Param('id') id: string) {
     return this.userService.compareProfiles(req.user.sub, id);
   }
 
@@ -115,7 +116,7 @@ export class UserController {
   @ApiResponse({ status: 200, description: 'Полный JSON-дамп данных пользователя' })
   @UseGuards(JwtAuthGuard)
   @Get('me/export')
-  async exportData(@Request() req: any) {
+  async exportData(@Request() req: AuthenticatedRequest) {
     return this.userService.exportUserData(req.user.sub);
   }
 
@@ -127,7 +128,7 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   @Post('me/import')
   async importData(
-    @Request() req: any,
+    @Request() req: AuthenticatedRequest,
     @Body() body: { name?: string; avatarUrl?: string },
   ) {
     return this.userService.importUserData(req.user.sub, body);

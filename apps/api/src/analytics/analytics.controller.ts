@@ -15,6 +15,7 @@ import {
 } from '@nestjs/swagger';
 import { AnalyticsService } from './analytics.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import type { AuthenticatedRequest } from '../auth/strategies/jwt.strategy';
 import { AdminGuard } from '../common/guards/admin.guard';
 import type { TrackEventDto } from './dto/track-event.dto';
 import type { QueryEventsDto } from './dto/query-events.dto';
@@ -30,7 +31,7 @@ export class AnalyticsController {
   @UseGuards(JwtAuthGuard)
   @Post('track')
   async track(
-    @Request() req: { user: { sub: string } },
+    @Request() req: AuthenticatedRequest,
     @Body() dto: TrackEventDto,
   ) {
     await this.analyticsService.track(dto.type, req.user.sub, dto.payload);

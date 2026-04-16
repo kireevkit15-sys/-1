@@ -1,5 +1,5 @@
 import { Injectable, Logger, NotFoundException, HttpException, HttpStatus } from '@nestjs/common';
-import type { Question } from '@prisma/client';
+import type { Question, Prisma, Difficulty, Branch } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { RedisService } from '../redis/redis.service';
 import { AiService } from '../ai/ai.service';
@@ -34,10 +34,10 @@ export class QuestionService {
     const limit = Math.min(filters.limit || 50, 200);
     const skip = (page - 1) * limit;
 
-    const where: any = {};
+    const where: Prisma.QuestionWhereInput = {};
     if (filters.category) where.category = filters.category;
-    if (filters.difficulty) where.difficulty = filters.difficulty;
-    if (filters.branch) where.branch = filters.branch;
+    if (filters.difficulty) where.difficulty = filters.difficulty as Difficulty;
+    if (filters.branch) where.branch = filters.branch as Branch;
     if (filters.isActive !== undefined) where.isActive = filters.isActive;
 
     const [questions, total] = await Promise.all([

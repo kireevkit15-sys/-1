@@ -21,6 +21,7 @@ import {
   ApiResponse,
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import type { AuthenticatedRequest } from '../auth/strategies/jwt.strategy';
 import { AdminGuard } from '../common/guards/admin.guard';
 import { PrismaService } from '../prisma/prisma.service';
 import { RedisService } from '../redis/redis.service';
@@ -50,7 +51,7 @@ export class AiController {
   @Post('dialogue')
   @ApiOperation({ summary: 'Start a new AI dialogue (1 per day for free users)' })
   async createDialogue(
-    @Request() req: { user: { sub: string } },
+    @Request() req: AuthenticatedRequest,
     @Body() dto: CreateDialogueDto,
   ) {
     const userId = req.user.sub;
@@ -135,7 +136,7 @@ export class AiController {
   @ApiOperation({ summary: 'Send a message to an existing AI dialogue' })
   @ApiParam({ name: 'id', type: 'string', format: 'uuid' })
   async sendMessage(
-    @Request() req: { user: { sub: string } },
+    @Request() req: AuthenticatedRequest,
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: SendMessageDto,
   ) {
@@ -228,7 +229,7 @@ export class AiController {
   @ApiOperation({ summary: 'Get AI dialogue by ID' })
   @ApiParam({ name: 'id', type: 'string', format: 'uuid' })
   async getDialogue(
-    @Request() req: { user: { sub: string } },
+    @Request() req: AuthenticatedRequest,
     @Param('id', ParseUUIDPipe) id: string,
   ) {
     const dialogue = await this.prisma.aiDialogue.findUnique({
@@ -262,7 +263,7 @@ export class AiController {
   @Get('dialogues')
   @ApiOperation({ summary: 'List user AI dialogues (paginated)' })
   async getDialogues(
-    @Request() req: { user: { sub: string } },
+    @Request() req: AuthenticatedRequest,
     @Query() query: GetDialoguesQueryDto,
   ) {
     const userId = req.user.sub;
@@ -323,7 +324,7 @@ export class AiController {
   @Get('quota')
   @ApiOperation({ summary: 'Check remaining daily AI quota for current user' })
   @ApiResponse({ status: 200, description: 'Daily token quota status' })
-  async getMyQuota(@Request() req: { user: { sub: string } }) {
+  async getMyQuota(@Request() req: AuthenticatedRequest) {
     return this.aiService.checkDailyQuota(req.user.sub);
   }
 }

@@ -5,6 +5,7 @@ import { RedisService } from '../redis/redis.service';
 import { LeaderboardService } from '../stats/leaderboard.service';
 import { SeasonService } from '../stats/season.service';
 import { TelegramDigestService } from '../telegram/telegram-digest.service';
+import { getErrorMessage } from '../common/utils/error.util';
 
 @Injectable()
 export class CronService {
@@ -30,8 +31,8 @@ export class CronService {
         this.leaderboard.getLeaderboard('streak', 'all', 20),
       ]);
       this.logger.log('Cron: leaderboard cache warmed');
-    } catch (err: any) {
-      this.logger.error(`Cron: leaderboard warm-up failed: ${err.message}`);
+    } catch (err: unknown) {
+      this.logger.error(`Cron: leaderboard warm-up failed: ${getErrorMessage(err)}`);
     }
   }
 
@@ -66,8 +67,8 @@ export class CronService {
       }
 
       this.logger.log(`Cron: cleaned ${cleaned} stale session keys`);
-    } catch (err: any) {
-      this.logger.error(`Cron: session cleanup failed: ${err.message}`);
+    } catch (err: unknown) {
+      this.logger.error(`Cron: session cleanup failed: ${getErrorMessage(err)}`);
     }
   }
 
@@ -94,8 +95,8 @@ export class CronService {
       if (result.count > 0) {
         this.logger.log(`Cron: marked ${result.count} battles as abandoned`);
       }
-    } catch (err: any) {
-      this.logger.error(`Cron: abandoned battle cleanup failed: ${err.message}`);
+    } catch (err: unknown) {
+      this.logger.error(`Cron: abandoned battle cleanup failed: ${getErrorMessage(err)}`);
     }
   }
 
@@ -115,8 +116,8 @@ export class CronService {
       await this.warmUpLeaderboard();
 
       this.logger.log('Cron: daily rotation complete');
-    } catch (err: any) {
-      this.logger.error(`Cron: daily rotation failed: ${err.message}`);
+    } catch (err: unknown) {
+      this.logger.error(`Cron: daily rotation failed: ${getErrorMessage(err)}`);
     }
   }
 
@@ -128,8 +129,8 @@ export class CronService {
     try {
       const sent = await this.digest.sendDigests('daily');
       this.logger.log(`Cron: daily digest sent to ${sent} users`);
-    } catch (err: any) {
-      this.logger.error(`Cron: daily digest failed: ${err.message}`);
+    } catch (err: unknown) {
+      this.logger.error(`Cron: daily digest failed: ${getErrorMessage(err)}`);
     }
   }
 
@@ -141,8 +142,8 @@ export class CronService {
     try {
       const sent = await this.digest.sendDigests('weekly');
       this.logger.log(`Cron: weekly digest sent to ${sent} users`);
-    } catch (err: any) {
-      this.logger.error(`Cron: weekly digest failed: ${err.message}`);
+    } catch (err: unknown) {
+      this.logger.error(`Cron: weekly digest failed: ${getErrorMessage(err)}`);
     }
   }
 
@@ -154,8 +155,8 @@ export class CronService {
     try {
       const sent = await this.digest.sendDigests('monthly');
       this.logger.log(`Cron: monthly digest sent to ${sent} users`);
-    } catch (err: any) {
-      this.logger.error(`Cron: monthly digest failed: ${err.message}`);
+    } catch (err: unknown) {
+      this.logger.error(`Cron: monthly digest failed: ${getErrorMessage(err)}`);
     }
   }
 
@@ -171,8 +172,8 @@ export class CronService {
       } else {
         this.logger.log('Cron: no active season to end');
       }
-    } catch (err: any) {
-      this.logger.error(`Cron: season end failed: ${err.message}`);
+    } catch (err: unknown) {
+      this.logger.error(`Cron: season end failed: ${getErrorMessage(err)}`);
     }
   }
 

@@ -10,6 +10,7 @@ import { StatsService } from './stats.service';
 import { LeaderboardService } from './leaderboard.service';
 import { SeasonService } from './season.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import type { AuthenticatedRequest } from '../auth/strategies/jwt.strategy';
 
 @ApiTags('Stats')
 @Controller('stats')
@@ -26,14 +27,14 @@ export class StatsController {
   @ApiResponse({ status: 200, description: 'Статы текущего пользователя с уровнем и прогрессом' })
   @ApiResponse({ status: 401, description: 'Не авторизован' })
   @Get('me')
-  async getMyStats(@Request() req: any) {
+  async getMyStats(@Request() req: AuthenticatedRequest) {
     return this.statsService.getUserStats(req.user.sub);
   }
 
   @ApiOperation({ summary: 'Полная сводка профиля (уровень, рейтинг, стрик, класс мыслителя)' })
   @ApiResponse({ status: 200, description: 'Сводка профиля с классом мыслителя и статистикой батлов' })
   @Get('me/summary')
-  async getMySummary(@Request() req: any) {
+  async getMySummary(@Request() req: AuthenticatedRequest) {
     return this.statsService.getSummary(req.user.sub);
   }
 
@@ -41,21 +42,21 @@ export class StatsController {
   @ApiResponse({ status: 200, description: 'Статистика батлов: победы, поражения, winRate' })
   @ApiResponse({ status: 401, description: 'Не авторизован' })
   @Get('me/battles')
-  async getMyBattleStats(@Request() req: any) {
+  async getMyBattleStats(@Request() req: AuthenticatedRequest) {
     return this.statsService.getBattleStats(req.user.sub);
   }
 
   @ApiOperation({ summary: 'Слабые ветки и категории (по % правильных ответов)' })
   @ApiResponse({ status: 200, description: 'Анализ слабых мест: ветки и категории с низкой точностью' })
   @Get('me/weaknesses')
-  async getMyWeaknesses(@Request() req: any) {
+  async getMyWeaknesses(@Request() req: AuthenticatedRequest) {
     return this.statsService.getWeaknesses(req.user.sub);
   }
 
   @ApiOperation({ summary: 'Рекомендации модулей для прокачки слабых веток' })
   @ApiResponse({ status: 200, description: 'Модули и категории для тренировки' })
   @Get('me/recommendations')
-  async getMyRecommendations(@Request() req: any) {
+  async getMyRecommendations(@Request() req: AuthenticatedRequest) {
     return this.statsService.getRecommendations(req.user.sub);
   }
 
@@ -94,7 +95,7 @@ export class StatsController {
   @ApiOperation({ summary: 'Мои сезонные награды' })
   @ApiResponse({ status: 200, description: 'Награды пользователя за все сезоны' })
   @Get('season/me')
-  async getMySeasonRewards(@Request() req: any) {
+  async getMySeasonRewards(@Request() req: AuthenticatedRequest) {
     return this.seasonService.getUserSeasonRewards(req.user.sub);
   }
 
@@ -104,7 +105,7 @@ export class StatsController {
   @ApiResponse({ status: 200, description: 'Позиция пользователя в рейтинге' })
   @Get('leaderboard/me')
   async getMyPosition(
-    @Request() req: any,
+    @Request() req: AuthenticatedRequest,
     @Query('type') type?: string,
     @Query('period') period?: string,
   ) {

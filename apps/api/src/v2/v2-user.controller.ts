@@ -1,6 +1,7 @@
 import { Controller, Get, UseGuards, Request } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import type { AuthenticatedRequest } from '../auth/strategies/jwt.strategy';
 import { PrismaService } from '../prisma/prisma.service';
 import { StatsService } from '../stats/stats.service';
 
@@ -19,7 +20,7 @@ export class V2UserController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Get('me')
-  async getMe(@Request() req: { user: { sub: string } }) {
+  async getMe(@Request() req: AuthenticatedRequest) {
     const user = await this.prisma.user.findUnique({
       where: { id: req.user.sub },
       select: {

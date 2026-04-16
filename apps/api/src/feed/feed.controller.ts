@@ -15,6 +15,7 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import type { AuthenticatedRequest } from '../auth/strategies/jwt.strategy';
 import { FeedService } from './feed.service';
 import { FeedInteractDto } from './dto/feed-interact.dto';
 
@@ -31,7 +32,7 @@ export class FeedController {
   @ApiOkResponse({ description: 'Дневной фид с карточками, прогрессом и стриком' })
   @ApiUnauthorizedResponse({ description: 'Не авторизован' })
   @Get('today')
-  async getToday(@Request() req: { user: { sub: string } }) {
+  async getToday(@Request() req: AuthenticatedRequest) {
     return this.feedService.getDailyFeed(req.user.sub);
   }
 
@@ -43,7 +44,7 @@ export class FeedController {
   @ApiUnauthorizedResponse({ description: 'Не авторизован' })
   @Post('interact')
   async interact(
-    @Request() req: { user: { sub: string } },
+    @Request() req: AuthenticatedRequest,
     @Body() dto: FeedInteractDto,
   ) {
     return this.feedService.interactWithCard(req.user.sub, dto.cardId, {
@@ -59,7 +60,7 @@ export class FeedController {
   @ApiOkResponse({ description: 'Статистика фида пользователя' })
   @ApiUnauthorizedResponse({ description: 'Не авторизован' })
   @Get('stats')
-  async getStats(@Request() req: { user: { sub: string } }) {
+  async getStats(@Request() req: AuthenticatedRequest) {
     return this.feedService.getFeedStats(req.user.sub);
   }
 }

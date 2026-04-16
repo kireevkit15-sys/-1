@@ -17,6 +17,7 @@ import {
 } from '@nestjs/swagger';
 import { LearnService } from './learn.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import type { AuthenticatedRequest } from '../auth/strategies/jwt.strategy';
 import type { GetModulesQueryDto } from './dto/get-modules-query.dto';
 import type { SubmitProgressDto } from './dto/submit-progress.dto';
 
@@ -30,7 +31,7 @@ export class LearnController {
   @Get()
   @ApiOperation({ summary: 'List modules by branch with user progress' })
   async getModules(
-    @Request() req: { user: { sub: string } },
+    @Request() req: AuthenticatedRequest,
     @Query() query: GetModulesQueryDto,
   ) {
     return this.learnService.getModules(req.user.sub, query.branch);
@@ -40,7 +41,7 @@ export class LearnController {
   @ApiOperation({ summary: 'Get module detail with questions' })
   @ApiParam({ name: 'id', type: 'string', format: 'uuid' })
   async getModuleById(
-    @Request() req: { user: { sub: string } },
+    @Request() req: AuthenticatedRequest,
     @Param('id', ParseUUIDPipe) id: string,
   ) {
     return this.learnService.getModuleById(req.user.sub, id);
@@ -50,7 +51,7 @@ export class LearnController {
   @ApiOperation({ summary: 'Mark a question as completed in a module' })
   @ApiParam({ name: 'id', type: 'string', format: 'uuid' })
   async submitProgress(
-    @Request() req: { user: { sub: string } },
+    @Request() req: AuthenticatedRequest,
     @Param('id', ParseUUIDPipe) id: string,
     @Body() body: SubmitProgressDto,
   ) {

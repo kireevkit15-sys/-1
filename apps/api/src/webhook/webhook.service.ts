@@ -85,8 +85,8 @@ export class WebhookService {
     const body = JSON.stringify({ event, payload, timestamp: new Date().toISOString() });
 
     for (const ep of matching) {
-      this.sendWebhook(ep.id, ep.url, ep.secret, body).catch(() => {
-        /* logged inside sendWebhook */
+      this.sendWebhook(ep.id, ep.url, ep.secret, body).catch((err: unknown) => {
+        this.logger.warn(`Webhook delivery to ${ep.url} failed: ${err instanceof Error ? err.message : err}`);
       });
     }
   }

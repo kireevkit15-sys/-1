@@ -8,6 +8,7 @@ import {
 } from '@nestjs/swagger';
 import { AchievementsService } from './achievements.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import type { AuthenticatedRequest } from '../auth/strategies/jwt.strategy';
 import { AchievementCategory } from '@prisma/client';
 
 @ApiTags('Achievements')
@@ -34,7 +35,7 @@ export class AchievementsController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @Get('me')
-  async getMyAchievements(@Request() req: { user: { sub: string } }) {
+  async getMyAchievements(@Request() req: AuthenticatedRequest) {
     return this.achievementsService.getUserAchievements(req.user.sub);
   }
 
@@ -44,7 +45,7 @@ export class AchievementsController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @Get('me/count')
-  async getMyCount(@Request() req: { user: { sub: string } }) {
+  async getMyCount(@Request() req: AuthenticatedRequest) {
     return this.achievementsService.getUnlockedCount(req.user.sub);
   }
 }

@@ -19,6 +19,7 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import type { AuthenticatedRequest } from '../auth/strategies/jwt.strategy';
 import { CampaignService } from './campaign.service';
 import { GetCampaignsQueryDto } from './dto/get-campaigns-query.dto';
 
@@ -34,7 +35,7 @@ export class CampaignController {
   @ApiUnauthorizedResponse({ description: 'Not authorized' })
   @Get()
   async getCampaigns(
-    @Request() req: { user: { sub: string } },
+    @Request() req: AuthenticatedRequest,
     @Query() query: GetCampaignsQueryDto,
   ) {
     return this.campaignService.getCampaigns(req.user.sub, query.branch);
@@ -45,7 +46,7 @@ export class CampaignController {
   @ApiUnauthorizedResponse({ description: 'Not authorized' })
   @Get('active')
   async getActiveCampaigns(
-    @Request() req: { user: { sub: string } },
+    @Request() req: AuthenticatedRequest,
   ) {
     return this.campaignService.getActiveCampaigns(req.user.sub);
   }
@@ -57,7 +58,7 @@ export class CampaignController {
   @ApiUnauthorizedResponse({ description: 'Not authorized' })
   @Get(':id')
   async getCampaignById(
-    @Request() req: { user: { sub: string } },
+    @Request() req: AuthenticatedRequest,
     @Param('id', ParseUUIDPipe) id: string,
   ) {
     return this.campaignService.getCampaignById(req.user.sub, id);
@@ -71,7 +72,7 @@ export class CampaignController {
   @ApiUnauthorizedResponse({ description: 'Not authorized' })
   @Post(':id/start')
   async startCampaign(
-    @Request() req: { user: { sub: string } },
+    @Request() req: AuthenticatedRequest,
     @Param('id', ParseUUIDPipe) id: string,
   ) {
     return this.campaignService.startCampaign(req.user.sub, id);
@@ -84,7 +85,7 @@ export class CampaignController {
   @ApiUnauthorizedResponse({ description: 'Not authorized' })
   @Post(':id/advance')
   async advanceDay(
-    @Request() req: { user: { sub: string } },
+    @Request() req: AuthenticatedRequest,
     @Param('id', ParseUUIDPipe) id: string,
   ) {
     return this.campaignService.advanceDay(req.user.sub, id);

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { RedisService } from '../redis/redis.service';
 import { AchievementsService } from '../achievements/achievements.service';
@@ -14,6 +14,8 @@ const CACHE_TTL = {
 
 @Injectable()
 export class StatsService {
+  private readonly logger = new Logger(StatsService.name);
+
   constructor(
     private readonly prisma: PrismaService,
     private readonly redis: RedisService,
@@ -229,7 +231,7 @@ export class StatsService {
       const branchLevel = xpToLevel(branchXp);
       this.achievements
         .checkBranchAchievements(userId, branch, branchXp, branchLevel)
-        .catch(() => {});
+        .catch((err: unknown) => this.logger.warn(`Achievement check failed: ${err instanceof Error ? err.message : err}`));
     }
 
     await this.invalidateUserCache(userId);
@@ -282,7 +284,7 @@ export class StatsService {
     const branchLevel = xpToLevel(branchXp);
     this.achievements
       .checkBranchAchievements(userId, results.branch, branchXp, branchLevel)
-      .catch(() => {});
+      .catch((err: unknown) => this.logger.warn(`Achievement check failed: ${err instanceof Error ? err.message : err}`));
 
     await this.invalidateUserCache(userId);
     return this.enrichStats(updated);

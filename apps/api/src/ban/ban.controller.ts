@@ -5,6 +5,7 @@ import {
   ApiTags, ApiOperation, ApiBearerAuth, ApiParam, ApiResponse,
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import type { AuthenticatedRequest } from '../auth/strategies/jwt.strategy';
 import { AdminGuard } from '../common/guards/admin.guard';
 import { BanService } from './ban.service';
 
@@ -25,7 +26,7 @@ export class BanController {
       type: 'TEMPORARY' | 'PERMANENT';
       durationHours?: number;
     },
-    @Request() req: { user: { sub: string } },
+    @Request() req: AuthenticatedRequest,
   ) {
     return this.banService.banUser({ ...body, issuedBy: req.user.sub });
   }
@@ -71,7 +72,7 @@ export class BanController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Get('me')
-  async myBans(@Request() req: { user: { sub: string } }) {
+  async myBans(@Request() req: AuthenticatedRequest) {
     return this.banService.getUserBans(req.user.sub);
   }
 
@@ -79,7 +80,7 @@ export class BanController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Get('me/active')
-  async myActiveBan(@Request() req: { user: { sub: string } }) {
+  async myActiveBan(@Request() req: AuthenticatedRequest) {
     const ban = await this.banService.getActiveBan(req.user.sub);
     return { banned: !!ban, ban };
   }
@@ -92,7 +93,7 @@ export class BanController {
   async submitAppeal(
     @Param('id') id: string,
     @Body() body: { appealText: string },
-    @Request() req: { user: { sub: string } },
+    @Request() req: AuthenticatedRequest,
   ) {
     return this.banService.submitAppeal(id, req.user.sub, body.appealText);
   }

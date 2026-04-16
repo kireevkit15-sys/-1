@@ -1,6 +1,7 @@
 import { Controller, Get, Param, Query, UseGuards, Request } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth, ApiParam, ApiQuery } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import type { AuthenticatedRequest } from '../auth/strategies/jwt.strategy';
 import { PrismaService } from '../prisma/prisma.service';
 
 /**
@@ -18,7 +19,7 @@ export class V2BattleController {
   @ApiQuery({ name: 'limit', required: false })
   @Get('history')
   async history(
-    @Request() req: { user: { sub: string } },
+    @Request() req: AuthenticatedRequest,
     @Query('page') page?: string,
     @Query('limit') limit?: string,
   ) {

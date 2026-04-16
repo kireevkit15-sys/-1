@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { TelegramNotificationService } from './telegram-notification.service';
+import { getErrorMessage } from '../common/utils/error.util';
 
 type DigestPeriod = 'daily' | 'weekly' | 'monthly';
 
@@ -71,8 +72,8 @@ export class TelegramDigestService {
           await this.telegram.sendBattleResult(user.id, message);
           sent++;
         }
-      } catch (err: any) {
-        this.logger.error(`Failed to send ${period} digest to ${user.name}: ${err.message}`);
+      } catch (err: unknown) {
+        this.logger.error(`Failed to send ${period} digest to ${user.name}: ${getErrorMessage(err)}`);
       }
     }
 

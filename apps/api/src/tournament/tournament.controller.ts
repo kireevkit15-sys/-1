@@ -7,6 +7,7 @@ import {
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { AdminGuard } from '../common/guards/admin.guard';
 import { TournamentService } from './tournament.service';
+import type { AuthenticatedRequest } from '../auth/strategies/jwt.strategy';
 
 @ApiTags('Tournaments')
 @Controller('tournaments')
@@ -47,7 +48,7 @@ export class TournamentController {
   @ApiParam({ name: 'id', description: 'UUID турнира' })
   @UseGuards(JwtAuthGuard)
   @Post(':id/join')
-  async join(@Param('id') id: string, @Request() req: any) {
+  async join(@Param('id') id: string, @Request() req: AuthenticatedRequest) {
     return this.tournamentService.join(id, req.user.sub);
   }
 
@@ -56,7 +57,7 @@ export class TournamentController {
   @ApiParam({ name: 'id', description: 'UUID турнира' })
   @UseGuards(JwtAuthGuard)
   @Delete(':id/leave')
-  async leave(@Param('id') id: string, @Request() req: any) {
+  async leave(@Param('id') id: string, @Request() req: AuthenticatedRequest) {
     return this.tournamentService.leave(id, req.user.sub);
   }
 

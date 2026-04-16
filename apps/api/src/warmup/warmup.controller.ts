@@ -18,6 +18,7 @@ import {
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { WarmupService } from './warmup.service';
 import type { SubmitWarmupDto } from './dto/warmup.dto';
+import type { AuthenticatedRequest } from '../auth/strategies/jwt.strategy';
 
 @ApiTags('Warmup')
 @Controller('warmup')
@@ -34,7 +35,7 @@ export class WarmupController {
   })
   @ApiUnauthorizedResponse({ description: 'Не авторизован' })
   @Get('today')
-  async getToday(@Request() req: any) {
+  async getToday(@Request() req: AuthenticatedRequest) {
     return this.warmupService.getToday(req.user.sub);
   }
 
@@ -48,7 +49,7 @@ export class WarmupController {
   })
   @ApiUnauthorizedResponse({ description: 'Не авторизован' })
   @Post('submit')
-  async submit(@Request() req: any, @Body() dto: SubmitWarmupDto) {
+  async submit(@Request() req: AuthenticatedRequest, @Body() dto: SubmitWarmupDto) {
     return this.warmupService.submit(req.user.sub, dto.answers);
   }
 
@@ -59,7 +60,7 @@ export class WarmupController {
     description: 'Доступность защиты стрика и текущий стрик',
   })
   @Get('streak-protection')
-  async getStreakProtection(@Request() req: any) {
+  async getStreakProtection(@Request() req: AuthenticatedRequest) {
     return this.warmupService.getStreakProtectionStatus(req.user.sub);
   }
 }

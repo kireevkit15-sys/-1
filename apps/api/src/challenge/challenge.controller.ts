@@ -16,6 +16,7 @@ import {
   ApiBadRequestResponse,
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import type { AuthenticatedRequest } from '../auth/strategies/jwt.strategy';
 import { ChallengeService } from './challenge.service';
 import type { SubmitChallengeDto } from './dto/submit-challenge.dto';
 
@@ -33,7 +34,7 @@ export class ChallengeController {
     description: 'Вопросы челленджа или результат',
   })
   @Get('today')
-  async getToday(@Request() req: { user: { sub: string } }) {
+  async getToday(@Request() req: AuthenticatedRequest) {
     return this.challengeService.getToday(req.user.sub);
   }
 
@@ -45,7 +46,7 @@ export class ChallengeController {
   @ApiBadRequestResponse({ description: 'Нет активного челленджа или некорректные данные' })
   @Post('submit')
   async submit(
-    @Request() req: { user: { sub: string } },
+    @Request() req: AuthenticatedRequest,
     @Body() dto: SubmitChallengeDto,
   ) {
     return this.challengeService.submit(req.user.sub, dto.answers);
@@ -55,7 +56,7 @@ export class ChallengeController {
   @ApiOkResponse({ description: 'Список прошлых челленджей с пагинацией' })
   @Get('history')
   async getHistory(
-    @Request() req: { user: { sub: string } },
+    @Request() req: AuthenticatedRequest,
     @Query('limit') limit?: string,
     @Query('page') page?: string,
   ) {

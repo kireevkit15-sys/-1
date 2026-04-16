@@ -20,6 +20,7 @@ import {
 } from '@nestjs/swagger';
 import { QuestionService } from './question.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import type { AuthenticatedRequest } from '../auth/strategies/jwt.strategy';
 import { AdminGuard } from '../common/guards/admin.guard';
 import {
   CreateQuestionDto,
@@ -96,7 +97,7 @@ export class QuestionController {
   async submitFeedback(
     @Param('id') id: string,
     @Body() dto: CreateFeedbackDto,
-    @Req() req: { user: { sub: string } },
+    @Req() req: AuthenticatedRequest,
   ) {
     return this.questionService.submitFeedback(
       id,

@@ -21,6 +21,7 @@ import {
 import { BattleService } from './battle.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import type { CreateBattleDto } from './dto/create-battle.dto';
+import type { AuthenticatedRequest } from '../auth/strategies/jwt.strategy';
 
 @ApiTags('Battles')
 @ApiBearerAuth()
@@ -39,7 +40,7 @@ export class BattleController {
   @ApiResponse({ status: 400, description: 'Неизвестный режим батла' })
   @ApiResponse({ status: 401, description: 'Не авторизован' })
   @Post()
-  async createBattle(@Request() req: any, @Body() dto: CreateBattleDto) {
+  async createBattle(@Request() req: AuthenticatedRequest, @Body() dto: CreateBattleDto) {
     const userId: string = req.user.sub;
 
     if (dto.mode === 'bot') {
@@ -68,7 +69,7 @@ export class BattleController {
   @ApiResponse({ status: 401, description: 'Не авторизован' })
   @Get('history')
   async getHistory(
-    @Request() req: any,
+    @Request() req: AuthenticatedRequest,
     @Query('page') page?: string,
     @Query('limit') limit?: string,
   ) {
@@ -90,7 +91,7 @@ export class BattleController {
   @ApiResponse({ status: 403, description: 'Вы не участник этого батла' })
   @ApiResponse({ status: 404, description: 'Батл не найден' })
   @Get(':id')
-  async getBattle(@Param('id') id: string, @Request() req: any) {
+  async getBattle(@Param('id') id: string, @Request() req: AuthenticatedRequest) {
     const userId: string = req.user.sub;
 
     const battle = await this.battleService.getBattle(id);

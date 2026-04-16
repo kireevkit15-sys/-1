@@ -14,6 +14,7 @@ import {
   ApiResponse,
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import type { AuthenticatedRequest } from '../auth/strategies/jwt.strategy';
 import { NotificationService } from './notification.service';
 import type { SubscribePushDto } from './dto/subscribe.dto';
 import type { UnsubscribePushDto } from './dto/unsubscribe.dto';
@@ -29,7 +30,7 @@ export class NotificationController {
   @ApiOperation({ summary: 'Subscribe to push notifications' })
   @ApiResponse({ status: 201, description: 'Subscribed successfully' })
   async subscribe(
-    @Request() req: { user: { sub: string } },
+    @Request() req: AuthenticatedRequest,
     @Body() dto: SubscribePushDto,
   ) {
     return this.notificationService.subscribe(req.user.sub, {
@@ -43,7 +44,7 @@ export class NotificationController {
   @ApiOperation({ summary: 'Unsubscribe from push notifications' })
   @ApiResponse({ status: 200, description: 'Unsubscribed successfully' })
   async unsubscribe(
-    @Request() req: { user: { sub: string } },
+    @Request() req: AuthenticatedRequest,
     @Body() dto: UnsubscribePushDto,
   ) {
     const removed = await this.notificationService.unsubscribe(
@@ -56,7 +57,7 @@ export class NotificationController {
   @Get('subscriptions')
   @ApiOperation({ summary: 'List current push subscriptions' })
   @ApiResponse({ status: 200, description: 'List of active push subscriptions' })
-  async getSubscriptions(@Request() req: { user: { sub: string } }) {
+  async getSubscriptions(@Request() req: AuthenticatedRequest) {
     return this.notificationService.getUserSubscriptions(req.user.sub);
   }
 }

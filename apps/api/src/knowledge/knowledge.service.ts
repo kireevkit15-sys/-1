@@ -1,9 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { ConfigService } from '@nestjs/config';
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-let OpenAI: any;
-// eslint-disable-next-line @typescript-eslint/no-require-imports
+import type OpenAIType from 'openai';
+
+let OpenAI: typeof OpenAIType | null;
 try { OpenAI = require('openai').default; } catch { OpenAI = null; }
 
 export interface SimilarChunk {
@@ -20,8 +20,7 @@ export interface SimilarChunk {
 @Injectable()
 export class KnowledgeService {
   private readonly logger = new Logger(KnowledgeService.name);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private readonly openai: any;
+  private readonly openai: OpenAIType | null;
 
   constructor(
     private readonly prisma: PrismaService,
@@ -201,6 +200,9 @@ export class KnowledgeService {
   // ── Private ───────────────────────────────────────────────────────
 
   private async generateEmbedding(text: string): Promise<number[]> {
+    if (!this.openai) {
+      throw new Error('OpenAI client not initialized — set OPENAI_API_KEY');
+    }
     const response = await this.openai.embeddings.create({
       model: 'text-embedding-3-small',
       input: text,
