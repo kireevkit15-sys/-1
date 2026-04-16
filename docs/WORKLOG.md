@@ -1383,6 +1383,39 @@ _Playwright конфиг:_
 
 ---
 
+### 2026-04-16 — Сессия 13: L22 Алгоритмы обучения
+
+**Время:** ~1.5 часа
+**Статус:** Завершена
+
+**Что сделано:**
+- Создал модуль `packages/shared/src/learning/` — 6 файлов (types, determination, path-builder, adaptation, metrics, index)
+- L22.1: analyzeDetermination — cross-branch бонусы, variance-based delivery style, нормализация scores
+- L22.2: buildLearningPath — топологическая сортировка (Kahn's algorithm), branch interleaving, pain point delayed introduction, max 3 consecutive same branch
+- L22.3: computeAdaptations — 4 правила (interesting→more, mastered→faster, boring→minimum, weak→repeat), computeMasteryDelta (динамический)
+- L22.4: computeEngagement + computeConceptConfidence — engagement signals (time, depth, quiz, explain), weighted confidence (quiz 40%, explain 30%, time 20%, completion 10%)
+- Интегрировал в learning.service.ts: determine(), start(), completeDay() используют shared-алгоритмы
+- Удалил старые методы analyzeDetermination и buildConceptOrder из service
+- completeDay теперь возвращает metrics (confidence, engagement, masteryDelta, adaptations)
+- 0 TS-ошибок
+
+**Файлы созданы/изменены:**
+- `packages/shared/src/learning/types.ts` — типы learning системы (создан)
+- `packages/shared/src/learning/determination.ts` — алгоритм определения (создан)
+- `packages/shared/src/learning/path-builder.ts` — умный path builder (создан)
+- `packages/shared/src/learning/adaptation.ts` — 4 правила адаптации (создан)
+- `packages/shared/src/learning/metrics.ts` — engagement + confidence (создан)
+- `packages/shared/src/learning/index.ts` — экспорт модуля (создан)
+- `packages/shared/src/index.ts` — экспорт learning модуля
+- `apps/api/src/learning/learning.service.ts` — интеграция shared-алгоритмов
+
+**Задачи из SPRINT.md закрыты:** L22.1, L22.2, L22.3, L22.4
+
+**Коммиты:**
+- `819e1c8` — feat(learning): L22 algorithms — determination, path builder, adaptation, metrics
+
+---
+
 ## Сводка по неделям
 
 ### Неделя 1 (2026-04-05 — 2026-04-11)
@@ -1407,3 +1440,4 @@ _Playwright конфиг:_
 | 04-16 | Яшкин | Техдолг: 0 TS-ошибок в проде, 20 контроллеров, 28 catch, enums, feed fix | Рефакторинг (5 коммитов) |
 | 04-16 | Яшкин | Тесты: 0 TS-ошибок, tsconfig.spec.json. L23 concept-battle linking, LC10 LLM Engine | L23.1-L23.3, LC10 |
 | 04-16 | Яшкин | L24: AI-эндпоинты обучения — explain, hint, quiz + rate limiting | L24.1-L24.5 |
+| 04-16 | Яшкин | L22: Алгоритмы обучения — determination, path builder, адаптация, метрики | L22.1-L22.4 |

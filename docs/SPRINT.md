@@ -525,10 +525,10 @@
 
 | # | Задача | Статус | Файлы | Блокер |
 |---|--------|--------|-------|--------|
-| L22.1 | Алгоритм начального определения: 5 ситуаций → стартовая зона + болевая точка + стиль подачи | todo | `packages/shared/src/learning/determination.ts` | L20.4 |
-| L22.2 | Алгоритм построения персонального маршрута: на основе графа знаний + результата определения → последовательность дней | todo | `apps/api/src/learning/path-builder.service.ts` | L20.5, L21.2 |
-| L22.3 | Алгоритм живой адаптации: 4 правила (интересное — больше, освоенное — быстрее, неинтересное — минимум, слабое — иначе) | todo | `apps/api/src/learning/adaptation.service.ts` | L22.2 |
-| L22.4 | Метрики для адаптации: время на карточке, глубина погружения, качество ответов, скорость, тематические предпочтения | todo | `apps/api/src/learning/metrics.service.ts` | L20.5 |
+| L22.1 | Алгоритм определения: cross-branch бонусы, variance-based стиль подачи | done | `packages/shared/src/learning/determination.ts` | — |
+| L22.2 | Path builder: топологическая сортировка + branch interleaving + prerequisites | done | `packages/shared/src/learning/path-builder.ts` | — |
+| L22.3 | Живая адаптация: 4 правила + computeMasteryDelta (динамический вместо +0.1) | done | `packages/shared/src/learning/adaptation.ts` | — |
+| L22.4 | Метрики: engagement signals, concept confidence, time/depth/quiz/explain scoring | done | `packages/shared/src/learning/metrics.ts` | — |
 
 ### Блок L23 — Связка с батлами
 
