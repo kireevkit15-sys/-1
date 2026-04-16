@@ -1355,6 +1355,34 @@ _Playwright конфиг:_
 
 ---
 
+### 2026-04-16 — Сессия 12: L24 AI-эндпоинты для обучения
+
+**Время:** ~1 час
+**Статус:** Завершена
+
+**Что сделано:**
+- Создал промпт-шаблоны для обучения: concept explain (глубина по mastery), barrier hint (3 уровня подсказок), mini-quiz (3-5 вопросов с антидубликацией)
+- Создал LearningAiService: 3 метода — explainConcept, getBarrierHint, generateQuiz
+- Добавил 3 эндпоинта: POST /learning/ai/explain, POST /learning/ai/hint, POST /learning/ai/quiz
+- Встроил rate limiting: 20 AI-запросов/день, 30K токенов/день, max 5 подсказок на барьер (Redis)
+- Обновил LearningModule: добавил LearningAiService, RedisModule
+- 0 TS-ошибок
+
+**Файлы созданы/изменены:**
+- `apps/api/src/ai/prompts/learning-tutor.ts` — 3 промпт-шаблона (создан)
+- `apps/api/src/ai/prompts/index.ts` — экспорт новых промптов
+- `apps/api/src/learning/dto/learning-ai.dto.ts` — DTO для 3 эндпоинтов (создан)
+- `apps/api/src/learning/learning-ai.service.ts` — LearningAiService (создан)
+- `apps/api/src/learning/learning.controller.ts` — 3 новых эндпоинта
+- `apps/api/src/learning/learning.module.ts` — регистрация сервиса + RedisModule
+
+**Задачи из SPRINT.md закрыты:** L24.1, L24.2, L24.3, L24.4, L24.5
+
+**Коммиты:**
+- `140d2ee` — feat(learning): L24 AI endpoints — explain, hint, quiz + rate limiting
+
+---
+
 ## Сводка по неделям
 
 ### Неделя 1 (2026-04-05 — 2026-04-11)
@@ -1378,3 +1406,4 @@ _Playwright конфиг:_
 | 04-14 | Яшкин | Система обучения: модели + API + seed + 98 тестов | B20-B25, L21 (53+ задач) |
 | 04-16 | Яшкин | Техдолг: 0 TS-ошибок в проде, 20 контроллеров, 28 catch, enums, feed fix | Рефакторинг (5 коммитов) |
 | 04-16 | Яшкин | Тесты: 0 TS-ошибок, tsconfig.spec.json. L23 concept-battle linking, LC10 LLM Engine | L23.1-L23.3, LC10 |
+| 04-16 | Яшкин | L24: AI-эндпоинты обучения — explain, hint, quiz + rate limiting | L24.1-L24.5 |

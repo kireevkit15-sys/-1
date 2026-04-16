@@ -542,11 +542,11 @@
 
 | # | Задача | Статус | Файлы | Блокер |
 |---|--------|--------|-------|--------|
-| L24.1 | Промпт AI-наставника для карточки "Своими словами": проверка глубины ответа, подсказка что упущено | todo | `apps/api/src/ai/prompts/explain-grader.ts` | — |
-| L24.2 | Промпт AI-наставника для барьера "Защити": роль оппонента, оспаривание позиции, 3-4 раунда давления | todo | `apps/api/src/ai/prompts/barrier-challenger.ts` | — |
-| L24.3 | Промпт для мастерского режима "Наставничество": AI играет роль ученика, задаёт глупые вопросы | todo | `apps/api/src/ai/prompts/student-mode.ts` | — |
-| L24.4 | Эндпоинт для проверки ответа "Своими словами": POST /learning/grade-explanation | todo | `apps/api/src/learning/` | L24.1 |
-| L24.5 | Эндпоинт для диалога в барьере: POST /learning/barrier/:id/challenge | todo | `apps/api/src/learning/` | L24.2 |
+| L24.1 | Промпт-шаблоны обучения: concept explain (depth-adaptive), barrier hint (progressive), mini-quiz | done | `apps/api/src/ai/prompts/learning-tutor.ts` | — |
+| L24.2 | POST /learning/ai/explain — объяснение концепта (сократический метод, глубина по mastery) | done | `apps/api/src/learning/learning-ai.service.ts` | L24.1 |
+| L24.3 | POST /learning/ai/hint — подсказки на барьере (max 5, прогрессивные уровни) | done | `apps/api/src/learning/learning-ai.service.ts` | L24.1 |
+| L24.4 | POST /learning/ai/quiz — генерация мини-квиза (3-5 вопросов, антидубликация) | done | `apps/api/src/learning/learning-ai.service.ts` | L24.1 |
+| L24.5 | Rate limiting + token budget для learning AI (20 req/day, 30K tokens/day, Redis) | done | `apps/api/src/learning/learning-ai.service.ts` | — |
 
 ### Блок L25 — Тестирование (Lead)
 
