@@ -146,7 +146,7 @@ export class TelegramDigestService {
       xpEarned,
       streakDays: stats.streakDays,
       rating: stats.rating,
-      ratingChange: 0, // TODO: track historical rating for delta
+      ratingChange: 0, // TODO(B-next): needs RatingSnapshot table to compute delta per period
       leaderboardRank,
     };
   }

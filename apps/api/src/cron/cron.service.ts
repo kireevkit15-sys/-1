@@ -79,7 +79,8 @@ export class CronService {
   async cleanupAbandonedBattles() {
     this.logger.log('Cron: checking for abandoned battles');
     try {
-      const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
+      const ABANDONED_THRESHOLD_MS = 60 * 60 * 1000; // 1 hour
+      const oneHourAgo = new Date(Date.now() - ABANDONED_THRESHOLD_MS);
 
       const result = await this.prisma.battle.updateMany({
         where: {
