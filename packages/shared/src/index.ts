@@ -131,7 +131,7 @@ export {
   CRAFT_RECIPES,
 } from './cards/constants';
 
-// Learning (L22)
+// Learning (L22 — shared algorithms)
 export type {
   LearningBranch,
   LevelName as LearningLevelName,

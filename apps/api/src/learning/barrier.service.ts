@@ -6,6 +6,17 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { AiService } from '../ai/ai.service';
+import {
+  buildRecallGraderPrompt,
+  parseRecallResponse,
+  buildConnectGraderPrompt,
+  parseConnectResponse,
+  buildApplyGraderPrompt,
+  parseApplyResponse,
+  buildDefendPrompt,
+  parseDefendScore,
+} from '../ai/prompts/barrier-challenger';
+import type { Exchange } from '../ai/prompts/barrier-challenger';
 import type { LevelName } from '@prisma/client';
 import type {
   BarrierRecallDto,
@@ -132,25 +143,22 @@ export class BarrierService {
 
         if (!concept) return { conceptId: answer.conceptId, score: 0, feedback: 'Concept not found' };
 
+        const prompt = buildRecallGraderPrompt(
+          concept.nameRu,
+          concept.description ?? '',
+          answer.answer,
+        );
+
         const gradeText = await this.ai.chatCompletion(
           [
-            {
-              role: 'system',
-              content: `Оцени, насколько точно ученик вспомнил концепт "${concept.nameRu}".
-Описание: ${concept.description}
-Оцени от 0 до 1 (0 = не помнит, 0.5 = частично, 1 = точно помнит).
-Ответь JSON: {"score": число, "feedback": "краткий комментарий"}`,
-            },
+            { role: 'system', content: prompt },
             { role: 'user', content: answer.answer },
           ],
           { userId, operation: 'barrier_recall' },
         );
 
-        try {
-          return { conceptId: answer.conceptId, ...JSON.parse(gradeText) };
-        } catch {
-          return { conceptId: answer.conceptId, score: 0.5, feedback: 'Оценка не определена' };
-        }
+        const grade = parseRecallResponse(gradeText);
+        return { conceptId: answer.conceptId, ...grade };
       }),
     );
 
@@ -184,26 +192,24 @@ export class BarrierService {
           return { conceptA: pair.conceptA, conceptB: pair.conceptB, score: 0, feedback: 'Concept not found' };
         }
 
+        const prompt = buildConnectGraderPrompt(
+          conceptA.nameRu,
+          conceptA.description ?? '',
+          conceptB.nameRu,
+          conceptB.description ?? '',
+          pair.explanation,
+        );
+
         const gradeText = await this.ai.chatCompletion(
           [
-            {
-              role: 'system',
-              content: `Ученик объясняет связь между концептами:
-1. "${conceptA.nameRu}": ${conceptA.description}
-2. "${conceptB.nameRu}": ${conceptB.description}
-Оцени качество объяснения связи от 0 до 1.
-JSON: {"score": число, "feedback": "комментарий"}`,
-            },
+            { role: 'system', content: prompt },
             { role: 'user', content: pair.explanation },
           ],
           { userId, operation: 'barrier_connect' },
         );
 
-        try {
-          return { conceptA: pair.conceptA, conceptB: pair.conceptB, ...JSON.parse(gradeText) };
-        } catch {
-          return { conceptA: pair.conceptA, conceptB: pair.conceptB, score: 0.5, feedback: 'Оценка не определена' };
-        }
+        const grade = parseConnectResponse(gradeText);
+        return { conceptA: pair.conceptA, conceptB: pair.conceptB, ...grade };
       }),
     );
 
@@ -226,26 +232,30 @@ JSON: {"score": число, "feedback": "комментарий"}`,
       throw new ConflictException('Apply stage already completed');
     }
 
+    // Get concept names for grading context
+    const completedDays = await this.prisma.learningDay.findMany({
+      where: { pathId: (await this.getActiveBarrier(userId)).barrier.pathId, completedAt: { not: null } },
+      include: { concept: { select: { nameRu: true } } },
+      take: 10,
+    });
+    const conceptNames = completedDays.map((d) => d.concept.nameRu);
+    const situations = (applyStage as { situations: Array<{ situation: string }> }).situations;
+
     const results = await Promise.all(
       dto.answers.map(async (answer) => {
+        const situation = situations[answer.situationIndex]?.situation ?? '';
+        const prompt = buildApplyGraderPrompt(situation, conceptNames, answer.answer);
+
         const gradeText = await this.ai.chatCompletion(
           [
-            {
-              role: 'system',
-              content: `Ученик применяет изученные концепты к новой ситуации.
-Оцени, насколько глубоко и корректно он применил знания. От 0 до 1.
-JSON: {"score": число, "feedback": "комментарий", "conceptsApplied": ["какие концепты использовал"]}`,
-            },
+            { role: 'system', content: prompt },
             { role: 'user', content: answer.answer },
           ],
           { userId, operation: 'barrier_apply' },
         );
 
-        try {
-          return { situationIndex: answer.situationIndex, ...JSON.parse(gradeText) };
-        } catch {
-          return { situationIndex: answer.situationIndex, score: 0.5, feedback: 'Оценка не определена', conceptsApplied: [] };
-        }
+        const grade = parseApplyResponse(gradeText);
+        return { situationIndex: answer.situationIndex, ...grade };
       }),
     );
 
@@ -291,26 +301,29 @@ JSON: {"score": число, "feedback": "комментарий", "conceptsAppli
       .map((d) => `"${d.concept.nameRu}": ${d.concept.description}`)
       .join('\n');
 
+    const mainConcept = completedDays[0]?.concept.nameRu ?? 'изученные темы';
+
     // Build conversation history
-    const history = defendStage.rounds.map((r) => ({
+    const previousExchanges: Exchange[] = defendStage.rounds.map((r) => ({
       role: r.role as 'user' | 'assistant',
       content: r.content,
     }));
 
-    const round = (dto.round ?? history.filter((m) => m.role === 'user').length) + 1;
+    const round = (dto.round ?? previousExchanges.filter((m) => m.role === 'user').length) + 1;
+
+    const systemPrompt = buildDefendPrompt(
+      mainConcept,
+      barrier.level,
+      conceptsContext,
+      dto.message,
+      round,
+      previousExchanges,
+    );
 
     const aiResponse = await this.ai.chatCompletion(
       [
-        {
-          role: 'system',
-          content: `Ты — оппонент на испытании платформы РАЗУМ. Ученик прошёл уровень "${barrier.level}".
-Концепты: ${conceptsContext}
-
-Твоя задача: оспаривать позицию ученика, давить, искать слабые места в аргументации.
-Раунд ${round} из 4. ${round >= 4 ? 'Это последний раунд. Подведи итог, дай оценку.' : 'Продолжай давить.'}
-${round >= 4 ? 'В конце добавь JSON: {"score": 0-1, "feedback": "итог"}' : ''}`,
-        },
-        ...history,
+        { role: 'system', content: systemPrompt },
+        ...previousExchanges,
         { role: 'user' as const, content: dto.message },
       ],
       { userId, operation: 'barrier_defend', maxTokens: 512 },
@@ -322,14 +335,13 @@ ${round >= 4 ? 'В конце добавь JSON: {"score": 0-1, "feedback": "и�
       { role: 'assistant', content: aiResponse },
     );
 
-    // If final round, extract score
+    // If final round, extract score using parser
     if (round >= 4) {
-      const scoreMatch = aiResponse.match(/"score"\s*:\s*([\d.]+)/);
-      const feedbackMatch = aiResponse.match(/"feedback"\s*:\s*"([^"]+)"/);
+      const defendResult = parseDefendScore(aiResponse);
 
       defendStage.results = {
-        score: scoreMatch?.[1] ? parseFloat(scoreMatch[1]) : 0.5,
-        feedback: feedbackMatch?.[1] ?? 'Испытание завершено',
+        score: defendResult.score,
+        feedback: defendResult.feedback,
         totalRounds: round,
       };
     }

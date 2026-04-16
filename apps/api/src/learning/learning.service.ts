@@ -20,6 +20,7 @@ import type { ConceptNode, DeterminationResult, CardInteraction, AdaptationActio
 import type { DetermineDto } from './dto/determine.dto';
 import type { InteractDto } from './dto/interact.dto';
 import type { ExplainDto } from './dto/explain.dto';
+import { buildExplainGraderPrompt, parseExplainGraderResponse } from '../ai/prompts/explain-grader';
 
 const LEVEL_ORDER: LevelName[] = [
   'SLEEPING',
@@ -290,44 +291,34 @@ export class LearningService {
       throw new NotFoundException('Concept not found');
     }
 
+    // Fetch user's learning path for delivery style context
+    const path = await this.prisma.learningPath.findUnique({
+      where: { userId },
+      select: { deliveryStyle: true },
+    });
+
     // AI grading of user's explanation
+    const systemPrompt = buildExplainGraderPrompt({
+      conceptName: concept.nameRu,
+      conceptDescription: concept.description ?? '',
+      userExplanation: dto.explanation,
+      deliveryStyle: path?.deliveryStyle ?? undefined,
+      bloomLevel: concept.bloomLevel ?? undefined,
+    });
+
     const gradeResult = await this.ai.chatCompletion(
       [
-        {
-          role: 'system',
-          content: `Ты — наставник платформы РАЗУМ. Оцени объяснение ученика по концепту "${concept.nameRu}".
-Описание концепта: ${concept.description}
-
-Оцени по шкале:
-- "understood" — ученик уловил суть, объяснил своими словами
-- "partial" — частично понял, упустил важное
-- "missed" — не понял суть концепта
-
-Ответь строго в JSON:
-{
-  "grade": "understood" | "partial" | "missed",
-  "feedback": "краткий комментарий что именно уловил или упустил",
-  "hints": ["подсказка что стоит обдумать"]
-}`,
-        },
-        {
-          role: 'user',
-          content: dto.explanation,
-        },
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: dto.explanation },
       ],
       { userId, operation: 'learning_grade_explanation' },
     );
 
-    let parsed: { grade: string; feedback: string; hints: string[] };
-    try {
-      parsed = JSON.parse(gradeResult);
-    } catch {
-      parsed = { grade: 'partial', feedback: 'Не удалось оценить ответ автоматически.', hints: [] };
-    }
+    const parsed = parseExplainGraderResponse(gradeResult);
 
     // Update mastery based on grade
-    const masteryDelta = parsed.grade === 'understood' ? 0.15 : parsed.grade === 'partial' ? 0.05 : 0;
-    const bloomDelta = parsed.grade === 'understood' ? 1 : 0;
+    const masteryDelta = parsed.verdict === 'understood' ? 0.15 : parsed.verdict === 'partial' ? 0.05 : 0;
+    const bloomDelta = parsed.verdict === 'understood' ? 1 : 0;
 
     if (masteryDelta > 0) {
       await this.prisma.userConceptMastery.upsert({
@@ -335,8 +326,8 @@ export class LearningService {
         update: {
           mastery: { increment: masteryDelta },
           bloomReached: { increment: bloomDelta },
-          timesCorrect: { increment: parsed.grade === 'understood' ? 1 : 0 },
-          timesWrong: { increment: parsed.grade === 'missed' ? 1 : 0 },
+          timesCorrect: { increment: parsed.verdict === 'understood' ? 1 : 0 },
+          timesWrong: { increment: parsed.verdict === 'missed' ? 1 : 0 },
           lastTestedAt: new Date(),
         },
         create: {
@@ -344,17 +335,19 @@ export class LearningService {
           conceptId: dto.conceptId,
           mastery: masteryDelta,
           bloomReached: bloomDelta,
-          timesCorrect: parsed.grade === 'understood' ? 1 : 0,
-          timesWrong: parsed.grade === 'missed' ? 1 : 0,
+          timesCorrect: parsed.verdict === 'understood' ? 1 : 0,
+          timesWrong: parsed.verdict === 'missed' ? 1 : 0,
           lastTestedAt: new Date(),
         },
       });
     }
 
     return {
-      grade: parsed.grade,
+      grade: parsed.verdict,
+      score: parsed.score,
       feedback: parsed.feedback,
-      hints: parsed.hints,
+      missedPoints: parsed.missedPoints,
+      strengths: parsed.strengths,
       conceptName: concept.nameRu,
     };
   }

@@ -4,6 +4,41 @@ export type { QuestionGeneratorParams } from './question-generator';
 export { buildSocraticTutorPrompt } from './socratic-tutor';
 export type { SocraticTutorParams } from './socratic-tutor';
 
+export { buildExplainGraderPrompt, parseExplainGraderResponse } from './explain-grader';
+export type { ExplainGraderInput, ExplainGraderOutput } from './explain-grader';
+
+export {
+  buildStudentModePrompt,
+  parseStudentResponse,
+  buildTeachingAssessmentPrompt,
+} from './student-mode';
+export type {
+  StudentModeConfig,
+  StudentResponse,
+  TeachingQuality,
+  LevelName,
+} from './student-mode';
+
+export {
+  buildRecallGraderPrompt,
+  parseRecallResponse,
+  buildConnectGraderPrompt,
+  parseConnectResponse,
+  buildApplyGraderPrompt,
+  parseApplyResponse,
+  buildDefendPrompt,
+  parseDefendScore,
+  buildBarrierSummaryPrompt,
+} from './barrier-challenger';
+export type {
+  Exchange,
+  GradeResult,
+  ApplyGradeResult,
+  DefendScoreResult,
+  StageScore,
+  StageResults,
+} from './barrier-challenger';
+
 export {
   buildConceptExplainPrompt,
   buildBarrierHintPrompt,

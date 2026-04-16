@@ -28,3 +28,19 @@ export type { AdaptationContext } from './adaptation';
 
 // Metrics (L22.4)
 export { computeEngagement, computeConceptConfidence } from './metrics';
+
+// Constants
+export {
+  LEVEL_ORDER,
+  LEVEL_DISPLAY_NAMES,
+  BARRIER_PASS_THRESHOLD,
+  BARRIER_WEIGHTS,
+  DAYS_PER_LEVEL,
+  MASTERY_DELTAS,
+  SRS_INTERVALS as LEARNING_SRS_INTERVALS,
+  BRANCH_NAMES,
+} from './constants';
+
+// Topological sort
+export { topologicalSort } from './topological-sort';
+export type { SortableConcept, ConceptRelation, LearningPathEntry } from './topological-sort';
