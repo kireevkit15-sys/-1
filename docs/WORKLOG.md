@@ -1260,6 +1260,56 @@ _Playwright конфиг:_
 
 **Задачи из SPRINT.md закрыты:** B20.1-B20.8, B21.1-B21.8, B22.1-B22.7, B23.1-B23.4, B24.1-B24.5, B25.1-B25.13, L21.1-L21.8
 
+### 2026-04-16 — Сессия 10: Техдолг и рефакторинг — полная очистка бэкенда
+
+**Время:** ~3 часа
+**Статус:** Завершена
+
+**Что сделано:**
+- Создан `AuthenticatedRequest` интерфейс, заменены `req: any` и инлайн-типы в 20 контроллерах
+- Создана утилита `error.util.ts` (`getErrorMessage`, `getErrorName`) для безопасного извлечения ошибок из `unknown`
+- Исправлены 28 catch-блоков: `catch (err: any)` → `catch (err: unknown)` с `getErrorMessage()`
+- CORS: `origin: 'http://localhost:3000'` → `process.env.CORS_ORIGIN` в main.ts и battle.gateway.ts
+- Исправлены 2 проглоченных catch-а в stats.service.ts и webhook.service.ts (добавлен Logger)
+- `where: any` → `Prisma.QuestionWhereInput` в question.service.ts
+- Типизация OpenAI в knowledge.service.ts: `any` → `OpenAIType | null`
+- Замена строковых литералов на Prisma-перечисления (BattleStatus, TournamentStatus, AppealStatus) в 9 файлах
+- `battle: any` → `battle: Battle` в battle.service.ts
+- `as any` → `Prisma.PrismaPromise<unknown>[]` в achievements.service.ts (2 места)
+- Исправлен feed-algorithm.service.ts: старые имена полей (challengerId, opponentId, finishedAt) → актуальные из схемы (player1Id, player2Id, endedAt)
+- Исправлен feed.service.ts: JsonValue ↔ domain type casts
+- **Результат: 0 ошибок TypeScript в продакшн-коде** (из ~50 ошибок до рефакторинга)
+
+**Файлы созданы/изменены:**
+- `apps/api/src/auth/strategies/jwt.strategy.ts` — добавлен AuthenticatedRequest интерфейс
+- `apps/api/src/common/utils/error.util.ts` — создана утилита (новый файл)
+- 20 контроллеров — замена типов запроса на AuthenticatedRequest
+- `apps/api/src/main.ts` — CORS через env
+- `apps/api/src/battle/battle.gateway.ts` — CORS + 19 catch блоков
+- `apps/api/src/battle/battle.service.ts` — Battle import + типизация return
+- `apps/api/src/cron/cron.service.ts` — catch блоки + BattleStatus enum
+- `apps/api/src/stats/stats.service.ts` — Logger + catch блоки + BattleStatus
+- `apps/api/src/webhook/webhook.service.ts` — catch блок с логированием
+- `apps/api/src/question/question.service.ts` — Prisma.QuestionWhereInput
+- `apps/api/src/knowledge/knowledge.service.ts` — OpenAI типизация
+- `apps/api/src/telegram/telegram-digest.service.ts` — BattleStatus + catch
+- `apps/api/src/tournament/tournament.service.ts` — TournamentStatus enum
+- `apps/api/src/ban/ban.service.ts` — AppealStatus enum
+- `apps/api/src/user/user.service.ts` — BattleStatus enum
+- `apps/api/src/health/health.controller.ts` — BattleStatus enum
+- `apps/api/src/v2/v2-battle.controller.ts` — BattleStatus enum
+- `apps/api/src/achievements/achievements.service.ts` — Prisma.PrismaPromise типы
+- `apps/api/src/feed/feed-algorithm.service.ts` — схема полей + BattleStatus + index access
+- `apps/api/src/feed/feed.service.ts` — JsonValue casts + index access
+- `.env.example` — добавлен CORS_ORIGIN
+
+**Коммиты:**
+- `b764a9c` — refactor(api): eliminate `any` types, hardcoded CORS, swallowed errors
+- `7c52484` — refactor(api): clarify TODO context, name magic constant in cron
+- `6fe3144` — refactor(api): replace hardcoded status strings with Prisma enums
+- `db6aa30` — refactor(api): eliminate remaining `any` types in battle and achievements services
+- `57bcb8b` — fix(feed): align feed services with Prisma schema, fix all TypeScript errors
+
 ---
 
 ## Сводка по неделям
@@ -1283,3 +1333,4 @@ _Playwright конфиг:_
 | 04-11 | Яшкин | Блок 19: spectators, сезоны, streak protect, digest, moderation, A/B, GDPR, турниры, баны, webhooks, v2 API, healthcheck | B19.1–B19.12 (все 12) |
 | 04-12 | Яшкин | BT.15–BT.20 тесты + полный аудит бэкенда, 5 багов исправлено | BT.15–BT.20 (все 6) |
 | 04-14 | Яшкин | Система обучения: модели + API + seed + 98 тестов | B20-B25, L21 (53+ задач) |
+| 04-16 | Яшкин | Техдолг: 0 TS-ошибок в проде, 20 контроллеров, 28 catch, enums, feed fix | Рефакторинг (5 коммитов) |

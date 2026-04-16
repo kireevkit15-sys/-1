@@ -747,6 +747,20 @@
 | B25.12 | Unit: BarrierService — 15 тестов (scoring, threshold 0.6, level progression, retake) | done | `apps/api/src/learning/__tests__/barrier.service.spec.ts` |
 | B25.13 | Security: 22 теста (auth, skip prevention, cross-user, forgery, validation) | done | `apps/api/test/security/learning-security.e2e-spec.ts` |
 
+### Блок R — Техдолг и рефакторинг (Яшкин)
+
+| # | Задача | Статус | Файлы |
+|---|--------|--------|-------|
+| R1 | AuthenticatedRequest интерфейс — замена `req: any` в 20 контроллерах | done | 20 контроллеров, `jwt.strategy.ts` |
+| R2 | Утилита error.util.ts — безопасное извлечение ошибок из `unknown` | done | `common/utils/error.util.ts` |
+| R3 | 28 catch-блоков: `catch (err: any)` → `catch (err: unknown)` + getErrorMessage | done | gateway, cron, digest, stats, webhook |
+| R4 | CORS через env: `process.env.CORS_ORIGIN` в main.ts и battle.gateway.ts | done | `main.ts`, `battle.gateway.ts`, `.env.example` |
+| R5 | `where: any` → `Prisma.QuestionWhereInput` в question.service.ts | done | `question.service.ts` |
+| R6 | Типизация OpenAI: `any` → `OpenAIType \| null` в knowledge.service.ts | done | `knowledge.service.ts` |
+| R7 | Замена строковых литералов на Prisma-перечисления (BattleStatus, TournamentStatus, AppealStatus) | done | 9 файлов |
+| R8 | `battle: any` → `battle: Battle`, `as any` → `Prisma.PrismaPromise<unknown>[]` | done | `battle.service.ts`, `achievements.service.ts` |
+| R9 | feed-algorithm.service.ts — исправление старых имён полей + 24 TS-ошибки | done | `feed-algorithm.service.ts`, `feed.service.ts` |
+
 ---
 
 # Завершённый спринт — Неделя 3
