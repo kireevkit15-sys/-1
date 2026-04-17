@@ -1487,7 +1487,8 @@ _Playwright конфиг:_
 **Задачи из SPRINT.md закрыты:** —  (рефакторинг и фиксы)
 
 **Коммиты:**
-- (этой сессии — будет создан в конце)
+- `a4d2137` — refactor(web): unify API_BASE pattern + fix hydration + TS errors + demo fallback
+- `0ad9e1e` — fix(learning): clarify demo badge — distinguish auth vs network reason
 
 ---
 
