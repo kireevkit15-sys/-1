@@ -19,9 +19,11 @@ import {
   type LearningStatus,
 } from "@/lib/api/learning";
 
+type DemoReason = "network" | "auth";
+
 type LoadState =
   | { phase: "loading" }
-  | { phase: "ready"; status: LearningStatus; isDemo: boolean }
+  | { phase: "ready"; status: LearningStatus; isDemo: boolean; demoReason?: DemoReason }
   | { phase: "auth-required" }
   | { phase: "error"; message: string };
 
@@ -51,7 +53,12 @@ export default function LearningHubPage() {
         };
         if (e instanceof LearningApiError) {
           if (e.kind === "network" || e.kind === "auth") {
-            setState({ phase: "ready", isDemo: true, status: demoStatus });
+            setState({
+              phase: "ready",
+              isDemo: true,
+              status: demoStatus,
+              demoReason: e.kind,
+            });
             return;
           }
           setState({ phase: "error", message: e.message });
@@ -127,6 +134,11 @@ export default function LearningHubPage() {
   }
 
   const { status, isDemo } = state;
+  const demoReason = state.phase === "ready" ? state.demoReason : undefined;
+  const demoLabel =
+    demoReason === "auth"
+      ? "— Демо · войдите, чтобы увидеть свой путь —"
+      : "— Демо · бэкенд не запущен —";
 
   // ── NO PATH ────────────────────────────────────────────────────────
   if (!status.hasPath) {
@@ -166,7 +178,7 @@ export default function LearningHubPage() {
       {isDemo && (
         <div className="relative z-20 max-w-2xl mx-auto mt-6 px-5 sm:px-6">
           <div className="font-ritual text-[10px] tracking-[0.35em] uppercase text-center text-text-muted border border-border rounded-lg py-2 px-4 bg-surface/60">
-            — Демо · бэкенд не запущен —
+            {demoLabel}
           </div>
         </div>
       )}

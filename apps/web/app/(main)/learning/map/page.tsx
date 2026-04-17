@@ -35,9 +35,11 @@ const BRANCH_BY_KEY = Object.fromEntries(BRANCHES.map((b) => [b.key, b])) as Rec
   (typeof BRANCHES)[number]
 >;
 
+type DemoReason = "network" | "auth";
+
 type LoadState =
   | { phase: "loading" }
-  | { phase: "ready"; data: MasteryMapResponse; isDemo: boolean }
+  | { phase: "ready"; data: MasteryMapResponse; isDemo: boolean; demoReason?: DemoReason }
   | { phase: "auth-required" }
   | { phase: "error"; message: string };
 
@@ -59,7 +61,12 @@ export default function KnowledgeMapPage() {
       } catch (e) {
         if (cancelled) return;
         if (e instanceof LearningApiError && (e.kind === "network" || e.kind === "auth")) {
-          setState({ phase: "ready", isDemo: true, data: DEMO_DATA });
+          setState({
+            phase: "ready",
+            isDemo: true,
+            data: DEMO_DATA,
+            demoReason: e.kind,
+          });
           return;
         }
         setState({
@@ -139,6 +146,11 @@ export default function KnowledgeMapPage() {
   }
 
   const { data, isDemo } = state;
+  const demoReason = state.phase === "ready" ? state.demoReason : undefined;
+  const demoLabel =
+    demoReason === "auth"
+      ? "— Демо · войдите, чтобы увидеть свою карту —"
+      : "— Демо · бэкенд не запущен —";
   const percentMastered =
     data.totalConcepts > 0
       ? Math.round((data.masteredCount / data.totalConcepts) * 100)
@@ -149,7 +161,7 @@ export default function KnowledgeMapPage() {
       {isDemo && (
         <div className="mb-6">
           <div className="font-ritual text-[10px] tracking-[0.35em] uppercase text-center text-text-muted border border-border rounded-lg py-2 px-4 bg-surface/60">
-            — Демо · бэкенд не запущен —
+            {demoLabel}
           </div>
         </div>
       )}
