@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Card from "@/components/ui/Card";
 import Link from "next/link";
 import { useAuth } from "@/hooks/useAuth";
 import SwipeToDismiss from "@/components/ui/SwipeToDismiss";
+import { API_BASE } from "@/lib/api/base";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -40,8 +40,6 @@ interface WarmupStatus {
 // ---------------------------------------------------------------------------
 // API helpers
 // ---------------------------------------------------------------------------
-
-const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
 
 async function fetchJson<T>(
   url: string,
@@ -166,11 +164,11 @@ export default function HomePage() {
 
       const [userData, factData, warmupData] = await Promise.all([
         isAuthenticated
-          ? fetchJson<UserStats>(`${API_BASE}/v1/users/me`, accessToken)
+          ? fetchJson<UserStats>(`${API_BASE}/users/me`, accessToken)
           : null,
-        fetchJson<FactOfDay>(`${API_BASE}/v1/facts/today`, accessToken),
+        fetchJson<FactOfDay>(`${API_BASE}/facts/today`, accessToken),
         isAuthenticated
-          ? fetchJson<WarmupStatus>(`${API_BASE}/v1/warmup/today`, accessToken)
+          ? fetchJson<WarmupStatus>(`${API_BASE}/warmup/today`, accessToken)
           : null,
       ]);
 
@@ -396,7 +394,7 @@ export default function HomePage() {
               <Skeleton className="w-20 h-3" />
             ) : (
               <span className="text-xs text-text-muted">
-                {stats.xp.toLocaleString()} / {xpMax.toLocaleString()} XP
+                {stats.xp.toLocaleString("ru-RU")} / {xpMax.toLocaleString("ru-RU")} XP
               </span>
             )}
           </div>

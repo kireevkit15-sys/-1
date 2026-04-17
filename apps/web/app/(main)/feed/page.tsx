@@ -21,8 +21,7 @@ import type {
   WisdomContent,
   ArenaContent,
 } from "@razum/shared";
-
-const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
+import { API_BASE } from "@/lib/api/base";
 
 // ── Branch Colors ──────────────────────────────────
 const BRANCH_COLORS: Record<string, string> = {
@@ -494,7 +493,7 @@ export default function FeedPage() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(`${API_BASE}/v1/feed/today`, {
+      const res = await fetch(`${API_BASE}/feed/today`, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -529,7 +528,7 @@ export default function FeedPage() {
     async (cardId: string, type: string, extra?: Record<string, unknown>) => {
       if (!accessToken || isDemo) return;
       try {
-        await fetch(`${API_BASE}/v1/feed/interact`, {
+        await fetch(`${API_BASE}/feed/interact`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

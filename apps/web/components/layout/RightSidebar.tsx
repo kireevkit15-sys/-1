@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Card from "@/components/ui/Card";
 import { useAuth } from "@/hooks/useAuth";
+import { API_BASE } from "@/lib/api/base";
 
 interface QuickStats {
   streak: number;
@@ -19,8 +20,6 @@ interface FactOfDay {
   source: string;
   category: string;
 }
-
-const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
 
 const defaultStats: QuickStats = {
   streak: 7,
@@ -53,8 +52,8 @@ export default function RightSidebar() {
           Authorization: `Bearer ${accessToken}`,
         };
         const [userRes, factRes] = await Promise.all([
-          fetch(`${API_BASE}/v1/users/me`, { headers }),
-          fetch(`${API_BASE}/v1/facts/today`, { headers }),
+          fetch(`${API_BASE}/users/me`, { headers }),
+          fetch(`${API_BASE}/facts/today`, { headers }),
         ]);
         if (userRes.ok) {
           const u = await userRes.json();

@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
 import { useAuth } from "@/hooks/useAuth";
+import { API_BASE } from "@/lib/api/base";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -35,8 +36,6 @@ interface CampaignDetail {
 // ---------------------------------------------------------------------------
 // Constants
 // ---------------------------------------------------------------------------
-
-const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
 
 const BRANCH_COLORS: Record<string, string> = {
   STRATEGY: "#06B6D4",
@@ -282,7 +281,7 @@ export default function CampaignDetailPage() {
       setError(false);
 
       const data = await fetchJson<CampaignDetail | { data: CampaignDetail }>(
-        `${API_BASE}/v1/campaigns/${campaignId}`,
+        `${API_BASE}/campaigns/${campaignId}`,
         accessToken,
       );
 
@@ -311,14 +310,14 @@ export default function CampaignDetailPage() {
     setStarting(true);
 
     const result = await postJson<{ success?: boolean }>(
-      `${API_BASE}/v1/campaigns/${campaignId}/start`,
+      `${API_BASE}/campaigns/${campaignId}/start`,
       accessToken,
     );
 
     if (result) {
       // Refresh campaign data to reflect started state
       const updated = await fetchJson<CampaignDetail | { data: CampaignDetail }>(
-        `${API_BASE}/v1/campaigns/${campaignId}`,
+        `${API_BASE}/campaigns/${campaignId}`,
         accessToken,
       );
       if (updated) {

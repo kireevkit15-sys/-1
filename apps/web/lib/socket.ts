@@ -1,6 +1,5 @@
 import { io, Socket } from "socket.io-client";
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+import { WS_BASE } from "@/lib/api/base";
 
 let socket: Socket | null = null;
 
@@ -17,7 +16,7 @@ export function getBattleSocket(token: string): Socket {
     socket = null;
   }
 
-  socket = io(`${API_URL}/battle`, {
+  socket = io(`${WS_BASE}/battle`, {
     auth: { token },
     transports: ["websocket", "polling"],
     reconnection: true,

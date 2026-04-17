@@ -76,7 +76,7 @@ export default function InsightCard({
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
+        if (entry?.isIntersecting) {
           onViewed();
           observer.disconnect();
         }

@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
+import { API_BASE } from "@/lib/api/base";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/v1";
 const VAPID_PUBLIC_KEY = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || "";
 
 const VISIT_COUNT_KEY = "razum_visit_count";

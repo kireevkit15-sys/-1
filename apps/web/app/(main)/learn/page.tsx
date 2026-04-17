@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Card from "@/components/ui/Card";
 import Link from "next/link";
 import { useAuth } from "@/hooks/useAuth";
+import { API_BASE } from "@/lib/api/base";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -32,8 +33,6 @@ interface BranchData {
 // ---------------------------------------------------------------------------
 // API helpers
 // ---------------------------------------------------------------------------
-
-const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
 
 async function fetchJson<T>(
   url: string,
@@ -397,7 +396,7 @@ export default function LearnPage() {
       setLoading(true);
 
       const allCampaigns = await fetchJson<CampaignData[]>(
-        `${API_BASE}/v1/campaigns`,
+        `${API_BASE}/campaigns`,
         accessToken,
       );
 

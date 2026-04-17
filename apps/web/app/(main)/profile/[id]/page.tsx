@@ -12,8 +12,7 @@ import {
 } from "recharts";
 import Card from "@/components/ui/Card";
 import { useAuth } from "@/hooks/useAuth";
-
-const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
+import { API_BASE } from "@/lib/api/base";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -265,7 +264,7 @@ export default function PublicProfilePage() {
       if (accessToken) headers["Authorization"] = `Bearer ${accessToken}`;
 
       try {
-        const res = await fetch(`${API_BASE}/v1/users/${id}/public`, { headers });
+        const res = await fetch(`${API_BASE}/users/${id}/public`, { headers });
         if (res.status === 404) {
           if (!cancelled) { setNotFound(true); setLoading(false); }
           return;

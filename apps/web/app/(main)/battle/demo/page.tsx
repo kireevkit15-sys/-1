@@ -14,12 +14,11 @@ import type { BattleState, BattleRound, BattleResult } from "@razum/shared";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import DifficultyPicker from "@/components/battle/DifficultyPicker";
+import { API_BASE } from "@/lib/api/base";
 
 // ---------------------------------------------------------------------------
 // API
 // ---------------------------------------------------------------------------
-
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
 interface ApiQuestion {
   id: string;
@@ -45,7 +44,7 @@ async function fetchQuestion(
     if (excludeIds.length > 0) {
       params.set("excludeIds", excludeIds.join(","));
     }
-    const res = await fetch(`${API_BASE}/v1/questions/random?${params}`, {
+    const res = await fetch(`${API_BASE}/questions/random?${params}`, {
       cache: "no-store",
     });
     if (!res.ok) return null;

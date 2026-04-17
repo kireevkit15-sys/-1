@@ -3,8 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import Card from "@/components/ui/Card";
 import { useAuth } from "@/hooks/useAuth";
-
-const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
+import { API_BASE } from "@/lib/api/base";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -159,7 +158,7 @@ export default function ReferralPage() {
       setFriendsLoading(true);
       if (accessToken) {
         try {
-          const res = await fetch(`${API_BASE}/v1/referrals`, {
+          const res = await fetch(`${API_BASE}/referrals`, {
             headers: { Authorization: `Bearer ${accessToken}` },
           });
           if (res.ok) {
@@ -223,7 +222,7 @@ export default function ReferralPage() {
 
     try {
       if (accessToken) {
-        const res = await fetch(`${API_BASE}/v1/referrals/apply`, {
+        const res = await fetch(`${API_BASE}/referrals/apply`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

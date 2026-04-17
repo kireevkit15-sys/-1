@@ -4,8 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import Card from "@/components/ui/Card";
 import { useAuth } from "@/hooks/useAuth";
 import { usePushSubscription } from "@/hooks/usePushSubscription";
-
-const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
+import { API_BASE } from "@/lib/api/base";
 
 const SOUND_KEY = "razum_sound_enabled";
 
@@ -201,7 +200,7 @@ export default function SettingsPage() {
     setDeleteLoading(true);
     setDeleteError(null);
     try {
-      const res = await fetch(`${API_BASE}/v1/users/me`, {
+      const res = await fetch(`${API_BASE}/users/me`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${accessToken}` },
       });

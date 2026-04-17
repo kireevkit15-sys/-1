@@ -268,7 +268,7 @@ export default function NewBattlePage() {
           </h2>
         </div>
         <div className="flex gap-3">
-          <Button onClick={createBotBattle}>Играть с ботом</Button>
+          <Button onClick={() => createBotBattle()}>Играть с ботом</Button>
           <Button variant="secondary" onClick={reset}>
             Назад
           </Button>

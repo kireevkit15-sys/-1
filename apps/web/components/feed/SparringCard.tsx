@@ -11,8 +11,10 @@ const BRANCH_COLORS: Record<string, { color: string; rgb: string }> = {
   INTUITION: { color: "#EC4899", rgb: "236,72,153"  },
 };
 
-const branchFor = (b?: string | null) =>
-  BRANCH_COLORS[(b ?? "STRATEGY").toUpperCase()] ?? BRANCH_COLORS.STRATEGY;
+const DEFAULT_BRANCH = { color: "#06B6D4", rgb: "6,182,212" } as const;
+
+const branchFor = (b?: string | null): { color: string; rgb: string } =>
+  BRANCH_COLORS[(b ?? "STRATEGY").toUpperCase()] ?? DEFAULT_BRANCH;
 
 /* ─── types ─── */
 interface SparringCardProps {

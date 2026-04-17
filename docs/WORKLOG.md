@@ -1449,6 +1449,48 @@ _Playwright конфиг:_
 
 ---
 
+### 2026-04-17 — Сессия 15: API_BASE рефакторинг + hydration fix + TS fixes + demo fallback
+
+**Время:** ~3 часа
+**Статус:** Завершена
+
+**Что сделано:**
+- **Запуск проекта** — диагностика и фикс зависимостей:
+  - Добавлен `@razum/shared: workspace:*` в `apps/api/package.json` (модуль не находился в рантайме)
+  - Запущены `pnpm install`, `pnpm dev`, проверка работоспособности
+- **Hydration fix** — `toLocaleString()` без локали давал расхождение SSR/CSR (`1,850` vs `1 850`):
+  - Все вызовы `toLocaleString()` приведены к `toLocaleString("ru-RU")` (главная, кампании)
+- **API_BASE рефакторинг** — единый источник правды для адресов API:
+  - Создан `apps/web/lib/api/base.ts` с константами `API_BASE` (`HOST/v1`) и `WS_BASE` (HOST без префикса)
+  - 28 фронтенд-файлов переведены на `import { API_BASE } from "@/lib/api/base"`, убран ручной `/v1` из путей
+  - WebSocket-клиент использует `WS_BASE` (socket.io не должен иметь `/v1`)
+  - `lib/auth.ts`, `lib/socket.ts` тоже мигрированы
+- **TS errors fix** — устранены 60 ошибок после рефакторинга (все из-за `noUncheckedIndexedAccess: true`):
+  - `feed/ArenaCard.tsx`, `SparringCard.tsx`, `WisdomCard.tsx` — добавлен `DEFAULT_BRANCH` фолбэк
+  - `feed/ChallengeCard.tsx` — типизированный фолбэк для `meta`
+  - `feed/InsightCard.tsx` — `entry?.isIntersecting`
+  - `battle/new/page.tsx` — `onClick={() => createBotBattle()}`
+- **Учебная вкладка без авторизации** — `/learning` и `/learning/map` теперь падают в demo при `kind: "auth"` (поведение унифицировано с другими вкладками)
+- **Merge conflict** — стэшил локальные изменения, подтянул 4 коммита Бонди (включая его патч `/v1` который перекрывался с моим рефакторингом). Применил рефакторинг как более полный, расширил `DetermineResult` полями `painPoint` и `deliveryStyle` для совместимости с новой логикой `startLearning`.
+- **Typecheck**: 0 ошибок
+
+**Файлы созданы/изменены:**
+- `apps/api/package.json` — добавлена зависимость `@razum/shared: workspace:*`
+- `apps/web/lib/api/base.ts` — создан (единый источник API_BASE/WS_BASE)
+- `apps/web/lib/api/learning.ts` — миграция на API_BASE, расширен `DetermineResult`
+- `apps/web/lib/auth.ts`, `lib/socket.ts` — миграция на base.ts
+- 22 страницы и компонента в `apps/web/app/` и `apps/web/components/` — миграция на API_BASE
+- 5 feed-карточек — фикс TS-ошибок `noUncheckedIndexedAccess`
+- `app/(main)/page.tsx`, `campaigns/page.tsx` — `toLocaleString("ru-RU")`
+- `app/(main)/learning/page.tsx`, `learning/map/page.tsx` — fallback в demo на auth-ошибке
+
+**Задачи из SPRINT.md закрыты:** —  (рефакторинг и фиксы)
+
+**Коммиты:**
+- (этой сессии — будет создан в конце)
+
+---
+
 ## Сводка по неделям
 
 ### Неделя 1 (2026-04-05 — 2026-04-11)
@@ -1475,3 +1517,4 @@ _Playwright конфиг:_
 | 04-16 | Яшкин | L24: AI-эндпоинты обучения — explain, hint, quiz + rate limiting | L24.1-L24.5 |
 | 04-16 | Яшкин | L22: Алгоритмы обучения — determination, path builder, адаптация, метрики | L22.1-L22.4 |
 | 04-16 | Яшкин | LC7 валидация вопросов + LC9 академические концепты + L20 маркировка | LC7, LC9, L20.1-L20.5 |
+| 04-17 | Яшкин | API_BASE рефакторинг + hydration fix + TS fixes + demo fallback в /learning | Рефакторинг (28 файлов) |

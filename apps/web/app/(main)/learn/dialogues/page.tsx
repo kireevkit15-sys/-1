@@ -4,8 +4,7 @@ import { useState, useEffect } from "react";
 import Card from "@/components/ui/Card";
 import AiChat from "@/components/learn/AiChat";
 import { useApiToken } from "@/hooks/useApiToken";
-
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/v1";
+import { API_BASE } from "@/lib/api/base";
 
 interface Dialogue {
   id: string;

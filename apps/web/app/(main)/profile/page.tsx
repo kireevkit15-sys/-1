@@ -11,6 +11,7 @@ import {
 import Card from "@/components/ui/Card";
 import { useAuth } from "@/hooks/useAuth";
 import Link from "next/link";
+import { API_BASE } from "@/lib/api/base";
 
 // ---------------------------------------------------------------------------
 // Hook: animated counter (requestAnimationFrame)
@@ -43,12 +44,6 @@ function useAnimatedCounter(target: number, duration = 1000): number {
 
   return value;
 }
-
-// ---------------------------------------------------------------------------
-// API
-// ---------------------------------------------------------------------------
-
-const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
 
 // ---------------------------------------------------------------------------
 // Battle history types + demo data
@@ -90,7 +85,7 @@ function BattleHistorySection({ token }: { token: string | null }) {
       setHistLoading(true);
       if (token) {
         try {
-          const res = await fetch(`${API_BASE}/v1/battles/history`, {
+          const res = await fetch(`${API_BASE}/battles/history`, {
             headers: { Authorization: `Bearer ${token}` },
           });
           if (res.ok) {
@@ -466,7 +461,7 @@ export default function ProfilePage() {
       setLoading(true);
       setError(null);
       try {
-        const res = await fetch(`${API_BASE}/v1/users/me`, {
+        const res = await fetch(`${API_BASE}/users/me`, {
           headers: { Authorization: `Bearer ${accessToken}` },
         });
         if (!res.ok) throw new Error(`Ошибка ${res.status}`);

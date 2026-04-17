@@ -51,7 +51,8 @@ export default function ChallengeCard({
   const isAnswered = selectedIndex !== null;
   const isCorrect = selectedIndex === data.correctIndex;
   const branchKey = branch.toUpperCase();
-  const meta = BRANCH_META[branchKey] ?? BRANCH_META.STRATEGY;
+  const meta: { label: string; color: string } =
+    BRANCH_META[branchKey] ?? { label: "Стратегия", color: "#06B6D4" };
 
   // ── Elapsed timer ──
   useEffect(() => {

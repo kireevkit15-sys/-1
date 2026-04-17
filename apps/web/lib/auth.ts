@@ -1,7 +1,6 @@
 import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+import { API_BASE } from "@/lib/api/base";
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -18,7 +17,7 @@ export const authOptions: NextAuthOptions = {
         if (!credentials?.email || !credentials?.password) return null;
 
         const isRegister = credentials.mode === "register";
-        const endpoint = isRegister ? "/v1/auth/register" : "/v1/auth/login";
+        const endpoint = isRegister ? "/auth/register" : "/auth/login";
 
         const body: Record<string, string> = {
           email: credentials.email,
@@ -28,7 +27,7 @@ export const authOptions: NextAuthOptions = {
           body.name = credentials.username;
         }
 
-        const res = await fetch(`${API_URL}${endpoint}`, {
+        const res = await fetch(`${API_BASE}${endpoint}`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(body),
@@ -53,7 +52,7 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials) {
         if (!credentials?.telegramData) return null;
 
-        const res = await fetch(`${API_URL}/v1/auth/telegram`, {
+        const res = await fetch(`${API_BASE}/auth/telegram`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: credentials.telegramData,

@@ -8,8 +8,7 @@
  */
 
 import type { LevelKey } from "@/lib/learning/levels";
-
-const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
+import { API_BASE } from "@/lib/api/base";
 
 export type LearningErrorKind =
   | "network"
@@ -93,12 +92,14 @@ export interface DetermineResult {
   pathId?: string;
   level?: LevelKey;
   startZone?: LevelKey;
+  painPoint?: string;
+  deliveryStyle?: string;
 }
 
 // ── Методы ──────────────────────────────────────────────────────────
 
 export function getStatus(accessToken: string | null): Promise<LearningStatus> {
-  return request<LearningStatus>("/v1/learning/status", { method: "GET" }, accessToken);
+  return request<LearningStatus>("/learning/status", { method: "GET" }, accessToken);
 }
 
 export function determine(
@@ -106,7 +107,7 @@ export function determine(
   accessToken: string | null,
 ): Promise<DetermineResult> {
   return request<DetermineResult>(
-    "/v1/learning/determine",
+    "/learning/determine",
     { method: "POST", body: JSON.stringify({ answers }) },
     accessToken,
   );
@@ -124,7 +125,7 @@ export function startLearning(
   accessToken: string | null,
 ): Promise<StartResult> {
   return request<StartResult>(
-    "/v1/learning/start",
+    "/learning/start",
     { method: "POST", body: JSON.stringify(determination) },
     accessToken,
   );
@@ -172,7 +173,7 @@ export function getMasteryMap(
   accessToken: string | null,
 ): Promise<MasteryMapResponse> {
   return request<MasteryMapResponse>(
-    "/v1/learning/mastery",
+    "/learning/mastery",
     { method: "GET" },
     accessToken,
   );

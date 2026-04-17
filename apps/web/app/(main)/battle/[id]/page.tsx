@@ -10,6 +10,7 @@ import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import DifficultyPicker from "@/components/battle/DifficultyPicker";
 import QuestionSourceIndicator from "@/components/battle/QuestionSourceIndicator";
+import { API_BASE } from "@/lib/api/base";
 
 const difficultyLabels: Record<string, string> = {
   [Difficulty.BRONZE]: "Бронза",
@@ -512,8 +513,6 @@ export default function BattlePage() {
     if (questionFetchedRef.current === fetchKey) return;
     questionFetchedRef.current = fetchKey;
 
-    const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
-
     async function loadQuestion() {
       setQuestionLoading(true);
       try {
@@ -521,7 +520,7 @@ export default function BattlePage() {
           ? `&excludeIds=${usedQuestionIdsRef.current.join(',')}`
           : '';
         const res = await fetch(
-          `${API_BASE}/v1/questions/random?branch=${branch}&difficulty=${selectedDifficulty}&count=1${excludeParam}&_t=${Date.now()}`,
+          `${API_BASE}/questions/random?branch=${branch}&difficulty=${selectedDifficulty}&count=1${excludeParam}&_t=${Date.now()}`,
           { cache: 'no-store' },
         );
         if (res.ok) {

@@ -3,8 +3,7 @@
 import { useEffect, useState } from "react";
 import Card from "@/components/ui/Card";
 import { useAuth } from "@/hooks/useAuth";
-
-const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
+import { API_BASE } from "@/lib/api/base";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -276,7 +275,7 @@ export default function AchievementsPage() {
       setLoading(true);
       if (accessToken) {
         try {
-          const res = await fetch(`${API_BASE}/v1/achievements`, {
+          const res = await fetch(`${API_BASE}/achievements`, {
             headers: { Authorization: `Bearer ${accessToken}` },
           });
           if (res.ok) {

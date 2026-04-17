@@ -2,8 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useApiToken } from "@/hooks/useApiToken";
-
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+import { API_BASE } from "@/lib/api/base";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -374,7 +373,7 @@ export default function ChatPage() {
   useEffect(() => {
     async function loadDialogues() {
       try {
-        const res = await fetch(`${API_BASE}/v1/ai/dialogues`, {
+        const res = await fetch(`${API_BASE}/ai/dialogues`, {
           headers: token ? { Authorization: `Bearer ${token}` } : {},
         });
         if (res.ok) {
@@ -404,7 +403,7 @@ export default function ChatPage() {
     setMessagesLoading(true);
 
     try {
-      const res = await fetch(`${API_BASE}/v1/ai/dialogue/${dialogue.id}`, {
+      const res = await fetch(`${API_BASE}/ai/dialogue/${dialogue.id}`, {
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
       if (res.ok) {
@@ -478,7 +477,7 @@ export default function ChatPage() {
         ? { message: text, dialogueId: activeDialogueId }
         : { message: text };
 
-      const res = await fetch(`${API_BASE}/v1/ai/dialogue`, {
+      const res = await fetch(`${API_BASE}/ai/dialogue`, {
         method: "POST",
         headers,
         body: JSON.stringify(body),

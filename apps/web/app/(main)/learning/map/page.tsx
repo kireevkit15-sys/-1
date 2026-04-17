@@ -58,12 +58,8 @@ export default function KnowledgeMapPage() {
         if (!cancelled) setState({ phase: "ready", data, isDemo: false });
       } catch (e) {
         if (cancelled) return;
-        if (e instanceof LearningApiError && e.kind === "network") {
+        if (e instanceof LearningApiError && (e.kind === "network" || e.kind === "auth")) {
           setState({ phase: "ready", isDemo: true, data: DEMO_DATA });
-          return;
-        }
-        if (e instanceof LearningApiError && e.kind === "auth") {
-          setState({ phase: "auth-required" });
           return;
         }
         setState({

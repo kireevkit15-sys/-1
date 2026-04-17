@@ -4,6 +4,7 @@ import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import Card from "@/components/ui/Card";
 import { useAuth } from "@/hooks/useAuth";
+import { API_BASE } from "@/lib/api/base";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -33,8 +34,6 @@ interface Campaign {
 // ---------------------------------------------------------------------------
 // Constants
 // ---------------------------------------------------------------------------
-
-const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
 
 const BRANCH_COLORS: Record<string, string> = {
   STRATEGY: "#06B6D4",
@@ -373,7 +372,7 @@ export default function CampaignsPage() {
       setError(false);
 
       const data = await fetchJson<Campaign[] | { data: Campaign[] }>(
-        `${API_BASE}/v1/campaigns`,
+        `${API_BASE}/campaigns`,
         accessToken,
       );
 
@@ -392,7 +391,7 @@ export default function CampaignsPage() {
     // Attempt to get user XP from session or a stats endpoint
     async function loadXp() {
       const stats = await fetchJson<{ xp?: number; totalXp?: number; warriorXp?: number }>(
-        `${API_BASE}/v1/users/me/stats`,
+        `${API_BASE}/users/me/stats`,
         accessToken,
       );
       if (stats) {
@@ -480,7 +479,7 @@ export default function CampaignsPage() {
             </div>
           </div>
           <div className="text-right">
-            <p className="text-lg font-bold text-metallic">{userXp.toLocaleString()}</p>
+            <p className="text-lg font-bold text-metallic">{userXp.toLocaleString("ru-RU")}</p>
             <p className="text-[11px] text-text-muted">XP</p>
           </div>
         </div>
@@ -491,7 +490,7 @@ export default function CampaignsPage() {
             <div className="flex items-center justify-between text-[11px]">
               <span className="text-text-muted">До ранга «{nextRank.label}»</span>
               <span className="text-text-secondary font-medium">
-                {(nextRank.threshold - userXp).toLocaleString()} XP
+                {(nextRank.threshold - userXp).toLocaleString("ru-RU")} XP
               </span>
             </div>
             <div className="h-2 bg-surface-light rounded-full overflow-hidden">
@@ -664,7 +663,7 @@ export default function CampaignsPage() {
                   </div>
                   {isLocked && (
                     <span className="text-[11px] text-text-muted">
-                      {rank.threshold.toLocaleString()} XP
+                      {rank.threshold.toLocaleString("ru-RU")} XP
                     </span>
                   )}
                 </div>

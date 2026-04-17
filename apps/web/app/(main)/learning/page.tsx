@@ -40,26 +40,18 @@ export default function LearningHubPage() {
         if (!cancelled) setState({ phase: "ready", status, isDemo: false });
       } catch (e) {
         if (cancelled) return;
+        const demoStatus: LearningStatus = {
+          hasPath: true,
+          pathId: "demo",
+          currentLevel: "OBSERVER",
+          currentLevelName: "Наблюдатель",
+          currentDay: 14,
+          completedDays: 13,
+          totalDays: 42,
+        };
         if (e instanceof LearningApiError) {
-          if (e.kind === "network") {
-            // Бэкенд недоступен — демо-режим с мок-данными
-            setState({
-              phase: "ready",
-              isDemo: true,
-              status: {
-                hasPath: true,
-                pathId: "demo",
-                currentLevel: "OBSERVER",
-                currentLevelName: "Наблюдатель",
-                currentDay: 14,
-                completedDays: 13,
-                totalDays: 42,
-              },
-            });
-            return;
-          }
-          if (e.kind === "auth") {
-            setState({ phase: "auth-required" });
+          if (e.kind === "network" || e.kind === "auth") {
+            setState({ phase: "ready", isDemo: true, status: demoStatus });
             return;
           }
           setState({ phase: "error", message: e.message });
