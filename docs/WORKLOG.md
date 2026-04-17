@@ -111,6 +111,86 @@
 
 ## Бонди (Frontend + Дизайн)
 
+### 2026-04-17 — Сессия: UI техдолг — токены, Button API, весь P1-P3 из критики
+
+**Время:** ~4 часа
+**Статус:** Завершена — 5 stacked PR готовы к ревью Никите
+
+**Что сделано:**
+
+_Разбор критики `docs/UI_COMPONENTS_CRITIQUE.md`:_
+- Пройдены 9 UI-компонентов (Button, Card, Skeleton, Toast, EmptyState, ThemeToggle, InstallBanner, SwipeToDismiss, NetworkError)
+- Закрыты все P1, P2, P3 из ревью
+- Сверх критики — критический self-review найденных 7 багов (a11y, Safari-Tab, stopPropagation, submit-by-default)
+
+_PR #2 «ui-tokens» (база всего рефакторинга):_
+- Введены CSS-переменные в `:root` как единственный источник правды (20+ цветов, радиусы, длительности)
+- Tailwind привязан через `rgb(var(--token) / <alpha-value>)` — старые классы (`bg-accent/20`) работают без правок
+- Перезаписаны 9 UI-компонентов: убраны inline `rgba(...)`, чужие цвета (`220,38,38` в NetworkError — не accent-red), `accentRgb` парсер, `as never`
+- Добавлен `focus-visible:ring` в Button/InstallBanner/ThemeToggle/Toast (первый шаг WCAG 2.4.7)
+
+_PR #3 «button-api»:_
+- Расширен примитив `Button`: `size` (sm/md/lg), `loading` со spinner + `aria-busy`, `leftIcon`/`rightIcon`/`iconOnly`, новые варианты `ghost`/`outline`/`link`
+- Обратная совместимость 100% — все 13 существующих `<Button>` без правок
+- +13 тест-кейсов в `Button.test.tsx`
+
+_PR #4 «ui-p1-followup»:_
+- ThemeToggle: убрано фейк-переключение (через 2.5с тема молча откатывалась — нарушение Heuristic 1 и 5). Теперь `aria-disabled` + постоянный tooltip «Светлая тема скоро»
+- `globals.css` utility-классы (`.glass-card`, `.tier-*`, `.cta-battle`, `.rank-badge`, scrollbar, keyframes) переведены на токены
+
+_PR #5 «ui-p2-polish»:_
+- NetworkError: `onRetry` callback вместо `window.location.reload()` — сохраняет state формы
+- EmptyState: optional CTA через `actionLabel`/`onAction` — пустой экран больше не тупик
+- SwipeToDismiss: кнопка-крестик для desktop/keyboard (30-40% PWA-юзеров застревали)
+- Toast: `action` prop (label + onClick) + `duration` option. Overload для обратной совместимости со старым `showToast(msg, "xp")`
+
+_PR #6 «ui-p3-polish» + critical review:_
+- InstallBanner: заглушка «P» → стилизованная кириллическая Р из `splash-icon.svg`
+- `.card-shell` утилита — Card и SkeletonCard/Stats используют одну основу (placeholder не дёргается при замене)
+- Критический self-review: 7 багов
+  - Button: default `type="button"` (был submit), loading без `opacity-50`
+  - ThemeToggle: `disabled` → `aria-disabled` (Safari пропускал Tab), раздельные hover/focus, `aria-describedby`
+  - SwipeToDismiss: `stopPropagation` на клике крестика
+  - Toast/NetworkError/InstallBanner: `type="button"` на всех кнопках
+  - InstallBanner: убран `priority` (баннер показывается только на 3-й визит)
+
+_Stacked PR структура:_
+- #2 (ui-tokens) → #3 (button-api) → #4 (p1-followup) → #5 (p2-polish) → #6 (p3-polish)
+- Мержить в порядке — GitHub автоматом переставит base после каждого merge
+
+**Файлы изменены:**
+- `apps/web/app/globals.css` — `:root` токены + миграция utility-классов
+- `apps/web/tailwind.config.ts` — цвета через `rgb(var(--token) / <alpha-value>)`
+- `apps/web/components/ui/Button.tsx` — новое API + default type=button + loading opacity fix
+- `apps/web/components/ui/Card.tsx` — использует `.card-shell`
+- `apps/web/components/ui/Skeleton.tsx` — использует `.card-shell`
+- `apps/web/components/ui/Toast.tsx` — action prop, duration, токены, type=button
+- `apps/web/components/ui/EmptyState.tsx` — убран `accentRgb` парсер, indigo→achievement, CTA
+- `apps/web/components/ui/ThemeToggle.tsx` — aria-disabled, tooltip на hover+focus раздельно
+- `apps/web/components/ui/InstallBanner.tsx` — реальная иконка, type=button, убран priority
+- `apps/web/components/ui/SwipeToDismiss.tsx` — desktop крестик + stopPropagation
+- `apps/web/components/ui/NetworkError.tsx` — onRetry callback, токены, type=button
+- `apps/web/components/__tests__/Button.test.tsx` — +13 кейсов на новое API
+
+**Задачи из SPRINT.md закрыты:** вся критика `UI_COMPONENTS_CRITIQUE.md` — P1 (3 шт.), P2 (4 шт.), P3 (2 шт.). B-GRAPH-3 (god-nodes polish) остаётся открытой — это правило порядка Этапа 3, не отдельная задача.
+
+**Коммиты:**
+- `ca8fe5d` — refactor(ui): introduce design tokens, eliminate palette divergence
+- `fbd1ca6` — feat(ui): extend Button API — size/loading/icons/ghost/outline/link
+- `f044ec2` — fix(ui): ThemeToggle — убрать фейк-переключение, disabled + tooltip
+- `c0f04af` — refactor(ui): migrate globals.css utility classes to CSS-variable tokens
+- `9ff26f4` — feat(ui): NetworkError — принимать onRetry callback вместо reload
+- `4682fce` — feat(ui): EmptyState — optional CTA (actionLabel + onAction)
+- `509c9c8` — feat(ui): SwipeToDismiss — добавить кнопку-крестик для desktop/keyboard
+- `b564c88` — feat(ui): Toast — добавить action prop и duration option
+- `fab3c61` — fix(ui): InstallBanner — реальная иконка вместо заглушки «P»
+- `2f72d42` — refactor(ui): вынести .card-shell как общую утилиту Card + Skeleton
+- `be34bcc` — fix(ui): critical review — 7 bugs across sessions UI changes
+
+**PR:** [#2](https://github.com/kireevkit15-sys/-1/pull/2) → [#3](https://github.com/kireevkit15-sys/-1/pull/3) → [#4](https://github.com/kireevkit15-sys/-1/pull/4) → [#5](https://github.com/kireevkit15-sys/-1/pull/5) → [#6](https://github.com/kireevkit15-sys/-1/pull/6)
+
+---
+
 ### 2026-04-15 — Сессия: F28.10 Lighthouse + a11y + тесты качественно
 
 **Время:** ~2 часа
