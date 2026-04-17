@@ -2,14 +2,22 @@
 
 import { useState } from 'react';
 
+const TOOLTIP_ID = 'theme-toggle-tooltip';
+
 /**
  * Светлая тема пока не реализована. До появления второй темы
- * кнопка остаётся видимой, но disabled — по hover/focus показывает
- * tooltip «Скоро». Фейковое переключение (как было раньше)
- * нарушало доверие: пользователь видел, как его выбор молча откатывается.
+ * кнопка остаётся видимой, но не активной — по hover/focus показывает
+ * tooltip «Скоро». Фейковое переключение (как было раньше) нарушало
+ * доверие: пользователь видел, как его выбор молча откатывается.
+ *
+ * Важно: используем aria-disabled + preventDefault вместо disabled,
+ * потому что WebKit/Safari пропускает disabled-элементы при Tab-навигации,
+ * и пользователь клавиатуры не увидел бы tooltip.
  */
 export default function ThemeToggle() {
   const [hover, setHover] = useState(false);
+  const [focused, setFocused] = useState(false);
+  const tooltipVisible = hover || focused;
 
   return (
     <div
@@ -19,11 +27,12 @@ export default function ThemeToggle() {
     >
       <button
         type="button"
-        disabled
         aria-disabled="true"
         aria-label="Светлая тема скоро будет доступна"
-        onFocus={() => setHover(true)}
-        onBlur={() => setHover(false)}
+        aria-describedby={tooltipVisible ? TOOLTIP_ID : undefined}
+        onClick={(e) => e.preventDefault()}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
         className="relative w-10 h-10 rounded-xl flex items-center justify-center
                    bg-white/[0.04] border border-white/[0.08]
                    text-accent/50 cursor-not-allowed
@@ -45,8 +54,9 @@ export default function ThemeToggle() {
         </svg>
       </button>
 
-      {hover && (
+      {tooltipVisible && (
         <div
+          id={TOOLTIP_ID}
           role="tooltip"
           className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2
                      whitespace-nowrap rounded-lg px-3 py-1.5 text-xs font-medium

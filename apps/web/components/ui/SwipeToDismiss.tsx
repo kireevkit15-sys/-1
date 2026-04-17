@@ -137,7 +137,12 @@ export default function SwipeToDismiss({
           этот крестик закрывает карточку мышью или с клавиатуры. */}
       <button
         type="button"
-        onClick={triggerDismiss}
+        onClick={(e) => {
+          // Не всплываем — если родитель когда-нибудь повесит onClick на карточку,
+          // клик по крестику не должен также «открывать» карточку.
+          e.stopPropagation();
+          triggerDismiss();
+        }}
         aria-label="Закрыть"
         className="absolute top-2 right-2 z-10 w-7 h-7 inline-flex items-center justify-center
                    rounded-full bg-surface/80 hover:bg-surface border border-white/[0.06]
