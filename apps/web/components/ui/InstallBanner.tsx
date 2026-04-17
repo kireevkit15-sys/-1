@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState, useEffect, useCallback } from "react";
 
 const DISMISS_KEY = "razum_install_dismissed";
@@ -56,8 +57,15 @@ export default function InstallBanner() {
     <div className="fixed bottom-24 left-4 right-4 max-w-md mx-auto z-40 animate-[onboarding-fade-in_0.3s_ease-out]">
       <div className="bg-surface border border-accent/20 rounded-2xl p-4 shadow-[0_8px_32px_rgba(0,0,0,0.4)]">
         <div className="flex items-start gap-3">
-          <div className="w-10 h-10 rounded-xl bg-accent/15 flex items-center justify-center flex-shrink-0">
-            <span className="text-accent font-bold text-sm">P</span>
+          <div className="w-10 h-10 rounded-xl bg-accent/15 flex items-center justify-center flex-shrink-0 overflow-hidden">
+            <Image
+              src="/splash-icon.svg"
+              alt="РАЗУМ"
+              width={40}
+              height={40}
+              className="w-full h-full object-contain"
+              priority
+            />
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-sm font-semibold text-text-primary">
