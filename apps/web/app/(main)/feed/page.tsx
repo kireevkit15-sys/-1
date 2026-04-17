@@ -22,24 +22,16 @@ import type {
   ArenaContent,
 } from "@razum/shared";
 import { API_BASE } from "@/lib/api/base";
+import { BRANCHES, branchAlpha } from "@/lib/branches";
 
-// ── Branch Colors ──────────────────────────────────
-const BRANCH_COLORS: Record<string, string> = {
-  STRATEGY: "#06B6D4",
-  LOGIC: "#22C55E",
-  ERUDITION: "#A855F7",
-  RHETORIC: "#F97316",
-  INTUITION: "#EC4899",
-};
+// Branch colours derived from single source of truth (lib/branches.ts)
+const BRANCH_COLORS: Record<string, string> = Object.fromEntries(
+  Object.values(BRANCHES).map((b) => [b.key, b.color]),
+);
 
-// ── Branch background tints (subtle per-branch bg) ──
-const BRANCH_BG_TINTS: Record<string, string> = {
-  STRATEGY: "rgba(6,182,212,0.03)",
-  LOGIC: "rgba(34,197,94,0.03)",
-  ERUDITION: "rgba(168,85,247,0.03)",
-  RHETORIC: "rgba(249,115,22,0.03)",
-  INTUITION: "rgba(236,72,153,0.03)",
-};
+const BRANCH_BG_TINTS: Record<string, string> = Object.fromEntries(
+  Object.values(BRANCHES).map((b) => [b.key, branchAlpha(b, 0.03)]),
+);
 
 // ── Swipe threshold ────────────────────────────────
 const SWIPE_THRESHOLD = 50;

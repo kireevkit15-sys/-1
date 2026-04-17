@@ -9,6 +9,9 @@
 
 import type { LevelKey } from "@/lib/learning/levels";
 import { API_BASE } from "@/lib/api/base";
+import type { BranchKey } from "@/lib/branches";
+
+export type { BranchKey };
 
 export type LearningErrorKind =
   | "network"
@@ -132,13 +135,6 @@ export function startLearning(
 }
 
 // ── Карта знаний (F25) ──────────────────────────────────────────────
-
-export type BranchKey =
-  | "STRATEGY"
-  | "LOGIC"
-  | "ERUDITION"
-  | "RHETORIC"
-  | "INTUITION";
 
 export type DifficultyKey = "BRONZE" | "SILVER" | "GOLD";
 
