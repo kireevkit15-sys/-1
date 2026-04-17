@@ -4,9 +4,15 @@ import { useEffect, useState } from 'react';
 
 interface NetworkErrorProps {
   onDismiss?: () => void;
+  /**
+   * Вызывается при клике на «Повторить». Если не передан — fallback
+   * на window.location.reload(). Предпочтительнее передавать callback,
+   * чтобы не терять state формы / несохранённый ввод.
+   */
+  onRetry?: () => void;
 }
 
-export default function NetworkError({ onDismiss }: NetworkErrorProps) {
+export default function NetworkError({ onDismiss, onRetry }: NetworkErrorProps) {
   const [visible, setVisible] = useState(true);
 
   useEffect(() => {
@@ -20,6 +26,14 @@ export default function NetworkError({ onDismiss }: NetworkErrorProps) {
   }, [onDismiss]);
 
   if (!visible) return null;
+
+  const handleRetry = () => {
+    if (onRetry) {
+      onRetry();
+    } else {
+      window.location.reload();
+    }
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-background/80 backdrop-blur-sm">
@@ -69,7 +83,7 @@ export default function NetworkError({ onDismiss }: NetworkErrorProps) {
         </div>
 
         <button
-          onClick={() => window.location.reload()}
+          onClick={handleRetry}
           className="mt-1 w-full py-3 px-6 rounded-xl font-semibold text-sm
                      bg-accent-red/15 hover:bg-accent-red/25
                      border border-accent-red/35
