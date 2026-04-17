@@ -1,11 +1,17 @@
 'use client';
 
+import Button from './Button';
+
 type EmptyStateType = 'battles' | 'achievements' | 'history' | 'modules' | 'friends';
 
 interface EmptyStateProps {
   type: EmptyStateType;
   title?: string;
   message?: string;
+  /** Текст CTA-кнопки. Если не передан — кнопка не рендерится. */
+  actionLabel?: string;
+  /** Обработчик CTA. */
+  onAction?: () => void;
 }
 
 // Статические Tailwind-классы — JIT их видит и генерирует.
@@ -91,10 +97,17 @@ const PRESETS: Record<EmptyStateType, Preset> = {
   },
 };
 
-export default function EmptyState({ type, title, message }: EmptyStateProps) {
+export default function EmptyState({
+  type,
+  title,
+  message,
+  actionLabel,
+  onAction,
+}: EmptyStateProps) {
   const preset = PRESETS[type];
   const displayTitle = title ?? preset.title;
   const displayMessage = message ?? preset.message;
+  const showCta = actionLabel && onAction;
 
   return (
     <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
@@ -112,6 +125,12 @@ export default function EmptyState({ type, title, message }: EmptyStateProps) {
           <h3 className="text-base font-bold text-text-primary">{displayTitle}</h3>
           <p className="text-sm text-text-secondary leading-relaxed">{displayMessage}</p>
         </div>
+
+        {showCta && (
+          <Button size="sm" onClick={onAction} fullWidth>
+            {actionLabel}
+          </Button>
+        )}
       </div>
     </div>
   );

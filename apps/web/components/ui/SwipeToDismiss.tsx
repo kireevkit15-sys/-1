@@ -127,11 +127,29 @@ export default function SwipeToDismiss({
         position: "relative",
       }}
     >
-      {/* Drag indicator bar */}
+      {/* Drag indicator bar (touch hint) */}
       <div
         className="absolute top-2 left-1/2 -translate-x-1/2 w-8 h-1 rounded-full bg-white/15 pointer-events-none z-10"
         aria-hidden="true"
       />
+
+      {/* Desktop/keyboard dismiss button — swipe работает только на touch,
+          этот крестик закрывает карточку мышью или с клавиатуры. */}
+      <button
+        type="button"
+        onClick={triggerDismiss}
+        aria-label="Закрыть"
+        className="absolute top-2 right-2 z-10 w-7 h-7 inline-flex items-center justify-center
+                   rounded-full bg-surface/80 hover:bg-surface border border-white/[0.06]
+                   text-text-muted hover:text-text-primary
+                   transition-colors duration-150
+                   focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/60"
+      >
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+          <path d="M1 1l10 10M11 1L1 11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+        </svg>
+      </button>
+
       {children}
     </div>
   );
