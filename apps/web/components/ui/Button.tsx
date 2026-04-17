@@ -28,6 +28,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           rounded-xl px-6 py-3 text-sm font-semibold
           transition-all duration-200 active:scale-95
           disabled:opacity-50 disabled:pointer-events-none
+          focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background
           ${variantStyles[variant]}
           ${fullWidth ? "w-full" : ""}
           ${className}

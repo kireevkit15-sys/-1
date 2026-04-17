@@ -20,16 +20,14 @@ export default function ThemeToggle() {
 
   const handleToggle = () => {
     if (theme === 'dark') {
-      // Light theme not yet implemented — store preference but show notice
+      // Light theme not yet implemented — show tooltip and revert
       localStorage.setItem(STORAGE_KEY, 'light');
       setTheme('light');
       setTooltip(true);
 
-      // Auto-hide tooltip after 2.5 s
       if (tooltipTimer.current) clearTimeout(tooltipTimer.current);
       tooltipTimer.current = setTimeout(() => {
         setTooltip(false);
-        // Revert visually (theme stays in localStorage for future use)
         setTheme('dark');
         localStorage.setItem(STORAGE_KEY, 'dark');
       }, 2500);
@@ -54,29 +52,16 @@ export default function ThemeToggle() {
       <button
         onClick={handleToggle}
         aria-label={isDark ? 'Включить светлую тему' : 'Включить тёмную тему'}
-        className="relative w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-200"
-        style={{
-          background: 'rgba(255,255,255,0.04)',
-          border: '1px solid rgba(255,255,255,0.08)',
-          color: isDark ? 'rgb(207, 157, 123)' : 'rgb(234, 179, 8)',
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.background = 'rgba(255,255,255,0.08)';
-          e.currentTarget.style.borderColor = 'rgba(207,157,123,0.2)';
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.background = 'rgba(255,255,255,0.04)';
-          e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)';
-        }}
-        onMouseDown={(e) => {
-          e.currentTarget.style.transform = 'scale(0.92)';
-        }}
-        onMouseUp={(e) => {
-          e.currentTarget.style.transform = 'scale(1)';
-        }}
+        className={`
+          relative w-10 h-10 rounded-xl flex items-center justify-center
+          bg-white/[0.04] hover:bg-white/[0.08]
+          border border-white/[0.08] hover:border-accent/20
+          transition-all duration-200 active:scale-95
+          focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/60
+          ${isDark ? 'text-accent' : 'text-yellow-400'}
+        `}
       >
         {isDark ? (
-          // Moon icon (currently dark → click to "go light")
           <svg
             width="18"
             height="18"
@@ -90,7 +75,6 @@ export default function ThemeToggle() {
             <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
           </svg>
         ) : (
-          // Sun icon (currently "light" — click to go back dark)
           <svg
             width="18"
             height="18"
@@ -114,31 +98,21 @@ export default function ThemeToggle() {
         )}
       </button>
 
-      {/* Tooltip: "Светлая тема скоро" */}
       {tooltip && (
         <div
-          className="absolute bottom-full left-1/2 mb-2 whitespace-nowrap rounded-lg px-3 py-1.5 text-xs font-medium pointer-events-none"
-          style={{
-            transform: 'translateX(-50%)',
-            background: 'rgba(20, 20, 20, 0.95)',
-            border: '1px solid rgba(207, 157, 123, 0.25)',
-            color: 'rgb(207, 157, 123)',
-            boxShadow: '0 4px 16px rgba(0,0,0,0.4)',
-            animation: 'battle-fade-up 0.2s ease forwards',
-          }}
+          className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2
+                     whitespace-nowrap rounded-lg px-3 py-1.5 text-xs font-medium
+                     pointer-events-none
+                     bg-surface/95 border border-accent/25 text-accent
+                     shadow-[0_4px_16px_rgb(0_0_0/0.4)]"
+          style={{ animation: 'battle-fade-up 0.2s ease forwards' }}
         >
           Светлая тема скоро
-          {/* Caret */}
           <span
-            className="absolute left-1/2 top-full"
-            style={{
-              transform: 'translateX(-50%)',
-              width: 0,
-              height: 0,
-              borderLeft: '5px solid transparent',
-              borderRight: '5px solid transparent',
-              borderTop: '5px solid rgba(207, 157, 123, 0.25)',
-            }}
+            className="absolute left-1/2 top-full -translate-x-1/2
+                       w-0 h-0 border-x-[5px] border-x-transparent
+                       border-t-[5px] border-t-accent/25"
+            aria-hidden="true"
           />
         </div>
       )}
