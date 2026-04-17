@@ -96,6 +96,15 @@
 
 @layer components {
   /* ============================================
+     CARD SHELL — общий «корпус» карточки
+     Используется и в Card.tsx, и в Skeleton.tsx, чтобы placeholder
+     не дёргался при замене на реальную карточку.
+     ============================================ */
+  .card-shell {
+    @apply rounded-2xl bg-surface/80 backdrop-blur-sm border border-white/[0.05] shadow-glass transition-all duration-200;
+  }
+
+  /* ============================================
      GLASSMORPHISM v2 — deeper, sharper
      ============================================ */
   .glass {
