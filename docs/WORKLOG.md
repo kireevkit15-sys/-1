@@ -111,6 +111,68 @@
 
 ## Бонди (Frontend + Дизайн)
 
+### 2026-04-17 — Сессия: B-GRAPH-1 (унификация карточек) + B-GRAPH-2 (мёртвый код)
+
+**Время:** ~2 часа
+**Статус:** Завершена
+
+**Что сделано:**
+
+_B-GRAPH-2 — мёртвый код:_
+- Проверены 4 "слабо связанных" узла из графа (PageTransition, getStatus, getLevelName, lib/learning/)
+- Все 4 — ЖИВЫЕ. Граф дал ложный сигнал (low cohesion ≠ dead code — они просто в одном поддомене)
+- Удалять нечего, B-GRAPH-2 закрыт без изменений кода
+
+_B-GRAPH-1 — унификация branch-конфига:_
+- Граф пометил feed vs learning карточки как "semantically_similar_to". Субагент предложил ContentCard под оба. Пересмотрел после чтения кода: learning-карточки (Book/Explanation/Example) — медная гамма + font-verse/ritual — НЕ совмещать с cyan/green neon feed. Реальный дубль — branch-конфиг в 14 файлах
+- Создан `apps/web/lib/branches.ts` — единый source of truth: BranchKey, BranchMeta, BRANCHES map, getBranch(), branchAlpha()
+- 3 новых helper-компонента:
+  - `components/ui/BranchBadge.tsx` — pill с bgAlpha/borderAlpha override (точное восстановление визуала InsightCard/CaseCard/WisdomCard)
+  - `components/ui/SwipeHint.tsx` — "Свайпни вверх"
+  - `components/ui/FeedCardShell.tsx` — общий каркас full-screen feed-карточки с 3 glow-variants (top-strip/top-corner/center-radial) и опциональным IntersectionObserver для onViewed
+- Переписаны 3 feed-карточки (InsightCard, CaseCard, WisdomCard) через helper-ы
+- 4 feed-карточки (ArenaCard, SparringCard, ForgeCard, ChallengeCard) — branch-map заменён на getBranch()
+- 3 страницы (feed, campaigns, campaigns/[id]) — BRANCH_COLORS/BRANCH_LABELS derive из BRANCHES
+- lib/api/learning.ts — re-export BranchKey из единого источника
+
+_Критический ревью субагентом — найдены 2 регрессии → исправлены:_
+- CaseCard "КЕЙС" badge — bgAlpha вернулся с 08 на 12 (сохранение контраста)
+- InsightCard fallback для unknown branch — BRANCHES.ERUDITION (как было), а не STRATEGY
+- Порядок import/export в learning.ts — приведён к стандарту
+
+_Learning-карточки не тронуты:_ другой визуальный язык (copper accent, font-verse, max-width 60ch). Смешивать с feed-language = сломать "маскулинную агрессию". Полировка учебных карточек — отдельная задача B-GRAPH-3 при этапе 3 плана Никиты.
+
+**Проверки:**
+- `pnpm typecheck` — чисто
+- `pnpm lint` — только pre-existing warnings (не мои)
+- `pnpm test` — 59/61 pass (2 pre-existing failure в SideNav.test, не связано с рефакторингом)
+- `pnpm dev` — Next.js стартует без ошибок
+
+**Файлы созданы:**
+- `apps/web/lib/branches.ts`
+- `apps/web/components/ui/BranchBadge.tsx`
+- `apps/web/components/ui/SwipeHint.tsx`
+- `apps/web/components/ui/FeedCardShell.tsx`
+
+**Файлы изменены:**
+- `apps/web/components/feed/InsightCard.tsx` — refactor через shell/badge/hint (277 → 155 строк)
+- `apps/web/components/feed/CaseCard.tsx` — refactor через shell/badge/hint (406 → 322 строки)
+- `apps/web/components/feed/WisdomCard.tsx` — через BranchBadge (132 → 117 строк)
+- `apps/web/components/feed/ArenaCard.tsx` — branch-map → getBranch
+- `apps/web/components/feed/SparringCard.tsx` — branch-map → getBranch
+- `apps/web/components/feed/ForgeCard.tsx` — branch-map удалён (dead code)
+- `apps/web/components/feed/ChallengeCard.tsx` — branch-map → getBranch
+- `apps/web/lib/api/learning.ts` — re-export BranchKey
+- `apps/web/app/(main)/feed/page.tsx` — derive BRANCH_COLORS/TINTS из BRANCHES
+- `apps/web/app/(main)/campaigns/page.tsx` — derive BRANCH_COLORS/LABELS
+- `apps/web/app/(main)/campaigns/[id]/page.tsx` — derive BRANCH_COLORS/LABELS
+
+**Задачи из GRAPH_TASKS.md закрыты:** B-GRAPH-1, B-GRAPH-2
+
+**Коммиты:** будут добавлены после push
+
+---
+
 ### 2026-04-15 — Сессия: F28.10 Lighthouse + a11y + тесты качественно
 
 **Время:** ~2 часа
