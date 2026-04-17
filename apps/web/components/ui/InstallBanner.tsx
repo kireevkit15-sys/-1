@@ -64,7 +64,6 @@ export default function InstallBanner() {
               width={40}
               height={40}
               className="w-full h-full object-contain"
-              priority
             />
           </div>
           <div className="flex-1 min-w-0">
@@ -76,6 +75,7 @@ export default function InstallBanner() {
             </p>
           </div>
           <button
+            type="button"
             onClick={handleDismiss}
             aria-label="Закрыть"
             className="text-text-muted hover:text-text-secondary transition-colors flex-shrink-0
@@ -87,6 +87,7 @@ export default function InstallBanner() {
           </button>
         </div>
         <button
+          type="button"
           onClick={handleInstall}
           className="w-full mt-3 py-2.5 rounded-xl text-sm font-semibold bg-accent text-background active:scale-95 transition-all shadow-lg shadow-accent/20
                      focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/60 focus-visible:ring-offset-2 focus-visible:ring-offset-surface"

@@ -81,6 +81,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       rightIcon,
       iconOnly = false,
       disabled,
+      type = "button",
       className = "",
       children,
       ...props
@@ -97,16 +98,22 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           ? sizeIconOnly[size]
           : sizeText[size];
 
+    // opacity-50 на disabled хотим только для «настоящего» disabled
+    // (визуально «серая кнопка»), но не для loading — там видим spinner
+    // в полном цвете. В обоих случаях pointer-events-none блокирует клики.
+    const disabledOpacity = !loading ? "disabled:opacity-50" : "";
+
     return (
       <button
         ref={ref}
+        type={type}
         disabled={isDisabled}
         aria-busy={loading || undefined}
         className={`
           inline-flex items-center justify-center gap-2
           font-semibold transition-all duration-200
           ${variant === "link" ? "" : "active:scale-95"}
-          disabled:opacity-50 disabled:pointer-events-none
+          ${disabledOpacity} disabled:pointer-events-none
           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background
           ${variantStyles[variant]}
           ${sizing}
