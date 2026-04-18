@@ -198,3 +198,20 @@ pnpm db:seed          # Seed данных
 5. **После новых PDF в `content/sources/`:** руками `/graphify content/sources/ --update` — материалы требуют LLM-экстракцию, авто-обновление отключено из-за расходов токенов.
 6. **После правок в `docs/`:** руками `/graphify docs/ --update` если структура документации менялась существенно.
 7. **Scoped-графы (`graphify-out-shared/`, `graphify-out-components/`):** обновлять руками через `/graphify packages/shared/ --update` когда нужна свежая семантика.
+
+### Установка графов у нового участника команды
+
+Когда разработчик говорит **«скачай графы» / «установи графы» / «настрой graphify» / «хочу пользоваться графами»** — Claude автоматически запускает setup-скрипт. Без уточняющих вопросов, сразу действует:
+
+1. Определить ОС:
+   - Windows native (PowerShell доступен) → `powershell -ExecutionPolicy Bypass -File scripts/setup-graphify.ps1`
+   - Mac/Linux/Git Bash → `bash scripts/setup-graphify.sh`
+2. Запустить скрипт через Bash tool.
+3. Показать разработчику итог: что поставилось, куда, как проверить (см. `docs/GRAPHIFY_SETUP.md`).
+4. Коротко напомнить: AST-граф авто-обновляется при коммите, семантические (`--update`) руками раз в неделю или после больших изменений.
+
+Файлы setup-инфраструктуры:
+- `scripts/setup-graphify.ps1` — Windows installer
+- `scripts/setup-graphify.sh` — Mac/Linux/Git Bash installer
+- `scripts/graphify-post-commit.sh` — расширенный post-commit hook (копируется в `.git/hooks/post-commit`)
+- `docs/GRAPHIFY_SETUP.md` — квик-старт для команды
