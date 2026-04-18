@@ -160,14 +160,15 @@ pnpm db:seed          # Seed данных
 
 ## graphify (knowledge graphs)
 
-В проекте 4 графа знаний. На старте сессии **ЧИТАЙ ИХ ПЕРВЫМИ**, до Glob/Grep/Read по исходникам:
+В проекте 5 графов знаний. На старте сессии **ЧИТАЙ ИХ ПЕРВЫМИ**, до Glob/Grep/Read по исходникам:
 
-| Граф | Покрывает | Когда использовать |
-|---|---|---|
-| `graphify-out-shared/GRAPH_REPORT.md` | `packages/shared/` — battle engine, learning, state machines | вопросы про батл-логику, shared-типы, дерево знаний |
-| `graphify-out-components/GRAPH_REPORT.md` | `apps/web/components/` — React UI | вопросы про компоненты, карточки, дизайн-элементы |
-| `graphify-out-docs/GRAPH_REPORT.md` | `docs/` — документация проекта | спринты, архитектура, roadmap, ТЗ |
-| `graphify-materials/GRAPH_REPORT.md` | `content/sources/` — 116 PDF (Маркарян, Ницше, Макиавелли, стоики) | контент, философия, исходные материалы для вопросов |
+| Граф | Покрывает | Когда использовать | Обновление |
+|---|---|---|---|
+| `graphify-out/GRAPH_REPORT.md` | **весь код проекта** — AST-граф 375+ файлов (apps/, packages/, scripts/, prisma/) | общие вопросы про архитектуру, import-зависимости, structural questions | 🔄 авто при каждом commit |
+| `graphify-out-shared/GRAPH_REPORT.md` | `packages/shared/` + семантические связи | детальные вопросы про battle-logic, learning, state machines, shared types | ✋ ручное `/graphify packages/shared/ --update` |
+| `graphify-out-components/GRAPH_REPORT.md` | `apps/web/components/` + семантические связи (карточки, UI-паттерны) | вопросы про UI-компоненты, card-overlap, дизайн-систему | ✋ ручное `/graphify apps/web/components/ --update` |
+| `graphify-out-docs/GRAPH_REPORT.md` | `docs/` — документация проекта | спринты, архитектура, roadmap, ТЗ | ✋ ручное `/graphify docs/ --update` |
+| `graphify-materials/GRAPH_REPORT.md` | `content/sources/` — 116 PDF (Маркарян, Ницше, Макиавелли, стоики) | контент, философия, исходные материалы | ✋ ручное `/graphify content/sources/ --update` |
 
 Правила:
 1. **На старте сессии:** после `git pull` читай все 4 `GRAPH_REPORT.md` — получишь god-nodes, сообщества, surprising connections. Потом `docs/SPRINT.md` и `docs/WORKLOG.md` как обычно.
