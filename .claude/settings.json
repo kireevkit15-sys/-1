@@ -2,5 +2,18 @@
   "permissions": {},
   "preferences": {
     "language": "ru"
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Glob|Grep",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "([ -f graphify-out-shared/graph.json ] || [ -f graphify-materials/graph.json ]) && echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"additionalContext\":\"graphify: 4 knowledge graphs available. READ FIRST: graphify-out-shared/GRAPH_REPORT.md (battle/learning), graphify-out-components/GRAPH_REPORT.md (UI), graphify-out-docs/GRAPH_REPORT.md (docs), graphify-materials/GRAPH_REPORT.md (116 PDFs). Use /graphify query|path|explain for targeted navigation.\"}}' || true"
+          }
+        ]
+      }
+    ]
   }
 }

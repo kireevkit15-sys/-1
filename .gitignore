@@ -83,3 +83,8 @@ Desktop.ini
 *.key
 *.cert
 .env.sentry-build-plugin
+
+# graphify temp files
+.graphify_*.json
+.graphify_*.txt
+graphify-*/.graphify_chunk_*.json

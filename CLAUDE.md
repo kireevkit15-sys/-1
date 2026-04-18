@@ -157,3 +157,22 @@ pnpm db:generate      # Prisma generate
 pnpm db:migrate       # Prisma migrate dev
 pnpm db:seed          # Seed данных
 ```
+
+## graphify (knowledge graphs)
+
+В проекте 4 графа знаний. На старте сессии **ЧИТАЙ ИХ ПЕРВЫМИ**, до Glob/Grep/Read по исходникам:
+
+| Граф | Покрывает | Когда использовать |
+|---|---|---|
+| `graphify-out-shared/GRAPH_REPORT.md` | `packages/shared/` — battle engine, learning, state machines | вопросы про батл-логику, shared-типы, дерево знаний |
+| `graphify-out-components/GRAPH_REPORT.md` | `apps/web/components/` — React UI | вопросы про компоненты, карточки, дизайн-элементы |
+| `graphify-out-docs/GRAPH_REPORT.md` | `docs/` — документация проекта | спринты, архитектура, roadmap, ТЗ |
+| `graphify-materials/GRAPH_REPORT.md` | `content/sources/` — 116 PDF (Маркарян, Ницше, Макиавелли, стоики) | контент, философия, исходные материалы для вопросов |
+
+Правила:
+1. **На старте сессии:** после `git pull` читай все 4 `GRAPH_REPORT.md` — получишь god-nodes, сообщества, surprising connections. Потом `docs/SPRINT.md` и `docs/WORKLOG.md` как обычно.
+2. **При ответе:** сначала проверь релевантный граф — обычно ответ уже есть на уровне сообществ и god-nodes. Открывай конкретные файлы только если графа не хватает.
+3. **Для точных запросов:** `/graphify query "вопрос" --dfs` (трассировка пути), `/graphify path "A" "B"` (кратчайший путь), `/graphify explain "Узел"` (один узел со всеми связями). Эти вызовы работают через Python-скрипт и не загружают `graph.json` в контекст.
+4. **После правок кода:** git post-commit hook **автоматически** пересобирает код-графы (shared/components) и дописывает их в тот же коммит через `--amend`. Руками ничего делать не надо.
+5. **После новых PDF в `content/sources/`:** руками `/graphify content/sources/ --update` — материалы требуют LLM-экстракцию, авто-обновление отключено из-за расходов токенов.
+6. **После правок в `docs/`:** руками `/graphify docs/ --update` если структура документации менялась существенно.
