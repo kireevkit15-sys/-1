@@ -892,6 +892,28 @@ _Playwright конфиг:_
 
 ## Яшкин (Backend)
 
+### 2026-04-19 — Сессия: L25.5 — связка обучения с батлами
+
+**Время:** ~30 минут
+**Статус:** Завершена
+
+**Что сделано:**
+- Полный набор тестов на `BattleLinkService`: getUnlockedQuestions, filterBattleQuestions, canParticipate, getMaxBattleRank, getBattleUnlockInfo, getAvailableQuestionsByBranch
+- Mastery-порог 0.3: концепт с mastery=0.5 открывает все активные вопросы; mastery=0.29 не открывает; ровно 0.3 (граница) открывает (`gte`)
+- Inactive-вопросы (`isActive=false`) не попадают в unlocked список даже при mastered концепте
+- Дедупликация: вопрос связанный с двумя mastered концептами возвращается ровно один раз
+- Intersection двух игроков: общий unlocked в branch отдаётся; пустое пересечение → fallback на все active branch questions
+- Level-gating: SLEEPING → BRONZE only, AWAKENED → +SILVER, OBSERVER/WARRIOR/STRATEGIST/MASTER → +GOLD; user без LearningPath → BRONZE only с подсказкой
+- BattleUnlockInfo возвращает русское display-имя уровня + motivational message + branchCounts
+- Изолированный subgraph через slug-prefix `lb-e2e-` и text-prefix `lb-e2e-`
+- Все 424 e2e теста проходят (+22 к предыдущим 402)
+
+**Файлы созданы/изменены:**
+- `apps/api/test/learning-battles.e2e-spec.ts` — новый файл, 22 теста в 7 группах
+- `docs/SPRINT.md` — L25.5 todo → done
+
+**Задачи из SPRINT.md закрыты:** L25.5
+
 ### 2026-04-19 — Сессия: L25.4 — интеграционные тесты адаптации
 
 **Время:** ~45 минут
