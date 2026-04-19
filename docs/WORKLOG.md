@@ -892,6 +892,23 @@ _Playwright конфиг:_
 
 ## Яшкин (Backend)
 
+### 2026-04-19 — Сессия: L25.8 — сквозной e2e тест (определение → 5 дней → барьер → батл)
+
+**Время:** ~40 минут
+**Статус:** Завершена
+
+**Что сделано:**
+- Полный пользовательский путь как один интеграционный сценарий: register → /learning/determine (5 ситуаций) → /learning/start → 5 дней обучения (8 cards × VIEW + correct quiz) → /learning/barrier (4 стадии: recall/connect/apply/defend с замокаными AI ответами) → /learning/barrier/complete → newLevel SLEEPING → AWAKENED
+- Phase 4 проверяет cross-module wiring: BattleLink выдаёт unlocked questions из накопленной mastery; canParticipate разрешает BRONZE+SILVER на AWAKENED, отвергает GOLD; POST /battles {mode:'bot'} создаёт батл доступный владельцу через GET /battles/:id
+- Найдено: концепты пройденные через learning path не гарантированно связаны с Question через ConceptQuestion в seed → создаётся фикстурный Question + ConceptQuestion на топ mastered концепт пользователя, чтобы integration assertion имел смысл
+- Все 440 e2e тестов проходят (+16 к предыдущим 424)
+
+**Файлы созданы/изменены:**
+- `apps/api/test/learning-end-to-end.e2e-spec.ts` — новый файл, 16 тестов в 4 фазах
+- `docs/SPRINT.md` — L25.8 todo → done, путь к файлу добавлен
+
+**Задачи из SPRINT.md закрыты:** L25.8
+
 ### 2026-04-19 — Сессия: L25.6 — нагрузочный тест обучения (k6)
 
 **Время:** ~20 минут
