@@ -892,6 +892,27 @@ _Playwright конфиг:_
 
 ## Яшкин (Backend)
 
+### 2026-04-19 — Сессия: L25.6 — нагрузочный тест обучения (k6)
+
+**Время:** ~20 минут
+**Статус:** Завершена
+
+**Что сделано:**
+- k6-сценарий для 100 одновременных учеников: ramp 25 → 50 → 100 VUs, 60s sustained peak, 15s cool-down (общее время ~135s)
+- Полный учебный flow на VU: /learning/start → /learning/today (day 1) → 8× /learning/interact (VIEW + correct quiz answer) → /learning/day/1/complete → /learning/today (day 2) → /learning/mastery → /learning/status
+- Per-endpoint Trend-метрики: learning_start_duration, learning_today_duration, learning_interact_duration, learning_complete_day_duration, learning_mastery_duration, learning_status_duration
+- Counter-метрики: paths_started, days_completed; Rate-метрика error_rate
+- Thresholds: HTTP p95 < 800ms / p99 < 1500ms; start p95 < 1500ms (build path = heavy); interact p95 < 300ms; complete p95 < 800ms; error rate < 5%
+- Setup регистрирует 120 пользователей с rate-limit-aware backoff (sleep при 429)
+- README.md обновлён: команда запуска, таблица thresholds, SQL очистки `k6_learning_%`
+
+**Файлы созданы/изменены:**
+- `scripts/load-tests/learning-load.js` — новый k6-сценарий (~250 строк)
+- `scripts/load-tests/README.md` — добавлен раздел L25.6 + thresholds + SQL cleanup
+- `docs/SPRINT.md` — L25.6 todo → done
+
+**Задачи из SPRINT.md закрыты:** L25.6
+
 ### 2026-04-19 — Сессия: L25.5 — связка обучения с батлами
 
 **Время:** ~30 минут
