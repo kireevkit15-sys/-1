@@ -8797,12 +8797,21 @@
       "norm_label": "delay()"
     },
     {
+      "label": "knowledge-graph.e2e-spec.ts",
+      "file_type": "code",
+      "source_file": "apps\\api\\test\\knowledge-graph.e2e-spec.ts",
+      "source_location": "L1",
+      "id": "apps_api_test_knowledge_graph_e2e_spec_ts",
+      "community": 269,
+      "norm_label": "knowledge-graph.e2e-spec.ts"
+    },
+    {
       "label": "learn.e2e-spec.ts",
       "file_type": "code",
       "source_file": "apps\\api\\test\\learn.e2e-spec.ts",
       "source_location": "L1",
       "id": "apps_api_test_learn_e2e_spec_ts",
-      "community": 269,
+      "community": 270,
       "norm_label": "learn.e2e-spec.ts"
     },
     {
@@ -8811,7 +8820,7 @@
       "source_file": "apps\\api\\test\\learning-barrier.e2e-spec.ts",
       "source_location": "L1",
       "id": "apps_api_test_learning_barrier_e2e_spec_ts",
-      "community": 270,
+      "community": 271,
       "norm_label": "learning-barrier.e2e-spec.ts"
     },
     {
@@ -8820,7 +8829,7 @@
       "source_file": "apps\\api\\test\\learning.e2e-spec.ts",
       "source_location": "L1",
       "id": "apps_api_test_learning_e2e_spec_ts",
-      "community": 271,
+      "community": 272,
       "norm_label": "learning.e2e-spec.ts"
     },
     {
@@ -8829,7 +8838,7 @@
       "source_file": "apps\\api\\test\\notifications.e2e-spec.ts",
       "source_location": "L1",
       "id": "apps_api_test_notifications_e2e_spec_ts",
-      "community": 272,
+      "community": 273,
       "norm_label": "notifications.e2e-spec.ts"
     },
     {
@@ -8838,7 +8847,7 @@
       "source_file": "apps\\api\\test\\questions.e2e-spec.ts",
       "source_location": "L1",
       "id": "apps_api_test_questions_e2e_spec_ts",
-      "community": 273,
+      "community": 274,
       "norm_label": "questions.e2e-spec.ts"
     },
     {
@@ -8847,7 +8856,7 @@
       "source_file": "apps\\api\\test\\run-e2e.js",
       "source_location": "L1",
       "id": "apps_api_test_run_e2e_js",
-      "community": 274,
+      "community": 275,
       "norm_label": "run-e2e.js"
     },
     {
@@ -8856,7 +8865,7 @@
       "source_file": "apps\\api\\test\\stats.e2e-spec.ts",
       "source_location": "L1",
       "id": "apps_api_test_stats_e2e_spec_ts",
-      "community": 275,
+      "community": 276,
       "norm_label": "stats.e2e-spec.ts"
     },
     {
@@ -8865,7 +8874,7 @@
       "source_file": "apps\\api\\test\\warmup.e2e-spec.ts",
       "source_location": "L1",
       "id": "apps_api_test_warmup_e2e_spec_ts",
-      "community": 276,
+      "community": 277,
       "norm_label": "warmup.e2e-spec.ts"
     },
     {
@@ -8874,7 +8883,7 @@
       "source_file": "apps\\api\\test\\security\\injection-xss.e2e-spec.ts",
       "source_location": "L1",
       "id": "apps_api_test_security_injection_xss_e2e_spec_ts",
-      "community": 277,
+      "community": 278,
       "norm_label": "injection-xss.e2e-spec.ts"
     },
     {
@@ -8883,7 +8892,7 @@
       "source_file": "apps\\api\\test\\security\\learning-security.e2e-spec.ts",
       "source_location": "L1",
       "id": "apps_api_test_security_learning_security_e2e_spec_ts",
-      "community": 278,
+      "community": 279,
       "norm_label": "learning-security.e2e-spec.ts"
     },
     {
@@ -8892,7 +8901,7 @@
       "source_file": "apps\\api\\test\\security\\rbac.e2e-spec.ts",
       "source_location": "L1",
       "id": "apps_api_test_security_rbac_e2e_spec_ts",
-      "community": 279,
+      "community": 280,
       "norm_label": "rbac.e2e-spec.ts"
     },
     {
@@ -8901,7 +8910,7 @@
       "source_file": "apps\\web\\next-env.d.ts",
       "source_location": "L1",
       "id": "apps_web_next_env_d_ts",
-      "community": 280,
+      "community": 281,
       "norm_label": "next-env.d.ts"
     },
     {
@@ -8910,7 +8919,7 @@
       "source_file": "apps\\web\\next.config.js",
       "source_location": "L1",
       "id": "apps_web_next_config_js",
-      "community": 281,
+      "community": 282,
       "norm_label": "next.config.js"
     },
     {
@@ -8919,7 +8928,7 @@
       "source_file": "apps\\web\\playwright.config.ts",
       "source_location": "L1",
       "id": "apps_web_playwright_config_ts",
-      "community": 282,
+      "community": 283,
       "norm_label": "playwright.config.ts"
     },
     {
@@ -8928,7 +8937,7 @@
       "source_file": "apps\\web\\postcss.config.js",
       "source_location": "L1",
       "id": "apps_web_postcss_config_js",
-      "community": 283,
+      "community": 284,
       "norm_label": "postcss.config.js"
     },
     {
@@ -8937,7 +8946,7 @@
       "source_file": "apps\\web\\tailwind.config.ts",
       "source_location": "L1",
       "id": "apps_web_tailwind_config_ts",
-      "community": 284,
+      "community": 285,
       "norm_label": "tailwind.config.ts"
     },
     {
@@ -8946,7 +8955,7 @@
       "source_file": "apps\\web\\test-setup.ts",
       "source_location": "L1",
       "id": "apps_web_test_setup_ts",
-      "community": 285,
+      "community": 286,
       "norm_label": "test-setup.ts"
     },
     {
@@ -8955,7 +8964,7 @@
       "source_file": "apps\\web\\vitest.config.ts",
       "source_location": "L1",
       "id": "apps_web_vitest_config_ts",
-      "community": 286,
+      "community": 287,
       "norm_label": "vitest.config.ts"
     },
     {
@@ -8964,7 +8973,7 @@
       "source_file": "apps\\web\\app\\error.tsx",
       "source_location": "L1",
       "id": "apps_web_app_error_tsx",
-      "community": 287,
+      "community": 288,
       "norm_label": "error.tsx"
     },
     {
@@ -8973,7 +8982,7 @@
       "source_file": "apps\\web\\app\\layout.tsx",
       "source_location": "L1",
       "id": "apps_web_app_layout_tsx",
-      "community": 288,
+      "community": 289,
       "norm_label": "layout.tsx"
     },
     {
@@ -9018,7 +9027,7 @@
       "source_file": "apps\\web\\app\\sw.ts",
       "source_location": "L1",
       "id": "apps_web_app_sw_ts",
-      "community": 289,
+      "community": 290,
       "norm_label": "sw.ts"
     },
     {
@@ -9135,7 +9144,7 @@
       "source_file": "apps\\web\\app\\(main)\\about\\page.tsx",
       "source_location": "L1",
       "id": "apps_web_app_main_about_page_tsx",
-      "community": 290,
+      "community": 291,
       "norm_label": "page.tsx"
     },
     {
@@ -9198,7 +9207,7 @@
       "source_file": "apps\\web\\app\\(main)\\battle\\new\\page.tsx",
       "source_location": "L1",
       "id": "apps_web_app_main_battle_new_page_tsx",
-      "community": 291,
+      "community": 292,
       "norm_label": "page.tsx"
     },
     {
@@ -9504,7 +9513,7 @@
       "source_file": "apps\\web\\app\\(main)\\learning\\page.tsx",
       "source_location": "L1",
       "id": "apps_web_app_main_learning_page_tsx",
-      "community": 292,
+      "community": 293,
       "norm_label": "page.tsx"
     },
     {
@@ -9675,7 +9684,7 @@
       "source_file": "apps\\web\\app\\(main)\\learning\\map\\page.tsx",
       "source_location": "L1",
       "id": "apps_web_app_main_learning_map_page_tsx",
-      "community": 293,
+      "community": 294,
       "norm_label": "page.tsx"
     },
     {
@@ -9684,7 +9693,7 @@
       "source_file": "apps\\web\\app\\(main)\\onboarding\\page.tsx",
       "source_location": "L1",
       "id": "apps_web_app_main_onboarding_page_tsx",
-      "community": 294,
+      "community": 295,
       "norm_label": "page.tsx"
     },
     {
@@ -9765,7 +9774,7 @@
       "source_file": "apps\\web\\app\\(main)\\settings\\page.tsx",
       "source_location": "L1",
       "id": "apps_web_app_main_settings_page_tsx",
-      "community": 295,
+      "community": 296,
       "norm_label": "page.tsx"
     },
     {
@@ -9828,7 +9837,7 @@
       "source_file": "apps\\web\\app\\admin\\dashboard\\page.tsx",
       "source_location": "L1",
       "id": "apps_web_app_admin_dashboard_page_tsx",
-      "community": 296,
+      "community": 297,
       "norm_label": "page.tsx"
     },
     {
@@ -9837,7 +9846,7 @@
       "source_file": "apps\\web\\app\\admin\\questions\\page.tsx",
       "source_location": "L1",
       "id": "apps_web_app_admin_questions_page_tsx",
-      "community": 297,
+      "community": 298,
       "norm_label": "page.tsx"
     },
     {
@@ -9864,7 +9873,7 @@
       "source_file": "apps\\web\\app\\api\\auth\\[...nextauth]\\route.ts",
       "source_location": "L1",
       "id": "apps_web_app_api_auth_nextauth_route_ts",
-      "community": 298,
+      "community": 299,
       "norm_label": "route.ts"
     },
     {
@@ -9873,7 +9882,7 @@
       "source_file": "apps\\web\\components\\admin\\QuestionEditor.tsx",
       "source_location": "L1",
       "id": "apps_web_components_admin_questioneditor_tsx",
-      "community": 299,
+      "community": 300,
       "norm_label": "questioneditor.tsx"
     },
     {
@@ -9882,7 +9891,7 @@
       "source_file": "apps\\web\\components\\battle\\DifficultyPicker.tsx",
       "source_location": "L1",
       "id": "apps_web_components_battle_difficultypicker_tsx",
-      "community": 300,
+      "community": 301,
       "norm_label": "difficultypicker.tsx"
     },
     {
@@ -10071,7 +10080,7 @@
       "source_file": "apps\\web\\components\\layout\\BottomNav.tsx",
       "source_location": "L1",
       "id": "apps_web_components_layout_bottomnav_tsx",
-      "community": 301,
+      "community": 302,
       "norm_label": "bottomnav.tsx"
     },
     {
@@ -10179,7 +10188,7 @@
       "source_file": "apps\\web\\components\\learn\\QuestionCard.tsx",
       "source_location": "L1",
       "id": "apps_web_components_learn_questioncard_tsx",
-      "community": 302,
+      "community": 303,
       "norm_label": "questioncard.tsx"
     },
     {
@@ -10305,7 +10314,7 @@
       "source_file": "apps\\web\\components\\learning\\EvidenceCard.tsx",
       "source_location": "L1",
       "id": "apps_web_components_learning_evidencecard_tsx",
-      "community": 303,
+      "community": 304,
       "norm_label": "evidencecard.tsx"
     },
     {
@@ -10467,7 +10476,7 @@
       "source_file": "apps\\web\\components\\learning\\RitualShell.tsx",
       "source_location": "L1",
       "id": "apps_web_components_learning_ritualshell_tsx",
-      "community": 304,
+      "community": 305,
       "norm_label": "ritualshell.tsx"
     },
     {
@@ -10503,7 +10512,7 @@
       "source_file": "apps\\web\\components\\learning\\ThreadCard.tsx",
       "source_location": "L1",
       "id": "apps_web_components_learning_threadcard_tsx",
-      "community": 305,
+      "community": 306,
       "norm_label": "threadcard.tsx"
     },
     {
@@ -10764,7 +10773,7 @@
       "source_file": "apps\\web\\components\\ui\\Button.tsx",
       "source_location": "L1",
       "id": "apps_web_components_ui_button_tsx",
-      "community": 306,
+      "community": 307,
       "norm_label": "button.tsx"
     },
     {
@@ -10773,7 +10782,7 @@
       "source_file": "apps\\web\\components\\ui\\Card.tsx",
       "source_location": "L1",
       "id": "apps_web_components_ui_card_tsx",
-      "community": 307,
+      "community": 308,
       "norm_label": "card.tsx"
     },
     {
@@ -10908,7 +10917,7 @@
       "source_file": "apps\\web\\components\\ui\\Toast.tsx",
       "source_location": "L1",
       "id": "apps_web_components_ui_toast_tsx",
-      "community": 308,
+      "community": 309,
       "norm_label": "toast.tsx"
     },
     {
@@ -10917,7 +10926,7 @@
       "source_file": "apps\\web\\components\\__tests__\\Button.test.tsx",
       "source_location": "L1",
       "id": "apps_web_components_tests_button_test_tsx",
-      "community": 309,
+      "community": 310,
       "norm_label": "button.test.tsx"
     },
     {
@@ -10926,7 +10935,7 @@
       "source_file": "apps\\web\\components\\__tests__\\Card.test.tsx",
       "source_location": "L1",
       "id": "apps_web_components_tests_card_test_tsx",
-      "community": 310,
+      "community": 311,
       "norm_label": "card.test.tsx"
     },
     {
@@ -10935,7 +10944,7 @@
       "source_file": "apps\\web\\components\\__tests__\\SideNav.test.tsx",
       "source_location": "L1",
       "id": "apps_web_components_tests_sidenav_test_tsx",
-      "community": 311,
+      "community": 312,
       "norm_label": "sidenav.test.tsx"
     },
     {
@@ -11016,7 +11025,7 @@
       "source_file": "apps\\web\\hooks\\__tests__\\useAuth.test.ts",
       "source_location": "L1",
       "id": "apps_web_hooks_tests_useauth_test_ts",
-      "community": 312,
+      "community": 313,
       "norm_label": "useauth.test.ts"
     },
     {
@@ -11025,7 +11034,7 @@
       "source_file": "apps\\web\\lib\\auth.ts",
       "source_location": "L1",
       "id": "apps_web_lib_auth_ts",
-      "community": 313,
+      "community": 314,
       "norm_label": "auth.ts"
     },
     {
@@ -11250,7 +11259,7 @@
       "source_file": "apps\\web\\lib\\api\\base.ts",
       "source_location": "L1",
       "id": "apps_web_lib_api_base_ts",
-      "community": 314,
+      "community": 315,
       "norm_label": "base.ts"
     },
     {
@@ -11412,7 +11421,7 @@
       "source_file": "apps\\web\\tests\\a11y\\accessibility.spec.ts",
       "source_location": "L1",
       "id": "apps_web_tests_a11y_accessibility_spec_ts",
-      "community": 315,
+      "community": 316,
       "norm_label": "accessibility.spec.ts"
     },
     {
@@ -11421,7 +11430,7 @@
       "source_file": "apps\\web\\tests\\a11y\\learning-a11y.spec.ts",
       "source_location": "L1",
       "id": "apps_web_tests_a11y_learning_a11y_spec_ts",
-      "community": 316,
+      "community": 317,
       "norm_label": "learning-a11y.spec.ts"
     },
     {
@@ -11430,7 +11439,7 @@
       "source_file": "apps\\web\\tests\\cross-browser\\rendering.spec.ts",
       "source_location": "L1",
       "id": "apps_web_tests_cross_browser_rendering_spec_ts",
-      "community": 317,
+      "community": 318,
       "norm_label": "rendering.spec.ts"
     },
     {
@@ -11439,7 +11448,7 @@
       "source_file": "apps\\web\\tests\\e2e\\ai-chat.spec.ts",
       "source_location": "L1",
       "id": "apps_web_tests_e2e_ai_chat_spec_ts",
-      "community": 318,
+      "community": 319,
       "norm_label": "ai-chat.spec.ts"
     },
     {
@@ -11448,7 +11457,7 @@
       "source_file": "apps\\web\\tests\\e2e\\battle.spec.ts",
       "source_location": "L1",
       "id": "apps_web_tests_e2e_battle_spec_ts",
-      "community": 319,
+      "community": 320,
       "norm_label": "battle.spec.ts"
     },
     {
@@ -11457,7 +11466,7 @@
       "source_file": "apps\\web\\tests\\e2e\\learn.spec.ts",
       "source_location": "L1",
       "id": "apps_web_tests_e2e_learn_spec_ts",
-      "community": 320,
+      "community": 321,
       "norm_label": "learn.spec.ts"
     },
     {
@@ -11583,7 +11592,7 @@
       "source_file": "apps\\web\\tests\\e2e\\learning-depth.spec.ts",
       "source_location": "L1",
       "id": "apps_web_tests_e2e_learning_depth_spec_ts",
-      "community": 321,
+      "community": 322,
       "norm_label": "learning-depth.spec.ts"
     },
     {
@@ -11592,7 +11601,7 @@
       "source_file": "apps\\web\\tests\\e2e\\learning-determination.spec.ts",
       "source_location": "L1",
       "id": "apps_web_tests_e2e_learning_determination_spec_ts",
-      "community": 322,
+      "community": 323,
       "norm_label": "learning-determination.spec.ts"
     },
     {
@@ -11601,7 +11610,7 @@
       "source_file": "apps\\web\\tests\\e2e\\learning-map.spec.ts",
       "source_location": "L1",
       "id": "apps_web_tests_e2e_learning_map_spec_ts",
-      "community": 323,
+      "community": 324,
       "norm_label": "learning-map.spec.ts"
     },
     {
@@ -11628,7 +11637,7 @@
       "source_file": "apps\\web\\tests\\e2e\\offline.spec.ts",
       "source_location": "L1",
       "id": "apps_web_tests_e2e_offline_spec_ts",
-      "community": 324,
+      "community": 325,
       "norm_label": "offline.spec.ts"
     },
     {
@@ -11637,7 +11646,7 @@
       "source_file": "apps\\web\\tests\\e2e\\onboarding.spec.ts",
       "source_location": "L1",
       "id": "apps_web_tests_e2e_onboarding_spec_ts",
-      "community": 325,
+      "community": 326,
       "norm_label": "onboarding.spec.ts"
     },
     {
@@ -11646,7 +11655,7 @@
       "source_file": "apps\\web\\tests\\e2e\\push.spec.ts",
       "source_location": "L1",
       "id": "apps_web_tests_e2e_push_spec_ts",
-      "community": 326,
+      "community": 327,
       "norm_label": "push.spec.ts"
     },
     {
@@ -11655,7 +11664,7 @@
       "source_file": "apps\\web\\tests\\e2e\\warmup.spec.ts",
       "source_location": "L1",
       "id": "apps_web_tests_e2e_warmup_spec_ts",
-      "community": 327,
+      "community": 328,
       "norm_label": "warmup.spec.ts"
     },
     {
@@ -11664,7 +11673,7 @@
       "source_file": "apps\\web\\tests\\performance\\memory.spec.ts",
       "source_location": "L1",
       "id": "apps_web_tests_performance_memory_spec_ts",
-      "community": 328,
+      "community": 329,
       "norm_label": "memory.spec.ts"
     },
     {
@@ -11709,7 +11718,7 @@
       "source_file": "apps\\web\\types\\next-auth.d.ts",
       "source_location": "L1",
       "id": "apps_web_types_next_auth_d_ts",
-      "community": 329,
+      "community": 330,
       "norm_label": "next-auth.d.ts"
     },
     {
@@ -11736,7 +11745,7 @@
       "source_file": "packages\\shared\\jest.config.js",
       "source_location": "L1",
       "id": "packages_shared_jest_config_js",
-      "community": 330,
+      "community": 331,
       "norm_label": "jest.config.js"
     },
     {
@@ -11745,7 +11754,7 @@
       "source_file": "packages\\shared\\jest.config.ts",
       "source_location": "L1",
       "id": "packages_shared_jest_config_ts",
-      "community": 331,
+      "community": 332,
       "norm_label": "jest.config.ts"
     },
     {
@@ -11754,7 +11763,7 @@
       "source_file": "packages\\shared\\src\\constants.d.ts",
       "source_location": "L1",
       "id": "packages_shared_src_constants_d_ts",
-      "community": 332,
+      "community": 333,
       "norm_label": "constants.d.ts"
     },
     {
@@ -11763,7 +11772,7 @@
       "source_file": "packages\\shared\\src\\constants.js",
       "source_location": "L1",
       "id": "packages_shared_src_constants_js",
-      "community": 333,
+      "community": 334,
       "norm_label": "constants.js"
     },
     {
@@ -11772,7 +11781,7 @@
       "source_file": "packages\\shared\\src\\constants.ts",
       "source_location": "L1",
       "id": "packages_shared_src_constants_ts",
-      "community": 334,
+      "community": 335,
       "norm_label": "constants.ts"
     },
     {
@@ -11781,7 +11790,7 @@
       "source_file": "packages\\shared\\src\\index.d.ts",
       "source_location": "L1",
       "id": "packages_shared_src_index_d_ts",
-      "community": 335,
+      "community": 336,
       "norm_label": "index.d.ts"
     },
     {
@@ -11790,7 +11799,7 @@
       "source_file": "packages\\shared\\src\\index.js",
       "source_location": "L1",
       "id": "packages_shared_src_index_js",
-      "community": 336,
+      "community": 337,
       "norm_label": "index.js"
     },
     {
@@ -11799,7 +11808,7 @@
       "source_file": "packages\\shared\\src\\index.ts",
       "source_location": "L1",
       "id": "packages_shared_src_index_ts",
-      "community": 337,
+      "community": 338,
       "norm_label": "index.ts"
     },
     {
@@ -11808,7 +11817,7 @@
       "source_file": "packages\\shared\\src\\battle\\scoring.d.ts",
       "source_location": "L1",
       "id": "packages_shared_src_battle_scoring_d_ts",
-      "community": 338,
+      "community": 339,
       "norm_label": "scoring.d.ts"
     },
     {
@@ -11871,7 +11880,7 @@
       "source_file": "packages\\shared\\src\\battle\\state-machine.d.ts",
       "source_location": "L1",
       "id": "packages_shared_src_battle_state_machine_d_ts",
-      "community": 339,
+      "community": 340,
       "norm_label": "state-machine.d.ts"
     },
     {
@@ -12006,7 +12015,7 @@
       "source_file": "packages\\shared\\src\\battle\\types.d.ts",
       "source_location": "L1",
       "id": "packages_shared_src_battle_types_d_ts",
-      "community": 340,
+      "community": 341,
       "norm_label": "types.d.ts"
     },
     {
@@ -12015,7 +12024,7 @@
       "source_file": "packages\\shared\\src\\battle\\types.js",
       "source_location": "L1",
       "id": "packages_shared_src_battle_types_js",
-      "community": 341,
+      "community": 342,
       "norm_label": "types.js"
     },
     {
@@ -12024,7 +12033,7 @@
       "source_file": "packages\\shared\\src\\battle\\types.ts",
       "source_location": "L1",
       "id": "packages_shared_src_battle_types_ts",
-      "community": 342,
+      "community": 343,
       "norm_label": "types.ts"
     },
     {
@@ -12033,7 +12042,7 @@
       "source_file": "packages\\shared\\src\\cards\\constants.ts",
       "source_location": "L1",
       "id": "packages_shared_src_cards_constants_ts",
-      "community": 343,
+      "community": 344,
       "norm_label": "constants.ts"
     },
     {
@@ -12042,7 +12051,7 @@
       "source_file": "packages\\shared\\src\\cards\\index.ts",
       "source_location": "L1",
       "id": "packages_shared_src_cards_index_ts",
-      "community": 344,
+      "community": 345,
       "norm_label": "index.ts"
     },
     {
@@ -12051,7 +12060,7 @@
       "source_file": "packages\\shared\\src\\cards\\types.ts",
       "source_location": "L1",
       "id": "packages_shared_src_cards_types_ts",
-      "community": 345,
+      "community": 346,
       "norm_label": "types.ts"
     },
     {
@@ -12123,7 +12132,7 @@
       "source_file": "packages\\shared\\src\\feed\\constants.ts",
       "source_location": "L1",
       "id": "packages_shared_src_feed_constants_ts",
-      "community": 346,
+      "community": 347,
       "norm_label": "constants.ts"
     },
     {
@@ -12132,7 +12141,7 @@
       "source_file": "packages\\shared\\src\\feed\\types.ts",
       "source_location": "L1",
       "id": "packages_shared_src_feed_types_ts",
-      "community": 347,
+      "community": 348,
       "norm_label": "types.ts"
     },
     {
@@ -12177,7 +12186,7 @@
       "source_file": "packages\\shared\\src\\learning\\constants.ts",
       "source_location": "L1",
       "id": "packages_shared_src_learning_constants_ts",
-      "community": 348,
+      "community": 349,
       "norm_label": "constants.ts"
     },
     {
@@ -12213,7 +12222,7 @@
       "source_file": "packages\\shared\\src\\learning\\index.ts",
       "source_location": "L1",
       "id": "packages_shared_src_learning_index_ts",
-      "community": 349,
+      "community": 350,
       "norm_label": "index.ts"
     },
     {
@@ -12312,7 +12321,7 @@
       "source_file": "packages\\shared\\src\\learning\\types.ts",
       "source_location": "L1",
       "id": "packages_shared_src_learning_types_ts",
-      "community": 350,
+      "community": 351,
       "norm_label": "types.ts"
     },
     {
@@ -12321,7 +12330,7 @@
       "source_file": "packages\\shared\\src\\questions\\types.d.ts",
       "source_location": "L1",
       "id": "packages_shared_src_questions_types_d_ts",
-      "community": 351,
+      "community": 352,
       "norm_label": "types.d.ts"
     },
     {
@@ -12330,7 +12339,7 @@
       "source_file": "packages\\shared\\src\\questions\\types.js",
       "source_location": "L1",
       "id": "packages_shared_src_questions_types_js",
-      "community": 352,
+      "community": 353,
       "norm_label": "types.js"
     },
     {
@@ -12339,7 +12348,7 @@
       "source_file": "packages\\shared\\src\\questions\\types.ts",
       "source_location": "L1",
       "id": "packages_shared_src_questions_types_ts",
-      "community": 353,
+      "community": 354,
       "norm_label": "types.ts"
     },
     {
@@ -12348,7 +12357,7 @@
       "source_file": "packages\\shared\\src\\stats\\calculator.d.ts",
       "source_location": "L1",
       "id": "packages_shared_src_stats_calculator_d_ts",
-      "community": 354,
+      "community": 355,
       "norm_label": "calculator.d.ts"
     },
     {
@@ -12420,7 +12429,7 @@
       "source_file": "packages\\shared\\src\\stats\\types.d.ts",
       "source_location": "L1",
       "id": "packages_shared_src_stats_types_d_ts",
-      "community": 355,
+      "community": 356,
       "norm_label": "types.d.ts"
     },
     {
@@ -12429,7 +12438,7 @@
       "source_file": "packages\\shared\\src\\stats\\types.js",
       "source_location": "L1",
       "id": "packages_shared_src_stats_types_js",
-      "community": 356,
+      "community": 357,
       "norm_label": "types.js"
     },
     {
@@ -12438,7 +12447,7 @@
       "source_file": "packages\\shared\\src\\stats\\types.ts",
       "source_location": "L1",
       "id": "packages_shared_src_stats_types_ts",
-      "community": 357,
+      "community": 358,
       "norm_label": "types.ts"
     },
     {
@@ -12582,7 +12591,7 @@
       "source_file": "packages\\shared\\__tests__\\stats\\calculator.test.ts",
       "source_location": "L1",
       "id": "packages_shared_tests_stats_calculator_test_ts",
-      "community": 358,
+      "community": 359,
       "norm_label": "calculator.test.ts"
     },
     {
@@ -13401,7 +13410,7 @@
       "source_file": "scripts\\lib\\content-types.ts",
       "source_location": "L1",
       "id": "scripts_lib_content_types_ts",
-      "community": 359,
+      "community": 360,
       "norm_label": "content-types.ts"
     },
     {

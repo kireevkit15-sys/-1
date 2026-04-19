@@ -892,6 +892,26 @@ _Playwright конфиг:_
 
 ## Яшкин (Backend)
 
+### 2026-04-19 — Сессия: L25.1 — интеграционные тесты графа знаний
+
+**Время:** ~30 минут
+**Статус:** Завершена
+
+**Что сделано:**
+- Написан e2e-набор для графа знаний: создание концептов и связей (PREREQUISITE/RELATED/DEEPENS), проверка unique-констрейнта `(sourceId, targetId, relationType)`, каскадное удаление связей при удалении концепта
+- Покрытие API: GET /concepts (фильтры по branch/category/difficulty + search + пагинация), GET /concepts/:id (404, 400 на не-UUID, depth-layers), GET /concepts/:id/related (направление, типы рёбер, strength)
+- Обход графа: walk вперёд по PREREQUISITE (A→B→C) и BFS назад по incoming PREREQUISITE
+- GET /learning/mastery: branchStats, отражение прогресса после `userConceptMastery.upsert`
+- Cross-user isolation: mastery одного пользователя не виден другому
+- Изолированный subgraph через slug-prefix `kg-e2e-{ts}-` — не пересекается с сидом, чистится в afterAll
+- Все 380 e2e-тестов проходят локально
+
+**Файлы созданы/изменены:**
+- `apps/api/test/knowledge-graph.e2e-spec.ts` — новый файл, 27 тестов в 7 группах
+- `docs/SPRINT.md` — L25.1 todo → done
+
+**Задачи из SPRINT.md закрыты:** L25.1
+
 ### 2026-04-06 — Сессия 1: Первая миграция, ConfigModule, exception filter, запуск NestJS
 
 **Время:** ~2 часа
