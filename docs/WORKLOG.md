@@ -892,6 +892,26 @@ _Playwright конфиг:_
 
 ## Яшкин (Backend)
 
+### 2026-04-19 — Сессия: L25.4 — интеграционные тесты адаптации
+
+**Время:** ~45 минут
+**Статус:** Завершена
+
+**Что сделано:**
+- Поведенческие паттерны → ожидаемые adaptations: rushed × 3 дня подряд → CHANGE_STYLE; engaged → стабильный стиль (нет CHANGE_STYLE)
+- Mastery divergence: engaged → высокий masteryDelta (≥0.10), rushed → низкий (≤0.05); проверка через GET /learning/mastery
+- REPEAT-логика: confidence < 0.5 → REPEAT попадает в adaptations; high-confidence путь → REPEAT отсутствует
+- Service-level: AdaptationService.analyzeDayMetrics возвращает корректные сигналы (rushed→CHANGE_STYLE, engaged→стабильность)
+- Helper-функции: registerAndStart, recordRushedDay (1.5s/card + wrong quiz), recordEngagedDay (15s/card + correct quiz), completeDay
+- Найден тонкий баг в `packages/shared/src/learning/metrics.ts`: `computeEngagement` считает каждый ANSWER как quiz-attempt независимо от cardIndex — explain ANSWER ('understood') засчитывался бы как quizCorrect=0 и снижал quizAccuracy. Документировано в комментарии теста, prod-код не трогал
+- Все 402 e2e теста проходят (+8 к предыдущим 394)
+
+**Файлы созданы/изменены:**
+- `apps/api/test/learning-adaptation.e2e-spec.ts` — новый файл, 8 тестов в 6 группах
+- `docs/SPRINT.md` — L25.4 todo → done
+
+**Задачи из SPRINT.md закрыты:** L25.4
+
 ### 2026-04-19 — Сессия: L25.2 — интеграционные тесты пути обучения
 
 **Время:** ~30 минут
