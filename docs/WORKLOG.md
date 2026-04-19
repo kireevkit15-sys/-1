@@ -892,6 +892,27 @@ _Playwright конфиг:_
 
 ## Яшкин (Backend)
 
+### 2026-04-19 — Сессия: L25.2 — интеграционные тесты пути обучения
+
+**Время:** ~30 минут
+**Статус:** Завершена
+
+**Что сделано:**
+- Сквозной integration-flow: register → determine → start → today → interact → completeDay × 5 → verify barrier trigger при входе в day 6
+- Проверки персистентности: determination-поля сохраняются в `LearningPath`, `UserConceptMastery` создаётся для каждого пройденного концепта
+- Структурные инварианты пути: `LearningDay` пронумерованы 1..N без дыр, у каждого дня есть `conceptId` и непустой массив `cards`
+- Метрики: `interact` пишет события в `LearningDay.metrics.interactions`; `completeDay` возвращает `confidence/engagement/masteryDelta/adaptations`
+- Skip-protection: 400 при попытке завершить будущий день, 409 при повторном завершении того же дня
+- Дивергенция маршрутов: разные `startZone` (STRATEGY vs LOGIC) → разный концепт первого дня
+- Path без определения: `start({})` создаёт работающий маршрут с дефолтами
+- Все 394 e2e теста проходят (+14 к предыдущим 380)
+
+**Файлы созданы/изменены:**
+- `apps/api/test/learning-path.e2e-spec.ts` — новый файл, 14 тестов в 7 группах
+- `docs/SPRINT.md` — L25.2 todo → done
+
+**Задачи из SPRINT.md закрыты:** L25.2
+
 ### 2026-04-19 — Сессия: L25.1 — интеграционные тесты графа знаний
 
 **Время:** ~30 минут
