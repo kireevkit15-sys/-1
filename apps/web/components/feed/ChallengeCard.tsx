@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useRef, useEffect } from "react";
+import { getBranch } from "@/lib/branches";
 
 // ─── Props ─────────────────────────────────────────────────────
 
@@ -17,16 +18,6 @@ interface ChallengeCardProps {
   communityStats?: { totalAnswers: number; correctPercent: number };
   onAnswer?: (correct: boolean, answerIndex: number) => void;
 }
-
-// ─── Branch config ─────────────────────────────────────────────
-
-const BRANCH_META: Record<string, { label: string; color: string }> = {
-  STRATEGY:  { label: "Стратегия",  color: "#06B6D4" },
-  LOGIC:     { label: "Логика",     color: "#22C55E" },
-  ERUDITION: { label: "Эрудиция",   color: "#A855F7" },
-  RHETORIC:  { label: "Риторика",   color: "#F97316" },
-  INTUITION: { label: "Интуиция",   color: "#EC4899" },
-};
 
 const OPTION_LETTERS = ["A", "B", "C", "D"] as const;
 
@@ -50,9 +41,7 @@ export default function ChallengeCard({
 
   const isAnswered = selectedIndex !== null;
   const isCorrect = selectedIndex === data.correctIndex;
-  const branchKey = branch.toUpperCase();
-  const meta: { label: string; color: string } =
-    BRANCH_META[branchKey] ?? { label: "Стратегия", color: "#06B6D4" };
+  const meta = getBranch(branch);
 
   // ── Elapsed timer ──
   useEffect(() => {

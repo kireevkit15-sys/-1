@@ -1,20 +1,7 @@
 "use client";
 
 import { useState, useCallback, useRef, useEffect } from "react";
-
-/* ─── branch utilities ─── */
-const BRANCH_COLORS: Record<string, { color: string; rgb: string }> = {
-  STRATEGY:  { color: "#06B6D4", rgb: "6,182,212"   },
-  LOGIC:     { color: "#22C55E", rgb: "34,197,94"   },
-  ERUDITION: { color: "#A855F7", rgb: "168,85,247"  },
-  RHETORIC:  { color: "#F97316", rgb: "249,115,22"  },
-  INTUITION: { color: "#EC4899", rgb: "236,72,153"  },
-};
-
-const DEFAULT_BRANCH = { color: "#06B6D4", rgb: "6,182,212" } as const;
-
-const branchFor = (b?: string | null): { color: string; rgb: string } =>
-  BRANCH_COLORS[(b ?? "STRATEGY").toUpperCase()] ?? DEFAULT_BRANCH;
+import { getBranch } from "@/lib/branches";
 
 /* ─── types ─── */
 interface SparringCardProps {
@@ -36,7 +23,7 @@ const OPTION_LETTERS = ["A", "B", "C", "D"];
 
 /* ─── component ─── */
 export default function SparringCard({ data, branch, onAnswer }: SparringCardProps) {
-  const bc = branchFor(branch);
+  const bc = getBranch(branch);
 
   const [selected, setSelected] = useState<number | null>(null);
   const [elapsedMs, setElapsedMs] = useState(0);

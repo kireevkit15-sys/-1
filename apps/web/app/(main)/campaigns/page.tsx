@@ -5,6 +5,7 @@ import Link from "next/link";
 import Card from "@/components/ui/Card";
 import { useAuth } from "@/hooks/useAuth";
 import { API_BASE } from "@/lib/api/base";
+import { BRANCHES } from "@/lib/branches";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -35,21 +36,13 @@ interface Campaign {
 // Constants
 // ---------------------------------------------------------------------------
 
-const BRANCH_COLORS: Record<string, string> = {
-  STRATEGY: "#06B6D4",
-  LOGIC: "#22C55E",
-  ERUDITION: "#A855F7",
-  RHETORIC: "#F97316",
-  INTUITION: "#EC4899",
-};
+const BRANCH_COLORS: Record<string, string> = Object.fromEntries(
+  Object.values(BRANCHES).map((b) => [b.key, b.color]),
+);
 
-const BRANCH_LABELS: Record<string, string> = {
-  STRATEGY: "Стратегия",
-  LOGIC: "Логика",
-  ERUDITION: "Эрудиция",
-  RHETORIC: "Риторика",
-  INTUITION: "Интуиция",
-};
+const BRANCH_LABELS: Record<string, string> = Object.fromEntries(
+  Object.values(BRANCHES).map((b) => [b.key, b.label]),
+);
 
 interface RankInfo {
   key: string;

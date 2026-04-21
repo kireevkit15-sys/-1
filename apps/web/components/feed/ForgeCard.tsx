@@ -2,18 +2,6 @@
 
 import { useState, useCallback, useRef, useEffect } from "react";
 
-/* ─── branch utilities ─── */
-const BRANCH_COLORS: Record<string, { color: string; rgb: string }> = {
-  STRATEGY:  { color: "#06B6D4", rgb: "6,182,212"   },
-  LOGIC:     { color: "#22C55E", rgb: "34,197,94"   },
-  ERUDITION: { color: "#A855F7", rgb: "168,85,247"  },
-  RHETORIC:  { color: "#F97316", rgb: "249,115,22"  },
-  INTUITION: { color: "#EC4899", rgb: "236,72,153"  },
-};
-
-const branchFor = (b?: string | null) =>
-  BRANCH_COLORS[(b ?? "STRATEGY").toUpperCase()] ?? BRANCH_COLORS.STRATEGY;
-
 /* ─── types ─── */
 interface ForgeCardProps {
   data: {
@@ -52,9 +40,8 @@ function nextReturnDays(attempt: number): number {
 }
 
 /* ─── component ─── */
-export default function ForgeCard({ data, branch, onAnswer }: ForgeCardProps) {
-  const bc = branchFor(branch);
-
+export default function ForgeCard({ data, onAnswer }: ForgeCardProps) {
+  // ForgeCard использует свою собственную цветовую палитру (огонь/красный) — branch-цвет не нужен
   const [selected, setSelected] = useState<number | null>(null);
   const [elapsedMs, setElapsedMs] = useState(0);
   const [showResult, setShowResult] = useState(false);
