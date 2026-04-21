@@ -20,8 +20,14 @@ const cormorant = Cormorant_Garamond({
   variable: "--font-cormorant",
 });
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://razum.app";
+
 export const metadata: Metadata = {
-  title: "РАЗУМ — Прокачай разум",
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: "РАЗУМ — Прокачай разум",
+    template: "%s · РАЗУМ",
+  },
   description:
     "Интеллектуальная платформа для баттлов и обучения. Прокачай критическое мышление, логику, риторику и эрудицию.",
   manifest: "/manifest.json",
@@ -29,6 +35,20 @@ export const metadata: Metadata = {
     capable: true,
     statusBarStyle: "black-translucent",
     title: "РАЗУМ",
+  },
+  openGraph: {
+    type: "website",
+    siteName: "РАЗУМ",
+    locale: "ru_RU",
+    url: siteUrl,
+    title: "РАЗУМ — Прокачай разум",
+    description:
+      "Баттлы знаний 1v1, дерево концептов, AI-наставник. Интеллектуальная PWA-платформа для мужчин.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "РАЗУМ — Прокачай разум",
+    description: "Баттлы знаний, дерево концептов, AI-наставник.",
   },
 };
 

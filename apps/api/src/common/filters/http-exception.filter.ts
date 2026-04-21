@@ -7,6 +7,7 @@ import {
   HttpStatus,
   Logger,
 } from '@nestjs/common';
+import * as Sentry from '@sentry/node';
 import type { Request, Response } from 'express';
 
 @Catch()
@@ -44,6 +45,11 @@ export class AllExceptionsFilter implements ExceptionFilter {
         `${request.method} ${request.url} ${status}`,
         exception instanceof Error ? exception.stack : String(exception),
       );
+      if (process.env.SENTRY_DSN_API) {
+        Sentry.captureException(exception, {
+          tags: { path: request.url, method: request.method },
+        });
+      }
     } else {
       this.logger.warn(`${request.method} ${request.url} ${status}`);
     }

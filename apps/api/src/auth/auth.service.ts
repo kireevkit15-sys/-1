@@ -72,6 +72,16 @@ export class AuthService {
   }
 
   async register(dto: RegisterDto): Promise<TokenPair> {
+    const betaMode =
+      this.configService.get<string>('BETA_MODE', 'false').toLowerCase() === 'true';
+
+    if (!dto.acceptedTerms) {
+      throw new HttpException(
+        'Terms of service and privacy policy must be accepted',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     const existing = await this.prisma.user.findUnique({
       where: { email: dto.email },
     });
@@ -83,15 +93,51 @@ export class AuthService {
       );
     }
 
-    const hashedPassword = await bcrypt.hash(dto.password, this.BCRYPT_ROUNDS);
+    let invite: { id: string; maxUses: number; usedCount: number; expiresAt: Date | null } | null = null;
+    if (betaMode) {
+      const code = dto.inviteCode?.trim();
+      if (!code) {
+        throw new HttpException('Invite code required', HttpStatus.FORBIDDEN);
+      }
+      invite = await this.prisma.inviteCode.findUnique({ where: { code } });
+      if (!invite) {
+        throw new HttpException('Invalid invite code', HttpStatus.FORBIDDEN);
+      }
+      if (invite.expiresAt && invite.expiresAt < new Date()) {
+        throw new HttpException('Invite code expired', HttpStatus.FORBIDDEN);
+      }
+      if (invite.usedCount >= invite.maxUses) {
+        throw new HttpException('Invite code already used', HttpStatus.FORBIDDEN);
+      }
+    }
 
-    const user = await this.prisma.user.create({
-      data: {
-        email: dto.email,
-        passwordHash: hashedPassword,
-        name: dto.name,
-        stats: { create: {} },
-      },
+    const hashedPassword = await bcrypt.hash(dto.password, this.BCRYPT_ROUNDS);
+    const now = new Date();
+
+    const user = await this.prisma.$transaction(async (tx) => {
+      const created = await tx.user.create({
+        data: {
+          email: dto.email,
+          passwordHash: hashedPassword,
+          name: dto.name,
+          termsAcceptedAt: now,
+          privacyAcceptedAt: now,
+          stats: { create: {} },
+        },
+      });
+
+      if (invite) {
+        await tx.inviteCode.update({
+          where: { id: invite.id },
+          data: {
+            usedCount: { increment: 1 },
+            usedById: invite.maxUses === 1 ? created.id : null,
+            usedAt: invite.maxUses === 1 ? now : null,
+          },
+        });
+      }
+
+      return created;
     });
 
     return this.generateTokenPair(user);

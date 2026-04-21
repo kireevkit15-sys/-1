@@ -12,6 +12,11 @@ export default function Error({
 }) {
   useEffect(() => {
     console.error("Application error:", error);
+    if (typeof window !== "undefined" && process.env.NEXT_PUBLIC_SENTRY_DSN) {
+      import("@sentry/nextjs")
+        .then((Sentry) => Sentry.captureException(error))
+        .catch(() => {});
+    }
   }, [error]);
 
   return (

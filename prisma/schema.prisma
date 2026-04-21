@@ -105,8 +105,33 @@ model User {
   feedState         UserFeedState?
   conceptMasteries  UserConceptMastery[]
   learningPath      LearningPath?
+  invitesCreated    InviteCode[]          @relation("invite_created_by")
+  inviteCodeUsed    InviteCode?           @relation("invite_used_by")
+  termsAcceptedAt   DateTime?
+  privacyAcceptedAt DateTime?
 
   @@map("users")
+}
+
+model InviteCode {
+  id         String    @id @default(uuid()) @db.Uuid
+  code       String    @unique
+  note       String?
+  maxUses    Int       @default(1)
+  usedCount  Int       @default(0)
+  expiresAt  DateTime?
+  createdAt  DateTime  @default(now())
+
+  createdById String? @db.Uuid
+  createdBy   User?   @relation("invite_created_by", fields: [createdById], references: [id], onDelete: SetNull)
+
+  usedById   String? @unique @db.Uuid
+  usedBy     User?   @relation("invite_used_by", fields: [usedById], references: [id], onDelete: SetNull)
+  usedAt     DateTime?
+
+  @@index([code])
+  @@index([createdById])
+  @@map("invite_codes")
 }
 
 // ── UserStats ────────────────────────────────

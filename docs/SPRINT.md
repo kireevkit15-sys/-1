@@ -494,18 +494,18 @@
 | # | Задача | Статус | Файлы | Блокер |
 |---|--------|--------|-------|--------|
 | D1.1 | VPS provisioning: купить VPS (2 vCPU, 4 GB RAM, 40 GB SSD), домен, настроить DNS A-record | todo | — | физический (деньги) |
-| D1.2 | `deploy/init-vps.sh` — первичная настройка VPS: создание non-root user, ssh-keys, ufw firewall (22/80/443), fail2ban, docker + docker-compose install | todo | `deploy/init-vps.sh` | — |
-| D2.1 | `.env.production.example` — полный шаблон production-секретов с комментариями откуда брать (JWT_SECRET openssl rand, Claude API key, Telegram bot token, OpenAI key для эмбеддингов, CORS_ORIGIN) | todo | `.env.production.example` | — |
-| D2.2 | `docker-compose.prod.yml` ревизия: healthchecks для api/web/postgres/redis, restart: unless-stopped, logging driver с ротацией, named volumes для postgres/redis data, env_file: .env.production | todo | `docker-compose.prod.yml` | — |
-| D2.3 | `nginx/nginx.conf` ревизия: rate limit zones, gzip, http→https redirect, HSTS, CSP headers, websocket proxy для /battle, client_max_body_size | todo | `nginx/nginx.conf` | — |
-| D2.4 | Let's Encrypt: `deploy/certbot.yml` docker-service + renewal cron (`certbot renew` раз в сутки + nginx reload) | todo | `deploy/certbot.yml`, `deploy/renew-cert.sh` | D1.1 |
-| D3.1 | Sentry SDK в `apps/api` — `@sentry/node` в main.ts, beforeSend фильтрует 4xx, traces_sample_rate 0.1, release из git SHA | todo | `apps/api/src/main.ts`, `apps/api/src/sentry.ts` | — |
-| D3.2 | Sentry SDK в `apps/web` — `@sentry/nextjs`, client+server+edge configs, tunnel через /monitoring для блокировки adblock | todo | `apps/web/sentry.*.config.ts`, `apps/web/next.config.js` | — |
-| D3.3 | Production секреты rotation playbook: как ротировать JWT_SECRET без логаута всех (dual-secret validation), как ротировать Claude API key без downtime | todo | `docs/SECRETS_ROTATION.md` | — |
-| D4.1 | GitHub Actions `deploy.yml`: на push в main — build Docker images → push в GHCR → SSH на VPS → `docker-compose pull && up -d` → healthcheck + rollback при 5xx | todo | `.github/workflows/deploy.yml` | D1.1, D2.2 |
-| D4.2 | `Makefile` на VPS: `make deploy`, `make logs`, `make backup`, `make restore`, `make shell-api`, `make psql` | todo | `deploy/Makefile` | — |
-| D5.1 | Cron-контейнер в docker-compose для `scripts/backup.sh` — pg_dump раз в сутки, сжатие, upload в S3 (AWS/Wasabi/Backblaze B2), ротация 30 дней | todo | `docker-compose.prod.yml`, `scripts/backup.sh` | — |
-| D5.2 | Healthcheck внешний: UptimeRobot/BetterStack ping `/health` раз в 5 мин, алерт в Telegram при downtime | todo | docs | D1.1 |
+| D1.2 | `deploy/init-vps.sh` — первичная настройка VPS: non-root user, ssh-keys, ufw (22/80/443), fail2ban, docker + compose + swap + deploy-dirs | done | `deploy/init-vps.sh` | — |
+| D2.1 | `.env.production.example` — полный шаблон prod-секретов (БД/Redis/JWT/Telegram/Anthropic/Sentry/AWS S3/BETA_MODE) | done | `.env.production.example` | — |
+| D2.2 | `docker-compose.prod.yml` ревизия: healthchecks, logging json-file ротация 10m×5, resource limits, expose вместо ports для api/web, backup-контейнер с dcron + aws-cli | done | `docker-compose.prod.yml` | — |
+| D2.3 | `nginx/nginx.conf` ревизия: rate limit zones (api/auth), gzip, CSP под Sentry, HSTS preload, websocket proxy с timeout 3600, static caching, JSON access_log | done | `nginx/nginx.conf`, `nginx/conf.d/proxy_headers.conf` | — |
+| D2.4 | Let's Encrypt: `deploy/init-letsencrypt.sh` первичная выдача + certbot-контейнер с авто-renew каждые 12h и nginx -s reload | done | `deploy/init-letsencrypt.sh`, `docker-compose.prod.yml` | D1.1 |
+| D3.1 | Sentry SDK в `apps/api` — `@sentry/node` + profiling, `instrument.ts` до bootstrap, captureException в AllExceptionsFilter на 5xx, фильтр auth/cookie в beforeSend | done | `apps/api/src/instrument.ts`, `apps/api/src/main.ts`, `apps/api/src/common/filters/http-exception.filter.ts` | — |
+| D3.2 | Sentry SDK в `apps/web` — `@sentry/nextjs` client/server/edge, tunnelRoute `/monitoring`, замаскированные replays, capture в `app/error.tsx` | done | `apps/web/sentry.{client,server,edge}.config.ts`, `apps/web/next.config.js`, `apps/web/app/error.tsx` | — |
+| D3.3 | Секреты rotation playbook: процедура по каждому секрету (JWT dual-secret, БД, Redis, Anthropic, Telegram, AWS, SSH), календарь, инцидент-флоу | done | `docs/SECRETS_ROTATION.md` | — |
+| D4.1 | GitHub Actions `deploy.yml`: build images → GHCR → rsync + SSH → prisma migrate deploy → compose up → smoke-check → Sentry release. Триггер: tag v*.*.* или workflow_dispatch | done | `.github/workflows/deploy.yml` | D1.1, D2.2 |
+| D4.2 | `deploy/Makefile`: deploy, smoke, logs, ps, top, db-shell, backup-now, le-init, le-renew, rollback TAG=... | done | `deploy/Makefile` | — |
+| D5.1 | Backup-контейнер в `docker-compose.prod.yml` с dcron + aws-cli, `BACKUP_CRON` из env (по умолчанию 03:00 UTC), ротация через `BACKUP_RETENTION_DAYS` | done | `docker-compose.prod.yml` (service `backup`), `scripts/backup.sh`, `docs/MONITORING.md` | — |
+| D5.2 | UptimeRobot чеки (/, /api/health, /api/ready, /socket.io/) + Sentry alert rules задокументированы; подключение на аккаунтах после D1.1 | partial | `docs/MONITORING.md` | D1.1 |
 | D5.3 | Monitoring Grafana+Prometheus (опционально для MVP): контейнер node-exporter + cAdvisor + postgres-exporter, дашборды | todo | `deploy/monitoring/` | D1.1 |
 | D6.1 | Первый prod-деплой: init-vps.sh → clone репо → .env.production (с реальными секретами) → `make deploy` → certbot → smoke-test всех эндпоинтов | todo | — | D1-D5 |
 | D6.2 | Seed production: `prisma migrate deploy` + `prisma/seed-production-v2.ts` (500+ вопросов + 184 концепта + 17 дней обучения) | todo | — | D6.1 |
@@ -519,13 +519,13 @@
 
 | # | Задача | Статус | Файлы |
 |---|--------|--------|-------|
-| Legal.1 | `docs/legal/PRIVACY_POLICY.md` — политика конфиденциальности (152-ФЗ, cookies, AI-обработка, Telegram data) | todo | `docs/legal/PRIVACY_POLICY.md` |
-| Legal.2 | `docs/legal/TERMS_OF_SERVICE.md` — пользовательское соглашение (правила, возраст 18+, правила батлов, санкции за cheat) | todo | `docs/legal/TERMS_OF_SERVICE.md` |
-| Legal.3 | Страницы `/privacy` и `/terms` + футер-ссылки на login + acceptance checkbox при регистрации | todo | `apps/web/app/(main)/privacy/page.tsx`, `apps/web/app/(main)/terms/page.tsx` |
+| Legal.1 | `docs/legal/PRIVACY_POLICY.md` — политика конфиденциальности (GDPR + процессоры Anthropic/Telegram/Sentry/S3/VPS + права субъекта) | done | `docs/legal/PRIVACY_POLICY.md` |
+| Legal.2 | `docs/legal/TERMS_OF_SERVICE.md` — пользовательское соглашение (16+, правила, IP, AI-дисклеймер, ответственность) | done | `docs/legal/TERMS_OF_SERVICE.md` |
+| Legal.3 | Страницы `/privacy` и `/terms` + `LegalShell` + acceptance checkbox и ссылки на login-форме. BETA_MODE → поле invite-кода | done | `apps/web/app/(main)/privacy/page.tsx`, `apps/web/app/(main)/terms/page.tsx`, `apps/web/components/legal/LegalShell.tsx`, `apps/web/app/(auth)/login/page.tsx` |
 | Legal.4 | GDPR-export (N5: `/users/me/export` — уже есть B19.7). Legal-страница «Как удалить аккаунт» + endpoint `DELETE /users/me` | todo | `apps/web/app/(main)/settings/page.tsx`, `apps/api/src/user/` |
-| Launch.1 | OG-картинка для главной — `apps/web/app/opengraph-image.tsx` (статичная, 1200×630, логотип + слоган) | todo | `apps/web/app/opengraph-image.tsx` |
-| Launch.2 | Динамические OG для профилей — `apps/web/app/api/og/profile/route.tsx` через `@vercel/og` (аватар + класс мыслителя + радар 5 веток + рейтинг) | todo | `apps/web/app/api/og/profile/route.tsx` |
-| Launch.3 | Feature flag `BETA_MODE=true` — пускает только по инвайт-коду. Admin-endpoint `POST /admin/invites` генерит коды батчами. Фронт: inviteCode в login-форме | todo | `apps/api/src/auth/`, `apps/web/app/(auth)/login/page.tsx` |
+| Launch.1 | OG-картинка для главной (edge, 1200×630, лого + слоган + CTA-блоки) + metadataBase/openGraph/twitter в layout | done | `apps/web/app/opengraph-image.tsx`, `apps/web/app/layout.tsx` |
+| Launch.2 | Динамические OG для профилей — edge ImageResponse, fetch `/users/:id/public`, аватар/ранг/уровень + 5 характеристик | done | `apps/web/app/(main)/profile/[id]/opengraph-image.tsx` |
+| Launch.3 | `BETA_MODE` feature flag: Prisma модель `InviteCode` + миграция, AuthService.register валидирует код и принимает acceptedTerms, `/v1/invites` POST/GET для админов, фронт: inviteCode поле + acceptance checkbox | done | `prisma/schema.prisma`, `prisma/migrations/20260421000000_add_invite_codes_and_legal_acceptance/migration.sql`, `apps/api/src/auth/auth.service.ts`, `apps/api/src/auth/invite.controller.ts`, `apps/api/src/auth/auth.module.ts`, `apps/api/src/auth/dto/register.dto.ts`, `apps/web/app/(auth)/login/page.tsx` |
 | Launch.4 | Telegram-канал community + bot команды (`/help`, `/stats`, `/leaderboard`). Приветственное сообщение с правилами и ссылкой на /privacy | todo | `apps/api/src/telegram/` |
 | Launch.5 | Инвайт-лист 5-10 бета-тестеров (closed beta), batch 1. Если стабильно — открытая бета 200-500 (batch 2) | todo | — |
 

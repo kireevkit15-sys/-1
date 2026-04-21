@@ -7,7 +7,39 @@
 
 ## Никита (Lead)
 
-### 2026-04-21 — Сессия: Code review UI stacked PRs + системы обучения (L2.5, L25.7)
+### 2026-04-21 — Сессия 2: Prod-deploy инфраструктура, Legal, Launch-флаги (D1.2–D5.2, Legal.1–3, Launch.1–3)
+
+**Время:** ~3 часа
+**Статус:** Завершена
+
+**Что сделано:**
+- **D-блок (prod deploy):** `deploy/init-vps.sh` (идемпотентная настройка свежего Ubuntu/Debian — deploy user, ufw, fail2ban, docker, swap), `.env.production.example` (полный шаблон), `docker-compose.prod.yml` переписан с healthchecks/limits/logging/backup-контейнером, `nginx/nginx.conf` с rate-limit zones + CSP под Sentry + websocket timeout 3600s + JSON access_log, `deploy/init-letsencrypt.sh` для первичной выдачи + certbot-сервис для авто-renew каждые 12h.
+- **Observability:** Sentry в `apps/api` (instrument.ts до bootstrap, captureException в AllExceptionsFilter на 5xx, фильтр auth/cookie), Sentry в `apps/web` (client/server/edge configs + tunnelRoute /monitoring, capture в app/error.tsx), `docs/SECRETS_ROTATION.md` с процедурами по каждому секрету и календарём, `docs/MONITORING.md` с UptimeRobot + Sentry alert rules.
+- **CI/CD:** `.github/workflows/deploy.yml` — build images → GHCR → rsync + SSH → prisma migrate deploy → compose up → smoke → Sentry release. Триггер: tag v*.*.* или workflow_dispatch. `deploy/Makefile` c deploy/smoke/logs/ps/db-shell/backup-now/le-init/rollback.
+- **Legal.1–3:** `docs/legal/PRIVACY_POLICY.md` (GDPR + все процессоры), `docs/legal/TERMS_OF_SERVICE.md` (16+, IP, AI-дисклеймер), `/privacy` + `/terms` страницы через `LegalShell`, acceptance checkbox + ссылки в login-форме.
+- **Launch.1–3:** `apps/web/app/opengraph-image.tsx` (edge, 1200×630), динамический OG для `/profile/[id]`, metadataBase/openGraph/twitter в layout. `BETA_MODE` end-to-end: Prisma модель `InviteCode` + миграция, `AuthService.register` валидирует invite-код и принимает `acceptedTerms`/`termsAcceptedAt`, `POST /v1/invites` и `GET /v1/invites/mine` для админов, фронт с полем invite-кода и acceptance-чекбоксом.
+
+**Файлы созданы/изменены:**
+- `deploy/init-vps.sh`, `deploy/init-letsencrypt.sh`, `deploy/Makefile` — ops-инфраструктура
+- `.env.production.example`, `docker-compose.prod.yml` — prod-окружение
+- `nginx/nginx.conf`, `nginx/conf.d/proxy_headers.conf` — reverse-proxy
+- `apps/api/src/instrument.ts`, `apps/api/src/main.ts`, `apps/api/src/common/filters/http-exception.filter.ts`, `apps/api/package.json` — Sentry backend
+- `apps/web/sentry.{client,server,edge}.config.ts`, `apps/web/next.config.js`, `apps/web/app/error.tsx`, `apps/web/package.json` — Sentry frontend
+- `apps/web/app/opengraph-image.tsx`, `apps/web/app/(main)/profile/[id]/opengraph-image.tsx`, `apps/web/app/layout.tsx` — OG
+- `apps/web/app/(main)/privacy/page.tsx`, `apps/web/app/(main)/terms/page.tsx`, `apps/web/components/legal/LegalShell.tsx` — юрстраницы
+- `apps/web/app/(auth)/login/page.tsx` — invite-код + acceptance checkbox
+- `apps/api/src/auth/auth.service.ts`, `apps/api/src/auth/invite.controller.ts`, `apps/api/src/auth/auth.module.ts`, `apps/api/src/auth/dto/register.dto.ts` — invite-флоу
+- `prisma/schema.prisma`, `prisma/migrations/20260421000000_add_invite_codes_and_legal_acceptance/migration.sql` — БД
+- `docs/legal/PRIVACY_POLICY.md`, `docs/legal/TERMS_OF_SERVICE.md`, `docs/SECRETS_ROTATION.md`, `docs/MONITORING.md`, `docs/SPRINT.md` — документация
+- `.github/workflows/deploy.yml` — CI deploy
+
+**Задачи из SPRINT.md закрыты:** D1.2, D2.1, D2.2, D2.3, D2.4, D3.1, D3.2, D3.3, D4.1, D4.2, D5.1, Legal.1, Legal.2, Legal.3, Launch.1, Launch.2, Launch.3. D5.2 — partial (runbook готов, нужна подписка на UptimeRobot после D1.1).
+
+**Осталось до запуска:** D1.1 (купить VPS + домен), D6.1–D6.3 (первый prod-деплой + seed + smoke), Legal.4 (страница «как удалить аккаунт»), Launch.4–5 (Telegram-канал + инвайт-лист бета-тестеров).
+
+---
+
+### 2026-04-21 — Сессия 1: Code review UI stacked PRs + системы обучения (L2.5, L25.7)
 
 **Время:** ~1 час
 **Статус:** Завершена

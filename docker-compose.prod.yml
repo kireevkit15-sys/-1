@@ -1,34 +1,59 @@
-version: "3.8"
+name: razum-prod
+
+x-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "5"
+
+x-restart: &default-restart
+  restart: unless-stopped
 
 services:
   postgres:
     image: postgres:16-alpine
-    restart: unless-stopped
+    <<: *default-restart
+    logging: *default-logging
     environment:
       POSTGRES_USER: ${DB_USER:-razum}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD must be set}
       POSTGRES_DB: ${DB_NAME:-razum}
+      PGDATA: /var/lib/postgresql/data/pgdata
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-razum}"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-razum} -d ${DB_NAME:-razum}"]
       interval: 10s
       timeout: 5s
       retries: 5
+    deploy:
+      resources:
+        limits:
+          memory: 1g
     networks:
       - razum-network
 
   redis:
     image: redis:7-alpine
-    restart: unless-stopped
-    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD}
+    <<: *default-restart
+    logging: *default-logging
+    command: >
+      redis-server
+      --appendonly yes
+      --requirepass ${REDIS_PASSWORD:?REDIS_PASSWORD must be set}
+      --maxmemory 512mb
+      --maxmemory-policy allkeys-lru
     volumes:
       - redisdata:/data
     healthcheck:
-      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "--no-auth-warning", "ping"]
       interval: 10s
       timeout: 5s
       retries: 5
+    deploy:
+      resources:
+        limits:
+          memory: 600m
     networks:
       - razum-network
 
@@ -36,15 +61,27 @@ services:
     build:
       context: .
       dockerfile: apps/api/Dockerfile
-    restart: unless-stopped
+    image: razum/api:${RELEASE_TAG:-latest}
+    <<: *default-restart
+    logging: *default-logging
     env_file: .env.production
-    ports:
-      - "3001:3001"
+    expose:
+      - "3001"
     depends_on:
       postgres:
         condition: service_healthy
       redis:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3001/health"]
+      interval: 20s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          memory: 1g
     networks:
       - razum-network
 
@@ -52,25 +89,41 @@ services:
     build:
       context: .
       dockerfile: apps/web/Dockerfile
-    restart: unless-stopped
+    image: razum/web:${RELEASE_TAG:-latest}
+    <<: *default-restart
+    logging: *default-logging
     env_file: .env.production
-    ports:
-      - "3000:3000"
+    expose:
+      - "3000"
     depends_on:
-      - api
+      api:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/api/health"]
+      interval: 20s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          memory: 768m
     networks:
       - razum-network
 
   nginx:
-    image: nginx:alpine
-    restart: unless-stopped
+    image: nginx:1.27-alpine
+    <<: *default-restart
+    logging: *default-logging
     ports:
       - "80:80"
       - "443:443"
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./nginx/ssl:/etc/nginx/ssl:ro
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - letsencrypt:/etc/letsencrypt:ro
       - certbot-webroot:/var/www/certbot:ro
+      - nginx-cache:/var/cache/nginx
     depends_on:
       - web
       - api
@@ -78,16 +131,53 @@ services:
       - razum-network
 
   certbot:
-    image: certbot/certbot
+    image: certbot/certbot:latest
+    <<: *default-restart
+    logging: *default-logging
     volumes:
-      - ./nginx/ssl:/etc/letsencrypt
+      - letsencrypt:/etc/letsencrypt
       - certbot-webroot:/var/www/certbot
-    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+    entrypoint: >
+      /bin/sh -c '
+      trap exit TERM;
+      while :; do
+        certbot renew --webroot -w /var/www/certbot --quiet --deploy-hook "nginx -s reload || true";
+        sleep 12h & wait $${!};
+      done;'
+
+  backup:
+    image: postgres:16-alpine
+    <<: *default-restart
+    logging: *default-logging
+    env_file: .env.production
+    environment:
+      PGHOST: postgres
+      PGUSER: ${DB_USER:-razum}
+      PGPASSWORD: ${DB_PASSWORD}
+      PGDATABASE: ${DB_NAME:-razum}
+    volumes:
+      - ./scripts/backup.sh:/usr/local/bin/backup.sh:ro
+      - backups:/backups
+    depends_on:
+      postgres:
+        condition: service_healthy
+    entrypoint: >
+      /bin/sh -c '
+      apk add --no-cache aws-cli bash coreutils findutils dcron;
+      echo "${BACKUP_CRON:-0 3 * * *} /usr/local/bin/backup.sh backup >> /var/log/backup.log 2>&1" > /etc/crontabs/root;
+      touch /var/log/backup.log;
+      crond -f -l 8 &
+      tail -F /var/log/backup.log'
+    networks:
+      - razum-network
 
 volumes:
   pgdata:
   redisdata:
+  letsencrypt:
   certbot-webroot:
+  nginx-cache:
+  backups:
 
 networks:
   razum-network:

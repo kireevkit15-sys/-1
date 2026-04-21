@@ -17,12 +17,26 @@ function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
+  const [inviteCode, setInviteCode] = useState("");
+  const [accepted, setAccepted] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const betaMode = process.env.NEXT_PUBLIC_BETA_MODE === "true";
 
   const handleEmailAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+
+    if (mode === "register" && !accepted) {
+      setError("Нужно согласиться с условиями использования и политикой конфиденциальности.");
+      return;
+    }
+    if (mode === "register" && betaMode && !inviteCode.trim()) {
+      setError("Регистрация открыта только по invite-коду.");
+      return;
+    }
+
     setLoading(true);
 
     const result = await signIn("credentials", {
@@ -30,6 +44,7 @@ function LoginForm() {
       password,
       mode,
       username: mode === "register" ? username : undefined,
+      inviteCode: mode === "register" && betaMode ? inviteCode.trim() : undefined,
       redirect: false,
     });
 
@@ -103,6 +118,16 @@ function LoginForm() {
               className="w-full rounded-xl bg-surface-light border border-accent/25 px-4 py-3 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-accent/60 focus:ring-1 focus:ring-accent/20 transition-colors"
             />
           )}
+          {mode === "register" && betaMode && (
+            <input
+              type="text"
+              value={inviteCode}
+              onChange={(e) => setInviteCode(e.target.value)}
+              placeholder="Invite-код"
+              required
+              className="w-full rounded-xl bg-surface-light border border-accent/25 px-4 py-3 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-accent/60 focus:ring-1 focus:ring-accent/20 transition-colors uppercase tracking-wider"
+            />
+          )}
           <input
             type="email"
             value={email}
@@ -120,6 +145,27 @@ function LoginForm() {
             minLength={6}
             className="w-full rounded-xl bg-surface-light border border-accent/25 px-4 py-3 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-accent/60 focus:ring-1 focus:ring-accent/20 transition-colors"
           />
+
+          {mode === "register" && (
+            <label className="flex items-start gap-2 text-xs text-text-secondary cursor-pointer select-none">
+              <input
+                type="checkbox"
+                checked={accepted}
+                onChange={(e) => setAccepted(e.target.checked)}
+                className="mt-0.5 accent-accent"
+              />
+              <span>
+                Я принимаю{" "}
+                <a href="/terms" target="_blank" rel="noreferrer" className="text-accent underline">
+                  условия использования
+                </a>{" "}
+                и{" "}
+                <a href="/privacy" target="_blank" rel="noreferrer" className="text-accent underline">
+                  политику конфиденциальности
+                </a>
+              </span>
+            </label>
+          )}
 
           {error && (
             <p className="text-accent-red text-xs text-center">{error}</p>
@@ -150,7 +196,9 @@ function LoginForm() {
       </Card>
 
       <p className="text-center text-text-muted text-xs">
-        Продолжая, вы соглашаетесь с условиями использования
+        <a href="/terms" className="hover:text-accent transition-colors">Условия использования</a>
+        {" · "}
+        <a href="/privacy" className="hover:text-accent transition-colors">Политика конфиденциальности</a>
       </p>
     </div>
   );
