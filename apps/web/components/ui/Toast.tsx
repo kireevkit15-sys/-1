@@ -13,14 +13,33 @@ import React, {
 
 export type ToastType = "xp" | "achievement" | "streak" | "info" | "error";
 
+export interface ToastAction {
+  label: string;
+  onClick: () => void;
+}
+
+export interface ToastOptions {
+  type?: ToastType;
+  action?: ToastAction;
+  /** Время до авто-закрытия в миллисекундах. Infinity — не закрывать. */
+  duration?: number;
+}
+
 export interface Toast {
   id: string;
   message: string;
   type: ToastType;
+  action?: ToastAction;
+  duration: number;
 }
 
 interface ToastContextValue {
-  showToast: (message: string, type?: ToastType) => void;
+  /**
+   * Показать toast.
+   * Старый синтаксис: `showToast("XP +50", "xp")`.
+   * Новый синтаксис: `showToast("XP +50", { type: "xp", action: { label: "Посмотреть", onClick } })`.
+   */
+  showToast: (message: string, typeOrOptions?: ToastType | ToastOptions) => void;
 }
 
 // ── Context ───────────────────────────────────────────────────────────────────
@@ -34,7 +53,6 @@ function ToastIcon({ type }: { type: ToastType }) {
 
   switch (type) {
     case "xp":
-      // Gold coin / star
       return (
         <svg className={`${base} text-accent`} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path
@@ -103,14 +121,18 @@ const TYPE_STYLES: Record<ToastType, { border: string; glow: string }> = {
   error:       { border: "border-accent-red/40",    glow: "0 0 20px rgb(var(--color-accent-red) / 0.15)" },
 };
 
+// ── Defaults ──────────────────────────────────────────────────────────────────
+
+const DEFAULT_DURATION_MS = 3000;
+const DEFAULT_DURATION_WITH_ACTION_MS = 5000;
+const MAX_TOASTS = 3;
+
 // ── Single Toast item ─────────────────────────────────────────────────────────
 
 interface ToastItemProps {
   toast: Toast;
   onDismiss: (id: string) => void;
 }
-
-const AUTO_DISMISS_MS = 3000;
 
 function ToastItem({ toast, onDismiss }: ToastItemProps) {
   const [visible, setVisible] = useState(false);
@@ -122,9 +144,10 @@ function ToastItem({ toast, onDismiss }: ToastItemProps) {
     return () => cancelAnimationFrame(frame);
   }, []);
 
-  // Auto-dismiss
+  // Auto-dismiss (Infinity → не закрывать автоматически)
   useEffect(() => {
-    timerRef.current = setTimeout(() => handleDismiss(), AUTO_DISMISS_MS);
+    if (!Number.isFinite(toast.duration)) return;
+    timerRef.current = setTimeout(() => handleDismiss(), toast.duration);
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current);
     };
@@ -133,8 +156,12 @@ function ToastItem({ toast, onDismiss }: ToastItemProps) {
 
   function handleDismiss() {
     setVisible(false);
-    // Wait for slide-out animation before removing from DOM
     setTimeout(() => onDismiss(toast.id), 300);
+  }
+
+  function handleAction() {
+    toast.action?.onClick();
+    handleDismiss();
   }
 
   const { border, glow } = TYPE_STYLES[toast.type];
@@ -161,6 +188,19 @@ function ToastItem({ toast, onDismiss }: ToastItemProps) {
         {toast.message}
       </span>
 
+      {toast.action && (
+        <button
+          onClick={handleAction}
+          className="flex-shrink-0 px-2.5 py-1 text-xs font-semibold
+                     text-accent hover:text-accent/80
+                     rounded-md hover:bg-accent/10
+                     transition-colors
+                     focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/60"
+        >
+          {toast.action.label}
+        </button>
+      )}
+
       <button
         onClick={handleDismiss}
         aria-label="Закрыть"
@@ -178,19 +218,33 @@ function ToastItem({ toast, onDismiss }: ToastItemProps) {
 
 // ── Provider ──────────────────────────────────────────────────────────────────
 
-const MAX_TOASTS = 3;
-
 export function ToastProvider({ children }: { children: React.ReactNode }) {
   const [toasts, setToasts] = useState<Toast[]>([]);
   const counterRef = useRef(0);
 
-  const showToast = useCallback((message: string, type: ToastType = "info") => {
-    const id = `toast-${++counterRef.current}`;
-    setToasts((prev) => {
-      const next = [...prev, { id, message, type }];
-      return next.slice(-MAX_TOASTS);
-    });
-  }, []);
+  const showToast = useCallback(
+    (message: string, typeOrOptions?: ToastType | ToastOptions) => {
+      const opts: ToastOptions =
+        typeof typeOrOptions === "string"
+          ? { type: typeOrOptions }
+          : (typeOrOptions ?? {});
+
+      const type = opts.type ?? "info";
+      const duration =
+        opts.duration ??
+        (opts.action ? DEFAULT_DURATION_WITH_ACTION_MS : DEFAULT_DURATION_MS);
+
+      const id = `toast-${++counterRef.current}`;
+      setToasts((prev) => {
+        const next: Toast[] = [
+          ...prev,
+          { id, message, type, action: opts.action, duration },
+        ];
+        return next.slice(-MAX_TOASTS);
+      });
+    },
+    [],
+  );
 
   const dismiss = useCallback((id: string) => {
     setToasts((prev) => prev.filter((t) => t.id !== id));
