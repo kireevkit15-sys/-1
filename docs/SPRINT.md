@@ -487,6 +487,48 @@
 | NX.1 | Dockerfile для apps/api | done | `apps/api/Dockerfile` |
 | NX.2 | Dockerfile для apps/web | done | `apps/web/Dockerfile` |
 
+## Блок D — Реальный деплой на VPS (блокер запуска, перед L4.5)
+
+> Prod Docker Compose (L4.4) и nginx готовы, но на VPS не развёрнуты. Блок D закрывает разрыв между готовым образом и живым сайтом. Критический путь к бета-тесту с 5-10 людьми.
+
+| # | Задача | Статус | Файлы | Блокер |
+|---|--------|--------|-------|--------|
+| D1.1 | VPS provisioning: купить VPS (2 vCPU, 4 GB RAM, 40 GB SSD), домен, настроить DNS A-record | todo | — | физический (деньги) |
+| D1.2 | `deploy/init-vps.sh` — первичная настройка VPS: создание non-root user, ssh-keys, ufw firewall (22/80/443), fail2ban, docker + docker-compose install | todo | `deploy/init-vps.sh` | — |
+| D2.1 | `.env.production.example` — полный шаблон production-секретов с комментариями откуда брать (JWT_SECRET openssl rand, Claude API key, Telegram bot token, OpenAI key для эмбеддингов, CORS_ORIGIN) | todo | `.env.production.example` | — |
+| D2.2 | `docker-compose.prod.yml` ревизия: healthchecks для api/web/postgres/redis, restart: unless-stopped, logging driver с ротацией, named volumes для postgres/redis data, env_file: .env.production | todo | `docker-compose.prod.yml` | — |
+| D2.3 | `nginx/nginx.conf` ревизия: rate limit zones, gzip, http→https redirect, HSTS, CSP headers, websocket proxy для /battle, client_max_body_size | todo | `nginx/nginx.conf` | — |
+| D2.4 | Let's Encrypt: `deploy/certbot.yml` docker-service + renewal cron (`certbot renew` раз в сутки + nginx reload) | todo | `deploy/certbot.yml`, `deploy/renew-cert.sh` | D1.1 |
+| D3.1 | Sentry SDK в `apps/api` — `@sentry/node` в main.ts, beforeSend фильтрует 4xx, traces_sample_rate 0.1, release из git SHA | todo | `apps/api/src/main.ts`, `apps/api/src/sentry.ts` | — |
+| D3.2 | Sentry SDK в `apps/web` — `@sentry/nextjs`, client+server+edge configs, tunnel через /monitoring для блокировки adblock | todo | `apps/web/sentry.*.config.ts`, `apps/web/next.config.js` | — |
+| D3.3 | Production секреты rotation playbook: как ротировать JWT_SECRET без логаута всех (dual-secret validation), как ротировать Claude API key без downtime | todo | `docs/SECRETS_ROTATION.md` | — |
+| D4.1 | GitHub Actions `deploy.yml`: на push в main — build Docker images → push в GHCR → SSH на VPS → `docker-compose pull && up -d` → healthcheck + rollback при 5xx | todo | `.github/workflows/deploy.yml` | D1.1, D2.2 |
+| D4.2 | `Makefile` на VPS: `make deploy`, `make logs`, `make backup`, `make restore`, `make shell-api`, `make psql` | todo | `deploy/Makefile` | — |
+| D5.1 | Cron-контейнер в docker-compose для `scripts/backup.sh` — pg_dump раз в сутки, сжатие, upload в S3 (AWS/Wasabi/Backblaze B2), ротация 30 дней | todo | `docker-compose.prod.yml`, `scripts/backup.sh` | — |
+| D5.2 | Healthcheck внешний: UptimeRobot/BetterStack ping `/health` раз в 5 мин, алерт в Telegram при downtime | todo | docs | D1.1 |
+| D5.3 | Monitoring Grafana+Prometheus (опционально для MVP): контейнер node-exporter + cAdvisor + postgres-exporter, дашборды | todo | `deploy/monitoring/` | D1.1 |
+| D6.1 | Первый prod-деплой: init-vps.sh → clone репо → .env.production (с реальными секретами) → `make deploy` → certbot → smoke-test всех эндпоинтов | todo | — | D1-D5 |
+| D6.2 | Seed production: `prisma migrate deploy` + `prisma/seed-production-v2.ts` (500+ вопросов + 184 концепта + 17 дней обучения) | todo | — | D6.1 |
+| D6.3 | Smoke-test: регистрация через Telegram → warmup → battle с ботом → learning/determine → learning/today → чат с AI. Все зелёные → готово к L4.5 | todo | — | D6.2 |
+
+**После D-блока разблокируется L4.5** (тест с 5-10 живыми людьми).
+
+## Блок Legal — Юридика + запуск беты (параллельно с D)
+
+> Блокирует публичный релиз (по закону РФ и требованиям app stores). Можно делать параллельно с D.
+
+| # | Задача | Статус | Файлы |
+|---|--------|--------|-------|
+| Legal.1 | `docs/legal/PRIVACY_POLICY.md` — политика конфиденциальности (152-ФЗ, cookies, AI-обработка, Telegram data) | todo | `docs/legal/PRIVACY_POLICY.md` |
+| Legal.2 | `docs/legal/TERMS_OF_SERVICE.md` — пользовательское соглашение (правила, возраст 18+, правила батлов, санкции за cheat) | todo | `docs/legal/TERMS_OF_SERVICE.md` |
+| Legal.3 | Страницы `/privacy` и `/terms` + футер-ссылки на login + acceptance checkbox при регистрации | todo | `apps/web/app/(main)/privacy/page.tsx`, `apps/web/app/(main)/terms/page.tsx` |
+| Legal.4 | GDPR-export (N5: `/users/me/export` — уже есть B19.7). Legal-страница «Как удалить аккаунт» + endpoint `DELETE /users/me` | todo | `apps/web/app/(main)/settings/page.tsx`, `apps/api/src/user/` |
+| Launch.1 | OG-картинка для главной — `apps/web/app/opengraph-image.tsx` (статичная, 1200×630, логотип + слоган) | todo | `apps/web/app/opengraph-image.tsx` |
+| Launch.2 | Динамические OG для профилей — `apps/web/app/api/og/profile/route.tsx` через `@vercel/og` (аватар + класс мыслителя + радар 5 веток + рейтинг) | todo | `apps/web/app/api/og/profile/route.tsx` |
+| Launch.3 | Feature flag `BETA_MODE=true` — пускает только по инвайт-коду. Admin-endpoint `POST /admin/invites` генерит коды батчами. Фронт: inviteCode в login-форме | todo | `apps/api/src/auth/`, `apps/web/app/(auth)/login/page.tsx` |
+| Launch.4 | Telegram-канал community + bot команды (`/help`, `/stats`, `/leaderboard`). Приветственное сообщение с правилами и ссылкой на /privacy | todo | `apps/api/src/telegram/` |
+| Launch.5 | Инвайт-лист 5-10 бета-тестеров (closed beta), batch 1. Если стабильно — открытая бета 200-500 (batch 2) | todo | — |
+
 ---
 
 # СИСТЕМА ОБУЧЕНИЯ — ПЕРЕСТРОЙКА (Блок 20+)
