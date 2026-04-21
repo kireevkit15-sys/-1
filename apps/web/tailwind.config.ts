@@ -9,35 +9,54 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: "#050505",
-        "background-subtle": "#0A0A0C",
-        surface: "#111114",
-        "surface-light": "#1A1A1F",
-        "surface-elevated": "#222228",
-        accent: "#CF9D7B",
-        "accent-warm": "#724B39",
-        "accent-gold": "#B98D34",
-        "accent-red": "#C0392B",
-        "accent-orange": "#E67E22",
-        "accent-bronze": "#B4783C",
-        "accent-silver": "#C0C0D2",
-        "accent-muted": "#56453A",
-        "text-primary": "#E8DDD3",
-        "text-secondary": "#87756A",
-        "text-muted": "#56453A",
-        border: "#1E1E22",
+        // Все цвета читаются из CSS-переменных в globals.css.
+        // Формат `rgb(var(--token) / <alpha-value>)` позволяет Tailwind
+        // применять alpha через суффикс `/XX` (напр. `bg-accent/20`).
+        background: "rgb(var(--color-background) / <alpha-value>)",
+        "background-subtle": "rgb(var(--color-background-subtle) / <alpha-value>)",
+        surface: "rgb(var(--color-surface) / <alpha-value>)",
+        "surface-light": "rgb(var(--color-surface-light) / <alpha-value>)",
+        "surface-elevated": "rgb(var(--color-surface-elevated) / <alpha-value>)",
+        accent: "rgb(var(--color-accent) / <alpha-value>)",
+        "accent-warm": "rgb(var(--color-accent-warm) / <alpha-value>)",
+        "accent-gold": "rgb(var(--color-accent-gold) / <alpha-value>)",
+        "accent-red": "rgb(var(--color-accent-red) / <alpha-value>)",
+        "accent-orange": "rgb(var(--color-accent-orange) / <alpha-value>)",
+        "accent-bronze": "rgb(var(--color-accent-bronze) / <alpha-value>)",
+        "accent-silver": "rgb(var(--color-accent-silver) / <alpha-value>)",
+        "accent-muted": "rgb(var(--color-accent-muted) / <alpha-value>)",
+        "text-primary": "rgb(var(--color-text-primary) / <alpha-value>)",
+        "text-secondary": "rgb(var(--color-text-secondary) / <alpha-value>)",
+        "text-muted": "rgb(var(--color-text-muted) / <alpha-value>)",
+        border: "rgb(var(--color-border) / <alpha-value>)",
+
+        // Семантические статусы
+        achievement: "rgb(var(--color-achievement) / <alpha-value>)",
+        success: "rgb(var(--color-success) / <alpha-value>)",
+        info: "rgb(var(--color-info) / <alpha-value>)",
 
         // Ветки знаний — F5.5
-        "branch-strategy": "#06B6D4",
-        "branch-logic": "#22C55E",
-        "branch-erudition": "#A855F7",
-        "branch-rhetoric": "#F97316",
-        "branch-intuition": "#EC4899",
+        "branch-strategy": "rgb(var(--color-branch-strategy) / <alpha-value>)",
+        "branch-logic": "rgb(var(--color-branch-logic) / <alpha-value>)",
+        "branch-erudition": "rgb(var(--color-branch-erudition) / <alpha-value>)",
+        "branch-rhetoric": "rgb(var(--color-branch-rhetoric) / <alpha-value>)",
+        "branch-intuition": "rgb(var(--color-branch-intuition) / <alpha-value>)",
 
         // Холодные акценты — только для ритуальных экранов (определение, барьер) — F20+
-        "cold-steel": "#6B7D8C",
-        "cold-steel-dim": "#3A4550",
-        "cold-blood": "#8B2E2E",
+        "cold-steel": "rgb(var(--color-cold-steel) / <alpha-value>)",
+        "cold-steel-dim": "rgb(var(--color-cold-steel-dim) / <alpha-value>)",
+        "cold-blood": "rgb(var(--color-cold-blood) / <alpha-value>)",
+      },
+      borderRadius: {
+        // Дополнительно к Tailwind-дефолтам — для единообразия с токенами.
+        // Tailwind xl = 12px, 2xl = 16px совпадают с --radius-md / --radius-lg.
+        "token-xs": "var(--radius-xs)",
+        "token-sm": "var(--radius-sm)",
+        "token-md": "var(--radius-md)",
+        "token-lg": "var(--radius-lg)",
+      },
+      transitionDuration: {
+        toast: "var(--duration-toast)",
       },
       fontFamily: {
         sans: ["var(--font-inter)", "system-ui", "sans-serif"],

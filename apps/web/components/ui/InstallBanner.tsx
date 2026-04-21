@@ -69,7 +69,9 @@ export default function InstallBanner() {
           </div>
           <button
             onClick={handleDismiss}
-            className="text-text-muted hover:text-text-secondary transition-colors flex-shrink-0"
+            aria-label="Закрыть"
+            className="text-text-muted hover:text-text-secondary transition-colors flex-shrink-0
+                       focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/60 rounded"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -78,7 +80,8 @@ export default function InstallBanner() {
         </div>
         <button
           onClick={handleInstall}
-          className="w-full mt-3 py-2.5 rounded-xl text-sm font-semibold bg-accent text-background active:scale-95 transition-all shadow-lg shadow-accent/20"
+          className="w-full mt-3 py-2.5 rounded-xl text-sm font-semibold bg-accent text-background active:scale-95 transition-all shadow-lg shadow-accent/20
+                     focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/60 focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
         >
           Установить
         </button>

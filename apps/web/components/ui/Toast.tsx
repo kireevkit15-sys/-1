@@ -27,7 +27,7 @@ interface ToastContextValue {
 
 const ToastContext = createContext<ToastContextValue | null>(null);
 
-// ── Icons (inline SVG — no external deps) ────────────────────────────────────
+// ── Icons (inline SVG — no external deps, colours read from currentColor) ─────
 
 function ToastIcon({ type }: { type: ToastType }) {
   const base = "w-5 h-5 flex-shrink-0";
@@ -36,82 +36,71 @@ function ToastIcon({ type }: { type: ToastType }) {
     case "xp":
       // Gold coin / star
       return (
-        <svg className={base} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg className={`${base} text-accent`} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path
             d="M10 2l2.09 4.26L17 7.27l-3.5 3.41.83 4.83L10 13.27l-4.33 2.24.83-4.83L3 7.27l4.91-.71L10 2z"
-            fill="#CF9D7B"
-            stroke="#B98D34"
+            fill="currentColor"
+            className="text-accent-gold"
+            stroke="currentColor"
             strokeWidth="0.5"
           />
         </svg>
       );
     case "achievement":
-      // Trophy / badge
       return (
-        <svg className={base} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg className={`${base} text-achievement`} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path
             d="M10 13c-3.31 0-6-2.69-6-6V3h12v4c0 3.31-2.69 6-6 6z"
-            fill="#A855F7"
+            fill="currentColor"
             fillOpacity="0.3"
-            stroke="#A855F7"
+            stroke="currentColor"
             strokeWidth="1.2"
           />
-          <path d="M7 16h6M10 13v3" stroke="#A855F7" strokeWidth="1.2" strokeLinecap="round" />
-          <path d="M4 5H2v2a2 2 0 002 2M16 5h2v2a2 2 0 01-2 2" stroke="#A855F7" strokeWidth="1.2" strokeLinecap="round" />
+          <path d="M7 16h6M10 13v3" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+          <path d="M4 5H2v2a2 2 0 002 2M16 5h2v2a2 2 0 01-2 2" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
         </svg>
       );
     case "streak":
-      // Flame
       return (
-        <svg className={base} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg className={`${base} text-accent-orange`} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path
             d="M10 18c-3.31 0-6-2.24-6-5 0-2.1 1.5-3.8 3-5 0 1 .5 2 1.5 2.5C8 8 8.5 5 10 3c.5 2 2 3.5 2 5 .5-.5.8-1.5.8-2.5 1.5 1.2 3.2 3 3.2 5 0 2.76-2.69 5-6 5z"
-            fill="#E67E22"
+            fill="currentColor"
             fillOpacity="0.3"
-            stroke="#E67E22"
+            stroke="currentColor"
             strokeWidth="1.2"
             strokeLinejoin="round"
           />
-          <circle cx="10" cy="14" r="1.5" fill="#E67E22" />
+          <circle cx="10" cy="14" r="1.5" fill="currentColor" />
         </svg>
       );
     case "error":
-      // X circle
       return (
-        <svg className={base} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="10" cy="10" r="7" fill="#C0392B" fillOpacity="0.2" stroke="#C0392B" strokeWidth="1.2" />
-          <path d="M7.5 7.5l5 5M12.5 7.5l-5 5" stroke="#C0392B" strokeWidth="1.4" strokeLinecap="round" />
+        <svg className={`${base} text-accent-red`} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="10" cy="10" r="7" fill="currentColor" fillOpacity="0.2" stroke="currentColor" strokeWidth="1.2" />
+          <path d="M7.5 7.5l5 5M12.5 7.5l-5 5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
         </svg>
       );
     case "info":
     default:
-      // Info circle
       return (
-        <svg className={base} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="10" cy="10" r="7" fill="#E8DDD3" fillOpacity="0.1" stroke="#87756A" strokeWidth="1.2" />
-          <path d="M10 9v5" stroke="#87756A" strokeWidth="1.4" strokeLinecap="round" />
-          <circle cx="10" cy="7" r="0.8" fill="#87756A" />
+        <svg className={`${base} text-text-secondary`} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="10" cy="10" r="7" fill="currentColor" fillOpacity="0.1" stroke="currentColor" strokeWidth="1.2" />
+          <path d="M10 9v5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+          <circle cx="10" cy="7" r="0.8" fill="currentColor" />
         </svg>
       );
   }
 }
 
-// ── Accent colours per type ───────────────────────────────────────────────────
+// ── Accent border / glow per type — читаются через Tailwind alpha ─────────────
 
-const BORDER_COLORS: Record<ToastType, string> = {
-  xp:          "rgba(185,141,52,0.4)",
-  achievement: "rgba(168,85,247,0.4)",
-  streak:      "rgba(230,126,34,0.4)",
-  info:        "rgba(135,117,106,0.3)",
-  error:       "rgba(192,57,43,0.4)",
-};
-
-const GLOW_COLORS: Record<ToastType, string> = {
-  xp:          "rgba(185,141,52,0.15)",
-  achievement: "rgba(168,85,247,0.15)",
-  streak:      "rgba(230,126,34,0.15)",
-  info:        "rgba(0,0,0,0)",
-  error:       "rgba(192,57,43,0.15)",
+const TYPE_STYLES: Record<ToastType, { border: string; glow: string }> = {
+  xp:          { border: "border-accent-gold/40",   glow: "0 0 20px rgb(var(--color-accent-gold) / 0.15)" },
+  achievement: { border: "border-achievement/40",   glow: "0 0 20px rgb(var(--color-achievement) / 0.15)" },
+  streak:      { border: "border-accent-orange/40", glow: "0 0 20px rgb(var(--color-accent-orange) / 0.15)" },
+  info:        { border: "border-text-secondary/30", glow: "0 0 0 transparent" },
+  error:       { border: "border-accent-red/40",    glow: "0 0 20px rgb(var(--color-accent-red) / 0.15)" },
 };
 
 // ── Single Toast item ─────────────────────────────────────────────────────────
@@ -120,6 +109,8 @@ interface ToastItemProps {
   toast: Toast;
   onDismiss: (id: string) => void;
 }
+
+const AUTO_DISMISS_MS = 3000;
 
 function ToastItem({ toast, onDismiss }: ToastItemProps) {
   const [visible, setVisible] = useState(false);
@@ -131,9 +122,9 @@ function ToastItem({ toast, onDismiss }: ToastItemProps) {
     return () => cancelAnimationFrame(frame);
   }, []);
 
-  // Auto-dismiss after 3 s
+  // Auto-dismiss
   useEffect(() => {
-    timerRef.current = setTimeout(() => handleDismiss(), 3000);
+    timerRef.current = setTimeout(() => handleDismiss(), AUTO_DISMISS_MS);
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current);
     };
@@ -146,67 +137,36 @@ function ToastItem({ toast, onDismiss }: ToastItemProps) {
     setTimeout(() => onDismiss(toast.id), 300);
   }
 
-  const borderColor = BORDER_COLORS[toast.type];
-  const glowColor  = GLOW_COLORS[toast.type];
+  const { border, glow } = TYPE_STYLES[toast.type];
 
   return (
     <div
       role="alert"
       aria-live="assertive"
+      className={`
+        flex items-center gap-2.5 px-3.5 py-3 w-full min-w-[260px] max-w-[360px]
+        rounded-2xl bg-surface/85 backdrop-blur-xl border ${border}
+        pointer-events-auto
+      `}
       style={{
-        transform:  visible ? "translateY(0) scale(1)"    : "translateY(24px) scale(0.95)",
-        opacity:    visible ? 1 : 0,
+        transform: visible ? "translateY(0) scale(1)" : "translateY(24px) scale(0.95)",
+        opacity: visible ? 1 : 0,
         transition: "transform 0.3s cubic-bezier(0.16,1,0.3,1), opacity 0.3s ease",
-        background: "rgba(17,17,20,0.85)",
-        backdropFilter: "blur(20px)",
-        WebkitBackdropFilter: "blur(20px)",
-        border: `1px solid ${borderColor}`,
-        borderRadius: "14px",
-        boxShadow: `0 8px 32px rgba(0,0,0,0.5), 0 0 20px ${glowColor}, inset 0 1px 0 rgba(255,255,255,0.05)`,
-        display: "flex",
-        alignItems: "center",
-        gap: "10px",
-        padding: "12px 14px",
-        minWidth: "260px",
-        maxWidth: "360px",
-        width: "100%",
-        pointerEvents: "auto",
+        boxShadow: `0 8px 32px rgb(0 0 0 / 0.5), ${glow}, inset 0 1px 0 rgb(var(--border-on-dark) / 0.05)`,
       }}
     >
       <ToastIcon type={toast.type} />
 
-      <span
-        style={{
-          flex: 1,
-          fontSize: "14px",
-          lineHeight: "1.4",
-          color: "#E8DDD3",
-          fontWeight: 450,
-        }}
-      >
+      <span className="flex-1 text-sm leading-snug text-text-primary font-normal">
         {toast.message}
       </span>
 
       <button
         onClick={handleDismiss}
         aria-label="Закрыть"
-        style={{
-          flexShrink: 0,
-          width: "20px",
-          height: "20px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          background: "transparent",
-          border: "none",
-          cursor: "pointer",
-          color: "#56453A",
-          borderRadius: "4px",
-          transition: "color 0.15s",
-          padding: 0,
-        }}
-        onMouseEnter={(e) => ((e.currentTarget as HTMLButtonElement).style.color = "#87756A")}
-        onMouseLeave={(e) => ((e.currentTarget as HTMLButtonElement).style.color = "#56453A")}
+        className="flex-shrink-0 w-5 h-5 inline-flex items-center justify-center
+                   text-text-muted hover:text-text-secondary rounded
+                   transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/60"
       >
         <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
           <path d="M1 1l10 10M11 1L1 11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
@@ -228,7 +188,6 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
     const id = `toast-${++counterRef.current}`;
     setToasts((prev) => {
       const next = [...prev, { id, message, type }];
-      // Keep only the last MAX_TOASTS entries
       return next.slice(-MAX_TOASTS);
     });
   }, []);
@@ -241,22 +200,11 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
     <ToastContext.Provider value={{ showToast }}>
       {children}
 
-      {/* Portal-like fixed container at bottom-center */}
       <div
         aria-label="Уведомления"
-        style={{
-          position: "fixed",
-          bottom: "24px",
-          left: "50%",
-          transform: "translateX(-50%)",
-          zIndex: 9999,
-          display: "flex",
-          flexDirection: "column",
-          gap: "8px",
-          alignItems: "center",
-          pointerEvents: "none",
-          width: "min(calc(100vw - 32px), 380px)",
-        }}
+        className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[9999]
+                   flex flex-col gap-2 items-center pointer-events-none
+                   w-[min(calc(100vw-32px),380px)]"
       >
         {toasts.map((toast) => (
           <ToastItem key={toast.id} toast={toast} onDismiss={dismiss} />
