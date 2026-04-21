@@ -190,6 +190,7 @@ function ToastItem({ toast, onDismiss }: ToastItemProps) {
 
       {toast.action && (
         <button
+          type="button"
           onClick={handleAction}
           className="flex-shrink-0 px-2.5 py-1 text-xs font-semibold
                      text-accent hover:text-accent/80
@@ -202,6 +203,7 @@ function ToastItem({ toast, onDismiss }: ToastItemProps) {
       )}
 
       <button
+        type="button"
         onClick={handleDismiss}
         aria-label="Закрыть"
         className="flex-shrink-0 w-5 h-5 inline-flex items-center justify-center

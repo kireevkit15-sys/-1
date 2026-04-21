@@ -83,6 +83,7 @@ export default function NetworkError({ onDismiss, onRetry }: NetworkErrorProps) 
         </div>
 
         <button
+          type="button"
           onClick={handleRetry}
           className="mt-1 w-full py-3 px-6 rounded-xl font-semibold text-sm
                      bg-accent-red/15 hover:bg-accent-red/25
