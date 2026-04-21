@@ -7,6 +7,33 @@
 
 ## Никита (Lead)
 
+### 2026-04-21 — Сессия: Code review UI stacked PRs + системы обучения (L2.5, L25.7)
+
+**Время:** ~1 час
+**Статус:** Завершена
+
+**Что сделано:**
+- Прошёл `git merge --no-commit --no-ff` для 6 открытых веток Бонди — все UI stacked (tokens → button → p1 → p2 → p3) мёрджатся чисто, `unify-content-cards` даёт конфликт только в WORKLOG.md (тривиально разрешается).
+- Детально проверил diff каждой ветки: дизайн-токены в `:root`, Button API (size/loading/icons), ThemeToggle `aria-disabled`, NetworkError callback, SwipeToDismiss крестик, Toast action, InstallBanner иконка, `.card-shell`, critical review 7 багов (type="button" по умолчанию, loading opacity, stopPropagation).
+- Ревью post-merge коммитов системы обучения: F20-F28 Бонди (36 задач) + B20-B25 Яшкина (40+ задач). Претензий к Яшкину нет — типизация полная, AuthenticatedRequest везде. У Бонди два техдолга: color-contrast axe (→ F-POLISH.2.2 через `/colorize`) и `determination-situations.json` bundled в тесты (→ page.route() + fixtures).
+- Закрыл L4.5: тестирование с 5-10 людьми невозможно без физических тестеров — оставлено как блокер запуска (требует deploy + инвайт-лист).
+- Записан merge-план в CODE_REVIEW: мёрджить stacked в порядке #2 → #6, затем unify-content-cards с ручным разрешением WORKLOG.
+
+**Рекомендация команде:** перед L4.5 создать задачи D1-D5 «Реальный деплой на VPS» — prod Docker Compose уже есть (L4.4 done), но на VPS не развёрнут. Нужны: Sentry, production secrets (JWT/Claude/Telegram), Let's Encrypt renewal cron, бэкапы S3 (B18.6 done, но cron не запущен).
+
+**Файлы созданы/изменены:**
+- `docs/CODE_REVIEW_UI_STACKED_PRS.md` — отчёт ревью 6 веток + системы обучения
+- `docs/SPRINT.md` — L2.5 и L25.7 отмечены `done` со ссылкой на отчёт
+
+**Задачи из SPRINT.md закрыты:** L2.5, L25.7
+
+**Оставшиеся блокеры запуска:**
+- L4.5 — тест с 5-10 живыми людьми (нужны инвайты)
+- UI-полировка — 27 задач F-POLISH у Бонди (не начата)
+- Реальный прод-деплой — нет задачи в SPRINT, рекомендован D1-D5
+
+---
+
 ### 2026-04-14 — Сессия: Система обучения — контент + план + задачи
 
 **Время:** ~4 часа

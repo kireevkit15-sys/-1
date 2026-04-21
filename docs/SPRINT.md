@@ -558,7 +558,7 @@
 | L25.4 | Интеграционные тесты: адаптация — изменение маршрута при разных паттернах поведения | done | `apps/api/test/learning-adaptation.e2e-spec.ts` |
 | L25.5 | Интеграционные тесты: связка с батлами — пройденный концепт открывает вопросы | done | `apps/api/test/learning-battles.e2e-spec.ts` |
 | L25.6 | Нагрузочные тесты: 100 пользователей одновременно проходят обучение | done | `scripts/load-tests/learning-load.js` |
-| L25.7 | Code review всех PR системы обучения от Бонди и Яшкина | todo | — |
+| L25.7 | Code review всех PR системы обучения от Бонди и Яшкина | done | `docs/CODE_REVIEW_UI_STACKED_PRS.md` |
 | L25.8 | Сквозной тест: от определения → 3 дня обучения → барьер → батл с открытыми вопросами | done | `apps/api/test/learning-end-to-end.e2e-spec.ts` |
 
 ---
@@ -812,7 +812,7 @@
 | L2.2 | Проверить и доработать скоринг | done | `packages/shared/src/battle/scoring.ts` |
 | L2.3 | Проверить и доработать типы батла | done | `packages/shared/src/battle/types.ts` |
 | L2.4 | Добавить edge-case тесты (таймаут, дисконнект) до 30+ тестов | done | `packages/shared/__tests__/battle/state-machine.test.ts` |
-| L2.5 | Code review всех PR недели | todo | — |
+| L2.5 | Code review всех PR недели | done | `docs/CODE_REVIEW_UI_STACKED_PRS.md` |
 
 ## Бонди (Frontend + Дизайн)
 
