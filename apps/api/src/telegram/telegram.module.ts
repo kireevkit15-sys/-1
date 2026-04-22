@@ -1,4 +1,4 @@
-import { Module, Logger } from '@nestjs/common';
+import { Module, Logger, forwardRef } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TelegrafModule } from 'nestjs-telegraf';
 import { TelegramNotificationService } from './telegram-notification.service';
@@ -27,7 +27,7 @@ import { StatsModule } from '../stats/stats.module';
       },
     }),
     PrismaModule,
-    StatsModule,
+    forwardRef(() => StatsModule),
   ],
   providers: [
     TelegramNotificationService,

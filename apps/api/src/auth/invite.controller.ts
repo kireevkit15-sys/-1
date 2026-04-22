@@ -25,7 +25,7 @@ function generateCode(): string {
   const alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
   const bytes = randomBytes(8);
   let out = '';
-  for (let i = 0; i < bytes.length; i++) out += alphabet[bytes[i] % alphabet.length];
+  for (let i = 0; i < bytes.length; i++) out += alphabet[bytes[i]! % alphabet.length];
   return out;
 }
 
@@ -67,7 +67,9 @@ export class InviteController {
 
   @Get('validate/:code')
   async validate(@Req() req: AuthenticatedRequest) {
-    const code = req.params.code;
+    const raw = req.params.code;
+    const code = Array.isArray(raw) ? raw[0] : raw;
+    if (!code) throw new NotFoundException('Invite code not found');
     const invite = await this.prisma.inviteCode.findUnique({ where: { code } });
     if (!invite) throw new NotFoundException('Invite code not found');
     const active = (!invite.expiresAt || invite.expiresAt > new Date()) && invite.usedCount < invite.maxUses;
