@@ -118,11 +118,11 @@ function LeaderRow({ player, rank, isMe }: LeaderRowProps) {
           <span
             className={`font-black tabular-nums leading-none ${
               rank === 1
-                ? "text-xl text-[#FFD700]"
+                ? "text-xl text-accent-gold"
                 : rank === 2
-                  ? "text-xl text-[#C0C0C0]"
+                  ? "text-xl text-accent-silver"
                   : rank === 3
-                    ? "text-xl text-[#CD7F32]"
+                    ? "text-xl text-accent-bronze"
                     : "text-base text-text-muted"
             }`}
           >

@@ -83,7 +83,8 @@ function LoginForm() {
 
       {/* Auth Card */}
       <Card padding="lg" className="space-y-6">
-        {/* Telegram */}
+        {/* Telegram — официальный brand color #2AABEE, не токенизируем
+            (это внешний бренд, не часть DA-палитры). */}
         <Button
           fullWidth
           onClick={handleTelegram}

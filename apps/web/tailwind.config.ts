@@ -34,6 +34,8 @@ const config: Config = {
         achievement: "rgb(var(--color-achievement) / <alpha-value>)",
         success: "rgb(var(--color-success) / <alpha-value>)",
         info: "rgb(var(--color-info) / <alpha-value>)",
+        "success-soft": "rgb(var(--color-success-soft) / <alpha-value>)",
+        "error-soft": "rgb(var(--color-error-soft) / <alpha-value>)",
 
         // Ветки знаний — F5.5
         "branch-strategy": "rgb(var(--color-branch-strategy) / <alpha-value>)",

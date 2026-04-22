@@ -78,8 +78,8 @@ export function QuizCard({ question, options, onAnswered }: QuizCardProps) {
                     className={`font-ritual text-[11px] tracking-[0.25em] mt-0.5 ${
                       showAnalysis
                         ? opt.isCorrect
-                          ? "text-[#87B08E]"
-                          : "text-[#B98787]"
+                          ? "text-success-soft"
+                          : "text-error-soft"
                         : "text-text-secondary"
                     }`}
                     aria-hidden
@@ -98,7 +98,7 @@ export function QuizCard({ question, options, onAnswered }: QuizCardProps) {
                 >
                   <span
                     className={`font-ritual not-italic text-[10px] tracking-[0.3em] uppercase mr-2 ${
-                      opt.isCorrect ? "text-[#87B08E]" : "text-[#B98787]"
+                      opt.isCorrect ? "text-success-soft" : "text-error-soft"
                     }`}
                   >
                     {opt.isCorrect ? "Верно" : "Мимо"}

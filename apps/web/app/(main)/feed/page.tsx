@@ -220,12 +220,12 @@ function FeedSkeleton() {
   return (
     <div className="h-[calc(100dvh-5rem)] flex flex-col gap-4 p-4 animate-pulse">
       <div className="flex items-center justify-between">
-        <div className="h-2 w-32 rounded-full bg-[#1e1e1e]" />
-        <div className="h-4 w-16 rounded bg-[#1e1e1e]" />
+        <div className="h-2 w-32 rounded-full bg-surface-light" />
+        <div className="h-4 w-16 rounded bg-surface-light" />
       </div>
-      <div className="h-1.5 w-full rounded-full bg-[#1e1e1e]" />
-      <div className="h-8 w-56 rounded-lg bg-[#1e1e1e]" />
-      <div className="flex-1 rounded-2xl bg-[#141414] border border-[#1e1e1e]" />
+      <div className="h-1.5 w-full rounded-full bg-surface-light" />
+      <div className="h-8 w-56 rounded-lg bg-surface-light" />
+      <div className="flex-1 rounded-2xl bg-surface border border-surface-light" />
     </div>
   );
 }
@@ -234,7 +234,7 @@ function FeedSkeleton() {
 function NoCampaignPrompt() {
   return (
     <div className="h-[calc(100dvh-5rem)] flex flex-col items-center justify-center px-6 text-center">
-      <div className="w-20 h-20 rounded-full bg-[#141414] border border-[#1e1e1e] flex items-center justify-center mb-6">
+      <div className="w-20 h-20 rounded-full bg-surface border border-surface-light flex items-center justify-center mb-6">
         <svg
           className="w-10 h-10 text-neutral-500"
           viewBox="0 0 24 24"
@@ -249,18 +249,18 @@ function NoCampaignPrompt() {
           <path d="M2 12l10 5 10-5" />
         </svg>
       </div>
-      <h2 className="text-xl font-bold text-white mb-2">
+      <h2 className="text-xl font-bold text-text-primary mb-2">
         Начни кампанию, чтобы получить ленту
       </h2>
-      <p className="text-neutral-400 text-sm mb-8 max-w-xs leading-relaxed">
+      <p className="text-text-secondary text-sm mb-8 max-w-xs leading-relaxed">
         Выбери ветвь знаний и пройди первую кампанию. Каждый день — новые
         карточки, вызовы и бои.
       </p>
       <Link
         href="/campaigns"
         className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-sm
-          bg-gradient-to-r from-cyan-500 to-cyan-400 text-black
-          hover:from-cyan-400 hover:to-cyan-300 transition-all active:scale-95"
+          bg-gradient-to-r from-accent to-accent-gold text-background
+          hover:from-accent/90 hover:to-accent-gold/90 transition-all active:scale-95"
       >
         <svg
           className="w-5 h-5"
@@ -312,7 +312,7 @@ function FeedProgressBar({
           {streak.current} дн. серия
         </span>
       </div>
-      <div className="h-1.5 w-full rounded-full bg-[#1e1e1e] overflow-hidden">
+      <div className="h-1.5 w-full rounded-full bg-surface-light overflow-hidden">
         <div
           className="h-full rounded-full transition-all duration-500 ease-out"
           style={{
@@ -688,8 +688,8 @@ export default function FeedPage() {
         <p className="text-red-400 text-sm mb-4">{error}</p>
         <button
           onClick={fetchFeed}
-          className="px-5 py-2.5 rounded-xl text-sm font-semibold bg-[#1e1e1e] text-white
-            hover:bg-[#282828] transition-colors active:scale-95"
+          className="px-5 py-2.5 rounded-xl text-sm font-semibold bg-surface-light text-text-primary
+            hover:bg-surface-elevated transition-colors active:scale-95"
         >
           Повторить
         </button>
@@ -707,10 +707,10 @@ export default function FeedPage() {
     return (
       <div className="h-[calc(100dvh-5rem)] flex flex-col items-center justify-center px-6 text-center">
         <div className="text-4xl mb-4">&#10003;</div>
-        <h2 className="text-lg font-bold text-white mb-2">
+        <h2 className="text-lg font-bold text-text-primary mb-2">
           Все карточки на сегодня пройдены
         </h2>
-        <p className="text-neutral-400 text-sm">
+        <p className="text-text-secondary text-sm">
           Возвращайся завтра за новой порцией знаний.
         </p>
       </div>

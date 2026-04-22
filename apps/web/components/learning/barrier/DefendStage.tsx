@@ -248,7 +248,7 @@ export function DefendStage({
       </div>
 
       {error && (
-        <p className="font-sans text-xs text-[#B98787] mb-3 opacity-80">
+        <p className="font-sans text-xs text-error-soft mb-3 opacity-80">
           {error}
         </p>
       )}
