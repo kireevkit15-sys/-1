@@ -1072,6 +1072,25 @@ _Playwright конфиг:_
 
 ## Яшкин (Backend)
 
+### 2026-04-23 — Сессия: Legal.4 backend — e2e для GDPR account deletion
+
+**Время:** ~30 минут
+**Статус:** Завершена (backend), UI за Бонди
+
+**Что сделано:**
+- Провёл полный аудит задач бэкенда в SPRINT.md: все блоки B1–B25, BT.1–BT.20, BC1+, R1–R9 подтверждены как `done`. В открытых `todo` остаётся только Legal.4 (frontend + backend пара) и DevOps-блок D (зона Lead).
+- Верифицировал существующий backend Legal.4: `DELETE /users/me` уже реализован через soft-delete с анонимизацией PII (name='Удалённый пользователь', email/telegramId/telegramChatId/passwordHash/avatarUrl → null, deletedAt=now). Auth-слой блокирует re-login для `deletedAt != null` в 3 точках: telegramLogin, login, refresh. JwtStrategy не перепроверяет БД при каждом запросе — удалённый юзер потеряет доступ после истечения access-token (~15 мин), что приемлемо для GDPR.
+- Закрыл пробел в покрытии: добавлен e2e-тест на 6 сценариев — GDPR-export до удаления, 401 без токена, 200 + анонимизация всех PII-полей, idempotency (повторный DELETE → 404), login блокируется после удаления.
+- Обнаружены предсуществующие TS-ошибки в `apps/api/src/auth/invite.controller.ts` (Launch.3) после регенерации Prisma Client — не в зоне этой задачи, в бэклог.
+
+**Файлы созданы/изменены:**
+- `apps/api/test/user-delete.e2e-spec.ts` — новый e2e-тест (6 кейсов)
+- `docs/SPRINT.md` — Legal.4 статус `todo` → `backend-done`, разделены backend/frontend пути
+
+**Задачи из SPRINT.md закрыты:** Legal.4 (backend-часть)
+
+**Осталось Бонди:** UI раздела «Как удалить аккаунт» на `apps/web/app/(main)/settings/page.tsx` с подтверждением + вызовом `DELETE /users/me`.
+
 ### 2026-04-19 — Сессия: L25.8 — сквозной e2e тест (определение → 5 дней → барьер → батл)
 
 **Время:** ~40 минут
