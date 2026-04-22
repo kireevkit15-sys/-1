@@ -87,6 +87,23 @@
     color-scheme: dark;
   }
 
+  /* Reduced-motion safety (WCAG 2.3.3) — для пользователей с включённой
+     OS-настройкой «уменьшить движение» отключаем inhinite-анимации
+     (glow-pulse, aurora-drift, blood-pulse, pulse-critical, breathe,
+     bounce-badge, pulse-ring и т.п.) и все transitions. Минимальное
+     значение 0.01ms оставляем чтобы CSS-event'ы (transitionend) всё
+     ещё срабатывали в коде. */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
   body {
     @apply bg-background text-text-primary antialiased;
     /* Subtle noise texture via SVG data URI — no external files */
