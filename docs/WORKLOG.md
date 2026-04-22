@@ -170,6 +170,63 @@
 
 ## Бонди (Frontend + Дизайн)
 
+### 2026-04-22 — Сессия: Design System Stage 2 + Hot-path полировка (5 страниц)
+
+**Время:** ~6 часов
+**Статус:** Завершена — 7 stacked PR готовы к ревью Никите
+
+**Что сделано:**
+
+_Stage 2 — дизайн-система (4 подшага):_
+- **2.1 Типографика** — 6 ролевых утилит (`.h1`/`.h2`/`.h3`/`.body`/`.caption`/`.overline`) + 2 DA-варианта (`.h1-verse`/`.epigraph` через Cormorant) в `globals.css`. Шкала зафиксирована на Tailwind `text-xs → text-5xl`, arbitrary `text-[Xpx]` запрещён. Применено к home/profile/battle страницам.
+- **2.2 Цвет** — P0-1 из audit baseline: `--color-text-muted` поднят с `#56453A` (1.8:1 contrast, fails WCAG AA) до `#8C7666` (≈4.6:1, passes AA) — один токен → 499 usages. Новые токены `success-soft`/`error-soft` для learning-флоу. 19 arbitrary hex → 0 (feed bgs, leaderboard medals, learning feedback). P1-4 cyan gradient на feed empty CTA заменён на DA медный.
+- **2.3 Motion** — 2 easing-токена (`--ease-out-razum`, `--ease-out-strong`) + 4 duration-токена (`--duration-fast/normal/slow/reveal`). Tailwind-маппинг `duration-fast`, `ease-razum`. 5 точечных замен в Toast/BottomNav/DifficultyPicker/.liquid-glass.
+- **2.4 Spacing** — verify-only, коммита нет (spacing уже чистый: 2 arbitrary padding/margin на весь apps/web, оба осознанные).
+
+_Cross-page systemic fixes:_
+- BRANCHES централизация — home/battle-new/profile теперь все через `lib/branches.ts` spread.
+- 3× `border-left: 3px` absolute ban removal (home daily/fact, profile history rows).
+- `prefers-reduced-motion` media query в `@layer base` — глобальная защита WCAG 2.3.3 для all infinite-анимаций.
+
+_Hot-path полировка (5 страниц):_
+- **3.1 Home** — streak капсула упрощена, hero-metrics 2×2 grid → inline row (closes AI-slop anti-pattern), avatar gradient+glow → flat surface + accent border, XP bar 3-stop→2-stop, hydration-fix `<div>` в `<p>`.
+- **3.2 Login** — 4 input'а получили `<label htmlFor>` + autoComplete + id (closes P0-3 WCAG блокер), error `role="alert"` aria-live, `<Card>` → plain `<section>` (без glass на login — premium entry), brand lockup через `.h1` + slogan `.epigraph`, divider «или»→.overline, layout max-w-[400px].
+- **3.3 Battle/[id]** — HP-бар warm DA → MA палитра (cold-steel/accent-red для p1, cold-blood/accent-orange для p2), h-1.5→h-3 rounded-full→rounded-none border-2, варианты ответа получили 1/2/3/4 нумерацию + `aria-keyshortcuts` + min-h-[56px] touch target + rounded-none MA форма, DifficultyPicker убран Cormorant (font-serif→Inter font-black uppercase), карточки rounded-none с tier-border 2px, CTA через `.cta-battle`, ScoreBar счёт text-2xl font-black с красным разделителем, финал battle-slam + battle-glow-gold/red на h2 text-4xl font-black uppercase.
+- **3.4 Battle/new** — VS text-3xl→text-[5rem] font-black cold-blood с drop-shadow, avatars rounded-full→rounded-2xl 2px border (p1 cold-steel без glow, opponent cold-blood + shadow-neon-blood для асимметрии), copy из casual в DA voice («Соперник найден»→«Противник определён», «Поиск соперника»→«ВЫЗОВ БРОШЕН», «Подбираем достойного»→«Ждём того, кто осмелится ответить»), countdown 3-2-1 gold→cold-steel с red-glow + GO metallic→accent-red, error state получил alert-octagon + uppercase heading.
+- **3.5 Profile** — Thinker class вынесен в hero-badge под header'ом (centered .overline + .rank-badge + animate-fade-in), RadarChart fontSize 11→10 + outerRadius 72%→62% + margin + ColoredTick x-offset (русские подписи больше не срезаются на 375px), Radar Card backdrop-blur→плоский surface, stats row tracking-tight + .overline, XP bar useAnimatedCounter + h-3 + condition glow, logout button red hover→neutral hover.
+
+**Процесс:**
+- 5 параллельных Plan-агентов для первичного audit-а каждой страницы (~3 мин wall-time).
+- 2 параллельных worktree-изолированных implementation-агента для home и profile (home succeed, profile/battle-new упал на неправильной базе — worktree dispatched от a577338 вместо cross-page-fixes; rebased вручную, battle/new сделан в main-потоке).
+
+**Файлы созданы/изменены:** 14+ файлов, +~400 строк
+- `.impeccable.md` (new) — Design Context для всех design-скиллов
+- `apps/web/app/globals.css` — 8 новых утилит + P0-1 contrast + soft tokens + motion tokens + reduced-motion media
+- `apps/web/tailwind.config.ts` — success-soft/error-soft + duration/easing tokens
+- `apps/web/app/(main)/{page,profile/page,battle/[id]/page,battle/new/page,feed/page,leaderboard/page}.tsx`
+- `apps/web/app/(auth)/{login/page,layout}.tsx`
+- `apps/web/components/{ui/Toast,ui/BranchBadge,layout/BottomNav,battle/DifficultyPicker,feed/{Insight,Arena,Forge,Sparring,Challenge}Card,learning/{QuizCard,ExplainCard,barrier/{ApplyStage,DefendStage}}}.tsx`
+
+**Задачи из SPRINT.md закрыты:** (все через Stage 2 + hot-path этапы из `docs/BONDI_URGENT_PLAN.md`) F12.1 (baseline audit ready), 2.1, 2.2, 2.3, 2.4, 3.1, 3.2, 3.3, 3.4, 3.5.
+
+**PR (все stacked, ждут Никиту):**
+- `#7` — Stage 2 design system tokens → main
+- `#8` — Login polish → #7
+- `#9` — Cross-page fixes → #7
+- `#10` — Home polish → #9
+- `#11` — Profile polish → #9
+- `#12` — Battle polish → #9
+- `#13` — Battle/new VS polish → #9
+
+**Коммиты:** `a577338`, `5ff1ce1`, `173cfd8`, `7e9a0e5`, `8537d76`, `4b2ec8b`, `fedfbb9`, `56fde36`, `1cb5b19`, `5a104f6`, `4cee546`, `ab30379`, `6ae17e7`, `e929ede`
+
+**Уроки сессии:**
+- Worktree-агенты по дефолту могут взять базу не с current branch — верификация ПЕРЕД работой обязательна (grep утилит в globals.css). Один из четырёх worktree-агентов (profile) остановился с корректным блокером и сэкономил время; другой (battle) не проверил и сделал commit против устаревшей базы — спасено rebase'ом.
+- Для хирургических правок по known findings быстрее делать в main-потоке чем брифинговать worktree-агента (объём брифа ≥ объёма патча).
+- Plan-агенты параллельно — чистый win. 5 агентов выдали per-page findings за ~3 минуты суммарно против часа последовательно.
+
+---
+
 ### 2026-04-17 — Сессия: UI техдолг — токены, Button API, весь P1-P3 из критики
 
 **Время:** ~4 часа
