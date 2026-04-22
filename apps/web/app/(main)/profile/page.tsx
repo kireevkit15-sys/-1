@@ -106,9 +106,7 @@ function BattleHistorySection({ token }: { token: string | null }) {
 
   return (
     <Card padding="lg" className="space-y-3">
-      <h2 className="font-semibold text-sm text-text-secondary uppercase tracking-wider">
-        История баттлов
-      </h2>
+      <h2 className="overline text-text-secondary">История баттлов</h2>
 
       {histLoading ? (
         <div className="space-y-2">
@@ -281,7 +279,7 @@ function ProfileContent({ profile, token, logout }: { profile: UserProfile; toke
           </span>
         </div>
         <div className="flex-1 min-w-0">
-          <h1 className="text-xl font-bold truncate">{profile.name}</h1>
+          <h1 className="h3 font-bold truncate">{profile.name}</h1>
           <div className="flex items-center gap-2 mt-1">
             <span className="px-2.5 py-0.5 rounded-full bg-accent-gold/15 text-accent-gold text-xs font-semibold border border-accent-gold/20">
               Ур. {stats.level}
@@ -393,9 +391,7 @@ function ProfileContent({ profile, token, logout }: { profile: UserProfile; toke
 
       {/* ── Radar Chart ──────────────────────────────── */}
       <Card padding="lg" className="space-y-3">
-        <h2 className="font-semibold text-sm text-text-secondary uppercase tracking-wider">
-          Навыки мышления
-        </h2>
+        <h2 className="overline text-text-secondary">Навыки мышления</h2>
         <div className="w-full" style={{ height: 260 }}>
           <ResponsiveContainer width="100%" height="100%">
             <RadarChart data={radarData} cx="50%" cy="50%" outerRadius="72%">

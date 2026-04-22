@@ -217,7 +217,7 @@ export default function HomePage() {
 
       {/* ── Header ─────────────────────────────────────────────── */}
       <div className="flex items-center justify-between">
-        <h1 className="text-[30px] font-black tracking-[0.12em] text-metallic">
+        <h1 className="h1 text-metallic !tracking-[0.12em]">
           РАЗУМ
         </h1>
 
@@ -264,7 +264,7 @@ export default function HomePage() {
           </div>
           {/* Level badge */}
           <div
-            className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-background border-2 border-accent flex items-center justify-center text-[11px] font-black text-accent"
+            className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-background border-2 border-accent flex items-center justify-center text-xs font-bold text-accent"
           >
             {stats.level}
           </div>
@@ -275,7 +275,7 @@ export default function HomePage() {
           <p className="font-bold text-base text-text-primary truncate">
             {loading ? <Skeleton className="w-24 h-4" /> : stats.name}
           </p>
-          <p className="text-xs text-accent mb-3 font-semibold tracking-wider uppercase">
+          <p className="overline text-accent mb-3">
             {loading ? <Skeleton className="w-16 h-3 mt-1" /> : stats.rank}
           </p>
 
@@ -287,7 +287,7 @@ export default function HomePage() {
               return (
                 <div key={key} className="flex items-center gap-2">
                   <span
-                    className="text-[9px] font-semibold w-14 shrink-0 uppercase tracking-wide"
+                    className="text-xs font-semibold w-16 shrink-0 uppercase tracking-wider"
                     style={{ color }}
                   >
                     {label}
@@ -302,7 +302,7 @@ export default function HomePage() {
                       }}
                     />
                   </div>
-                  <span className="text-[9px] text-text-muted w-6 text-right shrink-0">
+                  <span className="text-xs text-text-muted w-9 text-right shrink-0">
                     {pct}%
                   </span>
                 </div>
@@ -322,20 +322,18 @@ export default function HomePage() {
       {/* ── Stats 2×2 grid ──────────────────────────────────────── */}
       {isAuthenticated && (
         <div>
-          <p className="text-text-muted text-[10px] tracking-widest uppercase mb-2.5">
-            Статистика
-          </p>
+          <h2 className="overline mb-2.5">Статистика</h2>
           <div className="grid grid-cols-2 gap-2.5">
             {/* Battles */}
             <div className="glass-card p-4">
               {loading ? (
                 <Skeleton className="w-12 h-8 mb-1" />
               ) : (
-                <p className="text-[28px] font-black text-accent leading-none">
+                <p className="text-3xl font-black text-accent leading-none">
                   {stats.battles}
                 </p>
               )}
-              <p className="text-text-secondary text-xs mt-1">Баттлов</p>
+              <p className="caption mt-1">Баттлов</p>
             </div>
 
             {/* Win rate */}
@@ -343,11 +341,11 @@ export default function HomePage() {
               {loading ? (
                 <Skeleton className="w-12 h-8 mb-1" />
               ) : (
-                <p className="text-[28px] font-black text-accent-gold leading-none">
+                <p className="text-3xl font-black text-accent-gold leading-none">
                   {stats.winRate}%
                 </p>
               )}
-              <p className="text-text-secondary text-xs mt-1">Победы</p>
+              <p className="caption mt-1">Победы</p>
             </div>
 
             {/* Level */}
@@ -355,11 +353,11 @@ export default function HomePage() {
               {loading ? (
                 <Skeleton className="w-12 h-8 mb-1" />
               ) : (
-                <p className="text-[28px] font-black text-accent leading-none">
+                <p className="text-3xl font-black text-accent leading-none">
                   {stats.level}
                 </p>
               )}
-              <p className="text-text-secondary text-xs mt-1">Уровень</p>
+              <p className="caption mt-1">Уровень</p>
               <div className="w-full h-[3px] rounded-full bg-white/5 mt-2 overflow-hidden">
                 <div
                   className="h-full rounded-full bg-gradient-to-r from-accent-warm to-accent"
@@ -373,11 +371,11 @@ export default function HomePage() {
               {loading ? (
                 <Skeleton className="w-16 h-8 mb-1" />
               ) : (
-                <p className="text-xl font-black text-accent-gold leading-none">
+                <p className="text-xl font-bold text-accent-gold leading-none">
                   {stats.rank}
                 </p>
               )}
-              <p className="text-text-secondary text-xs mt-1">Класс</p>
+              <p className="caption mt-1">Класс</p>
             </div>
           </div>
         </div>
@@ -387,9 +385,7 @@ export default function HomePage() {
       {isAuthenticated && (
         <div className="glass-card p-4">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-semibold text-text-secondary uppercase tracking-wider">
-              Опыт
-            </span>
+            <span className="overline text-text-secondary">Опыт</span>
             {loading ? (
               <Skeleton className="w-20 h-3" />
             ) : (
@@ -408,7 +404,7 @@ export default function HomePage() {
               }}
             />
           </div>
-          <p className="text-[10px] text-text-muted mt-1.5 text-right">
+          <p className="text-xs text-text-muted mt-1.5 text-right">
             {xpPct}% до следующего уровня
           </p>
         </div>
@@ -424,9 +420,7 @@ export default function HomePage() {
           }}
         />
         <div className="relative">
-          <p className="text-[10px] text-text-muted uppercase tracking-widest mb-1">
-            Ежедневный вызов
-          </p>
+          <p className="overline mb-1">Ежедневный вызов</p>
           <p className="font-bold text-sm text-text-primary mb-3">
             Пройди разминку до конца дня
           </p>
@@ -440,15 +434,7 @@ export default function HomePage() {
               </svg>
               <span className="text-xs text-text-muted">Сброс через</span>
             </div>
-            <span
-              className="text-lg font-black tabular-nums tracking-widest"
-              style={{
-                background: "linear-gradient(90deg, #CF9D7B, #B98D34)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
-              }}
-            >
+            <span className="text-lg font-black tabular-nums tracking-widest text-accent-gold">
               {countdown}
             </span>
           </div>
@@ -475,12 +461,10 @@ export default function HomePage() {
       {fact && (
         <SwipeToDismiss storageKey="razum_fact_dismissed" threshold={100}>
           <div className="glass-card p-4 border-l-[3px] border-l-accent pt-6">
-            <p className="text-[10px] text-text-muted uppercase tracking-widest mb-2">
-              Факт дня · {fact.category}
-            </p>
+            <p className="overline mb-2">Факт дня · {fact.category}</p>
             <p className="text-text-primary text-sm leading-relaxed">{fact.text}</p>
             {fact.source && (
-              <p className="text-text-muted text-[11px] mt-2">
+              <p className="text-xs text-text-muted mt-2">
                 Источник: {fact.source}
               </p>
             )}

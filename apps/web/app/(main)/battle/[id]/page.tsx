@@ -1141,7 +1141,7 @@ export default function BattlePage() {
           {/* Answer result highlighting */}
           {lastRound && lastRound.attackerAnswer !== undefined && (
             <div className="space-y-2">
-              <p className="text-xs text-text-muted uppercase tracking-wide">Ответы</p>
+              <p className="overline">Ответы</p>
               {[0, 1, 2, 3].map((idx) => {
                 const isPlayerChoice = idx === lastRound.attackerAnswer;
                 const isCorrect = isPlayerChoice && lastRound.attackerCorrect;

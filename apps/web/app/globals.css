@@ -96,6 +96,51 @@
 
 @layer components {
   /* ============================================
+     TYPE SYSTEM — 8 ролевых утилит (2.1)
+     Шкала фиксирована на Tailwind text-{xs..5xl}.
+     Запрещено использовать text-[Xpx] и размеры < text-xs (12px).
+     Подробности — в .impeccable.md (раздел Design Principles).
+     ============================================ */
+
+  /* Основной (DA) набор */
+  .h1 {
+    @apply text-3xl font-bold tracking-tight;
+    line-height: 1.1;
+  }
+  .h2 {
+    @apply text-2xl font-bold tracking-tight;
+    line-height: 1.2;
+  }
+  .h3 {
+    @apply text-xl font-semibold;
+    line-height: 1.35;
+  }
+  .body {
+    @apply text-base font-normal text-text-primary;
+    line-height: 1.65;
+  }
+  .caption {
+    @apply text-xs font-normal text-text-secondary;
+    line-height: 1.4;
+  }
+  .overline {
+    @apply text-xs font-semibold uppercase text-text-muted;
+    letter-spacing: 0.12em;
+    line-height: 1.4;
+  }
+
+  /* DA-акцентные варианты — для учебных страниц и эпиграфов */
+  .h1-verse {
+    @apply font-verse text-4xl italic tracking-tight;
+    font-weight: 400;
+    line-height: 1.15;
+  }
+  .epigraph {
+    @apply font-verse text-lg italic text-text-secondary;
+    line-height: 1.6;
+  }
+
+  /* ============================================
      CARD SHELL — общий «корпус» карточки
      Используется и в Card.tsx, и в Skeleton.tsx, чтобы placeholder
      не дёргался при замене на реальную карточку.
