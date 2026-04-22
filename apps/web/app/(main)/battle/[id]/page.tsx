@@ -101,12 +101,12 @@ function HpBar({ hp, maxHp = 100, color }: { hp: number; maxHp?: number; color: 
   const pct = Math.max(0, Math.min(100, (hp / maxHp) * 100));
   const isCritical = pct <= 20;
   const barColor = color === "accent"
-    ? "bg-gradient-to-r from-accent-warm via-accent to-accent-gold"
-    : "bg-gradient-to-r from-accent-red to-accent-red/70";
+    ? "bg-gradient-to-r from-cold-steel to-accent-red"
+    : "bg-gradient-to-r from-cold-blood to-accent-orange";
   return (
-    <div className="h-1.5 w-full bg-surface-light rounded-full overflow-hidden mt-1">
+    <div className="h-3 w-full bg-surface-light rounded-none border-2 border-cold-steel/40 overflow-hidden mt-1">
       <div
-        className={`h-full rounded-full transition-all duration-500 ${barColor}${isCritical ? " battle-pulse-hp" : ""}`}
+        className={`h-full rounded-none transition-all duration-500 ${barColor}${isCritical ? " battle-pulse-hp" : ""}`}
         style={{ width: `${pct}%` }}
       />
     </div>
@@ -131,13 +131,11 @@ function ScoreBar({ battle }: { battle: BattleState }) {
           </div>
         </div>
 
-        <div className="text-center">
-          <p className="text-xs text-text-muted">
-            Раунд {battle.currentRound}/{battle.totalRounds}
-          </p>
-          <div className="flex items-center gap-2 text-lg font-bold font-mono">
+        <div className="text-center flex flex-col items-center">
+          <span className="overline">Раунд {battle.currentRound}/{battle.totalRounds}</span>
+          <div className="flex items-center gap-2 text-2xl font-black font-mono tabular-nums tracking-tight">
             <span className="text-accent">{battle.player1.score}</span>
-            <span className="text-text-muted">:</span>
+            <span className="text-accent-red text-3xl">:</span>
             <span className="text-accent-red">{battle.player2.score}</span>
           </div>
         </div>
@@ -712,8 +710,12 @@ export default function BattlePage() {
             )}
           </div>
 
-          <h2 className="text-2xl font-bold battle-fade-up battle-stagger-1">
-            {isWin ? "Победа!" : isDraw ? "Ничья" : "Поражение"}
+          <h2
+            className={`text-4xl font-black uppercase tracking-[0.08em] battle-slam ${
+              isWin ? "text-accent-gold battle-glow-gold" : isDraw ? "text-text-secondary" : "text-cold-blood battle-glow-red"
+            }`}
+          >
+            {isWin ? "Победа" : isDraw ? "Ничья" : "Поражение"}
           </h2>
 
           {/* Score comparison */}
@@ -995,12 +997,16 @@ export default function BattlePage() {
                         <button
                           key={idx}
                           onClick={() => { playSelect(); handleAttack(idx); }}
-                          className="w-full text-left p-3 rounded-xl border border-accent/15 bg-surface-light hover:border-accent/40 transition-all text-sm text-text-primary flex items-center gap-3 active:scale-[0.98]"
+                          aria-keyshortcuts={String(idx + 1)}
+                          className="w-full text-left p-4 min-h-[56px] rounded-none border border-accent/15 bg-surface-light hover:border-accent/40 transition-all text-sm text-text-primary flex items-center gap-3 active:scale-[0.98]"
                         >
                           <span className="w-6 h-6 flex-shrink-0 flex items-center justify-center rounded-md bg-surface/60 text-xs font-mono text-text-muted border border-accent/10">
-                            {String.fromCharCode(65 + idx)}
+                            {idx + 1}
                           </span>
-                          <span>{opt}</span>
+                          <span className="flex-1">{opt}</span>
+                          <span className="hidden md:inline-flex w-6 h-6 items-center justify-center rounded-md bg-surface-light/60 text-xs font-mono text-text-muted">
+                            {idx + 1}
+                          </span>
                         </button>
                       ))}
                     </div>

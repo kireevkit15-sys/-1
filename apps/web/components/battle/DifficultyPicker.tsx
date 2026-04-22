@@ -174,14 +174,14 @@ export default function DifficultyPicker({ onSelect }: DifficultyPickerProps) {
 
         {/* Card */}
         <div
-          className="relative w-[240px] rounded-2xl overflow-hidden pointer-events-none"
+          className="relative w-[240px] rounded-none overflow-hidden pointer-events-none"
           style={{
             transform: `translateX(${dragOffset}px) perspective(800px) rotateY(${dragOffset * 0.06}deg)`,
             transition: dragging ? "none" : "all var(--duration-slow) var(--ease-out-razum)",
             background: `linear-gradient(170deg, ${opt.colors.gradientFrom}, rgba(22, 33, 39, 0.5) 40%, ${opt.colors.gradientTo})`,
             backdropFilter: "blur(40px) saturate(2) brightness(1.1)",
             WebkitBackdropFilter: "blur(40px) saturate(2) brightness(1.1)",
-            border: `1.5px solid ${opt.colors.border}`,
+            border: `2px solid ${opt.colors.primary}`,
             boxShadow: `
               0 0 60px ${opt.colors.glow},
               0 24px 48px rgba(0,0,0,0.4),
@@ -236,7 +236,7 @@ export default function DifficultyPicker({ onSelect }: DifficultyPickerProps) {
             {/* Tier label */}
             <div className="text-center space-y-1.5">
               <h3
-                className="text-xl font-serif font-bold tracking-wide transition-colors duration-300"
+                className="text-xl font-sans font-black uppercase tracking-[0.05em] transition-colors duration-300"
                 style={{ color: opt.colors.primary, textShadow: `0 0 20px ${opt.colors.glow}` }}
               >
                 {opt.label}
@@ -293,15 +293,10 @@ export default function DifficultyPicker({ onSelect }: DifficultyPickerProps) {
         ))}
       </div>
 
-      {/* Attack button */}
+      {/* Attack button — MA CTA */}
       <button
         onClick={() => onSelect(opt.value)}
-        className="w-full py-3.5 rounded-xl text-sm font-bold tracking-wide transition-all duration-300 active:scale-[0.97]"
-        style={{
-          background: `linear-gradient(135deg, ${opt.colors.dark}, ${opt.colors.primary})`,
-          color: current === 1 ? "#1a1a2e" : "#0C1519",
-          boxShadow: `0 4px 20px ${opt.colors.glow}, inset 0 1px 0 ${opt.colors.light}40`,
-        }}
+        className="cta-battle w-full uppercase tracking-[0.08em]"
       >
         Атаковать
       </button>
