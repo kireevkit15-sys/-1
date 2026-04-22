@@ -417,7 +417,7 @@ export default function HomePage() {
       )}
 
       {/* ── Daily challenge card ─────────────────────────────────── */}
-      <div className="glass-card card-flush-top p-4 border-l-[3px] border-l-accent-gold overflow-hidden relative">
+      <div className="glass-card card-flush-top p-4 overflow-hidden relative">
         {/* Glow accent */}
         <div
           className="absolute top-0 right-0 w-24 h-24 rounded-full pointer-events-none"
@@ -466,7 +466,7 @@ export default function HomePage() {
       {/* ── Fact of the Day ─────────────────────────────────────── */}
       {fact && (
         <SwipeToDismiss storageKey="razum_fact_dismissed" threshold={100}>
-          <div className="glass-card p-4 border-l-[3px] border-l-accent pt-6">
+          <div className="glass-card card-flush-top p-4 pt-6">
             <p className="overline mb-2">Факт дня · {fact.category}</p>
             <p className="text-text-primary text-sm leading-relaxed">{fact.text}</p>
             {fact.source && (

@@ -69,10 +69,10 @@ const DEMO_BATTLES: BattleHistoryEntry[] = [
   { id: "5", opponentName: "Кант",      result: "loss", branch: "Интуиция",  ratingChange: -9,  date: "2026-04-05" },
 ];
 
-const resultStyle: Record<BattleResult, { label: string; borderColor: string; textColor: string }> = {
-  win:  { label: "Победа",   borderColor: "#22C55E", textColor: "text-green-400"  },
-  loss: { label: "Поражение",borderColor: "#C0392B", textColor: "text-accent-red" },
-  draw: { label: "Ничья",    borderColor: "#56453A", textColor: "text-text-muted" },
+const resultStyle: Record<BattleResult, { label: string; textColor: string }> = {
+  win:  { label: "Победа",    textColor: "text-green-400"  },
+  loss: { label: "Поражение", textColor: "text-accent-red" },
+  draw: { label: "Ничья",     textColor: "text-text-muted" },
 };
 
 function BattleHistorySection({ token }: { token: string | null }) {
@@ -125,7 +125,6 @@ function BattleHistorySection({ token }: { token: string | null }) {
               <div
                 key={b.id}
                 className="glass-card flex items-center gap-3 px-3 py-2.5"
-                style={{ borderLeft: `3px solid ${rs.borderColor}` }}
               >
                 {/* Opponent */}
                 <div className="flex-1 min-w-0">
