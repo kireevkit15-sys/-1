@@ -232,9 +232,9 @@ export default function HomePage() {
               Войти
             </Link>
           )}
-          <div className="flex items-center gap-2 bg-gradient-to-r from-accent-warm/30 to-surface rounded-full px-3.5 py-2 border border-accent/20 shadow-[0_0_12px_rgba(185,141,52,0.15)]">
+          <div className="flex items-center gap-2 bg-surface/60 border border-accent/15 rounded-full px-3 py-1.5">
             <svg
-              className="w-5 h-5 text-accent-gold drop-shadow-[0_0_8px_rgba(185,141,52,0.8)]"
+              className="w-5 h-5 text-accent-gold"
               viewBox="0 0 14 18"
               fill="currentColor"
             >
@@ -255,19 +255,11 @@ export default function HomePage() {
       <div className="glass-card p-4 flex items-center gap-4">
         {/* Avatar */}
         <div className="relative shrink-0">
-          <div
-            className="w-20 h-20 rounded-full flex items-center justify-center text-2xl font-black text-white"
-            style={{
-              background: "linear-gradient(135deg, #CF9D7B 0%, #B98D34 60%, #9A7A2F 100%)",
-              boxShadow: "0 0 24px rgba(207,157,123,0.35), 0 0 60px rgba(207,157,123,0.1)",
-            }}
-          >
+          <div className="w-20 h-20 rounded-full flex items-center justify-center text-2xl font-semibold text-accent bg-surface-elevated border border-accent/30">
             {initials}
           </div>
           {/* Level badge */}
-          <div
-            className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-background border-2 border-accent flex items-center justify-center text-xs font-bold text-accent"
-          >
+          <div className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-background border border-accent/40 flex items-center justify-center text-xs font-bold text-accent">
             {stats.level}
           </div>
         </div>
@@ -325,64 +317,61 @@ export default function HomePage() {
         </button>
       </Link>
 
-      {/* ── Stats 2×2 grid ──────────────────────────────────────── */}
+      {/* ── Inline metrics row ───────────────────────────────────── */}
       {isAuthenticated && (
-        <div>
-          <h2 className="overline mb-2.5">Статистика</h2>
-          <div className="grid grid-cols-2 gap-2.5">
-            {/* Battles */}
-            <div className="glass-card p-4">
-              {loading ? (
-                <Skeleton className="w-12 h-8 mb-1" />
-              ) : (
-                <p className="text-3xl font-black text-accent leading-none">
-                  {stats.battles}
-                </p>
-              )}
-              <p className="caption mt-1">Баттлов</p>
-            </div>
+        <div className="flex items-start justify-between gap-4 px-1">
+          {/* Battles */}
+          <div className="flex flex-col">
+            <span className="overline text-text-muted">Баттлов</span>
+            {loading ? (
+              <Skeleton className="w-10 h-5 mt-1" />
+            ) : (
+              <span className="text-lg font-semibold tabular-nums tracking-tight text-text-primary leading-none mt-1">
+                {stats.battles}
+              </span>
+            )}
+          </div>
 
-            {/* Win rate */}
-            <div className="glass-card p-4">
-              {loading ? (
-                <Skeleton className="w-12 h-8 mb-1" />
-              ) : (
-                <p className="text-3xl font-black text-accent-gold leading-none">
-                  {stats.winRate}%
-                </p>
-              )}
-              <p className="caption mt-1">Победы</p>
-            </div>
+          {/* Win rate */}
+          <div className="flex flex-col">
+            <span className="overline text-text-muted">Победы</span>
+            {loading ? (
+              <Skeleton className="w-10 h-5 mt-1" />
+            ) : (
+              <span className="text-lg font-semibold tabular-nums tracking-tight text-text-primary leading-none mt-1">
+                {stats.winRate}%
+              </span>
+            )}
+          </div>
 
-            {/* Level */}
-            <div className="glass-card p-4">
-              {loading ? (
-                <Skeleton className="w-12 h-8 mb-1" />
-              ) : (
-                <p className="text-3xl font-black text-accent leading-none">
-                  {stats.level}
-                </p>
-              )}
-              <p className="caption mt-1">Уровень</p>
-              <div className="w-full h-[3px] rounded-full bg-white/5 mt-2 overflow-hidden">
-                <div
-                  className="h-full rounded-full bg-gradient-to-r from-accent-warm to-accent"
-                  style={{ width: `${xpPct}%` }}
-                />
-              </div>
+          {/* Level + XP micro-bar */}
+          <div className="flex flex-col min-w-[68px]">
+            <span className="overline text-text-muted">Уровень</span>
+            {loading ? (
+              <Skeleton className="w-10 h-5 mt-1" />
+            ) : (
+              <span className="text-lg font-semibold tabular-nums tracking-tight text-text-primary leading-none mt-1">
+                {stats.level}
+              </span>
+            )}
+            <div className="w-full h-[2px] rounded-full bg-white/5 mt-1.5 overflow-hidden">
+              <div
+                className="h-full rounded-full bg-gradient-to-r from-accent-warm to-accent"
+                style={{ width: `${xpPct}%` }}
+              />
             </div>
+          </div>
 
-            {/* Rank */}
-            <div className="glass-card p-4">
-              {loading ? (
-                <Skeleton className="w-16 h-8 mb-1" />
-              ) : (
-                <p className="text-xl font-bold text-accent-gold leading-none">
-                  {stats.rank}
-                </p>
-              )}
-              <p className="caption mt-1">Класс</p>
-            </div>
+          {/* Rank / Class */}
+          <div className="flex flex-col">
+            <span className="overline text-text-muted">Класс</span>
+            {loading ? (
+              <Skeleton className="w-14 h-5 mt-1" />
+            ) : (
+              <span className="text-lg font-semibold tracking-tight text-text-primary leading-none mt-1 truncate">
+                {stats.rank}
+              </span>
+            )}
           </div>
         </div>
       )}
@@ -395,7 +384,7 @@ export default function HomePage() {
             {loading ? (
               <Skeleton className="w-20 h-3" />
             ) : (
-              <span className="text-xs text-text-muted">
+              <span className="text-xs text-text-secondary">
                 {stats.xp.toLocaleString("ru-RU")} / {xpMax.toLocaleString("ru-RU")} XP
               </span>
             )}
@@ -405,8 +394,7 @@ export default function HomePage() {
               className="h-full rounded-full transition-all"
               style={{
                 width: `${xpPct}%`,
-                background: "linear-gradient(90deg, #CF9D7B 0%, #B98D34 50%, #E8C89E 100%)",
-                boxShadow: "0 0 10px rgba(207,157,123,0.4)",
+                background: "linear-gradient(90deg, rgb(var(--color-accent-warm)), rgb(var(--color-accent)))",
               }}
             />
           </div>
