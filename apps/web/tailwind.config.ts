@@ -58,7 +58,15 @@ const config: Config = {
         "token-lg": "var(--radius-lg)",
       },
       transitionDuration: {
+        fast: "var(--duration-fast)",
+        normal: "var(--duration-normal)",
+        slow: "var(--duration-slow)",
+        reveal: "var(--duration-reveal)",
         toast: "var(--duration-toast)",
+      },
+      transitionTimingFunction: {
+        razum: "var(--ease-out-razum)",
+        "razum-strong": "var(--ease-out-strong)",
       },
       fontFamily: {
         sans: ["var(--font-inter)", "system-ui", "sans-serif"],

@@ -67,8 +67,19 @@
   --radius-lg: 16px;
   --radius-pill: 9999px;
 
-  /* ── Durations ──────────────────────────── */
-  --duration-toast: 3000ms;
+  /* ── Motion system (step 2.3) ────────────
+     Семантические токены для transitions. Анимационные keyframes
+     (shake, particle-burst, battle-slam) остаются inline — это
+     one-off декларации, не переиспользуемые transitions.
+     ───────────────────────────────────────── */
+  --ease-out-razum: cubic-bezier(0.16, 1, 0.3, 1);      /* основной DA — hover/press/state */
+  --ease-out-strong: cubic-bezier(0.22, 1, 0.36, 1);    /* reveal/hero entrances */
+
+  --duration-fast: 200ms;      /* F5.10: hover, focus, press */
+  --duration-normal: 300ms;    /* toasts, micro-cards */
+  --duration-slow: 500ms;      /* modal, view transition */
+  --duration-reveal: 900ms;    /* hero reveals, page entrance */
+  --duration-toast: 3000ms;    /* auto-dismiss timer для toast'ов */
 }
 
 @layer base {
@@ -205,7 +216,7 @@
       0 4px 12px rgb(0 0 0 / 0.25),
       inset 0 1px 0 rgb(var(--border-on-dark) / 0.06),
       inset 0 -1px 0 rgb(0 0 0 / 0.15);
-    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: all var(--duration-slow) var(--ease-out-razum);
   }
 
   .liquid-glass-active {
@@ -216,7 +227,7 @@
       inset 0 1px 0 rgb(var(--color-accent) / 0.18),
       inset 0 -1px 0 rgb(var(--color-accent) / 0.05);
     border-color: rgb(var(--color-accent) / 0.18);
-    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: all var(--duration-slow) var(--ease-out-razum);
   }
 
   .liquid-glass-capsule {

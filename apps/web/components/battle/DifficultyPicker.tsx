@@ -177,7 +177,7 @@ export default function DifficultyPicker({ onSelect }: DifficultyPickerProps) {
           className="relative w-[240px] rounded-2xl overflow-hidden pointer-events-none"
           style={{
             transform: `translateX(${dragOffset}px) perspective(800px) rotateY(${dragOffset * 0.06}deg)`,
-            transition: dragging ? "none" : "all 0.4s cubic-bezier(0.16, 1, 0.3, 1)",
+            transition: dragging ? "none" : "all var(--duration-slow) var(--ease-out-razum)",
             background: `linear-gradient(170deg, ${opt.colors.gradientFrom}, rgba(22, 33, 39, 0.5) 40%, ${opt.colors.gradientTo})`,
             backdropFilter: "blur(40px) saturate(2) brightness(1.1)",
             WebkitBackdropFilter: "blur(40px) saturate(2) brightness(1.1)",
