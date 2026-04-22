@@ -123,7 +123,7 @@ export default function ChallengeCard({
       )}
 
       {/* ── Top: badge + branch pill + timer ── */}
-      <div className="relative z-10 flex items-center justify-between mb-6">
+      <div className="relative z-10 flex flex-wrap items-center justify-between gap-2 mb-6">
         <div className="flex items-center gap-2">
           {/* ВЫЗОВ badge */}
           <div

@@ -100,7 +100,7 @@ export default function ForgeCard({ data, onAnswer }: ForgeCardProps) {
       <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-orange-500/[0.04] to-transparent pointer-events-none" />
 
       {/* ── Badge + attempt counter ── */}
-      <div className="relative z-10 flex items-center justify-between mb-5">
+      <div className="relative z-10 flex flex-wrap items-center justify-between gap-2 mb-5">
         <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-widest border border-orange-500/40 bg-orange-500/10 text-orange-400">
           {/* fire icon */}
           <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round">

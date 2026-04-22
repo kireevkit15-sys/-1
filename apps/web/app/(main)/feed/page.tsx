@@ -820,19 +820,6 @@ export default function FeedPage() {
                   boxShadow: `inset 4px 0 24px -4px ${cardBranchColor}15, 0 0 0 1px #1e1e1e`,
                 }}
               >
-                {/* Card type badge (top-right corner) */}
-                <div className="absolute top-3 right-3 z-10">
-                  <span
-                    className="px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider"
-                    style={{
-                      backgroundColor: `${cardBranchColor}15`,
-                      color: cardBranchColor,
-                    }}
-                  >
-                    {card.type}
-                  </span>
-                </div>
-
                 {/* Card content — internal scroll for long content */}
                 <div className="flex-1 overflow-y-auto overscroll-contain">
                   {renderCard(card, handleInteract)}
