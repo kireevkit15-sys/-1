@@ -108,8 +108,8 @@ export default function NewBattlePage() {
           <span
             className={
               isGo
-                ? "text-[7rem] font-black text-metallic leading-none"
-                : "text-[10rem] font-black text-accent-gold leading-none"
+                ? "text-[7rem] font-black text-accent-red leading-none tracking-[-0.05em] drop-shadow-[0_0_32px_rgba(192,57,43,0.6)]"
+                : "text-[10rem] font-black text-cold-steel leading-none drop-shadow-[0_0_20px_rgba(139,46,46,0.5)]"
             }
           >
             {label}
@@ -132,16 +132,16 @@ export default function NewBattlePage() {
     return (
       <div className="px-4 pt-16 flex flex-col items-center justify-center min-h-[85vh] space-y-8">
         {/* Label */}
-        <p className="text-sm text-accent-gold font-semibold uppercase tracking-wider battle-fade-up battle-stagger-1">
-          Соперник найден
+        <p className="overline text-cold-steel battle-fade-up battle-stagger-1">
+          Противник определён
         </p>
 
         {/* Avatars + VS */}
-        <div className="flex items-center justify-center gap-8 battle-scale-in w-full max-w-xs">
-          {/* Player 1 */}
+        <div className="flex items-center justify-center gap-6 battle-scale-in w-full max-w-xs">
+          {/* Player 1 — наш, спокойный, без glow */}
           <div className="flex flex-col items-center gap-2 flex-1">
-            <div className="w-20 h-20 rounded-full bg-accent/20 flex items-center justify-center border-2 border-accent/40 shadow-[0_0_20px_rgba(107,107,207,0.25)]">
-              <span className="text-accent text-2xl font-black">
+            <div className="w-24 h-24 rounded-2xl bg-surface-elevated flex items-center justify-center border-2 border-cold-steel">
+              <span className="text-text-primary text-2xl font-black">
                 {p1.name.charAt(0).toUpperCase()}
               </span>
             </div>
@@ -153,14 +153,16 @@ export default function NewBattlePage() {
             </span>
           </div>
 
-          {/* VS */}
+          {/* VS — dramatic */}
           <div className="battle-slam flex-shrink-0">
-            <span className="text-3xl font-black text-metallic font-serif">VS</span>
+            <span className="text-[5rem] sm:text-[6rem] font-black text-cold-blood leading-none tracking-[-0.05em] drop-shadow-[0_0_24px_rgba(139,46,46,0.55)]">
+              VS
+            </span>
           </div>
 
-          {/* Opponent */}
+          {/* Opponent — агрессор, с red glow (асимметрия) */}
           <div className="flex flex-col items-center gap-2 flex-1">
-            <div className="w-20 h-20 rounded-full bg-accent-red/20 flex items-center justify-center border-2 border-accent-red/40 shadow-[0_0_20px_rgba(192,57,43,0.25)]">
+            <div className="w-24 h-24 rounded-2xl bg-surface-elevated flex items-center justify-center border-2 border-cold-blood shadow-neon-blood">
               <span className="text-accent-red text-2xl font-black">
                 {opponent.name.charAt(0).toUpperCase()}
               </span>
@@ -246,11 +248,13 @@ export default function NewBattlePage() {
           </div>
         </div>
         <div className="text-center space-y-2">
-          <h2 className="text-xl font-bold">
-            {status === "connecting" ? "Подключение..." : "Поиск соперника..."}
+          <h2 className="text-xl font-black uppercase tracking-[0.15em] text-cold-steel">
+            {status === "connecting" ? "Подключение..." : "Вызов брошен"}
           </h2>
-          <p className="text-text-muted text-sm">
-            Подбираем достойного оппонента
+          <p className="text-text-secondary text-sm">
+            {status === "connecting"
+              ? "Соединяемся с ареной"
+              : "Ждём того, кто осмелится ответить"}
           </p>
         </div>
         <Button variant="secondary" onClick={cancelSearch}>
@@ -264,8 +268,23 @@ export default function NewBattlePage() {
   if (status === "error" && error) {
     return (
       <div className="px-4 pt-20 flex flex-col items-center justify-center min-h-[70vh] space-y-8">
+        {/* Red alert icon */}
+        <svg
+          className="w-12 h-12 text-cold-blood drop-shadow-[0_0_16px_rgba(139,46,46,0.5)]"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth={1.5}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          aria-hidden="true"
+        >
+          <polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2" />
+          <line x1="12" y1="8" x2="12" y2="12" />
+          <line x1="12" y1="16" x2="12.01" y2="16" />
+        </svg>
         <div className="text-center space-y-2">
-          <h2 className="text-xl font-bold text-accent-red">
+          <h2 className="text-xl font-black uppercase tracking-[0.15em] text-accent-red">
             {error}
           </h2>
         </div>
