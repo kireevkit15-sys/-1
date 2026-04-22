@@ -149,6 +149,14 @@
     @apply rounded-2xl bg-surface/80 backdrop-blur-sm border border-white/[0.05] shadow-glass transition-all duration-200;
   }
 
+  /* Modifier: убирает верхнюю рамку и inset-highlight.
+     Применять рядом с .glass-card / .glass / .card-shell, когда
+     «стеклянный блик» сверху лишний (узкие прогресс-карточки и т.п.). */
+  .card-flush-top {
+    border-top-color: transparent;
+    box-shadow: 0 8px 32px rgb(0 0 0 / 0.4);
+  }
+
   /* ============================================
      GLASSMORPHISM v2 — deeper, sharper
      ============================================ */

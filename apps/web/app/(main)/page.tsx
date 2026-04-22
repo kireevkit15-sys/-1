@@ -272,12 +272,12 @@ export default function HomePage() {
 
         {/* Name + rank + branch bars */}
         <div className="flex-1 min-w-0">
-          <p className="font-bold text-base text-text-primary truncate">
+          <div className="font-bold text-base text-text-primary truncate">
             {loading ? <Skeleton className="w-24 h-4" /> : stats.name}
-          </p>
-          <p className="overline text-accent mb-3">
+          </div>
+          <div className="overline text-accent mb-3">
             {loading ? <Skeleton className="w-16 h-3 mt-1" /> : stats.rank}
-          </p>
+          </div>
 
           {/* 5 branch mini-bars */}
           <div className="space-y-1.5">
@@ -286,8 +286,12 @@ export default function HomePage() {
               const pct = Math.min(100, Math.round((val / MAX_BRANCH_XP) * 100));
               return (
                 <div key={key} className="flex items-center gap-2">
+                  {/* Branch-label — исключение из шкалы: 10px uppercase-ритуал.
+                      Русские uppercase-слова (СТРАТЕГИЯ, ЭРУДИЦИЯ) в 12px
+                      не помещаются в правую колонку hero-карточки на 375px.
+                      Тот же паттерн применяется в components/learning/*. */}
                   <span
-                    className="text-xs font-semibold w-16 shrink-0 uppercase tracking-wider"
+                    className="text-[10px] font-semibold w-14 shrink-0 uppercase tracking-wide"
                     style={{ color }}
                   >
                     {label}
@@ -302,7 +306,7 @@ export default function HomePage() {
                       }}
                     />
                   </div>
-                  <span className="text-xs text-text-muted w-9 text-right shrink-0">
+                  <span className="text-[10px] text-text-muted w-6 text-right shrink-0">
                     {pct}%
                   </span>
                 </div>
@@ -383,7 +387,7 @@ export default function HomePage() {
 
       {/* ── XP Progress bar ─────────────────────────────────────── */}
       {isAuthenticated && (
-        <div className="glass-card p-4">
+        <div className="glass-card card-flush-top p-4">
           <div className="flex items-center justify-between mb-2">
             <span className="overline text-text-secondary">Опыт</span>
             {loading ? (
@@ -411,7 +415,7 @@ export default function HomePage() {
       )}
 
       {/* ── Daily challenge card ─────────────────────────────────── */}
-      <div className="glass-card p-4 border-l-[3px] border-l-accent-gold overflow-hidden relative">
+      <div className="glass-card card-flush-top p-4 border-l-[3px] border-l-accent-gold overflow-hidden relative">
         {/* Glow accent */}
         <div
           className="absolute top-0 right-0 w-24 h-24 rounded-full pointer-events-none"
