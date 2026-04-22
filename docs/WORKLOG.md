@@ -1072,6 +1072,33 @@ _Playwright конфиг:_
 
 ## Яшкин (Backend)
 
+### 2026-04-23 — Сессия: Launch.4 — Telegram-бот оживлён (команды + уведомления)
+
+**Время:** ~1 час
+**Статус:** Завершена (backend), регистрация команд в BotFather — за Lead на деплое
+
+**Что сделано:**
+- Обнаружено: TelegramModule был помечен `disabled — nestjs-telegraf not installed`, хотя пакеты `telegraf@4.16.3` + `nestjs-telegraf@2.9.1` уже в `apps/api/package.json`. Причина — пакеты не были физически установлены (`node_modules/telegraf` отсутствовал). Запустил `pnpm install --filter=@razum/api`, 805 пакетов доустановлены.
+- **TelegramCommandService** — pure-сервис построения сообщений, без прямой связи с Telegraf (легко юнит-тестится). Методы: `buildWelcomeMessage(telegramId, chatId)` с привязкой `telegramChatId` + ссылки `/privacy` и `/terms` (Legal.1-3), `buildHelpMessage()`, `buildStatsMessage(telegramId)` (уровень, рейтинг, стрик, класс мыслителя, XP по 5 веткам через `determineThinkerClass` + `getBranchLevels` из `@razum/shared`), `buildLeaderboardMessage(limit=10)` (топ по XP через `LeaderboardService`).
+- **TelegramUpdate** — тонкий Update-класс с декораторами `@Start()`, `@Help()`, `@Command('stats')`, `@Command('leaderboard')`. Делегирует в CommandService, логирует ошибки, `link_preview_options.is_disabled=true` чтобы не превьюшить ссылки.
+- **TelegramNotificationService** — переписан с stub на реальный: `@InjectBot()` Telegraf, resolve chatId через Prisma (учитывает `deletedAt`), `sendMessage` с graceful `catch` (предотвращает падение при блокировке бота юзером). Сохранил API: `sendAchievementNotification`, `sendAchievementUnlocked`, `sendInviteAccepted`, `sendBattleResult` (используется `TelegramDigestService`). По feedback-memory: не спамим результатами баттлов, отправляем только через явно вызванный digest.
+- **TelegramModule** — `TelegrafModule.forRootAsync` с токеном из `ConfigService`. Если `TELEGRAM_BOT_TOKEN` не задан — `launchOptions: false` (polling не запускается, модуль не падает). Подключён `StatsModule` для `LeaderboardService`.
+- **Unit-тесты**: 11 тестов на `TelegramCommandService` (`src/telegram/__tests__/telegram-command.service.spec.ts`). Покрытие: new user onboarding → привязка chatId → soft-deleted → /help → неизвестный telegramId → /stats формат → /leaderboard пустой + рендер медалей + limit. Все проходят.
+- Compile clean (0 ошибок по моим файлам); в бэклоге 2 предсуществующие TS-ошибки в `apps/auth/invite.controller.ts` от Launch.3 — не связаны.
+
+**Файлы созданы/изменены:**
+- `apps/api/src/telegram/telegram-command.service.ts` — новый, pure command builder
+- `apps/api/src/telegram/telegram.update.ts` — переписан из stub в реальный Update
+- `apps/api/src/telegram/telegram-notification.service.ts` — переписан с `@InjectBot`, Prisma lookup, graceful send
+- `apps/api/src/telegram/telegram.module.ts` — TelegrafModule + StatsModule, conditional launch
+- `apps/api/src/telegram/__tests__/telegram-command.service.spec.ts` — 11 unit-тестов
+- `apps/api/package.json` / `pnpm-lock.yaml` — пакеты telegraf физически установлены
+- `docs/SPRINT.md` — Launch.4 → `backend-done`
+
+**Задачи из SPRINT.md закрыты:** Launch.4 (backend-часть)
+
+**Ops-шаг для Lead перед запуском:** создать бота в BotFather, прописать `TELEGRAM_BOT_TOKEN` в `.env.production`, зарегистрировать команды через `setMyCommands` (`/start`, `/help`, `/stats`, `/leaderboard`), создать community-канал и закрепить приветственное сообщение со ссылкой на бота.
+
 ### 2026-04-23 — Сессия: Legal.4 backend — e2e для GDPR account deletion
 
 **Время:** ~30 минут
