@@ -6,14 +6,16 @@ import { useBattle } from "@/hooks/useBattle";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import { playSelect, playBattleStart } from "@/lib/sounds";
+import { BRANCHES as BRANCH_META } from "@/lib/branches";
 
-// Branch stats for comparison display
+// Branch stats for comparison display — метки из общего lib/branches.ts,
+// bg-классы через токены branch-* (не дефолтные Tailwind-цвета).
 const BRANCH_STATS = [
-  { label: "Стратегия", color: "bg-cyan-500", key: "strategy" },
-  { label: "Логика",    color: "bg-green-500", key: "logic" },
-  { label: "Эрудиция",  color: "bg-purple-500", key: "erudition" },
-  { label: "Риторика",  color: "bg-orange-500", key: "rhetoric" },
-  { label: "Интуиция",  color: "bg-pink-500",   key: "intuition" },
+  { key: "strategy",   label: BRANCH_META.STRATEGY.label,  color: "bg-branch-strategy"  },
+  { key: "logic",      label: BRANCH_META.LOGIC.label,     color: "bg-branch-logic"     },
+  { key: "erudition",  label: BRANCH_META.ERUDITION.label, color: "bg-branch-erudition" },
+  { key: "rhetoric",   label: BRANCH_META.RHETORIC.label,  color: "bg-branch-rhetoric"  },
+  { key: "intuition",  label: BRANCH_META.INTUITION.label, color: "bg-branch-intuition" },
 ] as const;
 
 // Default demo stat values when real data is unavailable

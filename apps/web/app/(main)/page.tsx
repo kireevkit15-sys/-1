@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useAuth } from "@/hooks/useAuth";
 import SwipeToDismiss from "@/components/ui/SwipeToDismiss";
 import { API_BASE } from "@/lib/api/base";
+import { BRANCHES as BRANCH_META } from "@/lib/branches";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -93,15 +94,16 @@ const defaultStats: UserStats = {
 const DEMO_MODE = true; // TODO: убрать после подключения API
 
 // ---------------------------------------------------------------------------
-// Branch bars config
+// Branch bars config — метки и цвета тянем из общего lib/branches.ts,
+// здесь только маппинг key → поле UserStats.
 // ---------------------------------------------------------------------------
 
-const BRANCHES = [
-  { key: "strategyXp",   label: "Стратегия", color: "#06B6D4" },
-  { key: "logicXp",      label: "Логика",    color: "#22C55E" },
-  { key: "eruditionXp",  label: "Эрудиция",  color: "#A855F7" },
-  { key: "rhetoricXp",   label: "Риторика",  color: "#F97316" },
-  { key: "intuitionXp",  label: "Интуиция",  color: "#EC4899" },
+const HERO_BRANCHES = [
+  { xpKey: "strategyXp",  ...BRANCH_META.STRATEGY },
+  { xpKey: "logicXp",     ...BRANCH_META.LOGIC },
+  { xpKey: "eruditionXp", ...BRANCH_META.ERUDITION },
+  { xpKey: "rhetoricXp",  ...BRANCH_META.RHETORIC },
+  { xpKey: "intuitionXp", ...BRANCH_META.INTUITION },
 ] as const;
 
 const MAX_BRANCH_XP = 1000;
@@ -281,11 +283,11 @@ export default function HomePage() {
 
           {/* 5 branch mini-bars */}
           <div className="space-y-1.5">
-            {BRANCHES.map(({ key, label, color }) => {
-              const val = stats[key as keyof UserStats] as number;
+            {HERO_BRANCHES.map(({ xpKey, label, color }) => {
+              const val = stats[xpKey as keyof UserStats] as number;
               const pct = Math.min(100, Math.round((val / MAX_BRANCH_XP) * 100));
               return (
-                <div key={key} className="flex items-center gap-2">
+                <div key={xpKey} className="flex items-center gap-2">
                   {/* Branch-label — исключение из шкалы: 10px uppercase-ритуал.
                       Русские uppercase-слова (СТРАТЕГИЯ, ЭРУДИЦИЯ) в 12px
                       не помещаются в правую колонку hero-карточки на 375px.
