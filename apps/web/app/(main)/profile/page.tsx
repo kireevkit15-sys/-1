@@ -213,14 +213,17 @@ function ColoredTick(props: {
   const { x = 0, y = 0, payload, textAnchor } = props;
   const label = payload?.value ?? "";
   const color = labelColorMap[label] ?? "#87756A";
+  // Сдвиг на 4px от центра, чтобы русские подписи (Эрудиция/Стратегия)
+  // не срезались на 375px при уменьшенном radius.
+  const offset = textAnchor === "end" ? -4 : textAnchor === "start" ? 4 : 0;
   return (
     <text
-      x={x}
+      x={x + offset}
       y={y}
       textAnchor={textAnchor}
       dominantBaseline="central"
       fill={color}
-      fontSize={11}
+      fontSize={10}
       fontWeight={600}
     >
       {label}
@@ -261,6 +264,7 @@ function ProfileContent({ profile, token, logout }: { profile: UserProfile; toke
   const xpCurrent = stats.totalXp - (xpForCurrentLevel > 0 ? xpForCurrentLevel - 1000 : 0);
   const xpRequired = xpForNextLevel - (xpForCurrentLevel > 0 ? xpForCurrentLevel - 1000 : 0);
   const xpPct = xpRequired > 0 ? Math.min(100, Math.round((xpCurrent / xpRequired) * 100)) : 0;
+  const animXpPct = useAnimatedCounter(xpPct, 900);
 
   const radarData = radarKeys.map(({ xpKey, label }) => ({
     stat: label,
@@ -292,6 +296,19 @@ function ProfileContent({ profile, token, logout }: { profile: UserProfile; toke
         </div>
       </div>
 
+      {/* ── Thinker Class — hero badge под header'ом ─── */}
+      {stats.thinkerClass && (
+        <div className="text-center animate-fade-in">
+          <span className="overline block mb-2">Класс мыслителя</span>
+          <div className="inline-flex">
+            <div className="rank-badge text-accent">
+              <CrownIcon />
+              {stats.thinkerClass}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* ── XP Progress ──────────────────────────────── */}
       <Card padding="sm">
         <div className="flex items-center justify-between mb-2">
@@ -302,10 +319,13 @@ function ProfileContent({ profile, token, logout }: { profile: UserProfile; toke
             {xpCurrent} / {xpRequired} XP
           </span>
         </div>
-        <div className="h-2 bg-surface-light rounded-full overflow-hidden">
+        <div className="h-3 bg-surface-light rounded-full overflow-hidden">
           <div
             className="h-full rounded-full bg-gradient-to-r from-accent-warm via-accent to-accent-gold transition-all duration-500"
-            style={{ width: `${xpPct}%` }}
+            style={{
+              width: `${animXpPct}%`,
+              ...(xpPct === 100 && { boxShadow: "0 0 12px rgb(var(--color-accent) / 0.25)" }),
+            }}
           />
         </div>
       </Card>
@@ -313,16 +333,16 @@ function ProfileContent({ profile, token, logout }: { profile: UserProfile; toke
       {/* ── Battle Stats Row ─────────────────────────── */}
       <div className="grid grid-cols-3 gap-3">
         <Card padding="sm" className="text-center">
-          <p className="text-2xl font-bold text-accent font-mono">{animBattlesPlayed}</p>
-          <p className="text-xs text-text-muted mt-0.5">Баттлов</p>
+          <p className="text-2xl font-bold tracking-tight text-accent font-mono">{animBattlesPlayed}</p>
+          <p className="overline mt-1">Баттлов</p>
         </Card>
         <Card padding="sm" className="text-center">
-          <p className="text-2xl font-bold text-accent-gold font-mono">{animBattlesWon}</p>
-          <p className="text-xs text-text-muted mt-0.5">Побед</p>
+          <p className="text-2xl font-bold tracking-tight text-accent-gold font-mono">{animBattlesWon}</p>
+          <p className="overline mt-1">Побед</p>
         </Card>
         <Card padding="sm" className="text-center">
-          <p className="text-2xl font-bold text-accent font-mono">{animWinRate}%</p>
-          <p className="text-xs text-text-muted mt-0.5">Винрейт</p>
+          <p className="text-2xl font-bold tracking-tight text-accent font-mono">{animWinRate}%</p>
+          <p className="overline mt-1">Винрейт</p>
         </Card>
       </div>
 
@@ -339,19 +359,6 @@ function ProfileContent({ profile, token, logout }: { profile: UserProfile; toke
             <span className="text-lg font-bold text-accent-gold font-mono">
               {stats.streakDays}
             </span>
-          </div>
-        </Card>
-      )}
-
-      {/* ── Thinker Class (rank badge with glow) ─────── */}
-      {stats.thinkerClass && (
-        <Card padding="sm">
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-text-secondary">Класс мыслителя</span>
-            <div className="rank-badge text-accent">
-              <CrownIcon />
-              {stats.thinkerClass}
-            </div>
           </div>
         </Card>
       )}
@@ -378,7 +385,7 @@ function ProfileContent({ profile, token, logout }: { profile: UserProfile; toke
       <div className="space-y-2">
         <button
           onClick={logout}
-          className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-surface border border-border text-text-secondary hover:text-accent-red hover:border-accent-red/30 transition-all text-sm"
+          className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-surface border border-border text-text-secondary hover:text-text-primary hover:border-accent/20 transition-all text-sm"
         >
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
@@ -387,13 +394,19 @@ function ProfileContent({ profile, token, logout }: { profile: UserProfile; toke
         </button>
       </div>
 
-      {/* ── Radar Chart ──────────────────────────────── */}
-      <Card padding="lg" className="space-y-3">
+      {/* ── Radar Chart — плоский surface без backdrop-blur ─ */}
+      <div className="rounded-2xl bg-surface border border-border p-6 space-y-3">
         <h2 className="overline text-text-secondary">Навыки мышления</h2>
         <div className="w-full" style={{ height: 260 }}>
           <ResponsiveContainer width="100%" height="100%">
-            <RadarChart data={radarData} cx="50%" cy="50%" outerRadius="72%">
-              <PolarGrid stroke="rgba(207,157,123,0.12)" />
+            <RadarChart
+              data={radarData}
+              cx="50%"
+              cy="50%"
+              outerRadius="62%"
+              margin={{ top: 16, right: 24, bottom: 16, left: 24 }}
+            >
+              <PolarGrid stroke="rgba(207,157,123,0.18)" />
               <PolarAngleAxis
                 dataKey="stat"
                 tick={ColoredTick}
@@ -425,7 +438,7 @@ function ProfileContent({ profile, token, logout }: { profile: UserProfile; toke
             </div>
           ))}
         </div>
-      </Card>
+      </div>
 
       {/* ── Battle History ────────────────────────────── */}
       <BattleHistorySection token={token} />
