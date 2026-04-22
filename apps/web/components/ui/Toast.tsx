@@ -178,7 +178,7 @@ function ToastItem({ toast, onDismiss }: ToastItemProps) {
       style={{
         transform: visible ? "translateY(0) scale(1)" : "translateY(24px) scale(0.95)",
         opacity: visible ? 1 : 0,
-        transition: "transform 0.3s cubic-bezier(0.16,1,0.3,1), opacity 0.3s ease",
+        transition: "transform var(--duration-normal) var(--ease-out-razum), opacity var(--duration-normal) ease",
         boxShadow: `0 8px 32px rgb(0 0 0 / 0.5), ${glow}, inset 0 1px 0 rgb(var(--border-on-dark) / 0.05)`,
       }}
     >

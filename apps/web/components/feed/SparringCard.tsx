@@ -87,7 +87,7 @@ export default function SparringCard({ data, branch, onAnswer }: SparringCardPro
       />
 
       {/* ── Badge + timer ── */}
-      <div className="relative z-10 flex items-center justify-between mb-5">
+      <div className="relative z-10 flex flex-wrap items-center justify-between gap-2 mb-5">
         <span
           className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-widest border"
           style={{

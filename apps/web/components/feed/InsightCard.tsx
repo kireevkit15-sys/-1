@@ -83,7 +83,7 @@ export default function InsightCard({
       }
     >
       <div className="relative flex flex-1 flex-col px-5 pb-6 pt-5 gap-5">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-wrap items-center justify-between gap-2">
           <BranchBadge branch={meta} size="sm" bgAlpha="14" />
           <BranchBadge
             branch={meta}

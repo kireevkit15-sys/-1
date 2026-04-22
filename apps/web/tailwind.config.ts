@@ -34,6 +34,8 @@ const config: Config = {
         achievement: "rgb(var(--color-achievement) / <alpha-value>)",
         success: "rgb(var(--color-success) / <alpha-value>)",
         info: "rgb(var(--color-info) / <alpha-value>)",
+        "success-soft": "rgb(var(--color-success-soft) / <alpha-value>)",
+        "error-soft": "rgb(var(--color-error-soft) / <alpha-value>)",
 
         // Ветки знаний — F5.5
         "branch-strategy": "rgb(var(--color-branch-strategy) / <alpha-value>)",
@@ -56,7 +58,15 @@ const config: Config = {
         "token-lg": "var(--radius-lg)",
       },
       transitionDuration: {
+        fast: "var(--duration-fast)",
+        normal: "var(--duration-normal)",
+        slow: "var(--duration-slow)",
+        reveal: "var(--duration-reveal)",
         toast: "var(--duration-toast)",
+      },
+      transitionTimingFunction: {
+        razum: "var(--ease-out-razum)",
+        "razum-strong": "var(--ease-out-strong)",
       },
       fontFamily: {
         sans: ["var(--font-inter)", "system-ui", "sans-serif"],

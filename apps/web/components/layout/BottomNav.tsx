@@ -71,7 +71,7 @@ export default function BottomNav() {
               <Link
                 key={tab.href}
                 href={tab.href}
-                className={`flex flex-col items-center gap-1 px-5 py-2.5 rounded-[32px] transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+                className={`flex flex-col items-center gap-1 px-5 py-2.5 rounded-[32px] transition-all duration-slow ease-razum ${
                   isActive
                     ? "text-accent liquid-glass-active scale-105"
                     : "text-text-muted hover:text-text-secondary active:scale-95"
@@ -87,7 +87,7 @@ export default function BottomNav() {
         {/* Profile — separate floating glass orb, elevated */}
         <Link
           href={profileTab.href}
-          className={`liquid-glass-orb flex items-center justify-center w-[54px] h-[54px] rounded-full transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] self-center ${
+          className={`liquid-glass-orb flex items-center justify-center w-[54px] h-[54px] rounded-full transition-all duration-slow ease-razum self-center ${
             isProfileActive
               ? "text-accent liquid-glass-active scale-110"
               : "text-text-muted hover:text-text-secondary active:scale-95"

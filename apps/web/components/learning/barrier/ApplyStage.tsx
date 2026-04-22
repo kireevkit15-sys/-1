@@ -233,7 +233,7 @@ export function ApplyStage({ situations, grade, onComplete }: ApplyStageProps) {
           </div>
 
           {error && (
-            <p className="font-sans text-xs text-[#B98787] mb-4 opacity-80">
+            <p className="font-sans text-xs text-error-soft mb-4 opacity-80">
               {error}
             </p>
           )}

@@ -30,12 +30,19 @@
   /* ── Text ───────────────────────────────── */
   --color-text-primary: 232 221 211;
   --color-text-secondary: 135 117 106;
-  --color-text-muted: 86 69 58;
+  /* Bumped from #56453A (1.8:1 on #050505, fails WCAG AA) to #8C7666
+     (~4.6:1, passes AA). Fixes P0-1 from docs/AUDIT_BASELINE.md — 499 usages. */
+  --color-text-muted: 140 118 102;
 
   /* ── Status / semantic ──────────────────── */
   --color-achievement: 168 85 247;
   --color-success: 34 197 94;
   --color-info: 6 182 212;
+  /* Soft-muted feedback для learning-флоу (QuizCard, ExplainCard, barrier).
+     DA-тон: #87B08E ≈ приглушённый зелёный, #B98787 ≈ приглушённый красный.
+     Используется вместо bright success/error когда нужна ритуальная мягкость. */
+  --color-success-soft: 135 176 142;
+  --color-error-soft: 185 135 135;
 
   /* ── Branches (F5.5) ────────────────────── */
   --color-branch-strategy: 6 182 212;
@@ -60,8 +67,19 @@
   --radius-lg: 16px;
   --radius-pill: 9999px;
 
-  /* ── Durations ──────────────────────────── */
-  --duration-toast: 3000ms;
+  /* ── Motion system (step 2.3) ────────────
+     Семантические токены для transitions. Анимационные keyframes
+     (shake, particle-burst, battle-slam) остаются inline — это
+     one-off декларации, не переиспользуемые transitions.
+     ───────────────────────────────────────── */
+  --ease-out-razum: cubic-bezier(0.16, 1, 0.3, 1);      /* основной DA — hover/press/state */
+  --ease-out-strong: cubic-bezier(0.22, 1, 0.36, 1);    /* reveal/hero entrances */
+
+  --duration-fast: 200ms;      /* F5.10: hover, focus, press */
+  --duration-normal: 300ms;    /* toasts, micro-cards */
+  --duration-slow: 500ms;      /* modal, view transition */
+  --duration-reveal: 900ms;    /* hero reveals, page entrance */
+  --duration-toast: 3000ms;    /* auto-dismiss timer для toast'ов */
 }
 
 @layer base {
@@ -96,12 +114,65 @@
 
 @layer components {
   /* ============================================
+     TYPE SYSTEM — 8 ролевых утилит (2.1)
+     Шкала фиксирована на Tailwind text-{xs..5xl}.
+     Запрещено использовать text-[Xpx] и размеры < text-xs (12px).
+     Подробности — в .impeccable.md (раздел Design Principles).
+     ============================================ */
+
+  /* Основной (DA) набор */
+  .h1 {
+    @apply text-3xl font-bold tracking-tight;
+    line-height: 1.1;
+  }
+  .h2 {
+    @apply text-2xl font-bold tracking-tight;
+    line-height: 1.2;
+  }
+  .h3 {
+    @apply text-xl font-semibold;
+    line-height: 1.35;
+  }
+  .body {
+    @apply text-base font-normal text-text-primary;
+    line-height: 1.65;
+  }
+  .caption {
+    @apply text-xs font-normal text-text-secondary;
+    line-height: 1.4;
+  }
+  .overline {
+    @apply text-xs font-semibold uppercase text-text-muted;
+    letter-spacing: 0.12em;
+    line-height: 1.4;
+  }
+
+  /* DA-акцентные варианты — для учебных страниц и эпиграфов */
+  .h1-verse {
+    @apply font-verse text-4xl italic tracking-tight;
+    font-weight: 400;
+    line-height: 1.15;
+  }
+  .epigraph {
+    @apply font-verse text-lg italic text-text-secondary;
+    line-height: 1.6;
+  }
+
+  /* ============================================
      CARD SHELL — общий «корпус» карточки
      Используется и в Card.tsx, и в Skeleton.tsx, чтобы placeholder
      не дёргался при замене на реальную карточку.
      ============================================ */
   .card-shell {
     @apply rounded-2xl bg-surface/80 backdrop-blur-sm border border-white/[0.05] shadow-glass transition-all duration-200;
+  }
+
+  /* Modifier: убирает верхнюю рамку и inset-highlight.
+     Применять рядом с .glass-card / .glass / .card-shell, когда
+     «стеклянный блик» сверху лишний (узкие прогресс-карточки и т.п.). */
+  .card-flush-top {
+    border-top-color: transparent;
+    box-shadow: 0 8px 32px rgb(0 0 0 / 0.4);
   }
 
   /* ============================================
@@ -145,7 +216,7 @@
       0 4px 12px rgb(0 0 0 / 0.25),
       inset 0 1px 0 rgb(var(--border-on-dark) / 0.06),
       inset 0 -1px 0 rgb(0 0 0 / 0.15);
-    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: all var(--duration-slow) var(--ease-out-razum);
   }
 
   .liquid-glass-active {
@@ -156,7 +227,7 @@
       inset 0 1px 0 rgb(var(--color-accent) / 0.18),
       inset 0 -1px 0 rgb(var(--color-accent) / 0.05);
     border-color: rgb(var(--color-accent) / 0.18);
-    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: all var(--duration-slow) var(--ease-out-razum);
   }
 
   .liquid-glass-capsule {
