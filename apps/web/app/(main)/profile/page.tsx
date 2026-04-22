@@ -12,6 +12,7 @@ import Card from "@/components/ui/Card";
 import { useAuth } from "@/hooks/useAuth";
 import Link from "next/link";
 import { API_BASE } from "@/lib/api/base";
+import { BRANCHES as BRANCH_META } from "@/lib/branches";
 
 // ---------------------------------------------------------------------------
 // Hook: animated counter (requestAnimationFrame)
@@ -68,10 +69,10 @@ const DEMO_BATTLES: BattleHistoryEntry[] = [
   { id: "5", opponentName: "Кант",      result: "loss", branch: "Интуиция",  ratingChange: -9,  date: "2026-04-05" },
 ];
 
-const resultStyle: Record<BattleResult, { label: string; borderColor: string; textColor: string }> = {
-  win:  { label: "Победа",   borderColor: "#22C55E", textColor: "text-green-400"  },
-  loss: { label: "Поражение",borderColor: "#C0392B", textColor: "text-accent-red" },
-  draw: { label: "Ничья",    borderColor: "#56453A", textColor: "text-text-muted" },
+const resultStyle: Record<BattleResult, { label: string; textColor: string }> = {
+  win:  { label: "Победа",    textColor: "text-green-400"  },
+  loss: { label: "Поражение", textColor: "text-accent-red" },
+  draw: { label: "Ничья",     textColor: "text-text-muted" },
 };
 
 function BattleHistorySection({ token }: { token: string | null }) {
@@ -124,7 +125,6 @@ function BattleHistorySection({ token }: { token: string | null }) {
               <div
                 key={b.id}
                 className="glass-card flex items-center gap-3 px-3 py-2.5"
-                style={{ borderLeft: `3px solid ${rs.borderColor}` }}
               >
                 {/* Opponent */}
                 <div className="flex-1 min-w-0">
@@ -190,22 +190,20 @@ interface UserProfile {
 // Radar config
 // ---------------------------------------------------------------------------
 
+// Метки/цвета тянем из lib/branches.ts; здесь только маппинг на
+// поле UserProfile.stats (xpKey) и имя CSS-класса ветки (branchClass).
 const radarKeys = [
-  { key: "strategyXp",  label: "Стратегия", color: "#06B6D4", branch: "branch-strategy"  },
-  { key: "logicXp",     label: "Логика",    color: "#22C55E", branch: "branch-logic"      },
-  { key: "eruditionXp", label: "Эрудиция",  color: "#A855F7", branch: "branch-erudition"  },
-  { key: "rhetoricXp",  label: "Риторика",  color: "#F97316", branch: "branch-rhetoric"   },
-  { key: "intuitionXp", label: "Интуиция",  color: "#EC4899", branch: "branch-intuition"  },
+  { xpKey: "strategyXp",  ...BRANCH_META.STRATEGY, branchClass: "branch-strategy"   },
+  { xpKey: "logicXp",     ...BRANCH_META.LOGIC,    branchClass: "branch-logic"      },
+  { xpKey: "eruditionXp", ...BRANCH_META.ERUDITION,branchClass: "branch-erudition"  },
+  { xpKey: "rhetoricXp",  ...BRANCH_META.RHETORIC, branchClass: "branch-rhetoric"   },
+  { xpKey: "intuitionXp", ...BRANCH_META.INTUITION,branchClass: "branch-intuition"  },
 ] as const;
 
-// Map label → branch color for the PolarAngleAxis custom tick
-const labelColorMap: Record<string, string> = {
-  "Стратегия": "#06B6D4",
-  "Логика":    "#22C55E",
-  "Эрудиция":  "#A855F7",
-  "Риторика":  "#F97316",
-  "Интуиция":  "#EC4899",
-};
+// Map label → branch color, выведено из BRANCHES — fallback на text-muted.
+const labelColorMap: Record<string, string> = Object.fromEntries(
+  Object.values(BRANCH_META).map((b) => [b.label, b.color]),
+);
 
 // Custom tick renderer for the RadarChart axis labels
 function ColoredTick(props: {
@@ -264,9 +262,9 @@ function ProfileContent({ profile, token, logout }: { profile: UserProfile; toke
   const xpRequired = xpForNextLevel - (xpForCurrentLevel > 0 ? xpForCurrentLevel - 1000 : 0);
   const xpPct = xpRequired > 0 ? Math.min(100, Math.round((xpCurrent / xpRequired) * 100)) : 0;
 
-  const radarData = radarKeys.map(({ key, label }) => ({
+  const radarData = radarKeys.map(({ xpKey, label }) => ({
     stat: label,
-    value: stats[key],
+    value: stats[xpKey],
   }));
 
   return (
@@ -413,16 +411,16 @@ function ProfileContent({ profile, token, logout }: { profile: UserProfile; toke
 
         {/* XP per stat — branch-colored */}
         <div className="grid grid-cols-2 gap-x-4 gap-y-2 pt-1">
-          {radarKeys.map(({ key, label, color, branch }) => (
+          {radarKeys.map(({ xpKey, label, color, branchClass }) => (
             <div
-              key={key}
-              className={`flex items-center justify-between rounded-lg px-2 py-1 ${branch} branch-card`}
+              key={xpKey}
+              className={`flex items-center justify-between rounded-lg px-2 py-1 ${branchClass} branch-card`}
             >
               <span className="text-xs font-medium" style={{ color }}>
                 {label}
               </span>
               <span className="text-xs font-mono font-semibold" style={{ color }}>
-                {stats[key]} XP
+                {stats[xpKey]} XP
               </span>
             </div>
           ))}
